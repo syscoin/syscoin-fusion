@@ -25,7 +25,7 @@ var dropletConfigs = {
    "name":"masternode-clone",
    "region":"sfo2",
    "size":"s-1vcpu-2gb",
-   "image":"32682508",
+   "image":"32711725",
    "ssh_keys":null,
    "backups":false,
    "ipv6":true,
@@ -74,12 +74,35 @@ function checkVpsList() {
   });
 }
 
-function getDropletId(ip) {
+function updateIpList(key, flag) {
+  var data = {};
+  if(flag) {
+    data = {
+      'delete': 0
+    };
+  } else {
+    data = {
+      'reboot': 0
+    };
+
+  }
+  firebase.database().ref().child(`ip-to-update/${key}`).update(data).then(function() {
+    console.log('successfully updated missing ip for ', key);
+  }).catch(function(err) {
+    console.log('Error updating IP', err);
+  });
+}
+
+function getDropletId(ip, flag) {
   firebase.database().ref().child('vps').on('value', function(snapshot){
     snapshot.forEach((vpslist) => {
       let vpsinfo = vpslist.val();
       if(ip.includes(vpsinfo.ip) && (ip.length === vpsinfo.ip.length)){
-        deleteDroplet(vpsinfo.vpsid);
+        if(flag)
+          deleteDroplet(vpsinfo.vpsid);
+        else
+          restartDroplet(vpsinfo.vpsid);
+        updateIpList(ip, flag);
       }
     });
   });
@@ -99,13 +122,30 @@ function deleteDroplet(id) {
   });
 }
 
+function restartDroplet(id) {
+  axios({
+    method: 'post',
+    url: `https://api.digitalocean.com/v2/droplets/${id}/actions`,
+    data: {"type":"reboot"},
+    headers: doConfigs
+  })
+  .then((res) => {
+    console.log('successfully restarted droplet', id);
+  })
+  .catch((err) => {
+    console.log('Error getting droplet information: ',err.response.data);
+  });
+}
+
 function checkUpdateList() {
   firebase.database().ref().child('ip-to-update').on('value', function(snapshot){
     snapshot.forEach((iplist) => {
       let ipinfo = iplist.val();
+      const ip = iplist.key.replace(/-/g, '.');
       if(ipinfo.destroy) {
-        const ip = iplist.key.replace(/-/g, '.');
-        getDropletId(ip);
+        getDropletId(ip, 1);
+      } else if(ipinfo.restart) {
+        getDropletId(ip, 0);
       }
     });
   });

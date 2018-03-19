@@ -25,7 +25,7 @@ var dropletConfigs = {
    "name":"masternode-clone",
    "region":"sfo2",
    "size":"s-1vcpu-2gb",
-   "image":"32682508",
+   "image":"32711725",
    "ssh_keys":null,
    "backups":false,
    "ipv6":true,
