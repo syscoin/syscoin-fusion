@@ -78,15 +78,17 @@ function updateIpList(key, flag) {
   var data = {};
   if(flag) {
     data = {
-      'delete': 0
+      'destroy': 0
     };
   } else {
     data = {
-      'reboot': 0
+      'restart': 0
     };
 
   }
-  firebase.database().ref().child(`ip-to-update/${key}`).update(data).then(function() {
+  const ip = key.replace(/\./g, '-');
+
+  firebase.database().ref().child(`ip-to-update/${ip}`).update(data).then(function() {
     console.log('successfully updated missing ip for ', key);
   }).catch(function(err) {
     console.log('Error updating IP', err);
@@ -98,10 +100,11 @@ function getDropletId(ip, flag) {
     snapshot.forEach((vpslist) => {
       let vpsinfo = vpslist.val();
       if(ip.includes(vpsinfo.ip) && (ip.length === vpsinfo.ip.length)){
-        if(flag)
+        if(flag) {
           deleteDroplet(vpsinfo.vpsid);
-        else
+        } else {
           restartDroplet(vpsinfo.vpsid);
+        }
         updateIpList(ip, flag);
       }
     });
