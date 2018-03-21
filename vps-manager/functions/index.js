@@ -36,17 +36,19 @@ const doConfigs = { Authorization: "Bearer " + apiToken };
 firebase.initializeApp(config);
 
 function getDropIp(key, dropletId) {
-    axios({
-      method: 'get',
-      url: `https://api.digitalocean.com/v2/droplets/${dropletId}`,
-      headers: doConfigs
-    })
-    .then((res) => {
-      updateVpsList(key, res.data.droplet.networks.v4[0].ip_address);
-    })
-    .catch((err) => {
-      console.log('Error getting droplet information: ',err);
-    });
+  axios({
+    method: 'get',
+    url: `https://api.digitalocean.com/v2/droplets/${dropletId}`,
+    headers: doConfigs
+  })
+  .then((res) => {
+    updateVpsList(key, res.data.droplet.networks.v4[0].ip_address);
+  })
+  .catch((err) => {
+    console.log('Error getting droplet information: ',err);
+  });
+
+  return null;
 }
 
 function updateVpsList(key, ip) {
@@ -60,9 +62,9 @@ function updateVpsList(key, ip) {
 }
 
 exports.vpsListCreate = functions.database.ref('/vps/{vpsId}').onCreate((event) => {
-  let vpsinfo = event.val();
+  let vpsinfo = event.data.val();
   if (!vpsinfo.ip && vpsinfo.vpsid) {
-    getDropIp(vpslist.key, vpsinfo.vpsid);
+    getDropIp(vpsinfo.key, vpsinfo.vpsid);
   }
 });
 
