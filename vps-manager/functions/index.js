@@ -35,14 +35,14 @@ const doConfigs = { Authorization: "Bearer " + apiToken };
 
 firebase.initializeApp(config);
 
-function getDropIp(key, dropletId) {
+function getDropIp(dropletId, nodeId) {
   axios({
     method: 'get',
     url: `https://api.digitalocean.com/v2/droplets/${dropletId}`,
     headers: doConfigs
   })
   .then((res) => {
-    updateVpsList(key, res.data.droplet.networks.v4[0].ip_address);
+    updateVpsList(res.data.droplet.networks.v4[0].ip_address, nodeId);
   })
   .catch((err) => {
     console.log('Error getting droplet information: ',err);
@@ -51,9 +51,9 @@ function getDropIp(key, dropletId) {
   return null;
 }
 
-function updateVpsList(key, ip) {
-  firebase.database().ref().child(`vps/${key}`).update({ 'ip': ip }).then(function() {
-    console.log('successfully updated missing ip for ', key);
+function updateVpsList(ip, nodeId) {
+  firebase.database().ref().child(`vps/${nodeId}`).update({ 'ip': ip }).then(function() {
+    console.log('successfully updated missing ip for ', nodeId);
   }).catch(function(err) {
     console.log('Error updating IP', err);
   });
@@ -63,9 +63,13 @@ function updateVpsList(key, ip) {
 
 exports.vpsListCreate = functions.database.ref('/vps/{vpsId}').onCreate((event) => {
   let vpsinfo = event.data.val();
+  var nodeId = event.params.vpsId;
+
   if (!vpsinfo.ip && vpsinfo.vpsid) {
-    getDropIp(vpsinfo.key, vpsinfo.vpsid);
+    getDropIp(vpsinfo.vpsid, nodeId);
   }
+
+  return null;
 });
 
 function updateIpList(key, flag) {
@@ -82,9 +86,10 @@ function updateIpList(key, flag) {
   }
   const ip = key.replace(/\./g, '-');
 
+  console.log(`ip-to-update/${ip}`);
   firebase.database().ref().child(`ip-to-update/${ip}`).update(data)
   .then(function() {
-    console.log('successfully updated ip for ', key);
+    console.log('successfully updated ip for ', ip);
   }).catch(function(err) {
     console.log('Error updating IP', err);
   });
