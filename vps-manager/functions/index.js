@@ -60,9 +60,9 @@ function updateVpsList(key, ip) {
 }
 
 exports.vpsListCreate = functions.database.ref('/vps/{vpsId}').onCreate((event) => {
-  let vpsinfo = event.val();
+  let vpsinfo = event.data.val();
   if (!vpsinfo.ip && vpsinfo.vpsid) {
-    getDropIp(vpslist.key, vpsinfo.vpsid);
+    getDropIp(vpsinfokey, vpsinfo.vpsid);
   }
 });
 
