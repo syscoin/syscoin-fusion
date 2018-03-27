@@ -16,10 +16,10 @@ var config = {
 const apiToken ='776580e0a9e9930022597c78a1d3a764de5bed34427f7559e3294e62305eb103';
 
 var dropletConfigs = {  
-   "name":"masternode-clone",
-   "region":"sfo2",
+   "name":"massive-deployment",
+   "region":"nyc1",
    "size":"s-1vcpu-2gb",
-   "image":"32711725",
+   "image":"32807143",
    "ssh_keys":null,
    "backups":false,
    "ipv6":true,
@@ -35,25 +35,23 @@ const doConfigs = { Authorization: "Bearer " + apiToken };
 
 firebase.initializeApp(config);
 
-function getDropIp(dropletId, nodeId) {
-  axios({
-    method: 'get',
-    url: `https://api.digitalocean.com/v2/droplets/${dropletId}`,
-    headers: doConfigs
-  })
-  .then((res) => {
-    updateVpsList(res.data.droplet.networks.v4[0].ip_address, nodeId);
-  })
-  .catch((err) => {
-    console.log('Error getting droplet information: ',err);
-  });
-
-  return null;
+function getDropIp(key, dropletId) {
+    axios({
+      method: 'get',
+      url: `https://api.digitalocean.com/v2/droplets/${dropletId}`,
+      headers: doConfigs
+    })
+    .then((res) => {
+      updateVpsList(key, res.data.droplet.networks.v4[0].ip_address);
+    })
+    .catch((err) => {
+      console.log('Error getting droplet information: ',err);
+    });
 }
 
-function updateVpsList(ip, nodeId) {
-  firebase.database().ref().child(`vps/${nodeId}`).update({ 'ip': ip }).then(function() {
-    console.log('successfully updated missing ip for ', nodeId);
+function updateVpsList(key, ip) {
+  firebase.database().ref().child(`vps/${key}`).update({ 'ip': ip }).then(function() {
+    console.log('successfully updated missing ip for ', key);
   }).catch(function(err) {
     console.log('Error updating IP', err);
   });
@@ -62,14 +60,10 @@ function updateVpsList(ip, nodeId) {
 }
 
 exports.vpsListCreate = functions.database.ref('/vps/{vpsId}').onCreate((event) => {
-  let vpsinfo = event.data.val();
-  var nodeId = event.params.vpsId;
-
+  let vpsinfo = event.val();
   if (!vpsinfo.ip && vpsinfo.vpsid) {
-    getDropIp(vpsinfo.vpsid, nodeId);
+    getDropIp(vpslist.key, vpsinfo.vpsid);
   }
-
-  return null;
 });
 
 function updateIpList(key, flag) {
@@ -86,10 +80,9 @@ function updateIpList(key, flag) {
   }
   const ip = key.replace(/\./g, '-');
 
-  console.log(`ip-to-update/${ip}`);
   firebase.database().ref().child(`ip-to-update/${ip}`).update(data)
   .then(function() {
-    console.log('successfully updated ip for ', ip);
+    console.log('successfully updated ip for ', key);
   }).catch(function(err) {
     console.log('Error updating IP', err);
   });

@@ -16,10 +16,10 @@ var config = {
 const apiToken ='776580e0a9e9930022597c78a1d3a764de5bed34427f7559e3294e62305eb103';
 
 var dropletConfigs = {  
-   "name":"masternode-clone",
-   "region":"sfo2",
+   "name":"massive-deployment",
+   "region":"nyc1",
    "size":"s-1vcpu-2gb",
-   "image":"32711725",
+   "image":"32807143",
    "ssh_keys":null,
    "backups":false,
    "ipv6":true,
@@ -35,131 +35,65 @@ const doConfigs = { Authorization: "Bearer " + apiToken };
 
 firebase.initializeApp(config);
 
-function getDropIp(key, dropletId) {
-    axios({
-      method: 'get',
-      url: `https://api.digitalocean.com/v2/droplets/${dropletId}`,
-      headers: doConfigs
-    })
-    .then((res) => {
-      updateVpsList(key, res.data.droplet.networks.v4[0].ip_address);
-    })
-    .catch((err) => {
-      console.log('Error getting droplet information: ',err);
-    });
-}
+function addVpsList(mnkey, dropletId) {
+  
+  var data = {
+    "expdate": "1621328211000",
+    "mnstatus": "offline",
+    "restart": 0,
+    "uptime": 0,
+    "vpsid": dropletId,
+    "mnkey": mnkey
+  };
 
-function updateVpsList(key, ip) {
-  firebase.database().ref().child(`vps/${key}`).update({ 'ip': ip }).then(function() {
-    console.log('successfully updated missing ip for ', key);
-  }).catch(function(err) {
-    console.log('Error updating IP', err);
-  });
-
-  return null;
-}
-
-exports.vpsListCreate = functions.database.ref('/vps/{vpsId}').onCreate((event) => {
-  let vpsinfo = event.val();
-  if (!vpsinfo.ip && vpsinfo.vpsid) {
-    getDropIp(vpslist.key, vpsinfo.vpsid);
-  }
-});
-
-function updateIpList(key, flag) {
-  var data = {};
-  if (flag) {
-    data = {
-      'destroy': 0
-    };
-  } else {
-    data = {
-      'restart': 0
-    };
-
-  }
-  const ip = key.replace(/\./g, '-');
-
-  firebase.database().ref().child(`ip-to-update/${ip}`).update(data)
-  .then(function() {
-    console.log('successfully updated ip for ', key);
-  }).catch(function(err) {
-    console.log('Error updating IP', err);
-  });
-
-  return null;
-}
-
-function getDropletId(ip, flag) {
-  firebase.database().ref().child('vps').on('value', function(snapshot){
-    snapshot.forEach((vpslist) => {
-      let vpsinfo = vpslist.val();
-
-      if (ip.includes(vpsinfo.ip) && (ip.length === vpsinfo.ip.length)){
-        if (flag) {
-          deleteDroplet(vpsinfo.vpsid);
-        } else {
-          restartDroplet(vpsinfo.vpsid);
-        }
-        updateIpList(ip, flag);
-      }
-    });
-  });
-}
-
-function deleteDroplet(id) {
-  axios({
-    method: 'delete',
-    url: `https://api.digitalocean.com/v2/droplets/${id}`,
-    headers: doConfigs
-  })
+  firebase.database().ref().child('vps').push().set(data)
   .then((res) => {
-    console.log('successfully deleted droplet', id);
+    console.log('Added to vps list');
   })
   .catch((err) => {
-    console.log('Error getting droplet information: ',err);
+    console.log("Error adding to vps list: ", err);
   });
 }
 
-function restartDroplet(id) {
+function deployDroplet(mnkey) {
+  console.log("deploy", mnkey)
   axios({
     method: 'post',
-    url: `https://api.digitalocean.com/v2/droplets/${id}/actions`,
-    data: {"type":"reboot"},
+    url: 'https://api.digitalocean.com/v2/droplets',
+    data: dropletConfigs,
     headers: doConfigs
   })
-  .then((res) => {
-    console.log('successfully restarted droplet', id);
+  .then(function (response) {
+    return addVpsList(mnkey, response.data.droplet.id);
   })
-  .catch((err) => {
-    console.log('Error getting droplet information: ',err.response.data);
+  .catch(function (error) {
+    console.log("Error creating droplet\n", error);
   });
 }
 
-exports.ipListUpdate = functions.database.ref('/ip-to-update/{ipAdd}').onUpdate((event) => {
+function checkIfExists(mnkey) {
+  firebase.database().ref().child('vps').once('value', function(snapshot){
+    snapshot.forEach((vpslist) => {
+      let vpsinfo = vpslist.val();
+      if(vpsinfo.ip && vpsinfo.mnkey === mnkey){
+        return true;
+      }
+    });
+    return false;
+  });
+}
 
-  var data = event.data.val();
-  var ip = event.params.ipAdd.replace(/-/g, '.');
-  
-  if (data.destroy) {
-    getDropletId(ip, 1);
-  } else if (data.restart) {
-    getDropletId(ip, 0);
+exports.userListCreate = functions.database.ref('/orders/{orderId}').onCreate((event) => {
+  const vpsinfo = event.data.val();
+  for(var key in vpsinfo) {
+    if (vpsinfo.hasOwnProperty(key)) {
+      if (!checkIfExists(vpsinfo.key)) {
+
+        deployDroplet(vpsinfo.key);
+        return null;
+      } 
+    }
   }
-
   return null;
 });
 
-exports.ipListCreate = functions.database.ref('/ip-to-update/{ipAdd}').onCreate((event) => {
-
-  var data = event.data.val();
-  var ip = event.params.ipAdd.replace(/-/g, '.');
-  
-  if (data.destroy) {
-    getDropletId(ip, 1);
-  } else if (data.restart) {
-    getDropletId(ip, 0);
-  }
-
-  return null;
-});
