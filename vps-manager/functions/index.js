@@ -62,8 +62,10 @@ function updateVpsList(key, ip) {
 exports.vpsListCreate = functions.database.ref('/vps/{vpsId}').onCreate((event) => {
   let vpsinfo = event.data.val();
   if (!vpsinfo.ip && vpsinfo.vpsid) {
-    getDropIp(vpsinfokey, vpsinfo.vpsid);
+    getDropIp(event.params.vpsId, vpsinfo.vpsid);
   }
+
+  return null;
 });
 
 function updateIpList(key, flag) {
