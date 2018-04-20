@@ -22,7 +22,7 @@ import base64
 from time import strftime
 import httplib2
 import oauth2client.contrib.appengine as gae_oauth2client
-from apiclient import discovery
+from googleapiclient import discovery
 from google.appengine.api import memcache
 from google.appengine.api import app_identity
 from google.appengine.api import urlfetch

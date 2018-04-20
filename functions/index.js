@@ -1,20 +1,79 @@
-// Copyright 2017 Google Inc. All rights reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+'use strict'
 
-var functions = require('firebase-functions');
+const functions = require('firebase-functions')
+const admin = require('firebase-admin')
+admin.initializeApp({
+	credential: admin.credential.applicationDefault(),
+	databaseURL: 'https://testting-mn.firebaseio.com'
+})
+const express = require('express')
+const cookieParser = require('cookie-parser')()
+const cors = require('cors')
+const app = express()
+const bodyParser = require('body-parser')
 
-exports.hourly_job =
-  functions.pubsub.topic('hourly-tick').onPublish((event) => {
-    console.log("This job is ran every hour!")
-  });
+// Endpoints
+const createNode = require('./endpoints/create-node')
+
+// Listeners
+const writeConfigToDroplet = require('./functions').writeConfigToDroplet
+const editNodeData = require('./functions').editNodeData
+
+// Tasks
+const startUpdateStatusQueue = require('./functions/status-queue')
+
+// Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
+// The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
+// `Authorization: Bearer <Firebase ID Token>`.
+// when decoded successfully, the ID Token content will be added as `req.user`.
+const validateFirebaseIdToken = (req, res, next) => {
+
+	if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) &&
+		!req.cookies.__session) {
+		res.status(403).send('Unauthorized')
+		return
+	}
+
+	let idToken
+	if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+		// Read the ID Token from the Authorization header.
+		idToken = req.headers.authorization.split('Bearer ')[1]
+	} else {
+		// Read the ID Token from cookie.
+		idToken = req.cookies.__session
+	}
+	admin.auth().verifyIdToken(idToken).then((decodedIdToken) => {
+		req.user = decodedIdToken
+		return next()
+	}).catch((error) => {
+		res.status(403).send('Unauthorized')
+	})
+}
+
+app.use((req, res, next) => {
+	console.log('-------------------------------------------------------------')
+	console.log('* NEW PETITION *')
+	console.log('-------------------------------------------------------------')
+	next()
+})
+app.use(cors())
+app.use(cookieParser)
+app.use(bodyParser.json())
+app.use(validateFirebaseIdToken)
+app.post('/payment', createNode)
+app.get('/*', (req, res) => res.send('Hello'))
+
+app.use((err, req, res, next) => {
+	console.log(err)
+	return res.status(500).send('Something went wrong')
+})
+
+// This HTTPS endpoint can only be accessed by your Firebase Users.
+// Requests need to be authorized by providing an `Authorization` HTTP header
+// with value `Bearer <Firebase ID Token>`.
+exports.app = functions.https.onRequest(app)
+
+exports.writeConfigToDroplet = writeConfigToDroplet
+exports.editNodeData = editNodeData
+
+exports.startUpdateStatusQueue = startUpdateStatusQueue
