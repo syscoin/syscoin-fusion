@@ -5,7 +5,7 @@ module.exports = (obj, cb) => {
 
     admin.database().ref('/vps/' + vpsId).update({
         status,
-        lastUpdate: new Date
+        lastUpdate: Date.now()
     }).then(() => {
         return cb(null)
     }).catch(error => cb(error))

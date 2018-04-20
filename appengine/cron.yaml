@@ -1,4 +1,4 @@
 cron:
 - description: Starts mn status queue
   url: /publish/status
-  schedule: every 1 minutes
+  schedule: every 30 minutes

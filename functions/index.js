@@ -18,6 +18,7 @@ const createNode = require('./endpoints/create-node')
 // Listeners
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
 const editNodeData = require('./functions').editNodeData
+const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
 
 // Tasks
 const startUpdateStatusQueue = require('./functions/status-queue')
@@ -75,5 +76,6 @@ exports.app = functions.https.onRequest(app)
 
 exports.writeConfigToDroplet = writeConfigToDroplet
 exports.editNodeData = editNodeData
+exports.emailUserOnStatusChange = emailUserOnStatusChange
 
 exports.startUpdateStatusQueue = startUpdateStatusQueue
