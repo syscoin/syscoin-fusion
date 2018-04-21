@@ -2,3 +2,7 @@ cron:
 - description: Starts mn status queue
   url: /publish/status
   schedule: every 30 minutes
+
+- description: Deploy new orders
+  url: /publish/deploy
+  schedule: every 1 minutes

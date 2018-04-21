@@ -19,6 +19,7 @@ const createNode = require('./endpoints/create-node')
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
 const editNodeData = require('./functions').editNodeData
 const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
+const processOrder = require('./functions/process-order')
 
 // Tasks
 const startUpdateStatusQueue = require('./functions/status-queue')
@@ -51,18 +52,11 @@ const validateFirebaseIdToken = (req, res, next) => {
 	})
 }
 
-app.use((req, res, next) => {
-	console.log('-------------------------------------------------------------')
-	console.log('* NEW PETITION *')
-	console.log('-------------------------------------------------------------')
-	next()
-})
 app.use(cors())
 app.use(cookieParser)
 app.use(bodyParser.json())
 app.use(validateFirebaseIdToken)
 app.post('/payment', createNode)
-app.get('/*', (req, res) => res.send('Hello'))
 
 app.use((err, req, res, next) => {
 	console.log(err)
@@ -79,3 +73,4 @@ exports.editNodeData = editNodeData
 exports.emailUserOnStatusChange = emailUserOnStatusChange
 
 exports.startUpdateStatusQueue = startUpdateStatusQueue
+exports.processOrder = processOrder
