@@ -37,8 +37,6 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             if (err) {
                                 return cb(err)
                             }
-                            
-                            console.log('created droplet')
 
                             dropletId = data.droplet.droplet.id
 
@@ -46,11 +44,8 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             setTimeout(() => {
                                 getDropletIp(data.droplet.droplet.id, (err, ip) => {
                                     if (err) {
-                                        console.log(err)
                                         return cb(err)
                                     }
-
-                                    console.log('get ip')
 
                                     data.ip = ip
                                     return cb(null, data)
@@ -61,7 +56,6 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                     },
                     (dropletData, cb) => {
                         // Saves order info
-                        console.log('order')
                         admin.database().ref('/orders').push({
                             userId: snap[i].userId,
                             expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
@@ -72,13 +66,11 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                         }).then((order) => {
                             return cb(null, dropletData, order)
                         }).catch(err => {
-                            console.log(err)
                             cb(err)
                         })
                     },
                     (dropletData, order, cb) => {
                         // Saves dropletInfo
-                        console.log('vps')
                         admin.database().ref('/vps').push({
                             userId: snap[i].userId,
                             orderId: order.key,
@@ -93,7 +85,6 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                     },
                     (dropletData, order, vps, cb) => {
                         // Saves keys info
-                        console.log('keys')
                         admin.database().ref('/keys').push({
                             sshkey: dropletData.keys.keys.priv.enc,
                             typeLength: dropletData.keys.keys.priv.typeLength,
@@ -106,7 +97,6 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                     },
                     (dropletData, order, vps, key, cb) => {
                         // Saves mn data
-                        console.log('mn-data')
                         admin.database().ref('/mn-data').push({
                             vpsId: vps.key,
                             userId: snap[i].userId,
@@ -122,7 +112,6 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                 ], (err) => {
                     if (err) {
                         console.log('Failed for payment ' + snap[i].paymentId + '. Retrying in the next iteration')
-                        console.log(err)
                         if (dropletId) {
                             deleteDropletById(dropletId)
                         }
