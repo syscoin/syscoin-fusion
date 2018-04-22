@@ -32,7 +32,7 @@ module.exports = (obj, cb) => {
         },
         (sshData, cb) => {
             conn.on('ready', () => {
-                conn.exec('./syscoin/src/syscoin-cli masternode status', (err, stream) => {
+                conn.exec('./syscoin2/src/syscoin-cli masternode status', (err, stream) => {
                     if (err) {
                         return cb(err)
                     }
