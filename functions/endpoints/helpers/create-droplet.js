@@ -40,10 +40,10 @@ module.exports = (cb) => {
                 method: 'post',
                 url: 'https://api.digitalocean.com/v2/droplets',
                 data: {
-                    'name': 'massive-deployment',
+                    'name': 'cheap-droplit-snap',
                     'region': 'sfo2',
                     'size': 's-1vcpu-2gb',
-                    'image': 33488847,
+                    'image': 33658350,
                     'ssh_keys': [keys.newAccKey.ssh_key.id],
                     'backups': false,
                     'ipv6': true,

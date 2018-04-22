@@ -148,3 +148,7 @@ exports.emailUserOnStatusChange = functions.database.ref('/vps/{id}').onUpdate(e
             })
     }
 })
+
+exports.deleteDeployedOrder = functions.database.ref('/to-deploy/{id}').onUpdate(event => {
+    return firebase.database().ref('/to-deploy/' + event.data.key).set(null)
+})

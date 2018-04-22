@@ -19,10 +19,12 @@ const createNode = require('./endpoints/create-node')
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
 const editNodeData = require('./functions').editNodeData
 const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
-const processOrder = require('./functions/process-order')
+const deleteDeployedOrder = require('./functions').deleteDeployedOrder
 
 // Tasks
 const startUpdateStatusQueue = require('./functions/status-queue')
+const processOrder = require('./functions/process-order')
+//const deleteDeployLogs = require('./functions/delete-deploy-logs')
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -71,6 +73,7 @@ exports.app = functions.https.onRequest(app)
 exports.writeConfigToDroplet = writeConfigToDroplet
 exports.editNodeData = editNodeData
 exports.emailUserOnStatusChange = emailUserOnStatusChange
+exports.deleteDeployedOrder = deleteDeployedOrder
 
 exports.startUpdateStatusQueue = startUpdateStatusQueue
 exports.processOrder = processOrder
