@@ -14,6 +14,7 @@ const bodyParser = require('body-parser')
 
 // Endpoints
 const createNode = require('./endpoints/create-node')
+const getUserNodes = require('./endpoints/get-user-nodes')
 
 // Listeners
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
@@ -59,6 +60,7 @@ app.use(cookieParser)
 app.use(bodyParser.json())
 app.use(validateFirebaseIdToken)
 app.post('/payment', createNode)
+app.get('/nodes', getUserNodes)
 
 app.use((err, req, res, next) => {
 	console.log(err)
