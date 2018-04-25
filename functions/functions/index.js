@@ -53,7 +53,7 @@ exports.writeConfigToDroplet = functions.database.ref('/mn-data/{id}').onCreate(
                     return err
                 }
             })
-        }, 90000)
+        }, 60000)
     })
 })
 

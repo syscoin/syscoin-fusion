@@ -37,14 +37,20 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                         typeLength: i.mnKeys.typeLength
                     }, (error, data) => {
                         if (error) {
-                            console.log(error)
-                            return cb()
+                            console.log(error.toString())
                         }
 
-                        saveMnStatus({
+                        const saveMnData = {
                             vpsId: i.vpsKey,
-                            status: data.status
-                        }, error => {
+                        }
+
+                        if (error) {
+                            saveMnData.status = error.toString()
+                        } else {
+                            saveMnData.status = data.status
+                        }
+
+                        saveMnStatus(saveMnData, error => {
                             if (error) {
                                 return cb()
                             }
