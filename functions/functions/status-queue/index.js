@@ -38,7 +38,9 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                     }, (error, data) => {
                         if (error) {
                             console.log(error.toString())
+                            return cb()
                         }
+
 
                         const saveMnData = {
                             vpsId: i.vpsKey,
@@ -47,7 +49,14 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                         if (error) {
                             saveMnData.status = error.toString()
                         } else {
-                            saveMnData.status = data.status
+
+                            if (typeof data.mnStatus === 'string') {
+                                saveMnData.status = data.mnStatus
+                            } else {
+                                saveMnData.status = data.mnStatus.status
+                            }
+
+                            saveMnData.configFile = data.configFile
                         }
 
                         saveMnStatus(saveMnData, error => {

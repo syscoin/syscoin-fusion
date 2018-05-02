@@ -4,7 +4,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp({
 	credential: admin.credential.applicationDefault(),
-	databaseURL: 'https://testting-mn.firebaseio.com'
+	databaseURL: 'https://masterminer-services.firebaseio.com'
 })
 const express = require('express')
 const cookieParser = require('cookie-parser')()
@@ -20,12 +20,12 @@ const getUserNodes = require('./endpoints/get-user-nodes')
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
 const editNodeData = require('./functions').editNodeData
 const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
-const deleteDeployedOrder = require('./functions').deleteDeployedOrder
+const emailOnDeploy = require('./functions').emailOnDeploy
 
 // Tasks
 const startUpdateStatusQueue = require('./functions/status-queue')
 const processOrder = require('./functions/process-order')
-//const deleteDeployLogs = require('./functions/delete-deploy-logs')
+const deleteDeployLogs = require('./functions/deploy-queue-cleaner')
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -75,7 +75,8 @@ exports.app = functions.https.onRequest(app)
 exports.writeConfigToDroplet = writeConfigToDroplet
 exports.editNodeData = editNodeData
 exports.emailUserOnStatusChange = emailUserOnStatusChange
-exports.deleteDeployedOrder = deleteDeployedOrder
+exports.emailOnDeploy = emailOnDeploy
 
 exports.startUpdateStatusQueue = startUpdateStatusQueue
 exports.processOrder = processOrder
+exports.deleteDeployLogs = deleteDeployLogs

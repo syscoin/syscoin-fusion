@@ -5,4 +5,8 @@ cron:
 
 - description: Deploy new orders
   url: /publish/deploy
+  schedule: every 2 minutes
+
+- description: Clean deploy queue
+  url: /publish/deploy-queue-clean
   schedule: every 1 minutes

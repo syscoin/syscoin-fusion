@@ -1,9 +1,10 @@
 const admin = require('firebase-admin')
 
 module.exports = (obj, cb) => {
-    const { vpsId, status } = obj
+    const { vpsId, status, configFile } = obj
 
     admin.database().ref('/vps/' + vpsId).update({
+        configFile,
         status,
         lastUpdate: Date.now()
     }).then(() => {

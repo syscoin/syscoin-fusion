@@ -6,6 +6,7 @@ const writeConfigToDroplet = require('./helpers/write-config-to-droplet')
 
 const nodemailer = require('./email')
 const statusTemplate = require('./email/templates/status_change')
+const newDeployTemplate = require('./email/templates/new_deploy')
 
 exports.writeConfigToDroplet = functions.database.ref('/mn-data/{id}').onCreate(ev => {
     const key = ev.key
@@ -131,7 +132,7 @@ exports.emailUserOnStatusChange = functions.database.ref('/vps/{id}').onUpdate(e
                         const user = userRecord.toJSON()
 
                         return nodemailer.sendMail({
-                            from: 'notification@sandbox6351a8c4802147d8bdaa328a7e0386f4.mailgun.org',
+                            from: 'notification@masterminer.tech',
                             to: user.email,
                             subject: `Your Masternode ${mnData.mnName} has changed its status`,
                             html: statusTemplate(mnData.mnName, nextData.status)
@@ -149,6 +150,19 @@ exports.emailUserOnStatusChange = functions.database.ref('/vps/{id}').onUpdate(e
     }
 })
 
-exports.deleteDeployedOrder = functions.database.ref('/to-deploy/{id}').onUpdate(event => {
-    return firebase.database().ref('/to-deploy/' + event.data.key).set(null)
+exports.emailOnDeploy = functions.database.ref('/to-deploy/{id}').onCreate(event => {
+    const data = event.data.toJSON()
+
+    return firebase.auth().getUser(data.userId)
+            .then(userRecord => {
+                const user = userRecord.toJSON()
+
+                return nodemailer.sendMail({
+                    from: 'notification@masterminer.tech',
+                    to: user.email,
+                    subject: `Your new Masternode is on the way!`,
+                    html: newDeployTemplate(data.mnName)
+                })
+            })
+            .catch(error => console.log(error))
 })

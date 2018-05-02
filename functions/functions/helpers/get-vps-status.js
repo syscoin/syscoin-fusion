@@ -32,19 +32,50 @@ module.exports = (obj, cb) => {
         },
         (sshData, cb) => {
             conn.on('ready', () => {
-                conn.exec('./syscoin2/src/syscoin-cli masternode status', (err, stream) => {
-                    if (err) {
-                        return cb(err)
+
+                async.parallel([
+                    cb => {
+                        conn.exec('./syscoin2/src/syscoin-cli masternode status', (err, stream) => {
+                            if (err) {
+                                return cb(err)
+                            }
+
+                            stream.on('data', data => {
+
+                                cb(null, JSON.parse(data.toString()))
+
+                            }).stderr.on('data', err => {
+
+                                cb(null, err.toString())
+
+                            })
+
+                        })
+                    },
+                    cb => {
+
+                        conn.exec('cat .syscoincore/syscoin.conf', (err, stream) => {
+                            if (err) {
+                                return cb(err)
+                            }
+
+                            stream.on('data', data => {
+                                cb(null, data.toString())
+                            }).stderr.on('data', error => {
+                                cb(null, error.toString())
+                            })
+                        })
+
                     }
+                ], (error, results) => {
+                    if (error) {
+                        return cb(error)
+                    }
+                    conn.end()
 
-                    stream.on('data', data => {
-                        conn.end()
-
-                        cb(null, JSON.parse(data.toString()))
-                    }).stderr.on('data', error => {
-                        conn.end()
-
-                        cb(error)
+                    return cb(null, {
+                        mnStatus: results[0],
+                        configFile: results[1]
                     })
                 })
             }).connect({
@@ -58,6 +89,7 @@ module.exports = (obj, cb) => {
         if (err) {
             return cb(err)
         }
+
         return cb(null, data)
     })
 }
