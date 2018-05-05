@@ -85,7 +85,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                     userId: snap[i].userId,
                                     orderId: order.key,
                                     status: 'Offline: will update shortly',
-                                    lastUpdate: Date.now() - 1680000,
+                                    lastUpdate: Date.now() - 1500000,
                                     lock: true,
                                     uptime: 0,
                                     vpsid: dropletData.droplet.droplet.id,
@@ -124,9 +124,16 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             if (err) {
                                 console.log('Failed for payment ' + snap[i].paymentId + '. Retrying in the next iteration')
                                 if (dropletId) {
-                                    deleteDropletById(dropletId)
+                                    return new Promise((deleteResolve, deleteReject) => {
+                                        deleteDropletById(dropletId, (err) => {
+                                            if (err) {
+                                                return deleteReject(err)
+                                            }
+                                            deleteResolve()
+                                            callback(null)
+                                        })
+                                    })
                                 }
-                                return callback(null)
                             }
 
                             console.log('Deployed ' + i)

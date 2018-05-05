@@ -8,7 +8,7 @@ const decrypt = require('./decrypt')
 const generateRandomString = require('../../endpoints/helpers/generate-random-pwd')
 
 module.exports = (obj, cb) => {
-    const {ip, encryptedSsh, typeLength} = obj
+    const {ip, encryptedSsh, typeLength, mnKey} = obj
     const conn = new Client()
 
     async.waterfall([
@@ -60,7 +60,27 @@ module.exports = (obj, cb) => {
                             }
 
                             stream.on('data', data => {
-                                cb(null, data.toString())
+                                const text = data.toString()
+
+                                if (text.indexOf('masternodeprivkey') === -1) {
+                                    conn.exec('rm ./.syscoincore/syscoin.conf && echo "' + makeConfig(mnKey, ip) + '" > ./.syscoincore/syscoin.conf && sudo shutdown -r 1 && cat .syscoincore/syscoin.conf', (err, stream) => {
+                                        if (err) {
+                                            console.log(err.toString())
+                                        }
+
+                                        stream.on('data', data => {
+                                            if (data.toString().indexOf('masternodeprivkey') !== -1) {
+                                                console.log(data.toString())
+                                                return cb(null, data.toString())
+                                            }
+                                        }).stderr.on('data', error => {
+                                            return cb(null, error.toString())
+                                        })
+                                    })
+                                } else {
+                                    return cb(null, data.toString())
+                                }
+
                             }).stderr.on('data', error => {
                                 cb(null, error.toString())
                             })
