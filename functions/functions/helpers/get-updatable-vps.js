@@ -6,11 +6,11 @@ module.exports = cb => {
         admin.database().ref('/vps')
                         .orderByChild('lock')
                         .equalTo(false)
-                        .limitToFirst(5)
+                        .limitToFirst(2)
                         .once('value', snapshot => {
-                            /*if (!snapshot.exists()) {
+                            if (!snapshot.hasChildren()) {
                                 return cb(null, [])
-                            }*/
+                            }
                             const snap = snapshot.val()
                             const keys = Object.keys(snap)
                             const results = []

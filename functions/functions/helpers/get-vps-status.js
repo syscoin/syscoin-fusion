@@ -78,7 +78,8 @@ module.exports = (obj, cb) => {
                         configFile: results[1]
                     })
                 })
-            }).on('error', () => {
+            }).on('error', (err) => {
+                console.log(err)
                 return cb(true)
             }).connect({
                 host: ip,

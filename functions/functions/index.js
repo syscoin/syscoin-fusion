@@ -119,34 +119,34 @@ exports.emailUserOnStatusChange = functions.database.ref('/vps/{id}').onUpdate(e
     const nextData = ev.data.val()
 
     if (oldData.status !== nextData.status) {
-        firebase.database().ref('/mn-data')
-            .orderByChild('orderId')
-            .equalTo(nextData.orderId)
-            .once('value', snapshot => {
-                const snap = snapshot.val()
-                const snapKey = Object.keys(snap)[0]
-                const mnData = snap[snapKey]
+        return firebase.database().ref('/mn-data')
+                .orderByChild('orderId')
+                .equalTo(nextData.orderId)
+                .once('value', snapshot => {
+                    const snap = snapshot.val()
+                    const snapKey = Object.keys(snap)[0]
+                    const mnData = snap[snapKey]
 
-                firebase.auth().getUser(nextData.userId)
-                    .then(userRecord => {
-                        const user = userRecord.toJSON()
+                    firebase.auth().getUser(nextData.userId)
+                        .then(userRecord => {
+                            const user = userRecord.toJSON()
 
-                        return nodemailer.sendMail({
-                            from: 'notification@masterminer.tech',
-                            to: user.email,
-                            subject: `Your Masternode ${mnData.mnName} has changed its status`,
-                            html: statusTemplate(mnData.mnName, nextData.status)
-                        }, (err, info) => {
-                            if (err) {
-                                console.log(err)
-                                return err
-                            }
+                            return nodemailer.sendMail({
+                                from: 'notification@masterminer.tech',
+                                to: user.email,
+                                subject: `Your Masternode ${mnData.mnName} has changed its status`,
+                                html: statusTemplate(mnData.mnName, nextData.status)
+                            }, (err, info) => {
+                                if (err) {
+                                    console.log(err)
+                                    return err
+                                }
 
-                            console.log('Email sent!')
+                                console.log('Email sent!')
+                            })
                         })
-                    })
-                    .catch(error => console.log(error))
-            })
+                        .catch(error => console.log(error))
+                })
     }
 })
 
