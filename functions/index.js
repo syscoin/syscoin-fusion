@@ -15,6 +15,7 @@ const bodyParser = require('body-parser')
 // Endpoints
 const createNode = require('./endpoints/create-node')
 const getUserNodes = require('./endpoints/get-user-nodes')
+const testDeplots = require('./endpoints/test-deploys')
 
 // Listeners
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
@@ -25,7 +26,9 @@ const emailOnDeploy = require('./functions').emailOnDeploy
 // Tasks
 const startUpdateStatusQueue = require('./functions/status-queue')
 const processOrder = require('./functions/process-order')
+const unlockDeploys = require('./functions/unlock-orders')
 const deleteDeployLogs = require('./functions/deploy-queue-cleaner')
+const unlockVpsStatus = require('./functions/vps-status-queue-cleaner')
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -59,6 +62,7 @@ app.use(cors())
 app.use(cookieParser)
 app.use(bodyParser.json())
 app.use(validateFirebaseIdToken)
+//app.get('/test/deploys', testDeplots)
 app.post('/payment', createNode)
 app.get('/nodes', getUserNodes)
 
@@ -80,3 +84,5 @@ exports.emailOnDeploy = emailOnDeploy
 exports.startUpdateStatusQueue = startUpdateStatusQueue
 exports.processOrder = processOrder
 exports.deleteDeployLogs = deleteDeployLogs
+exports.unlockDeploys = unlockDeploys
+exports.unlockVpsStatus = unlockVpsStatus

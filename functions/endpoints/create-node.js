@@ -33,14 +33,16 @@ module.exports = (req, res, next) => {
 
             admin.database().ref('/to-deploy').push({
                 months,
+                mnKey,
+                mnTxid,
+                mnName,
+                mnIndex,
+                lock: false,
+                lockDate: null,
                 orderDate: Date.now(),
                 paymentId: charge.id,
                 deployed: false,
                 userId: req.user.uid,
-                mnKey,
-                mnTxid,
-                mnName,
-                mnIndex
             })
 
             return res.send({

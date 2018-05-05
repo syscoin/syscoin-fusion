@@ -78,6 +78,8 @@ module.exports = (obj, cb) => {
                         configFile: results[1]
                     })
                 })
+            }).on('error', () => {
+                return cb(true)
             }).connect({
                 host: ip,
                 port: 22,

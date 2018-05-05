@@ -12,9 +12,10 @@ module.exports = (vps, cb) => {
                 return x.orderId === snap[i].orderId
             })
 
-            toAppend.mnKeys = mnKeys
-
-            results.push(toAppend)
+            if (toAppend) {
+                toAppend.mnKeys = mnKeys
+                results.push(toAppend)
+            }
         })
 
         return cb(null, results)
