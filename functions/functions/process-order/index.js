@@ -85,7 +85,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                     userId: snap[i].userId,
                                     orderId: order.key,
                                     status: 'offline',
-                                    lastUpdate: 0,
+                                    lastUpdate: Date.now() - 200000,
                                     lock: false,
                                     uptime: 0,
                                     vpsid: dropletData.droplet.droplet.id,

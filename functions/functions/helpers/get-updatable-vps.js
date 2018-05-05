@@ -6,7 +6,7 @@ module.exports = cb => {
         admin.database().ref('/vps')
                         .orderByChild('lock')
                         .equalTo(false)
-                        .limitToFirst(2)
+                        .limitToFirst(5)
                         .once('value', snapshot => {
                             if (!snapshot.hasChildren()) {
                                 return cb(null, [])
@@ -18,10 +18,8 @@ module.exports = cb => {
                             keys.forEach(i => {
                                 const vps = snap[i]
                                 
-                                //if (vps.lastUpdated < new Date(Date.now() - 1800000).getTime()) {
-                                    vps.vpsKey = i
-                                    results.push(vps)
-                                //}
+                                vps.vpsKey = i
+                                results.push(vps)
                             })
 
                             async.each(results, (i, cb) => {
