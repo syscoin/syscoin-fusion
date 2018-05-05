@@ -29,7 +29,7 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                     return err
                 }
 
-                async.each(vps, (i, cb) => {
+                async.eachLimit(vps, 10, (i, cb) => {
                     console.log('Running get status for vps ip: ' + i.ip)
                         getMnStatus({
                             ip: i.ip,

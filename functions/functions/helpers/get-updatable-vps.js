@@ -6,7 +6,6 @@ module.exports = cb => {
         admin.database().ref('/vps')
                         .orderByChild('lock')
                         .equalTo(false)
-                        .limitToFirst(5)
                         .once('value', snapshot => {
                             if (!snapshot.hasChildren()) {
                                 return cb(null, [])

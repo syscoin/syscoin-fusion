@@ -84,9 +84,9 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                 return admin.database().ref('/vps').push({
                                     userId: snap[i].userId,
                                     orderId: order.key,
-                                    status: 'offline',
-                                    lastUpdate: Date.now() - 200000,
-                                    lock: false,
+                                    status: 'Offline: will update shortly',
+                                    lastUpdate: Date.now() - 1680000,
+                                    lock: true,
                                     uptime: 0,
                                     vpsid: dropletData.droplet.droplet.id,
                                     ip: dropletData.ip
