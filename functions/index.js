@@ -14,6 +14,7 @@ const bodyParser = require('body-parser')
 
 // Endpoints
 const createNode = require('./endpoints/create-node')
+const hostingSignup = require('./endpoints/hosting-signup')
 const getUserNodes = require('./endpoints/get-user-nodes')
 const testDeplots = require('./endpoints/test-deploys')
 
@@ -64,6 +65,7 @@ app.use(bodyParser.json())
 app.use(validateFirebaseIdToken)
 //app.get('/test/deploys', testDeplots)
 app.post('/payment', createNode)
+app.post('/signup', hostingSignup)
 app.get('/nodes', getUserNodes)
 
 app.use((err, req, res, next) => {
