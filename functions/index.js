@@ -62,11 +62,10 @@ const validateFirebaseIdToken = (req, res, next) => {
 app.use(cors())
 app.use(cookieParser)
 app.use(bodyParser.json())
-app.use(validateFirebaseIdToken)
 //app.get('/test/deploys', testDeplots)
-app.post('/payment', createNode)
+app.post('/payment', validateFirebaseIdToken, createNode)
 app.post('/signup', hostingSignup)
-app.get('/nodes', getUserNodes)
+app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 
 app.use((err, req, res, next) => {
 	console.log(err)
