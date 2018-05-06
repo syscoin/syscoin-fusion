@@ -67,51 +67,59 @@ exports.editNodeData = functions.database.ref('/mn-data/{id}').onUpdate(ev => {
         return false
     }
 
-    async.parallel([
-        cb => {
-            firebase.database().ref('/vps')
-                    .orderByChild('orderId')
-                    .equalTo(mnData.orderId)
-                    .once('value', snapshot => {
-                        const snap = snapshot.val()
-                        const objKey = Object.keys(snap)[0]
-
-                        cb(null, snap[objKey])
-                    })
-        },
-        cb => {
-            firebase.database().ref('/keys')
-                    .orderByChild('orderId')
-                    .equalTo(mnData.orderId)
-                    .once('value', snapshot => {
-                        const snap = snapshot.val()
-                        const objKey = Object.keys(snap)[0]
-
-                        cb(null, snap[objKey])
-                    })
-        }
-    ], (err, data) => {
-        if (err) {
-            return err
-        }
-
-        const vpsData = data[0]
-        const keysData = data[1]
-
-        writeConfigToDroplet({
-            ip: vpsData.ip,
-            encryptedSsh: keysData.sshkey,
-            typeLength: keysData.typeLength,
-            mnKey: mnData.mnKey
-        }, (err) => {
+    return new Promise((resolve, reject) => {
+        async.parallel([
+            cb => {
+                firebase.database().ref('/vps')
+                        .orderByChild('orderId')
+                        .equalTo(mnData.orderId)
+                        .once('value', snapshot => {
+                            const snap = snapshot.val()
+                            const objKey = Object.keys(snap)[0]
+    
+                            snap[objKey].vpsKey = objKey
+    
+                            cb(null, snap[objKey])
+                        })
+            },
+            cb => {
+                firebase.database().ref('/keys')
+                        .orderByChild('orderId')
+                        .equalTo(mnData.orderId)
+                        .once('value', snapshot => {
+                            const snap = snapshot.val()
+                            const objKey = Object.keys(snap)[0]
+    
+                            cb(null, snap[objKey])
+                        })
+            }
+        ], (err, data) => {
             if (err) {
+                reject(err)
                 return err
-            }   
+            }
+    
+            const vpsData = data[0]
+            const keysData = data[1]
+    
+            writeConfigToDroplet({
+                ip: vpsData.ip,
+                encryptedSsh: keysData.sshkey,
+                typeLength: keysData.typeLength,
+                mnKey: mnData.mnKey
+            }, (err) => {
+                if (err) {
+                    reject(err)
+                    return err
+                }
+
+                admin.database().ref('/vps/' + vpsData.vpsKey).update({
+                    lock: false
+                }).then(() => resolve()).catch(err => reject(err))
+            })
+    
         })
-
     })
-
-    return true
 })
 
 exports.emailUserOnStatusChange = functions.database.ref('/vps/{id}').onUpdate(ev => {
