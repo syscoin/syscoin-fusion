@@ -3,7 +3,7 @@ const stripe = require('stripe')(functions.config().keys.stripe_private)
 
 module.exports = (obj, cb) => {
     stripe.charges.create({
-        amount: (parseInt(obj.months) * 15) * 100,
+        amount: 50/*(parseInt(obj.months) * 15) * 100*/,
         currency: 'usd',
         description: 'Mastermine charge to ' + obj.email,
         source: obj.tokenId

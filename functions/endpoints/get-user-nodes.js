@@ -7,6 +7,10 @@ module.exports = (req, res, next) => {
         .orderByChild('userId')
         .equalTo(req.user.uid)
         .once('value', snapshot => {
+            if (!snapshot.hasChildren) {
+                return res.send([])
+            }
+            
             const data = []
             const finalData = []
             const snap = snapshot.val()
@@ -24,6 +28,9 @@ module.exports = (req, res, next) => {
                             .orderByChild('orderId')
                             .equalTo(i.id)
                             .once('value', snapshot => {
+                                if (!snapshot.hasChildren()) {
+                                    return cb(true)
+                                }
                                 const snap = snapshot.val()
                                 let objectKey = Object.keys(snap)[0]
                                 const returnData = snap[objectKey]
@@ -39,6 +46,9 @@ module.exports = (req, res, next) => {
                             .orderByChild('orderId')
                             .equalTo(i.id)
                             .once('value', snapshot => {
+                                if (!snapshot.hasChildren()) {
+                                    return cb(true)
+                                }
                                 const snap = snapshot.val()
                                 let objectKey = Object.keys(snap)[0]
                                 const returnData = snap[objectKey]
@@ -51,7 +61,9 @@ module.exports = (req, res, next) => {
                     }
                 ], (err, data) => {
                     if (err) {
-                        return cb(err)
+                        i.error = true
+                        finalData.push(i)
+                        return cb(null, err)
                     }
 
                     const newObj = i

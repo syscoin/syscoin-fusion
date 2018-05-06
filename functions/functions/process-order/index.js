@@ -134,6 +134,8 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                         })
                                     })
                                 }
+                                callback(err)
+                                return false
                             }
 
                             console.log('Deployed ' + i)

@@ -28,7 +28,8 @@ module.exports = (req, res, next) => {
             tokenId: token.id
         }, (err, charge) => {
             if (err) {
-                return cb(err)
+                console.log(err)
+                return res.status(400).send({data: 'Something went wrong during the payment. Try again later.'})
             }
 
             admin.database().ref('/to-deploy').push({

@@ -9,6 +9,16 @@ const createKeys = require('./create-keys')
 const DOHeader = {
     'Authorization': 'Bearer ' + functions.config().keys.digitalocean
 }
+const doRegions = [
+    'sgp1',
+    'lon1',
+    'nyc3',
+    'ams3',
+    'fra1',
+    'tor1',
+    'sfo2',
+    'blr1'
+]
 
 module.exports = (cb) => {
     // Creates new SSH RSA key
@@ -41,9 +51,9 @@ module.exports = (cb) => {
                 url: 'https://api.digitalocean.com/v2/droplets',
                 data: {
                     'name': 'massive-t-poo',
-                    'region': 'sfo2',
+                    'region': doRegions[Math.floor(Math.random() * 7) + 0],
                     'size': 's-1vcpu-2gb',
-                    'image': 34064589,
+                    'image': 34071705,
                     'ssh_keys': [keys.newAccKey.ssh_key.id],
                     'backups': false,
                     'ipv6': true,

@@ -1,7 +1,7 @@
 cron:
 - description: Starts mn status queue
   url: /publish/status
-  schedule: every 1 minutes
+  schedule: every 3 minutes
 
 - description: Deploy new orders
   url: /publish/deploy
@@ -9,7 +9,7 @@ cron:
 
 - description: Clean deploy queue
   url: /publish/deploy-queue-clean
-  schedule: every 1 minutes
+  schedule: every 60 minutes
 
 - description: Unlock deploy queue
   url: /publish/deploy-queue-unlock

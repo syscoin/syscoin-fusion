@@ -35,7 +35,7 @@ module.exports = (obj, cb) => {
 
                 async.parallel([
                     cb => {
-                        conn.exec('./syscoin2/src/syscoin-cli masternode status', (err, stream) => {
+                        conn.exec('./syscoin/src/syscoin-cli masternode status', (err, stream) => {
                             if (err) {
                                 return cb(err)
                             }
