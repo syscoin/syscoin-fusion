@@ -7,6 +7,10 @@ module.exports = functions.pubsub.topic('deploy-queue-clean').onPublish(event =>
                     .orderByChild('deployed')
                     .equalTo(true)
                     .once('value', ev => {
+                        if (!ev.hasChildren()) {
+                            console.log('Nothing to clean!')
+                            return true
+                        }
                         const data = ev.val()
                         const keys = Object.keys(data)
 
