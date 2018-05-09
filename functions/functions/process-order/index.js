@@ -89,7 +89,8 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                     lock: true,
                                     uptime: 0,
                                     vpsid: dropletData.droplet.droplet.id,
-                                    ip: dropletData.ip
+                                    ip: dropletData.ip,
+                                    imageId: functions.config().dropletconfig.imageid
                                 }).then((vps) => {
                                     return cb(null, dropletData, order, vps)
                                 }).catch(err => cb(err))
@@ -158,6 +159,6 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
             })
 
         }).catch(err => {
-            return reject(err)
+            return err
         })
 })
