@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 appengine/lib/**
 node_modules
 .vscode
+=======
+node_modules/
+>>>>>>> origin
