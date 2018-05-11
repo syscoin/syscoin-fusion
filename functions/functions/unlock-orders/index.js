@@ -6,6 +6,10 @@ module.exports = functions.pubsub.topic('deploy-queue-unlock').onPublish(event =
                 .orderByChild('deployed')
                 .equalTo(false)
                 .once('value', (snapshot) => {
+                    if (!snapshot.hasChildren()) {
+                        console.log('Nothing to unlock!')
+                        return true
+                    }
                     const snap = snapshot.val()
                     const keys = Object.keys(snap)
 
