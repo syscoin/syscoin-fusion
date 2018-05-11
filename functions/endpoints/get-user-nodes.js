@@ -12,7 +12,9 @@ module.exports = (req, res, next) => {
             }
             
             const data = []
-            const finalData = []
+            const finalData = {
+                masternodes: []
+            }
             const snap = snapshot.val()
 
             for (let key in snap) {
@@ -62,7 +64,7 @@ module.exports = (req, res, next) => {
                 ], (err, data) => {
                     if (err) {
                         i.error = true
-                        finalData.push(i)
+                        finalData.masternodes.push(i)
                         return cb(null, err)
                     }
 
@@ -71,17 +73,38 @@ module.exports = (req, res, next) => {
                     i.mnData = data[0]
                     i.vpsInfo = data[1]
 
-                    finalData.push(i)
+                    finalData.masternodes.push(i)
 
                     return cb(null)
                 })
             }, (err) => {
                 if (err) {
-                    return res.status(500).send({error: 'Something went wrong.'})
+                    return res.status(500).send({error: 'Something went wrong. Try reloading the page.'})
                 }
 
+                admin.database().ref('/to-deploy')
+                    .orderByChild('userId')
+                    .equalTo(req.user.uid)
+                    .once('value', snapshot => {
+                        if (!snapshot.hasChildren()) {
+                            finalData.isDeploying = false
+                            return res.status(200).send(finalData)
+                        }
 
-                return res.status(200).send(finalData)
+                        const data = snapshot.val()
+                        const keys = Object.keys(data)
+
+                        finalData.isDeploying = Boolean(keys.find(i => !data[i].deployed))
+
+                        return res.status(200).send(finalData)
+                    }).catch(err => {
+                        if (err) {
+                            console.log(err)
+                        }
+                        return res.status(500).send({
+                            error: true
+                        })
+                    })
             })
         })
 }

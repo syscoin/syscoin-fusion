@@ -4,7 +4,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp({
 	credential: admin.credential.applicationDefault(),
-	databaseURL: 'https://masterminer-services.firebaseio.com'
+	databaseURL: functions.config().projectconfig.databaseurl
 })
 const express = require('express')
 const cookieParser = require('cookie-parser')()

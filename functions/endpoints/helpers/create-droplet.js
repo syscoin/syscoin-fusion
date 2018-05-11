@@ -51,9 +51,9 @@ module.exports = (cb) => {
                 url: 'https://api.digitalocean.com/v2/droplets',
                 data: {
                     'name': 'massive-t-poo',
-                    'region': doRegions[Math.floor(Math.random() * 7) + 0],
+                    'region': 'sfo2'/*doRegions[Math.floor(Math.random() * 7) + 0]*/,
                     'size': 's-1vcpu-2gb',
-                    'image': 34071705,
+                    'image': functions.config().dropletconfig.imageid,
                     'ssh_keys': [keys.newAccKey.ssh_key.id],
                     'backups': false,
                     'ipv6': true,

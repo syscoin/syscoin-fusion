@@ -59,7 +59,19 @@ module.exports = (obj, cb) => {
                                 return cb(err)
                             }
 
-                            stream.on('data', data => {
+                            stream.on('close', () => {
+                                conn.exec('rm ./.syscoincore/syscoin.conf && echo "' + makeConfig(mnKey, ip) + '" > ./.syscoincore/syscoin.conf && sudo shutdown -r 1 && cat .syscoincore/syscoin.conf', (err, stream) => {
+                                    if (err) {
+                                        console.log(err.toString())
+                                    }
+
+                                    stream.on('data', data => {
+                                        return cb(null, data.toString())
+                                    }).stderr.on('data', error => {
+                                        return cb(null, error.toString())
+                                    })
+                                })
+                            }).on('data', data => {
                                 const text = data.toString()
 
                                 if (text.indexOf('masternodeprivkey') === -1) {
@@ -69,10 +81,8 @@ module.exports = (obj, cb) => {
                                         }
 
                                         stream.on('data', data => {
-                                            if (data.toString().indexOf('masternodeprivkey') !== -1) {
-                                                console.log(data.toString())
-                                                return cb(null, data.toString())
-                                            }
+                                            console.log(data.toString())
+                                            return cb(null, data.toString())
                                         }).stderr.on('data', error => {
                                             return cb(null, error.toString())
                                         })

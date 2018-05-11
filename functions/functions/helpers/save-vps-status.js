@@ -1,16 +1,22 @@
 const admin = require('firebase-admin')
 
 module.exports = (obj, cb) => {
-    const { vpsId, status, configFile } = obj
+    const { vpsId, status, configFile, imageId } = obj
 
     if (!vpsId) {
         return cb(true)
     }
 
-    admin.database().ref('/vps/' + vpsId).update({
+    const toUpdate = {
         configFile,
         status
-    }).then(() => {
+    }
+
+    if (imageId) {
+        toUpdate.imageId = imageId
+    }
+
+    admin.database().ref('/vps/' + vpsId).update(toUpdate).then(() => {
         return cb(null)
     }).catch(error => cb(error))
 }
