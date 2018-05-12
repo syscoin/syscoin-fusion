@@ -17,6 +17,7 @@ const createNode = require('./endpoints/create-node')
 const hostingSignup = require('./endpoints/hosting-signup')
 const getUserNodes = require('./endpoints/get-user-nodes')
 const testDeplots = require('./endpoints/test-deploys')
+const extendSubscription = require('./endpoints/extend-mn')
 
 // Listeners
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
@@ -65,6 +66,7 @@ app.use(bodyParser.json())
 //app.get('/test/deploys', testDeplots)
 app.post('/payment', validateFirebaseIdToken, createNode)
 app.post('/signup', hostingSignup)
+app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 
 app.use((err, req, res, next) => {
