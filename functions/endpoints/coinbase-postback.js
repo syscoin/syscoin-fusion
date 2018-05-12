@@ -12,15 +12,27 @@ module.exports = (req, res) => {
     } else if (data.type === 'charge:confirmed') {
     	console.log('Charge confirmed: ', data.id)
     	const months,
-            email = req.body.email
-            mnKey = req.body.key,
-            mnTxid = req.body.txid,
-            mnName = req.body.name,
-            mnIndex = req.body.index
+            email = data.metadata.email
+            mnKey = data.metadata.mnKey,
+            mnTxid = data.metadata.mnTxid,
+            mnName = data.metadata.mnName,
+            mnIndex = data.metadata.mnIndex,
+            userId =  data.metadata.userId
 
-    	if(data.name === 'Masterminer - 3 month') {
-    		months = 3;
-    	}
+        admin.database().ref('/to-deploy').push({
+            months,
+            mnKey,
+            mnTxid,
+            mnName,
+            mnIndex,
+            lock: false,
+            lockDate: null,
+            orderDate: data.created_at,
+            paymentId: data.checkout.id,
+            deployed: false,
+            userId
+        })
+
     } else if (data.type === 'charge:failed') {
     	console.log('Charge failed: ', data.id)
     }
