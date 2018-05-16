@@ -8,10 +8,11 @@ module.exports = (req, res) => {
     let data = req.body.event.data;
     
     data.metadata.body = _.replace(data.metadata.body, /=>/g, ":")
-    console.log('Charge: ', _.findKey(data, {"status": "NEW"}), JSON.parse(data.metadata.body))
+    data.metadata = JSON.parse(data.metadata.body)
+    console.log('Charge: ', _.findKey(data.timeline, {status: 'NEW'}), data.timeline)
 
     if (data.type === 'charge:created') {
-    	console.log('Charge created: ', data.metadata)
+    	console.log('Charge created: ', data.id)
     } else if (data.type === 'charge:confirmed') {
     	console.log('Charge confirmed: ', data.id)
     	const months = data.metadata.months,
@@ -22,7 +23,7 @@ module.exports = (req, res) => {
             mnIndex = data.metadata.mnIndex,
             userId =  data.metadata.userId
 
-        if (_.findKey(data, {"status": "COMPLETED"})) {
+        if (typeof  _.findKey(data.timeline, {status: 'COMPLETED'}) !== 'undefined') {
             admin.database().ref('/to-deploy').push({
                 months,
                 mnKey,
