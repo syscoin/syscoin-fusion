@@ -10,7 +10,7 @@ module.exports = (data, cb) => {
     const body = data
     switch(chargeAmount) {
         case 1:
-            chargeAmount = 0.01
+            chargeAmount = 0.15
             break
         case 3:
             chargeAmount = 45

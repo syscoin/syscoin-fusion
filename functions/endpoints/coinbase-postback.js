@@ -9,12 +9,11 @@ module.exports = (req, res) => {
     
     data.metadata.body = _.replace(data.metadata.body, /=>/g, ":")
     data.metadata = JSON.parse(data.metadata.body)
-    console.log('Charge: ', _.findKey(data.timeline, {status: 'NEW'}), data.timeline)
 
-    if (data.type === 'charge:created') {
-    	console.log('Charge created: ', data.id)
-    } else if (data.type === 'charge:confirmed') {
-    	console.log('Charge confirmed: ', data.id)
+    if (typeof  _.findKey(data.timeline, {status: 'NEW'}) !== 'undefined') {
+    	console.log('Charge created: ', data.code)
+    } else if (typeof  _.findKey(data.timeline, {status: 'COMPLETED'}) !== 'undefined') {
+    	console.log('Charge confirmed: ', data.code)
     	const months = data.metadata.months,
             email = data.metadata.email,
             mnKey = data.metadata.mnKey,
@@ -23,23 +22,22 @@ module.exports = (req, res) => {
             mnIndex = data.metadata.mnIndex,
             userId =  data.metadata.userId
 
-        if (typeof  _.findKey(data.timeline, {status: 'COMPLETED'}) !== 'undefined') {
-            admin.database().ref('/to-deploy').push({
-                months,
-                mnKey,
-                mnTxid,
-                mnName,
-                mnIndex,
-                lock: false,
-                lockDate: null,
-                orderDate: data.created_at,
-                paymentId: data.checkout.id,
-                deployed: false,
-                userId
-            })
-        }
-    } else if (data.type === 'charge:failed') {
-    	console.log('Charge failed: ', data.id)
+        admin.database().ref('/to-deploy').push({
+            months,
+            mnKey,
+            mnTxid,
+            mnName,
+            mnIndex,
+            lock: false,
+            lockDate: null,
+            orderDate: data.created_at,
+            paymentId: data.checkout.id,
+            deployed: false,
+            userId
+        })
+    
+    } else if (typeof  _.findKey(data.timeline, {status: 'UNRESOLVED'}) !== 'undefined') {
+    	console.log('Charge failed: ', data.code)
     }
   
     return res.send().status(200);
