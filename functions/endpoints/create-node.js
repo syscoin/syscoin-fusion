@@ -10,8 +10,7 @@ const getDropletIp = require('./helpers/get-droplet-ip')
 module.exports = (req, res, next) => {
     // Handles new Masternode orders
     try {
-        const token = req.body.token.token,
-            months = req.body.months,
+        const months = req.body.months,
             email = req.body.email
             mnKey = req.body.key,
             mnTxid = req.body.txid,
@@ -19,12 +18,16 @@ module.exports = (req, res, next) => {
             mnIndex = req.body.index,
             type = req.body.type
 
-        if (token.error) {
-            // If the token has an error, return 400
-            return res.status(400).send({ error: token.error.message })
-        }
+      
 
         if (type === 1) {
+            const token = req.body.token.token;
+
+            if (token.error) {
+                // If the token has an error, return 400
+                return res.status(400).send({ error: token.error.message })
+            }
+
             return makeCharge({
                 email,
                 months,
@@ -56,8 +59,7 @@ module.exports = (req, res, next) => {
                     paymentId: charge.id
                 })
             })
-        }
-        if (type === 2) {
+        } else {
             return coinbaseCharge({   
                 months,
                 email,

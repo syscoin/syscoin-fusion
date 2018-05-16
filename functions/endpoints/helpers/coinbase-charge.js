@@ -7,10 +7,10 @@ const coinbase_ver = functions.config().coinbase.ver
 
 module.exports = (data, cb) => {
     let chargeAmount = parseInt(data.months)
-
+    const body = data
     switch(chargeAmount) {
         case 1:
-            chargeAmount = 7.5
+            chargeAmount = 0.01
             break
         case 3:
             chargeAmount = 45
@@ -28,10 +28,11 @@ module.exports = (data, cb) => {
             return cb('Invalid amount')
     }
 
-	axios.post(coinbase_url, {
+	axios({url: coinbase_url,
+        method: 'POST',
 		headers: {
-			X-CC-Api-Key: coinbase_key,
-			X-CC-Version: coinbaes_ver
+			'X-CC-Api-Key': coinbase_key,
+			'X-CC-Version': coinbase_ver
 		},
 		data: {
 			name: 'Masterminer subscription',
@@ -42,12 +43,13 @@ module.exports = (data, cb) => {
             },
 	        pricing_type: "fixed_price",
 	        metadata: {
-	        	data
+	        	body
          	}
          },
 	})
 	.then((res) => {
-		return cb(null, res.body.data)
+        console.log(res.data)
+		return cb(null, res.data)
 	})
 	.catch((err) => {
 		return cb(err)
