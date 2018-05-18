@@ -8,6 +8,8 @@ const coinbase_ver = functions.config().coinbase.ver
 module.exports = (data, cb) => {
     let chargeAmount = parseInt(data.months)
     const body = data
+    console.log(body)
+
     switch(chargeAmount) {
         case 1:
             chargeAmount = 0.15
@@ -32,7 +34,8 @@ module.exports = (data, cb) => {
         method: 'POST',
 		headers: {
 			'X-CC-Api-Key': coinbase_key,
-			'X-CC-Version': coinbase_ver
+			'X-CC-Version': coinbase_ver,
+            'Content-type': 'application/json'
 		},
 		data: {
 			name: 'Masterminer subscription',
@@ -42,13 +45,10 @@ module.exports = (data, cb) => {
              	currency: "USD"
             },
 	        pricing_type: "fixed_price",
-	        metadata: {
-	        	body
-         	}
+	        metadata: body
          },
 	})
 	.then((res) => {
-        console.log(res.data)
 		return cb(null, res.data)
 	})
 	.catch((err) => {
