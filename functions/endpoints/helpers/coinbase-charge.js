@@ -8,7 +8,6 @@ const coinbase_ver = functions.config().coinbase.ver
 module.exports = (data, cb) => {
     let chargeAmount = parseInt(data.months)
     const body = data
-    console.log(body)
 
     switch(chargeAmount) {
         case 1:
