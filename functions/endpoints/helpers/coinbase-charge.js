@@ -7,11 +7,11 @@ const coinbase_ver = functions.config().coinbase.ver
 
 module.exports = (data, cb) => {
     let chargeAmount = parseInt(data.months)
-    const body = data
+    const meta = data
 
     switch(chargeAmount) {
         case 1:
-            chargeAmount = 0.15
+            chargeAmount = 7.50
             break
         case 3:
             chargeAmount = 45
@@ -44,11 +44,50 @@ module.exports = (data, cb) => {
              	currency: "USD"
             },
 	        pricing_type: "fixed_price",
-	        metadata: body
+	        metadata: meta
          },
 	})
 	.then((res) => {
-		return cb(null, res.data)
+        let data = {};
+        const body = res.data.data
+
+        switch (meta.type) {
+            case 2:
+                data = {
+                    address : body.addresses.bitcoin,
+                    value : body.pricing.bitcoin.amount,
+                    currency : body.pricing.bitcoin.currency,
+                    expires_at : body.expires_at
+                };
+                break;
+            case 3: 
+                data = {
+                    address : body.addresses.bitcoincash,
+                    value : body.pricing.bitcoincash.amount,
+                    currency : body.pricing.bitcoincash.currency,
+                    expires_at : body.expires_at
+                };
+                break;
+            case 4:   
+                data = {
+                    address : body.addresses.ethereum,
+                    value : body.pricing.ethereum.amount,
+                    currency : body.pricing.ethereum.currency,
+                    expires_at : body.expires_at
+                };
+                break;
+            case 5:   
+                data = {
+                    address : body.addresses.litecoin,
+                    value : body.pricing.litecoin.amount,
+                    currency : body.pricing.litecoin.currency,
+                    expires_at : body.expires_at
+                };
+                break;
+            default:
+        }
+
+		return cb(null, data)
 	})
 	.catch((err) => {
 		return cb(err)

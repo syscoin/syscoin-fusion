@@ -67,6 +67,7 @@ module.exports = (req, res, next) => {
                 mnTxid,
                 mnName,
                 mnIndex,
+                type,
                 userId: req.user.uid,
             }, (err, charge) => {
                 if (err) {
