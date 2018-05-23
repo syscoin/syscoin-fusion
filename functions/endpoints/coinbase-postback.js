@@ -16,13 +16,13 @@ module.exports = (req, res) => {
 
         if (data.metadata.renew) {
             const payload = data.metadata
-            
+           
             updateExpiry(payload, (err, data) => {
                 if (err) {
-                    console.log(err)
+                    console.log('Update expiry ',err)
                     return res.status(500).send({
                         error: true,
-                        message: 'Success'
+                        message: 'Error'
                     })    
                 }
 
@@ -53,8 +53,7 @@ module.exports = (req, res) => {
                 userId
             })
         }
-    
+        
+        return res.send().status(200);
     } 
-  
-    return res.send().status(200);
 }

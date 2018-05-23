@@ -9,25 +9,27 @@ module.exports = (data, cb) => {
     let chargeAmount = parseInt(data.months)
     const meta = data
 
-    switch(chargeAmount) {
-        case 1:
-            chargeAmount = 7.50
-            break
-        case 3:
-            chargeAmount = 45
-            break
-        case 6:
-            chargeAmount = 90
-            break
-        case 9:
-            chargeAmount = 135
-            break
-        case 12:
-            chargeAmount = 180
-            break
-        default:
-            return cb('Invalid amount')
-    }
+    // switch(chargeAmount) {
+    //     case 1:
+    //         chargeAmount = 7.50
+    //         break
+    //     case 3:
+    //         chargeAmount = 45
+    //         break
+    //     case 6:
+    //         chargeAmount = 90
+    //         break
+    //     case 9:
+    //         chargeAmount = 135
+    //         break
+    //     case 12:
+    //         chargeAmount = 180
+    //         break
+    //     default:
+    //         return cb('Invalid amount')
+    // }
+
+    chargeAmount = 0.15
 
 	axios({url: coinbase_url,
         method: 'POST',
