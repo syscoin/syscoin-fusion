@@ -2,10 +2,11 @@ const firebase = require('firebase-functions')
 const admin = require('firebase-admin')
 
 const makeCharge = require('./helpers/make-charge')
+const coinbaseCharge = require('./helpers/coinbase-charge')
 const updateExpiry = require('./helpers/update-expiry')
 
 module.exports = (req, res, next) => {
-    const { orderId, tokenId, months, email, coinbase } = req.body
+    const { orderId, tokenId, months, email, coinbase, type } = req.body
     const obj = {
         email,
         months,
@@ -21,20 +22,19 @@ module.exports = (req, res, next) => {
                 expiry : snaps.expiresOn,
                 months : months,
                 numberOfMonths : snaps.numberOfMonths,
-                renew: coinbase
+                renew: coinbase,
+                type: type
             }
 
             if (snaps.userId === req.user.uid) {
                 if (coinbase) {
-                    return coinbaseCharge(payload, (err, charge) => {
+                    return coinbaseCharge(payload, (err, data) => {
                         if (err) {
                             console.log(err)
                             return res.status(400).send({data: 'Something went wrong creating the payment. Try again later.'})
                         }
 
-                        return res.send({
-                            charge
-                        })
+                        return res.send(data)
                     })
                 } else {
                     makeCharge(obj, (err, data) => {

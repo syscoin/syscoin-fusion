@@ -45,7 +45,7 @@ module.exports = (data, cb) => {
             },
 	        pricing_type: "fixed_price",
 	        metadata: meta
-         },
+        },
 	})
 	.then((res) => {
         let data = {};
