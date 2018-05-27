@@ -41,7 +41,7 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                                     const key = Object.keys(snap)[0]
                                     const imageId = functions.config().dropletconfig.imageid
 
-                                    if (imageId !== i.imageId && i.ip === '174.138.9.224') {
+                                    if (imageId !== i.imageId) {
                                         upgradeMn({
                                             dropletId: i.vpsid
                                         }, (err, data) => {
