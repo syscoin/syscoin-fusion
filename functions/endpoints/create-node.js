@@ -3,6 +3,7 @@ const admin = require('firebase-admin')
 const async = require('async')
 
 const makeCharge = require('./helpers/make-charge')
+const coinbaseCharge = require('./helpers/coinbase-charge')
 const createDroplet = require('./helpers/create-droplet')
 const getDropletIp = require('./helpers/get-droplet-ip')
 const redeemCode = require('./helpers/redeem-code')
@@ -17,8 +18,10 @@ module.exports = (req, res, next) => {
             mnTxid = req.body.txid,
             mnName = req.body.name,
             mnIndex = req.body.index,
-            method = req.body.method || 'cc',
+            method = req.body.method,
             code = req.body.code
+
+        const cryptoPaymentsSupported = ['btc', 'ltc', 'bch', 'eth']
 
         if (method === 'cc') {
 
@@ -35,8 +38,10 @@ module.exports = (req, res, next) => {
                 tokenId: token.id
             }, (err, charge) => {
                 if (err) {
-                    console.log(err)
-                    return res.status(400).send({data: 'Something went wrong during the payment. Try again later.'})
+                    return res.status(400).send({
+                        error: true,
+                        message: 'Something went wrong during the payment. Try again later.'
+                    })
                 }
     
                 admin.database().ref('/to-deploy').push({
@@ -95,10 +100,30 @@ module.exports = (req, res, next) => {
                     paymentId: code
                 })
             })
+        } else if (cryptoPaymentsSupported.indexOf(method) !== -1) {
+            return coinbaseCharge({   
+                months,
+                email,
+                mnKey,
+                mnTxid,
+                mnName,
+                mnIndex,
+                method,
+                userId: req.user.uid
+            },  (err, charge) => {
+                if (err) {
+                    return res.status(400).send({
+                        error: true,
+                        message: 'Something went wrong during the payment. Try again later.'
+                    })
+                }
+
+                return res.send({charge})
+            })
         } else {
             return res.status(400).send({
                 error: true,
-                message: 'Invalid payment method.'
+                message: 'Something went wrong during the payment. Try again later.'
             })
         }
 

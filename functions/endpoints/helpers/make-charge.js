@@ -29,11 +29,11 @@ module.exports = (obj, cb) => {
         currency: 'usd',
         description: 'Mastermine charge to ' + obj.email,
         source: obj.tokenId
-    }, (err, charge) => {
+    }, (err, data) => {
         if (err) {
             return cb(err)
         }
 
-        return cb(null, charge)
+        return cb(null, data)
     });
 }
