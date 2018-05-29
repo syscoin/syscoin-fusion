@@ -16,10 +16,10 @@ module.exports = (req, res) => {
 
         if (data.metadata.renew) {
             const payload = data.metadata
-           
+            payload.paymentMethod = payload.method
+
             updateExpiry(payload, (err, data) => {
                 if (err) {
-                    console.log('Update expiry ',err)
                     return res.status(500).send({
                         error: true,
                         message: 'Error'
@@ -37,7 +37,8 @@ module.exports = (req, res) => {
                 mnTxid = data.metadata.mnTxid,
                 mnName = data.metadata.mnName,
                 mnIndex = data.metadata.mnIndex,
-                userId =  data.metadata.userId
+                userId =  data.metadata.userId,
+                paymentMethod = data.metadata.method
 
             admin.database().ref('/to-deploy').push({
                 months,
@@ -45,6 +46,7 @@ module.exports = (req, res) => {
                 mnTxid,
                 mnName,
                 mnIndex,
+                paymentMethod,
                 lock: false,
                 lockDate: null,
                 orderDate: data.created_at,
@@ -52,8 +54,8 @@ module.exports = (req, res) => {
                 deployed: false,
                 userId
             })
+            return res.send().status(200);
         }
         
-        return res.send().status(200);
     } 
 }
