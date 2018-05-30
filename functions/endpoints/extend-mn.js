@@ -6,7 +6,7 @@ const coinbaseCharge = require('./helpers/coinbase-charge')
 const updateExpiry = require('./helpers/update-expiry')
 
 module.exports = (req, res, next) => {
-    const { orderId, tokenId, months, email, coinbase, type } = req.body
+    const { orderId, tokenId, months, email, coinbase, type, paymentMethod } = req.body
     const obj = {
         email,
         months,
@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
                 months : months,
                 numberOfMonths : snaps.numberOfMonths,
                 renew: coinbase,
-                type: type
+                method: paymentMethod,
             }
 
             if (snaps.userId === req.user.uid) {
