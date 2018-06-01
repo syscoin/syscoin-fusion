@@ -1,3 +1,5 @@
+require('dotenv').config({path: process.cwd() + '/scripts/.env'})
+
 const admin = require('firebase-admin')
 const args = process.argv.slice(2)
 
@@ -27,7 +29,7 @@ if ((['add', 'substract']).indexOf(operation) === -1) {
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://mm-development-3e770.firebaseio.com'
+    databaseURL: process.env.SCRIPT_DB_URL
 })
 
 admin.database().ref('/pooling')

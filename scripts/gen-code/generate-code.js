@@ -9,7 +9,7 @@ let serviceAccount, email, months
 try {
     serviceAccount = require('../serviceKey.json')
 } catch (err) {
-    throw new Error('ERROR: Cant find serviceKey.json')
+    throw new Error('ERROR: Cant find serviceKey.json (it should be located in the scripts folder)')
 }
 
 try {
