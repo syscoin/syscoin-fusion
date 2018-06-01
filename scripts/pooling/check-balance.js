@@ -1,3 +1,5 @@
+require('dotenv').config({path: process.cwd() + '/scripts/.env'})
+
 const admin = require('firebase-admin')
 const args = process.argv.slice(2)
 
@@ -6,7 +8,7 @@ let serviceAccount, email
 try {
     serviceAccount = require('../serviceKey.json')
 } catch (err) {
-    throw new Error('ERROR: Cant find serviceKey.json')
+    throw new Error('ERROR: Cant find serviceKey.json (it should be located in the scripts folder)')
 }
 
 try {
@@ -17,7 +19,7 @@ try {
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://mm-development-3e770.firebaseio.com'
+    databaseURL: process.env.SCRIPT_DB_URL
 })
 
 admin.database().ref('/pooling')
