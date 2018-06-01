@@ -5,7 +5,7 @@ const args = process.argv.slice(2)
 let serviceAccount, email, months
 
 try {
-    serviceAccount = require('./serviceKey.json')
+    serviceAccount = require('../serviceKey.json')
 } catch (err) {
     throw new Error('ERROR: Cant find serviceKey.json')
 }
