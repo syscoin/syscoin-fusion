@@ -20,6 +20,7 @@ const testDeplots = require('./endpoints/test-deploys')
 const coinbasePostback = require('./endpoints/coinbase-postback')
 const extendSubscription = require('./endpoints/extend-mn')
 const getPoolingData = require('./endpoints/pooling-data')
+const requestPooling = require('./endpoints/request-pooling')
 
 // Listeners
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
@@ -93,6 +94,7 @@ app.post('/payment', validateFirebaseIdToken, createNode)
 app.post('/signup', hostingSignup)
 app.post('/coinbase-postback', coinbasePostback)
 app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
+app.post('/request-pooling', requestPooling)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 
