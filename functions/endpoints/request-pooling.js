@@ -1,4 +1,4 @@
-const firebase = require('firebase-functions')
+const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const async = require('async')
 
@@ -9,8 +9,15 @@ const templates = {
 }
 
 module.exports = (req, res, next) => {
-    const { tier, shares } = req.body
+    const { tier, shares, comments } = req.body
     const email = req.user.email
+
+    if (!(tier && shares && email)) {
+        return res.status(400).send({
+            error: true,
+            message: 'Required param missing.'
+        })
+    }
 
     async.parallel([
         cb => nodeMailer.sendMail({
@@ -27,9 +34,9 @@ module.exports = (req, res, next) => {
         }),
         cb => nodeMailer.sendMail({
             from: 'notification@masterminer.tech',
-            to: process.env.emails.pooling_review,
-            subject: `Information about Masternode Pooling.`,
-            html: templates.user()
+            to: functions.config().emails.pooling_reviewer,
+            subject: `New Masternode Pool application from ${email}`,
+            html: templates.review(email, tier, shares, comments)
         }, (err, info) => {
             if (err) {
                 return cb(err)

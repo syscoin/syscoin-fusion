@@ -94,7 +94,7 @@ app.post('/payment', validateFirebaseIdToken, createNode)
 app.post('/signup', hostingSignup)
 app.post('/coinbase-postback', coinbasePostback)
 app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
-app.post('/request-pooling', requestPooling)
+app.post('/request-pooling', validateFirebaseIdToken, requestPooling)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 
