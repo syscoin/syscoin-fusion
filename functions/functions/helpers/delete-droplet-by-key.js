@@ -13,7 +13,7 @@ module.exports = (vpsKey, cb) => {
 
             axios({
                 method: 'delete',
-                url: 'https://api.digitalocean.com/v2/droplets/' + data.vpsId,
+                url: 'https://api.digitalocean.com/v2/droplets/' + data.vpsid,
                 headers: DOHeader
             }).then(() => {
                 cb()
