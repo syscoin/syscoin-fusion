@@ -34,6 +34,7 @@ const processOrder = require('./functions/process-order')
 const unlockDeploys = require('./functions/unlock-orders')
 const deleteDeployLogs = require('./functions/deploy-queue-cleaner')
 const unlockVpsStatus = require('./functions/vps-status-queue-cleaner')
+const deleteExpiredMns = require('./functions/expired-mn-watch')
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -118,3 +119,4 @@ exports.processOrder = processOrder
 exports.deleteDeployLogs = deleteDeployLogs
 exports.unlockDeploys = unlockDeploys
 exports.unlockVpsStatus = unlockVpsStatus
+exports.deleteExpiredMns = deleteExpiredMns
