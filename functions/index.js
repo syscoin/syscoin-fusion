@@ -19,6 +19,8 @@ const getUserNodes = require('./endpoints/get-user-nodes')
 const testDeplots = require('./endpoints/test-deploys')
 const coinbasePostback = require('./endpoints/coinbase-postback')
 const extendSubscription = require('./endpoints/extend-mn')
+const getPoolingData = require('./endpoints/pooling-data')
+const requestPooling = require('./endpoints/request-pooling')
 
 // Listeners
 const writeConfigToDroplet = require('./functions').writeConfigToDroplet
@@ -61,6 +63,29 @@ const validateFirebaseIdToken = (req, res, next) => {
 	})
 }
 
+const validateOptionalFirebaseIdToken = (req, res, next) => {
+
+	if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) &&
+		!req.cookies.__session) {
+		return next()
+	}
+
+	let idToken
+	if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+		// Read the ID Token from the Authorization header.
+		idToken = req.headers.authorization.split('Bearer ')[1]
+	} else {
+		// Read the ID Token from cookie.
+		idToken = req.cookies.__session
+	}
+	admin.auth().verifyIdToken(idToken).then((decodedIdToken) => {
+		req.user = decodedIdToken
+		return next()
+	}).catch((error) => {
+		res.status(403).send('Unauthorized')
+	})
+}
+
 app.use(cors())
 app.use(cookieParser)
 app.use(bodyParser.json())
@@ -69,7 +94,9 @@ app.post('/payment', validateFirebaseIdToken, createNode)
 app.post('/signup', hostingSignup)
 app.post('/coinbase-postback', coinbasePostback)
 app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
+app.post('/request-pooling', validateFirebaseIdToken, requestPooling)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
+app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 
 app.use((err, req, res, next) => {
 	console.log(err)
