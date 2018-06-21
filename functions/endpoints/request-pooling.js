@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
         cb => nodeMailer.sendMail({
             from: 'notification@masterminer.tech',
             to: email,
-            subject: `Information about Masternode Pooling.`,
+            subject: `Welcome to Masterminer's pooling program`,
             html: templates.user()
         }, (err, info) => {
             if (err) {
