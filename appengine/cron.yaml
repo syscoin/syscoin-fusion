@@ -18,3 +18,7 @@ cron:
 - description: Unlock VPS status queue
   url: /publish/vps-status-queue-clean
   schedule: every 3 minutes
+
+- description: Expired MN watch
+  url: /publish/expired-mn-watch
+  schedule: every 30 minutes
