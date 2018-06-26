@@ -52,7 +52,7 @@ module.exports = (cb) => {
                 data: {
                     'name': 'massive-t-poo',
                     'region': 'sfo2'/*doRegions[Math.floor(Math.random() * 7) + 0]*/,
-                    'size': 's-1vcpu-2gb',
+                    'size': 's-1vcpu-1gb',
                     'image': functions.config().dropletconfig.imageid,
                     'ssh_keys': [keys.newAccKey.ssh_key.id],
                     'backups': false,
