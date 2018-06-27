@@ -1,6 +1,10 @@
 const admin = require('firebase-admin')
 const functions = require('firebase-functions')
 const async = require('async')
+const moment = require('moment')
+
+const maxUpgradeDate = functions.config().dropletconfig.max_upgrade_date
+const maxUpgradeDateTime = moment(maxUpgradeDate, 'YYYY-MM-DD')
 
 const getUpdatableVps = require('../helpers/get-updatable-vps')
 const getSshKeys = require('../helpers/get-ssh-data')
@@ -30,7 +34,7 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                     return err
                 }
 
-                async.eachLimit(vps, 10, (i, cb) => {
+                async.eachLimit(vps, 25, (i, cb) => {
                     console.log('Running get status for vps ip: ' + i.ip)
 
                     admin.database().ref('/mn-data')
@@ -41,7 +45,7 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                                     const key = Object.keys(snap)[0]
                                     const imageId = functions.config().dropletconfig.imageid
 
-                                    if (imageId !== i.imageId) {
+                                    if (imageId !== i.imageId && moment() > maxUpgradeDateTime) {
                                         upgradeMn({
                                             dropletId: i.vpsid
                                         }, (err, data) => {
