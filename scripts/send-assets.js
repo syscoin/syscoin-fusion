@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const exec = require('child_process').execSync
+
 const { SYS_LOCATION } = process.env
 
 /* SCRIPT PARAMS */
@@ -16,35 +17,25 @@ if (!fromAliasName || !assetName || !toAliasName || !assetAmount) {
 
 /* FUNCTIONS */
 
-const assetAllocationSend = () => {
-    return JSON.parse(exec(`"${SYS_LOCATION}" assetallocationsend ${assetName} ${fromAliasName} [{\\"aliasto\\":\\"${toAliasName}\\",\\"amount\\":${assetAmount}}] "" ""`).toString())[0]
-}
+const assetAllocationSend = () => JSON.parse(exec(`"${SYS_LOCATION}" assetallocationsend ${assetName} ${fromAliasName} [{\\"aliasto\\":\\"${toAliasName}\\",\\"amount\\":${assetAmount}}] "" ""`).toString())[0]
 
-const assetAllocationInfo = (assetUid, aliasName) => {
-    return JSON.parse(exec(`"${SYS_LOCATION}" assetallocationinfo ${assetUid} ${aliasName} false`).toString())
-}
+const assetAllocationInfo = (assetUid, aliasName) => JSON.parse(exec(`"${SYS_LOCATION}" assetallocationinfo ${assetUid} ${aliasName} false`).toString())
 
-const signRawTransaction = txfund => {
-    return JSON.parse(exec(`"${SYS_LOCATION}" signrawtransaction ${txfund}`).toString()).hex
-}
+const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" signrawtransaction ${txfund}`).toString()).hex
 
-const sendRawTransaction = raw => {
-    return JSON.parse(exec(`"${SYS_LOCATION}" syscoinsendrawtransaction ${raw}`).toString()).txid
-}
+const sendRawTransaction = raw => JSON.parse(exec(`"${SYS_LOCATION}" syscoinsendrawtransaction ${raw}`).toString()).txid
 
 const generateOne = () => {
     exec(`"${SYS_LOCATION}" generate 1`)
 }
 
-const getAliasInfo = () => {
-    return JSON.parse(exec(`"${SYS_LOCATION}" aliasinfo ${aliasName}`).toString())
-}
+const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" aliasinfo ${aliasName}`).toString())
 
 
 // Process
 
 const allocationSendCode = assetAllocationSend()
-let signRaw = signRawTransaction(allocationSendCode)
+const signRaw = signRawTransaction(allocationSendCode)
 sendRawTransaction(signRaw)
 
 console.log(assetAllocationInfo(assetName, fromAliasName))
