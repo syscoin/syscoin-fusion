@@ -3,7 +3,7 @@ import {
   SYSCOINCONF_ERROR,
   RELOAD_CONF,
   SUCCESS_START
-} from '../actions/startup';
+} from '../actions/startup'
 
 export type startUpStateType = {
   +error: boolean | null,
@@ -22,7 +22,7 @@ const initialState = {
   success: null,
   shouldReload: false,
   walletInfo: {}
-};
+}
 
 export default function startUp(
   state: startUpStateType = initialState,
@@ -33,20 +33,20 @@ export default function startUp(
       return {
         ...state,
         error: true
-      };
+      }
     case RELOAD_CONF:
       return {
         ...state,
         error: true,
         shouldReload: true
-      };
+      }
     case SUCCESS_START:
       return {
         ...state,
         walletInfo: action.walletInfo,
         success: true
-      };
+      }
     default:
-      return state;
+      return state
   }
 }

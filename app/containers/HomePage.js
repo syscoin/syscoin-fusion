@@ -1,8 +1,8 @@
 // @flow
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Home from '../components/Home';
-import startUpRoutine from '../utils/startup';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Home from '../components/Home'
+import startUpRoutine from '../utils/startup'
 
 type Props = {
   startUp: {
@@ -17,18 +17,18 @@ class HomePage extends Component<Props> {
   props: Props;
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    startUpRoutine(props.dispatch);
+    startUpRoutine(props.dispatch)
   }
 
   render() {
-    return <Home startUp={this.props.startUp} />;
+    return <Home startUp={this.props.startUp} />
   }
 }
 
 const mapStateToProps = state => ({
   startUp: state.startUp
-});
+})
 
-export default connect(mapStateToProps)(HomePage);
+export default connect(mapStateToProps)(HomePage)

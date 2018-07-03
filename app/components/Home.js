@@ -1,7 +1,7 @@
 // @flow
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import styles from './Home.css';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import styles from './Home.css'
 
 type Props = {
   startUp: {
@@ -22,7 +22,7 @@ export default class Home extends Component<Props> {
 
   mainText(startUp: startUpType) {
     if (startUp.success) {
-      return <h2>Successfully connected to Syscoind.exe</h2>;
+      return <h2>Successfully connected to Syscoind.exe</h2>
     }
 
     if (startUp.error) {
@@ -31,12 +31,12 @@ export default class Home extends Component<Props> {
           <h2>
             Something might be going wrong. Retrying connection to Syscoind.exe
           </h2>
-        );
+        )
       }
-      return <h2>Something went wrong!</h2>;
+      return <h2>Something went wrong!</h2>
     }
 
-    return <h2>Is loading...</h2>;
+    return <h2>Is loading...</h2>
   }
 
   render() {
@@ -47,6 +47,6 @@ export default class Home extends Component<Props> {
           <Link to="/wallet">to Wallet</Link>
         </div>
       </div>
-    );
+    )
   }
 }

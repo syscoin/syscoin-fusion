@@ -1,10 +1,10 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 // import { Link } from 'react-router-dom'
-import { Row, Col } from 'antd';
+import { Row, Col } from 'antd'
 
-const { exec } = require('child_process');
-const generateCmd = require('../../../utils/cmd-gen');
+const { exec } = require('child_process')
+const generateCmd = require('../../../utils/cmd-gen')
 
 type Props = {};
 
@@ -12,33 +12,33 @@ export default class Accounts extends Component<Props> {
   props: Props;
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       currentAddress: '',
       currentBalance: ''
-    };
+    }
   }
 
   componentWillMount() {
-    this.setCurrentAddress();
-    this.setCurrentBalance();
+    this.setCurrentAddress()
+    this.setCurrentBalance()
   }
 
   setCurrentAddress() {
     exec(generateCmd('cli', 'getaccountaddress ""'), (err, stdout) => {
       this.setState({
         currentAddress: stdout.toString()
-      });
-    });
+      })
+    })
   }
 
   setCurrentBalance() {
     exec(generateCmd('cli', 'getbalance'), (err, stdout) => {
       this.setState({
         currentBalance: stdout.toString()
-      });
-    });
+      })
+    })
   }
 
   render() {
@@ -56,6 +56,6 @@ export default class Accounts extends Component<Props> {
           <p>{this.state.currentBalance}</p>
         </Col>
       </Row>
-    );
+    )
   }
 }
