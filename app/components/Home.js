@@ -44,7 +44,7 @@ export default class Home extends Component<Props> {
       <div>
         <div className={styles.container} data-tid="container">
           {this.mainText(this.props.startUp)}
-          <Link to="/counter">to Counter</Link>
+          <Link to="/wallet">to Wallet</Link>
         </div>
       </div>
     );

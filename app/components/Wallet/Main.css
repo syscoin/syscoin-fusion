@@ -1,0 +1,11 @@
+.ant-tabs {
+    color: white;
+}
+
+.ant-tabs-tab {
+    color: #ccc;
+}
+
+.ant-tabs-nav .ant-tabs-tab-active {
+    color: #fff;
+}
