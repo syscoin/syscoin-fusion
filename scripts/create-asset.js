@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const exec = require('child_process').execSync
 
-const { SYS_LOCATION } = process.env
+const { SYS_LOCATION, DATA_DIR } = process.env
 
 /* SCRIPT PARAMS */
 
@@ -15,21 +15,21 @@ if (!aliasName || !assetName) {
 
 /* FUNCTIONS */
 
-const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" assetnew ${assetName} ${aliasName} "public_info" assets 8 false 1000000 5000000 0 false ""`).toString())
+const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetnew ${assetName} ${aliasName} "public_info" assets 8 false 1000000 5000000 0 false ""`).toString())
 
-const assetSend = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" assetsend ${assetUid} ${aliasName} [{\\"aliasto\\":\\"${aliasName}\\",\\"amount\\":100000}] "memo" ""`).toString())[0]
+const assetSend = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetsend ${assetUid} ${aliasName} [{\\"aliasto\\":\\"${aliasName}\\",\\"amount\\":100000}] "memo" ""`).toString())[0]
 
-const assetAllocation = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" assetallocationinfo ${assetUid} ${aliasName} false`).toString())
+const assetAllocation = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetallocationinfo ${assetUid} ${aliasName} false`).toString())
 
-const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" signrawtransaction ${txfund}`).toString()).hex
+const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" signrawtransaction ${txfund}`).toString()).hex
 
-const sendRawTransaction = raw => JSON.parse(exec(`"${SYS_LOCATION}" syscoinsendrawtransaction ${raw}`).toString()).txid
+const sendRawTransaction = raw => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" syscoinsendrawtransaction ${raw}`).toString()).txid
 
 const generateOne = () => {
-    exec(`"${SYS_LOCATION}" generate 1`)
+    exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" generate 1`)
 }
 
-const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" aliasinfo ${aliasName}`).toString())
+const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" aliasinfo ${aliasName}`).toString())
 
 
 // Process

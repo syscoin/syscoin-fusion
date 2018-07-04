@@ -1,0 +1,15 @@
+.alias-box {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.alias-box:hover {
+    opacity: 0.8;
+}
+
+.alias-box .text-col div {
+    text-align: left;
+    margin-bottom: 10px;
+}
