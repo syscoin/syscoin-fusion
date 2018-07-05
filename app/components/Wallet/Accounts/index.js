@@ -140,7 +140,6 @@ export default class Accounts extends Component<Props, State> {
   }
 
   render() {
-    console.log(this.state)
     return (
       <Row>
         <Col
