@@ -22,7 +22,6 @@
     "package-win": "npm run build && build --win --x64",
     "postinstall": "node -r babel-register internals/scripts/CheckNativeDep.js && npm run flow-typed && npm run build-dll && electron-builder install-app-deps && node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.js'",
-    "precommit": "lint-staged",
     "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev.js",
@@ -33,13 +32,6 @@
     "test-watch": "npm test -- --watch"
   },
   "browserslist": "electron 1.6",
-  "lint-staged": {
-    "*.js": [
-      "cross-env NODE_ENV=development eslint --cache --format=node_modules/eslint-formatter-pretty",
-      "prettier --ignore-path .eslintignore --single-quote --write",
-      "git add"
-    ]
-  },
   "build": {
     "productName": "ElectronReact",
     "appId": "org.develar.ElectronReact",
@@ -147,7 +139,7 @@
     "cross-spawn": "^6.0.5",
     "css-loader": "^0.28.11",
     "detect-port": "^1.2.3",
-    "electron": "^2.0.2",
+    "electron": "^2.0.3",
     "electron-builder": "^20.14.7",
     "electron-devtools-installer": "^2.2.4",
     "electron-rebuild": "^1.7.3",
@@ -200,10 +192,13 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "antd": "^3.6.5",
     "devtron": "^1.4.0",
     "electron-debug": "^1.5.0",
     "font-awesome": "^4.7.0",
+    "global": "^4.3.2",
     "history": "^4.7.2",
+    "prop-types": "^15.6.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-hot-loader": "^4.2.0",
@@ -212,6 +207,7 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.6",
     "redux": "^4.0.0",
+    "redux-actions": "^2.4.0",
     "redux-thunk": "^2.2.0",
     "source-map-support": "^0.5.6"
   },

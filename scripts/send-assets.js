@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const exec = require('child_process').execSync
 
-const { SYS_LOCATION } = process.env
+const { SYS_LOCATION, DATA_DIR } = process.env
 
 /* SCRIPT PARAMS */
 
@@ -17,19 +17,19 @@ if (!fromAliasName || !assetName || !toAliasName || !assetAmount) {
 
 /* FUNCTIONS */
 
-const assetAllocationSend = () => JSON.parse(exec(`"${SYS_LOCATION}" assetallocationsend ${assetName} ${fromAliasName} [{\\"aliasto\\":\\"${toAliasName}\\",\\"amount\\":${assetAmount}}] "" ""`).toString())[0]
+const assetAllocationSend = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetallocationsend ${assetName} ${fromAliasName} [{\\"aliasto\\":\\"${toAliasName}\\",\\"amount\\":${assetAmount}}] "" ""`).toString())[0]
 
-const assetAllocationInfo = (assetUid, aliasName) => JSON.parse(exec(`"${SYS_LOCATION}" assetallocationinfo ${assetUid} ${aliasName} false`).toString())
+const assetAllocationInfo = (assetUid, aliasName) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetallocationinfo ${assetUid} ${aliasName} false`).toString())
 
-const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" signrawtransaction ${txfund}`).toString()).hex
+const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" signrawtransaction ${txfund}`).toString()).hex
 
-const sendRawTransaction = raw => JSON.parse(exec(`"${SYS_LOCATION}" syscoinsendrawtransaction ${raw}`).toString()).txid
+const sendRawTransaction = raw => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" syscoinsendrawtransaction ${raw}`).toString()).txid
 
 const generateOne = () => {
-    exec(`"${SYS_LOCATION}" generate 1`)
+    exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" generate 1`)
 }
 
-const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" aliasinfo ${aliasName}`).toString())
+const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" aliasinfo ${aliasName}`).toString())
 
 
 // Process
