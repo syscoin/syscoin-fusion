@@ -19,7 +19,8 @@ module.exports = (req, res, next) => {
             mnName = req.body.name,
             mnIndex = req.body.index,
             method = req.body.method,
-            code = req.body.code
+            code = req.body.code,
+            nodeType = req.body.nodeType || 'sys'
 
         const cryptoPaymentsSupported = ['btc', 'ltc', 'bch', 'eth']
 
@@ -56,7 +57,8 @@ module.exports = (req, res, next) => {
                     paymentId: charge.id,
                     deployed: false,
                     userId: req.user.uid,
-                    paymentMethod: 'cc'
+                    paymentMethod: 'cc',
+                    nodeType
                 })
     
                 return res.send({
@@ -90,7 +92,8 @@ module.exports = (req, res, next) => {
                     paymentId: code,
                     deployed: false,
                     userId: req.user.uid,
-                    paymentMethod: 'code'
+                    paymentMethod: 'code',
+                    nodeType
                 })
     
                 return res.send({

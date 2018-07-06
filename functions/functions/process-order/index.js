@@ -6,6 +6,7 @@ const createDroplet = require('../../endpoints/helpers/create-droplet')
 const getDropletIp = require('../../endpoints/helpers/get-droplet-ip')
 const deleteDropletById = require('../../endpoints/helpers/delete-droplet-id')
 const lockDeploys = require('../helpers/lock-deploys')
+const addIpToWhiteList = require('../helpers/add-ip-to-whitelist')
 
 module.exports = functions.pubsub.topic('deploy').onPublish(event => {
     return admin.database().ref('/to-deploy')
@@ -62,6 +63,15 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                         }, 15000)
     
                                     })
+                                })
+                            },
+                            (dropletData, cb) => {
+                                addIpToWhiteList(dropletData.droplet.droplet.id, (err) => {
+                                    if (err) {
+                                        return cb(err)
+                                    }
+
+                                    return cb(null, dropletData)
                                 })
                             },
                             (dropletData, cb) => {
