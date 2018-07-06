@@ -5,6 +5,7 @@ import { Row, Col, Input } from 'antd'
 import {
   getAssetInfo
 } from '../../../utils/sys-helpers'
+import swal from 'sweetalert'
 
 const Searcher = Input.Search
 
@@ -69,7 +70,11 @@ export default class Accounts extends Component<Props, State> {
     })
   }
 
-  renderAliasResult(info: Object) {
+  renderAliasResult(info: Object | string) {
+    if (typeof info === 'string') {
+      return info
+    }
+    
     const result = []
     const keys = Object.keys(info)
 

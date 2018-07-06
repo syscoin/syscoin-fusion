@@ -44,18 +44,18 @@ const currentBalance = (cb: (error: boolean, balance?: string) => void) => {
 const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
   exec(generateCmd('cli', 'syscoinlistreceivedbyaddress'), (err, stdout, stderror) => {
     if (err) {
-      return cb(true)
+      return cb(false, [])
     }
 
     if (stderror.toString().length) {
       return cb(false, [])
     }
 
-    return cb(false, JSON.parse(stdout.toString()))
+    return cb(false, JSON.parse(stdout.toString()) || [])
   })
 }
 
-const getAssetInfo = (obj: AllocationInfoType, cb: (error: boolean, info: any) => void) => {
+const getAssetInfo = (obj: AllocationInfoType, cb: (error: boolean, info?: any) => void) => {
   exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
       return cb(true)
