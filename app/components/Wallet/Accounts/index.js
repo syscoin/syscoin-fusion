@@ -1,21 +1,19 @@
 // @flow
 import React, { Component } from 'react'
 // import { Link } from 'react-router-dom'
-import { Row, Col, Input, Select } from 'antd'
+import { Row, Col, Input } from 'antd'
 import {
-  currentSysAddress,
-  currentBalance,
-  getAliases,
   getAssetInfo
 } from '../../../utils/sys-helpers'
 
 const Searcher = Input.Search
 
-type Props = {};
-type State = {
+type Props = {
   currentAddress: string,
   currentBalance: string,
-  currentAliases: Array<any>,
+  currentAliases: Array<any>
+};
+type State = {
   selectedAlias: string,
   checkAliasResult: any
 };
@@ -27,46 +25,13 @@ export default class Accounts extends Component<Props, State> {
     super(props)
 
     this.state = {
-      currentAddress: '',
-      currentBalance: '',
-      currentAliases: [],
       selectedAlias: '',
       checkAliasResult: null
     }
   }
 
-  componentWillMount() {
-    this.setCurrentAddress()
-    this.setCurrentBalance()
-    this.setCurrentAliases()
-  }
-
-  setCurrentAddress() {
-    currentSysAddress((err, address) => {
-      this.setState({
-        currentAddress: address
-      })
-    })
-  }
-
-  setCurrentBalance() {
-    currentBalance((err, balance) => {
-      this.setState({
-        currentBalance: balance
-      })
-    })
-  }
-
-  setCurrentAliases() {
-    getAliases((err, aliases) => {
-      this.setState({
-        currentAliases: aliases
-      })
-    })
-  }
-
   generateAliasesBoxes() {
-    return this.state.currentAliases.filter(i => i.alias).map((i, key) => (
+    return this.props.currentAliases.filter(i => i.alias).map((i, key) => (
       <Row className='alias-box' key={key} onClick={() => this.updateSelectedAlias(i.alias)}>
         <Col xs={4} offset={7}>
           <img className='alias-img' src={`https://api.adorable.io/avatars/125/${i.address}@ert.io`} alt='Alias' />
@@ -149,12 +114,12 @@ export default class Accounts extends Component<Props, State> {
           }}
         >
           <p>This is your current address:</p>
-          <p>{this.state.currentAddress}</p>
+          <p>{this.props.currentAddress}</p>
           <p>Current balance:</p>
-          <p>{this.state.currentBalance}</p>
+          <p>{this.props.currentBalance}</p>
           <p>Your aliases:</p>
           {this.generateAliasesBoxes()}
-          {this.state.currentAliases.length ? this.generateAssetSearcher() : null}
+          {this.props.currentAliases.length ? this.generateAssetSearcher() : null}
         </Col>
       </Row>
     )
