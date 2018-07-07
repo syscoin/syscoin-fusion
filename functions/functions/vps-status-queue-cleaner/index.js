@@ -7,11 +7,14 @@ module.exports = functions.pubsub.topic('vps-status-queue-clean').onPublish(even
                     .orderByChild('lock')
                     .equalTo(true)
                     .once('value', ev => {
+                        if (!ev.hasChildren()) {
+                            return false
+                        }
                         const data = ev.val()
                         const keys = Object.keys(data)
 
                         keys.forEach(i => {
-                            if ((Date.now() - data[i].lastUpdate) > 1200000) {
+                            if ((Date.now() - data[i].lastUpdate) > 800000) {
                                 admin.database().ref('/vps/' + i).update({
                                     lock: false
                                 })
