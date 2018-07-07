@@ -34,7 +34,7 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                     return err
                 }
 
-                async.eachLimit(vps, 25, (i, cb) => {
+                async.eachLimit(vps, 10, (i, cb) => {
                     console.log('Running get status for vps ip: ' + i.ip)
 
                     admin.database().ref('/mn-data')

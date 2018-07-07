@@ -1,7 +1,7 @@
 cron:
 - description: Starts mn status queue
   url: /publish/status
-  schedule: every 3 minutes
+  schedule: every 1 minutes
 
 - description: Deploy new orders
   url: /publish/deploy
