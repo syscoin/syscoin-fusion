@@ -71,6 +71,7 @@ module.exports = (cb) => {
                     droplet: response.data
                 })
             }).catch((error) => {
+                console.log(error.response.data)
                 return cb(error)
             })
         }
