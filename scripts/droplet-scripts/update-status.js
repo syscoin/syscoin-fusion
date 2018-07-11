@@ -9,9 +9,12 @@ const formatter = (obj) => `${(new Date()).toString()}: Message: ${obj.message} 
 
 exec(cliDir, (err, stdout, stderr) => {
     axios.post(appUrl, {
-        body: {
-            status: stdout + stderr
-        }
-    }).then(res => writeToLogs(formatter(res.response.data))).catch(res => writeToLogs(formatter(res.response.data)))
+        status: JSON.parse(stdout.toString()).status + stderr.toString()
+    }).then((res) => {
+        writeToLogs(formatter(res.data))
+        process.exit()
+    }).catch(res => {
+        writeToLogs(formatter(res.data))
+        process.exit()
+    })
 })
-

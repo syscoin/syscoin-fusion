@@ -66,7 +66,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                 })
                             },
                             (dropletData, cb) => {
-                                addIpToWhiteList(dropletData.droplet.droplet.id, (err) => {
+                                addIpToWhiteList(dropletData.ip, (err) => {
                                     if (err) {
                                         return cb(err)
                                     }

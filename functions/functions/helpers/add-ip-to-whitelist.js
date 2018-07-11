@@ -5,9 +5,7 @@ module.exports = (ip, cb) => {
         let ipWhiteList 
 
         if (!snapshot.hasChildren()) {
-            if (!snapshot.val().ipWhiteList) {
-                ipWhiteList = []
-            }
+            ipWhiteList = []
         } else {
             ipWhiteList = snapshot.val().ipWhiteList
         }

@@ -24,6 +24,7 @@ const requestPooling = require('./endpoints/request-pooling')
 
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
+const getMnData = require('./endpoints/droplet-endpoints/check-config')
 
 // Listeners
 const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
@@ -101,6 +102,7 @@ app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 
 app.post('/droplets/edit-status', checkIpWhitelist, editStatus)
+app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)
 
 app.use((err, req, res, next) => {
 	console.log(err)

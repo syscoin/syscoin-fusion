@@ -10,7 +10,7 @@ module.exports.checkIpWhitelist = (req, res, next) => {
             const ips = snapshot.val()
     
             if (ips) {
-                return ips.indexOf(ip) !== -1 ? next() : res.status(403).send({
+                return ips.indexOf(clientIp) !== -1 ? next() : res.status(403).send({
                     error: true,
                     message: 'Forbidden'
                 })

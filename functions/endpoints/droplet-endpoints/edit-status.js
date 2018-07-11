@@ -9,9 +9,29 @@ module.exports = (req, res, next) => {
 
     const newStatus = req.body.status
 
-    return res.send(clientIp)
-
-    admin.database().ref('/vps/' + clientIp).update({
-        status: newStatus
-    }).then(() => res.sendStatus(200)).catch(() => res.sendStatus(500))
+    admin.database().ref('/vps')
+        .orderByChild('ip')
+        .equalTo(clientIp)
+        .once('value', snapshot => {
+            if (snapshot.hasChildren()) {
+                const vpsRef = '/vps/' + Object.keys(snapshot.val())[0]
+                admin.database().ref(vpsRef).update({
+                    status: newStatus
+                }).then(() => res.send({
+                    error: false,
+                    message: `Status updated to "${newStatus}"`
+                })).catch(() => res.status(500).send({
+                    error: true,
+                    message: 'Internal Server Error.'
+                }))
+            } else {
+                res.status(404).send({
+                    message: 'Not a masternode',
+                    error: true
+                })
+            }
+        }).catch(() => res.status(500).send({
+            error: true,
+            message: 'Internal Server Error.'
+        }))
 }
