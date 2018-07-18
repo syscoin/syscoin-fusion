@@ -6,6 +6,7 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "firebase-admin": "^5.12.1",
+    "moment": "^2.22.2",
     "random-key": "^0.3.2"
   },
   "devDependencies": {},

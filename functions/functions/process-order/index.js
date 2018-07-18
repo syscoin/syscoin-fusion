@@ -33,7 +33,8 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             mnTxid,
                             mnName,
                             mnIndex,
-                            months
+                            months,
+                            nodeType
                         } = snap[i]
                         let dropletId = null
 
@@ -41,7 +42,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             (cb) => {
                                 // Creates droplet and generate keys
                                 return new Promise((dropletResolve, dropletReject) => {
-                                    createDroplet((err, data) => {
+                                    createDroplet(nodeType, (err, data) => {
                                         if (err) {
                                             return cb(err)
                                         }
@@ -77,6 +78,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             (dropletData, cb) => {
                                 // Saves order info
                                 return admin.database().ref('/orders').push({
+                                    nodeType,
                                     userId: snap[i].userId,
                                     expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
                                     purchaseDate: Date.now(),
