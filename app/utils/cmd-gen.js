@@ -1,12 +1,13 @@
 const path = require('path')
+const getSysPath = require('./syspath')
 
 const appDir = process.cwd()
 const syscoinBinPath = path.join(appDir, 'sys_dependencies')
 const syscoinCliPath = path.join(syscoinBinPath, 'syscoin-cli.exe')
 const syscoindPath = path.join(syscoinBinPath, 'syscoind.exe')
-const syscoinDataPath = path.join(syscoinBinPath, 'syscore')
 
 const generateCmd = (type: string, cmdLine: string = ''): string => {
+  const syscoinDataPath = getSysPath()
   let cmd = ''
 
   switch (type) {
@@ -23,6 +24,8 @@ const generateCmd = (type: string, cmdLine: string = ''): string => {
   if (cmdLine.length) {
     cmd += cmdLine
   }
+
+  console.log(cmd)
 
   return cmd
 }

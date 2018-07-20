@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import swal from 'sweetalert'
 import Home from '../components/Home'
 import startUpRoutine from '../utils/startup'
 
@@ -19,7 +20,27 @@ class HomePage extends Component<Props> {
   constructor(props) {
     super(props)
 
-    startUpRoutine(props.dispatch)
+    swal({
+      title: 'What Syscoin files do you want to use?',
+      text: 'Default (C:/Users/USERNAME/AppData/Roaming/SyscoinCore) or Local (generated inside SYS-WALLET directory)?',
+      icon: 'info',
+      closeOnEsc: false,
+      closeOnClickOutside: false,
+      buttons: [
+        {
+          text: 'Default',
+          value: 'default',
+          visible: true,
+          closeModal: true
+        },
+        {
+          text: 'Local',
+          value: 'local',
+          visible: true,
+          closeModal: true
+        }
+      ]
+    }).then(val => startUpRoutine(props.dispatch, val)).catch((err) => console.log(err))
   }
 
   render() {
