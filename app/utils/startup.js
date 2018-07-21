@@ -9,6 +9,7 @@ const getSysPath = require('./syspath')
 const checkSyscoind = (dispatch, cb) => {
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
+      console.log(err)
       if (err.message.indexOf('code: -28') !== -1) {
         return dispatch(reloadSysConf())
       }
@@ -43,7 +44,7 @@ const startUpRoutine = (dispatch, env) => {
     dispatch(changeSyscoinDataDir('default'))
   }
 
-  exec(generateCmd('syscoind', '--reindex'))
+  exec(generateCmd('syscoind', ''))
 
   const checkInterval = setInterval(() => {
     checkSyscoind(dispatch, (isUp, info) => {
