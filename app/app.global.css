@@ -3,8 +3,10 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import "~font-awesome/css/font-awesome.css";
+@import "css/custom.css";
 @import "components/Wallet/Main.css";
 @import "components/Wallet/Accounts/styles.css";
+@import "components/Wallet/Send/styles.css";
 
 body {
   position: relative;

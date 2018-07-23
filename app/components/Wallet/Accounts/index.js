@@ -1,72 +1,46 @@
 // @flow
 import React, { Component } from 'react'
-// import { Link } from 'react-router-dom'
-import { Row, Col, Input, Select } from 'antd'
-import {
-  currentSysAddress,
-  currentBalance,
-  getAliases,
-  getAssetInfo
-} from '../../../utils/sys-helpers'
+import { Row, Col } from 'antd'
 
-const Searcher = Input.Search
-
-type Props = {};
-type State = {
+type Props = {
   currentAddress: string,
   currentBalance: string,
   currentAliases: Array<any>,
+  getTransactionsForAlias: Function
+};
+type State = {
   selectedAlias: string,
-  checkAliasResult: any
+  aliasAssets: {
+    isLoading: boolean,
+    data: Array<any>
+  },
+  transactions: {
+    isLoading: boolean,
+    data: Array<any>
+  }
 };
 
 export default class Accounts extends Component<Props, State> {
   props: Props;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
-      currentAddress: '',
-      currentBalance: '',
-      currentAliases: [],
       selectedAlias: '',
-      checkAliasResult: null
+      aliasAssets: {
+        isLoading: false,
+        data: []
+      },
+      transactions: {
+        isLoading: false,
+        data: []
+      }
     }
   }
 
-  componentWillMount() {
-    this.setCurrentAddress()
-    this.setCurrentBalance()
-    this.setCurrentAliases()
-  }
-
-  setCurrentAddress() {
-    currentSysAddress((err, address) => {
-      this.setState({
-        currentAddress: address
-      })
-    })
-  }
-
-  setCurrentBalance() {
-    currentBalance((err, balance) => {
-      this.setState({
-        currentBalance: balance
-      })
-    })
-  }
-
-  setCurrentAliases() {
-    getAliases((err, aliases) => {
-      this.setState({
-        currentAliases: aliases
-      })
-    })
-  }
-
   generateAliasesBoxes() {
-    return this.state.currentAliases.filter(i => i.alias).map((i, key) => (
+    return this.props.currentAliases.filter(i => i.alias).map((i, key) => (
       <Row className='alias-box' key={key} onClick={() => this.updateSelectedAlias(i.alias)}>
         <Col xs={4} offset={7}>
           <img className='alias-img' src={`https://api.adorable.io/avatars/125/${i.address}@ert.io`} alt='Alias' />
@@ -80,63 +54,163 @@ export default class Accounts extends Component<Props, State> {
     ))
   }
 
-  checkAssetId(val: string) {
-    getAssetInfo({
-      assetId: val,
-      aliasName: this.state.selectedAlias
-    }, (err, info) => {
-      if (err) {
-        this.setState({
-          checkAliasResult: 'No asset found with that ID'
-        })
-        return false
-      }
+  getOwnAliasBalance(obj: Object) {
+    if (obj.sender === this.state.selectedAlias) {
+      return obj.sender_balance
+    } else if (obj.receiver === this.state.selectedAlias) {
+      return obj.receiver_balance
+    } else if (obj.receiver === obj.sender) {
+      return obj.amount
+    }
 
-      this.setState({
-        checkAliasResult: info
-      })
-    })
+    return 0
+  }
+
+  generateTransactions() {
+    return (
+      <div>
+        <h3>Transactions for alias: {this.state.selectedAlias}</h3>
+        <Row>
+          <Col xs={12} offset={7} className='text-col'>
+            <table>
+              <thead>
+                <tr>
+                  <th width='200px'>Sender</th>
+                  <th width='200px'>Receiver</th>
+                  <th width='200px'>Amount</th>
+                  <th width='200px'>Symbol</th>
+                  <th width='200px'>Asset</th>
+                  <th width='200px'>Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.transactions.data.map((i, key) => (
+                  <tr key={key}>
+                    <td width='200px'>{i.sender}</td>
+                    <td width='200px'>{i.receiver}</td>
+                    <td width='200px'>{i.amount}</td>
+                    <td width='200px'>{i.symbol}</td>
+                    <td width='200px'>{i.asset}</td>
+                    <td width='200px'>{this.getOwnAliasBalance(i)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
+
+  generateAliasAssets() {
+    return (
+      <div>
+        <h3>Assets for alias: {this.state.selectedAlias}</h3>
+        <Row>
+          <Col xs={12} offset={7} className='text-col'>
+            <table>
+              <thead>
+                <tr>
+                  <th width='200px'>Symbol</th>
+                  <th width='200px'>ID</th>
+                  <th width='200px'>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.aliasAssets.data.map((i, key) => (
+                  <tr key={key}>
+                    <td width='200px'>{i.symbol}</td>
+                    <td width='200px'>{i.asset}</td>
+                    <td width='200px'>{i.amount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Col>
+        </Row>
+      </div>
+    )
   }
 
   updateSelectedAlias(alias: string) {
     this.setState({
-      selectedAlias: alias
+      selectedAlias: alias,
+      aliasAssets: {
+        isLoading: true,
+        data: []
+      },
+      transactions: {
+        isLoading: true,
+        data: []
+      }
+    }, () => {
+      this.getAliasTransactions(alias)
+      this.getAliasAssets(alias)
     })
   }
 
-  renderAliasResult(info: Object) {
+  renderAliasResult(info: Object | string) {
+    if (typeof info === 'string') {
+      return info
+    }
+
     const result = []
     const keys = Object.keys(info)
 
     keys.forEach((i, key) => result.push(
-      <p key={key} style={{fontSize: 15}}>{i}: {info[i]}</p>
+      <p key={key} style={{ fontSize: 15 }}>{i}: {info[i]}</p>
     ))
 
     return result
   }
 
-  generateAssetSearcher() {
-    return (
-      <Row>
-        <Col xs={6} offset={9}>
-          <div style={{marginBottom: 20}}>
-            <h3 style={{color: 'white'}}>Asset checker</h3>
-            <p>{this.state.selectedAlias.length ? `Selected alias: ${this.state.selectedAlias}` : 'No alias selected.'}</p>
-            {this.state.selectedAlias.length ? (
-              <Searcher
-                enterButton='Search'
-                name='assetUid'
-                onSearch={this.checkAssetId.bind(this)}
-                onChange={() => this.setState({checkAliasResult: null})}
-                placeholder='Insert your Asset ID'
-              />
-            ) : null}
+  getAliasTransactions(alias: string) {
+    this.props.getTransactionsForAlias(alias).then(res => this.setState({
+      transactions: {
+        isLoading: false,
+        data: res.data
+      }
+    })).catch(err => console.log(err))
+  }
 
-            {this.state.checkAliasResult ? this.renderAliasResult(this.state.checkAliasResult) : null}
-          </div>
-        </Col>
-      </Row>
-    )
+  getAliasAssets(alias: string) {
+    this.props.getTransactionsForAlias(alias).then(res => {
+      const assets = {}
+
+      res.data.forEach(i => {
+        if (!Object.keys(assets).find(x => x === i.symbol)) {
+          assets[i.symbol] = {
+            symbol: i.symbol,
+            asset: i.asset,
+            amount: 0
+          }
+        }
+      })
+
+      res.data.forEach(i => {
+        if (i.sender === i.receiver) {
+          assets[i.symbol].amount += parseFloat(i.amount)
+          return
+        }
+
+        if (i.sender === alias) {
+          assets[i.symbol].amount -= parseFloat(i.amount)
+        } else if (i.receiver === alias) {
+          assets[i.symbol].amount += parseFloat(i.amount)
+        }
+      })
+
+      return this.setState({
+        aliasAssets: {
+          isLoading: false,
+          data: Object.keys(assets).map(i => ({
+            symbol: i,
+            asset: assets[i].asset,
+            amount: assets[i].amount
+          }))
+        }
+      })
+    }).catch(err => console.log(err))
   }
 
   render() {
@@ -149,12 +223,13 @@ export default class Accounts extends Component<Props, State> {
           }}
         >
           <p>This is your current address:</p>
-          <p>{this.state.currentAddress}</p>
+          <p>{this.props.currentAddress}</p>
           <p>Current balance:</p>
-          <p>{this.state.currentBalance}</p>
+          <p>{this.props.currentBalance}</p>
           <p>Your aliases:</p>
           {this.generateAliasesBoxes()}
-          {this.state.currentAliases.length ? this.generateAssetSearcher() : null}
+          {this.state.aliasAssets.isLoading ? <h3>Loading Assets</h3> : this.generateAliasAssets()}
+          {this.state.transactions.isLoading ? <h3>Loading transactions</h3> : this.generateTransactions()}
         </Col>
       </Row>
     )

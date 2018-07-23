@@ -1,30 +1,18 @@
 const { exec } = require('child_process')
 const fs = require('fs')
-const path = require('path')
 
-const appDir = process.cwd()
-
-// const store = require('../store/configureStore').configureStore()
-
-const { confError, successStart } = require('../actions/startup')
+const { changeSyscoinDataDir } = require('../actions/options')
+const { confError, successStart, reloadSysConf } = require('../actions/startup')
 const generateCmd = require('./cmd-gen')
-
-const syscoinDataPath = path.join(appDir, 'sys_dependencies', 'syscore')
-
-// const syscoinConfPath = path.join(syscoinDataPath, 'syscoin.conf')
+const getSysPath = require('./syspath')
 
 const checkSyscoind = (dispatch, cb) => {
-  exec(generateCmd('cli', 'getinfo'), (err, stdout, stderror) => {
+  exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
-      dispatch(confError())
-      return
-    }
-
-    if (stderror) {
-      if (stderror.indexOf('Loading wallet') !== -1) {
-        return cb(false)
+      console.log(err)
+      if (err.message.indexOf('code: -28') !== -1) {
+        return dispatch(reloadSysConf())
       }
-
       dispatch(confError())
       return
     }
@@ -42,17 +30,21 @@ const checkSyscoind = (dispatch, cb) => {
   })
 }
 
-const startUpRoutine = dispatch => {
-  if (!fs.existsSync(syscoinDataPath)) {
-    try {
-      fs.mkdirSync(syscoinDataPath)
-    } catch (err) {
-      dispatch(confError())
-      return
+const startUpRoutine = (dispatch, env) => {
+  if (env === 'local') {
+    if (!fs.existsSync(getSysPath(env))) {
+      try {
+        fs.mkdirSync(getSysPath(env))
+      } catch (err) {
+        dispatch(confError())
+        return
+      }
     }
+  } else {
+    dispatch(changeSyscoinDataDir('default'))
   }
 
-  exec(generateCmd('syscoind', '--reindex'))
+  exec(generateCmd('syscoind', ''))
 
   const checkInterval = setInterval(() => {
     checkSyscoind(dispatch, (isUp, info) => {

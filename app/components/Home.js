@@ -33,10 +33,10 @@ export default class Home extends Component<Props> {
           </h2>
         )
       }
-      return <h2>Something went wrong!</h2>
+      return <h2>Something went wrong! Retrying...</h2>
     }
 
-    return <h2>Is loading...</h2>
+    return <h2>Loading...</h2>
   }
 
   render() {
