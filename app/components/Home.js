@@ -45,6 +45,9 @@ export default class Home extends Component<Props> {
         <div className={styles.container} data-tid="container">
           {this.mainText(this.props.startUp)}
           <Link to="/wallet">to Wallet</Link>
+          <div>
+            {process.cwd()}
+          </div>
         </div>
       </div>
     )
