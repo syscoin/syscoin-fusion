@@ -5,6 +5,22 @@ const makeCharge = require('./helpers/make-charge')
 const coinbaseCharge = require('./helpers/coinbase-charge')
 const updateExpiry = require('./helpers/update-expiry')
 
+/**
+ * @api {post} /extend-subscription Extend subscription
+ * @apiGroup Endpoints
+ * 
+ * @apiParam {String} orderId Order database ID
+ * @apiParam {String} tokenId Stripe token
+ * @apiParam {Number} months Numbr of months to extend
+ * @apiParam {String} email User email
+ * @apiParam {Boolean} coinbase Coinbase payment
+ * @apiParam {String="cc","coin"} paymentMethod Payment method
+ * 
+ * @apiSuccessExample {json} Success
+ *  {
+        message: 'Success'
+    }
+ */
 module.exports = (req, res, next) => {
     const { orderId, tokenId, months, email, coinbase, type, paymentMethod } = req.body
     const obj = {

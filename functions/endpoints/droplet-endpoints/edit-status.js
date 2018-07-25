@@ -1,6 +1,19 @@
 const admin = require('firebase-admin')
 const checkIpWhitelist = require('../helpers/check-whitelist-ip')
 
+/**
+ * @api {post} /droplets/edit-status Edit MN status
+ * @apiDescription Goes through API filter - Edits MN status shown in UI.
+ * @apiGroup Droplets Endpoints
+ * 
+ * @apiParam {String} status New status 
+ * @apiSuccessExample {json} Success
+ *  {
+ *      error: false,
+ *      message: `Status updated to ${status}`
+ *  }
+ * 
+ */
 module.exports = (req, res, next) => {
     const clientIp = (req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
