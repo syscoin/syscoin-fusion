@@ -5,8 +5,8 @@ const OS = require('./detect-os')()
 
 const appDir = process.cwd()
 const syscoinBinPath = path.join(appDir, 'sys_dependencies', 'windows')
-const syscoinCliPath = path.join(syscoinBinPath, 'syscoin-cli.exe')
-const syscoindPath = path.join(syscoinBinPath, 'syscoind.exe')
+const syscoinCliPath = path.join(syscoinBinPath, OS === 'win' ? 'syscoin-cli.exe' : 'syscoin-cli')
+const syscoindPath = path.join(syscoinBinPath, OS === 'win' ? 'syscoind.exe' : 'syscoind')
 
 const generateCmd = (type: string, cmdLine: string = ''): string => {
   const syscoinDataPath = getSysPath()
