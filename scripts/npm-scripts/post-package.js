@@ -9,6 +9,8 @@ if (script_input.indexOf('--win') !== -1) {
     os = 'win32'
 } else if (script_input.indexOf('--linux') !== -1) {
     os = 'linux'
+} else if (script_input.indexOf('--mac') !== -1) {
+    os = 'osx'
 }
 
 // OS dependand variables
@@ -18,16 +20,17 @@ let compiledSysDependenciesDir,
 
 if (os === 'win32') {
     sysDependenciesDir = path.join(process.cwd(), 'sys_dependencies', 'windows')
-    compiledSysDependenciesDir = path.join(process.cwd(), 'release', 'win-unpacked', 'sys_dependencies')
     unpackedDirectory = path.join(process.cwd(), 'release', 'win-unpacked', 'sys_dependencies')
 } else if (os === 'linux') {
     sysDependenciesDir = path.join(process.cwd(), 'sys_dependencies', 'linux')
-    compiledSysDependenciesDir = path.join(process.cwd(), 'release', 'linux-unpacked', 'sys_dependencies')
     unpackedDirectory = path.join(process.cwd(), 'release', 'linux-unpacked', 'sys_dependencies')
+} else if (os === 'osx') {
+    sysDependenciesDir = path.join(process.cwd(), 'sys_dependencies', 'mac')
+    unpackedDirectory = path.join(process.cwd(), 'release', 'mac', 'sys_dependencies')
 }
 
 try {
-    fs.mkdirSync(compiledSysDependenciesDir)
+    fs.mkdirSync(unpackedDirectory)
 } catch (e) {
     if (e.code !== 'EEXIST') {
         throw e
