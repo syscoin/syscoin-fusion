@@ -1,11 +1,11 @@
-module.exports = () => {
+module.exports = (alt) => {
     const { platform } = process
 
     if (platform === 'win32') {
-        return 'win'
+        return alt ? 'windows' : 'win'
     } else if (platform === 'linux') {
         return 'linux'
     } else if (platform === 'darwin') {
-        return 'osx'
+        return alt ? 'mac' : 'osx'
     }
 }

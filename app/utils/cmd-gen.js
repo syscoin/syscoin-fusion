@@ -1,10 +1,10 @@
 const path = require('path')
 const getSysPath = require('./syspath')
 
-const OS = require('./detect-os')()
+const OS = require('./detect-os')(true)
 
 const appDir = process.cwd()
-const syscoinBinPath = path.join(appDir, 'sys_dependencies', 'windows')
+const syscoinBinPath = path.join(appDir, 'sys_dependencies', OS)
 const syscoinCliPath = path.join(syscoinBinPath, OS === 'win' ? 'syscoin-cli.exe' : 'syscoin-cli')
 const syscoindPath = path.join(syscoinBinPath, OS === 'win' ? 'syscoind.exe' : 'syscoind')
 
