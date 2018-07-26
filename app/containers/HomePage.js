@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import swal from 'sweetalert'
 import Home from '../components/Home'
 import startUpRoutine from '../utils/startup'
+import getSysPath from '../utils/syspath'
 
 type Props = {
   startUp: {
@@ -22,7 +23,7 @@ class HomePage extends Component<Props> {
 
     swal({
       title: 'What Syscoin files do you want to use?',
-      text: 'Default (C:/Users/USERNAME/AppData/Roaming/SyscoinCore) or Local (generated inside SYS-WALLET directory)?',
+      text: `Default (${getSysPath('default')}) or Local (generated inside SYS-WALLET directory)?`,
       icon: 'info',
       closeOnEsc: false,
       closeOnClickOutside: false,
