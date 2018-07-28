@@ -11,8 +11,8 @@ module.exports = (env) => {
         case 'default':
             if (OS === 'win') {
                 return path.join(app.getPath('appData'), 'SyscoinCore')
-            } else if (OS === 'mac') {
-                return path.join(app.getPath('appData'), 'syscoincore')
+            } else if (OS === 'osx') {
+                return path.join(app.getPath('appData'), 'SyscoinCore')
             } else if (OS === 'linux') {
                 return path.join('~', '.syscoincore')
             }
