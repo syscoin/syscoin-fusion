@@ -10,10 +10,10 @@ const checkSyscoind = (dispatch, cb) => {
   // Just a test to check if syscoind is ready
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
-      console.log(err)
+      console.log(err.message)
       if (err.message.indexOf('code: -28') !== -1) {
         // Verifying wallet... Let the user know.
-        return dispatch(reloadSysConf())
+        return dispatch(reloadSysConf(err.message))
       }
       dispatch(confError())
       return

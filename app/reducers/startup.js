@@ -9,19 +9,22 @@ export type startUpStateType = {
   +error: boolean | null,
   +success: boolean | null,
   +shouldReload: boolean,
-  +walletInfo?: Object
+  +walletInfo?: Object,
+  +initMessage?: string
 };
 
 type actionType = {
   +type: string,
-  +walletInfo?: Object
+  +walletInfo?: Object,
+  +walletMessage?: string
 };
 
 const initialState = {
   error: false,
   success: null,
   shouldReload: false,
-  walletInfo: {}
+  walletInfo: {},
+  initMessage: ''
 }
 
 export default function startUp(
@@ -38,7 +41,8 @@ export default function startUp(
       return {
         ...state,
         error: true,
-        shouldReload: true
+        shouldReload: true,
+        initMessage: action.walletMessage
       }
     case SUCCESS_START:
       return {
