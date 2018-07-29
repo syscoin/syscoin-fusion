@@ -1,4 +1,6 @@
+const { app } = require('electron').remote
 const path = require('path')
+const OS = require('./detect-os')()
 const { configureStore } = require('../store/configureStore')
 
 module.exports = (env) => {
@@ -7,7 +9,14 @@ module.exports = (env) => {
         case 'local':
             return path.join(process.cwd(), 'sys_dependencies', 'syscore')
         case 'default':
-            return 'C:\\Users\\argvi\\AppData\\Roaming\\SyscoinCore'
+            if (OS === 'win') {
+                return path.join(app.getPath('appData'), 'SyscoinCore')
+            } else if (OS === 'osx') {
+                return path.join(app.getPath('appData'), 'SyscoinCore')
+            } else if (OS === 'linux') {
+                return path.join('~', '.syscoincore')
+            }
+            return path.join(process.env.APPDATA, 'SyscoinCore')
         default:
             return ''
     }

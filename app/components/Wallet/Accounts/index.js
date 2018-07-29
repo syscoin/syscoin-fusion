@@ -55,12 +55,14 @@ export default class Accounts extends Component<Props, State> {
   }
 
   getOwnAliasBalance(obj: Object) {
+    if (obj.receiver === obj.sender) {
+      return obj.amount
+    }
+
     if (obj.sender === this.state.selectedAlias) {
       return obj.sender_balance
     } else if (obj.receiver === this.state.selectedAlias) {
       return obj.receiver_balance
-    } else if (obj.receiver === obj.sender) {
-      return obj.amount
     }
 
     return 0

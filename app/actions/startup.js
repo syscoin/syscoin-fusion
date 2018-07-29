@@ -2,7 +2,8 @@
 
 type startUpType = {
   type: string,
-  +walletInfo?: Object
+  +walletInfo?: Object,
+  +walletMessage?: string
 };
 
 export const SYSCOINCONF_ERROR = 'SYSCOINCONF_ERROR'
@@ -11,8 +12,9 @@ export const syscoinConfErrorAction = (): startUpType => ({
 })
 
 export const RELOAD_CONF = 'RELOAD_CONF'
-export const reloadConfAction = (): startUpType => ({
-  type: RELOAD_CONF
+export const reloadConfAction = (message: string): startUpType => ({
+  type: RELOAD_CONF,
+  walletMessage: message
 })
 
 export const SUCCESS_START = 'SUCCESS_START'
@@ -25,10 +27,10 @@ export const confError = () => (dispatch: (action: startUpType) => null) => {
   dispatch(syscoinConfErrorAction())
 }
 
-export const reloadSysConf = () => (
+export const reloadSysConf = (message: string) => (
   dispatch: (action: startUpType) => null
 ) => {
-  dispatch(reloadConfAction())
+  dispatch(reloadConfAction(message))
 }
 
 export const successStart = (info: Object) => (

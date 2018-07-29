@@ -7,18 +7,24 @@ type Props = {
   startUp: {
     success: boolean | null,
     error: boolean | null,
-    shouldReload: boolean
+    shouldReload: boolean,
+    initMessage: string
   }
 };
 
 type startUpType = {
   success: boolean | null,
   error: boolean | null,
-  shouldReload: boolean
+  shouldReload: boolean,
+  initMessage: string
 };
 
 export default class Home extends Component<Props> {
   props: Props;
+
+  getPerct(msg: string) {
+    return msg.match(/(Loading|Verifying) wallet\.\.\.( \(\d?\d\.\d\d? %\))?/g)
+  }
 
   mainText(startUp: startUpType) {
     if (startUp.success) {
@@ -29,8 +35,9 @@ export default class Home extends Component<Props> {
       if (startUp.shouldReload) {
         return (
           <h2>
-            Something might be going wrong. Retrying connection to Syscoind.exe
+            {this.getPerct(startUp.initMessage)}
           </h2>
+
         )
       }
       return <h2>Something went wrong! Retrying...</h2>
