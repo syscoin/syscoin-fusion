@@ -51,6 +51,7 @@ const startUpRoutine = (dispatch, env) => {
   dispatch(changeSyscoinDataDir('default'))
 
   // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
+  alert(generateCmd('syscoind', '').slice(20))
   exec(generateCmd('syscoind', ''))
 
   const checkInterval = setInterval(() => {
