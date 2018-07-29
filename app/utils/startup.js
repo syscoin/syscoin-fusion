@@ -5,6 +5,7 @@ const { changeSyscoinDataDir } = require('../actions/options')
 const { confError, successStart, reloadSysConf } = require('../actions/startup')
 const generateCmd = require('./cmd-gen')
 const getSysPath = require('./syspath')
+const detectQtRunning = require('./detect-qt-running')
 
 const checkSyscoind = (dispatch, cb) => {
   // Just a test to check if syscoind is ready
@@ -35,7 +36,6 @@ const checkSyscoind = (dispatch, cb) => {
 }
 
 const startUpRoutine = (dispatch, env) => {
-
   if (!fs.existsSync(getSysPath('default'))) {
     // Attemps to create SyscoinCore folder if this doesn't exists already.
     try {

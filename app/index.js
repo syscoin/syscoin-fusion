@@ -6,6 +6,8 @@ import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import Root from './containers/Root'
 import { configureStore, history } from './store/configureStore'
+import detectSysdRunning from './utils/detect-sysd-running'
+import killPid from './utils/close-pid'
 import './app.global.css'
 
 const store = configureStore()
@@ -27,4 +29,11 @@ if (module.hot) {
       document.getElementById('root')
     )
   })
+}
+
+// Closes syscoind on exit
+window.onbeforeunload = (e) => {
+  if (detectSysdRunning()) {
+    killPid(detectSysdRunning(true))
+  }
 }

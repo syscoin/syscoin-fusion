@@ -1,10 +1,14 @@
 // @flow
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { remote } from 'electron'
 import swal from 'sweetalert'
+import waterfall from 'async/waterfall'
 import Home from '../components/Home'
 import startUpRoutine from '../utils/startup'
 import getSysPath from '../utils/syspath'
+import detectQtRunning from '../utils/detect-qt-running'
+import killPid from '../utils/close-pid'
 
 type Props = {
   startUp: {
@@ -20,28 +24,51 @@ class HomePage extends Component<Props> {
 
   constructor(props) {
     super(props)
+  }
 
-    swal({
-      title: 'What Syscoin files do you want to use?',
-      text: `Default (${getSysPath('default')}) or Local (generated inside SYS-WALLET directory)?`,
-      icon: 'info',
-      closeOnEsc: false,
-      closeOnClickOutside: false,
-      buttons: [
-        {
-          text: 'Default',
-          value: 'default',
-          visible: true,
-          closeModal: true
-        },
-        {
-          text: 'Local',
-          value: 'local',
-          visible: true,
-          closeModal: true
+  componentWillMount() {
+    waterfall([
+      cb => {
+        if (detectQtRunning()) {
+          swal({
+            title: 'SyscoinQT is running',
+            text: 'Please close it before attempting to run SYS-WALLET',
+            icon: 'warning',
+            closeOnEsc: false,
+            closeOnClickOutside: false,
+            buttons: [
+              {
+                text: 'Close QT',
+                value: 'close-qt',
+                visible: true,
+                closeModal: true
+              },
+              {
+                text: 'Exit',
+                value: 'exit',
+                visible: true,
+                closeModal: true
+              }
+            ]
+          }).then(val => {
+            if (val === 'close-qt') {
+              killPid(detectQtRunning(true))
+            } else {
+              remote.getCurrentWindow().close()
+            }
+
+            cb()
+          }).catch((err) => cb(err))
+        } else {
+          cb()
         }
-      ]
-    }).then(val => startUpRoutine(props.dispatch, val)).catch((err) => console.log(err))
+      }
+    ], (err, val) => {
+      if (err) {
+        return console.log(err)
+      }
+      startUpRoutine(this.props.dispatch, 'default')
+    })
   }
 
   render() {
