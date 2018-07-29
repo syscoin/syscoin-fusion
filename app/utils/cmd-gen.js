@@ -41,8 +41,6 @@ const generateCmd = (type: string, cmdLine: string = ''): string => {
     cmd += cmdLine
   }
 
-  alert(cmd)
-
   return cmd
 }
 
