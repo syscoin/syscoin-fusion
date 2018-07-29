@@ -1,18 +1,19 @@
 const path = require('path')
+const isProd = require('./is-production')()
 const getSysPath = require('./syspath')
 
 const OS = require('./detect-os')(true)
 
 const appDir = process.cwd()
-const syscoinBinPath = path.join(appDir, 'sys_dependencies', OS)
-const syscoinCliPath = path.join(syscoinBinPath, OS === 'win' ? 'syscoin-cli.exe' : 'syscoin-cli')
-const syscoindPath = path.join(syscoinBinPath, OS === 'win' ? 'syscoind.exe' : 'syscoind')
+const syscoinBinPath = path.join(appDir, 'sys_dependencies', isProd ? '' : OS)
+const syscoinCliPath = path.join(syscoinBinPath, OS === 'windows' ? 'syscoin-cli.exe' : 'syscoin-cli')
+const syscoindPath = path.join(syscoinBinPath, OS === 'windows' ? 'syscoind.exe' : 'syscoind')
 
 const generateCmd = (type: string, cmdLine: string = ''): string => {
   const syscoinDataPath = getSysPath()
   let cmd = ''
 
-  if (OS === 'win') {
+  if (OS === 'windows') {
     switch (type) {
       case 'syscoind':
         cmd += `"${syscoindPath}" --datadir="${syscoinDataPath}" `
