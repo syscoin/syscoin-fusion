@@ -5,7 +5,7 @@ module.exports = (returnPid) => {
     let result
     if (OS === 'win') {
         result = execSync('tasklist | findstr /C:"syscoind.exe"').toString()
-        return (/syscoind\.exe\s+\d+/g).test(result)
+        return returnPid ? (/\d+/g).exec(result)[0] : (/syscoind\.exe\s+\d+/g).test(result)
     } else if (OS === 'osx') {
         result = execSync('ps -ax | grep syscoind').toString()
         result = result.split(/\r?\n/g).find(i => i.indexOf('/sys_dependencies/mac/syscoind') !== -1)
