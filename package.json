@@ -44,6 +44,7 @@
       "main.prod.js.map",
       "package.json"
     ],
+    "extraFiles": ["**/extra/**/*"],
     "dmg": {
       "contents": [
         {

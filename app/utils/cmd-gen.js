@@ -1,11 +1,11 @@
 const path = require('path')
-const isProd = require('./is-production')()
+const { app } = require('electron').remote
 const getSysPath = require('./syspath')
-
+const isProd = require('./is-production')
 const OS = require('./detect-os')(true)
 
-const appDir = process.cwd()
-const syscoinBinPath = path.join(appDir, 'sys_dependencies', isProd ? '' : OS)
+const extraDir = OS === 'mac' && isProd ? path.join(process.resourcesPath, '..', 'extra') : path.join(process.cwd(), 'extra')
+const syscoinBinPath = path.join(extraDir, OS)
 const syscoinCliPath = path.join(syscoinBinPath, OS === 'windows' ? 'syscoin-cli.exe' : 'syscoin-cli')
 const syscoindPath = path.join(syscoinBinPath, OS === 'windows' ? 'syscoind.exe' : 'syscoind')
 
@@ -41,7 +41,7 @@ const generateCmd = (type: string, cmdLine: string = ''): string => {
     cmd += cmdLine
   }
 
-  console.log(cmd)
+  alert(cmd)
 
   return cmd
 }

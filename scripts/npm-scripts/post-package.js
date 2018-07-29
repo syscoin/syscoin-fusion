@@ -2,23 +2,14 @@ const fs = require('fs')
 const path = require('path')
 const copy = require('copy')
 
-const script_input = process.env.npm_lifecycle_script
-let os
-
-if (script_input.indexOf('--win') !== -1) {
-    os = 'win32'
-} else if (script_input.indexOf('--linux') !== -1) {
-    os = 'linux'
-} else if (script_input.indexOf('--mac') !== -1) {
-    os = 'osx'
-}
+let os = require('../../app/utils/detect-os')()
 
 // OS dependand variables
 let compiledSysDependenciesDir,
     unpackedDir,
     unpackedDirectory
 
-if (os === 'win32') {
+if (os === 'win') {
     sysDependenciesDir = path.join(process.cwd(), 'sys_dependencies', 'windows')
     unpackedDirectory = path.join(process.cwd(), 'release', 'win-unpacked', 'sys_dependencies')
 } else if (os === 'linux') {

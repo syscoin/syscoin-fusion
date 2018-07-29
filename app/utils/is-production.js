@@ -1,1 +1,1 @@
-module.exports = () => process.execPath.search('electron-prebuilt') === -1
+module.exports = !require('electron-is-dev')
