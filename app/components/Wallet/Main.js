@@ -73,15 +73,16 @@ export default class Wallet extends Component<Props, State> {
           <Tabs className='tabs-app' tabBarExtraContent={this.generateCurrentAliasBalance()}>
             <Tab tab='Accounts' key='1'>
               <Accounts
-                currentAliases={this.state.aliases}
-                currentBalance={this.state.balance}
-                currentAddress={this.state.address}
+                currentAliases={this.state.aliases || []}
+                currentBalance={this.state.balance || ''}
+                currentAddress={this.state.address || ''}
                 getTransactionsForAlias={this.props.getTransactionsForAlias}
               />
             </Tab>
             <Tab tab='Send' key='2'>
               <Send
-                currentAliases={this.state.aliases}
+                currentAliases={this.state.aliases || []}
+                currentBalance={this.state.balance || ''}
               />
             </Tab>
           </Tabs>

@@ -6,9 +6,9 @@ import swal from 'sweetalert'
 import waterfall from 'async/waterfall'
 import Home from '../components/Home'
 import startUpRoutine from '../utils/startup'
-import getSysPath from '../utils/syspath'
 import detectQtRunning from '../utils/detect-qt-running'
 import killPid from '../utils/close-pid'
+import isProd from '../utils/is-production'
 
 type Props = {
   startUp: {
@@ -22,13 +22,12 @@ type Props = {
 class HomePage extends Component<Props> {
   props: Props;
 
-  constructor(props) {
-    super(props)
-  }
-
   componentWillMount() {
     waterfall([
       cb => {
+        if (!isProd) {
+          return cb()
+        }
         if (detectQtRunning()) {
           swal({
             title: 'SyscoinQT is running',
@@ -57,13 +56,13 @@ class HomePage extends Component<Props> {
               remote.getCurrentWindow().close()
             }
 
-            cb()
+            return cb()
           }).catch((err) => cb(err))
         } else {
           cb()
         }
       }
-    ], (err, val) => {
+    ], (err) => {
       if (err) {
         return console.log(err)
       }

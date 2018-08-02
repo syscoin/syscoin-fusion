@@ -17,6 +17,11 @@ type SendAssetType = {
   assetId: string,
   amount: string
 };
+type sendSysTransactionType = {
+  address: string,
+  amount: string,
+  comment?: string
+};
 
 const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
   // Get current SYS address
@@ -102,10 +107,23 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
   })
 }
 
+const sendSysTransaction = (obj: sendSysTransactionType, cb: (error: boolean, result?: string) => void) => {
+  // Send SYS to address
+  const { address, amount, comment } = obj
+  exec(generateCmd('cli', `sendtoaddress ${address} ${amount} "${comment}"`), (err, result) => {
+    if (err) {
+      return cb(true)
+    }
+
+    return cb(false, result)
+  })
+}
+
 module.exports = {
   currentSysAddress,
   currentBalance,
   getAliases,
   getAssetInfo,
-  sendAsset
+  sendAsset,
+  sendSysTransaction
 }

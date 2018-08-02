@@ -8,6 +8,7 @@ import Root from './containers/Root'
 import { configureStore, history } from './store/configureStore'
 import detectSysdRunning from './utils/detect-sysd-running'
 import killPid from './utils/close-pid'
+import isProd from './utils/is-production'
 import './app.global.css'
 
 const store = configureStore()
@@ -32,8 +33,8 @@ if (module.hot) {
 }
 
 // Closes syscoind on exit
-window.onbeforeunload = (e) => {
-  if (detectSysdRunning()) {
+window.onbeforeunload = () => {
+  if (detectSysdRunning() && isProd) {
     killPid(detectSysdRunning(true))
   }
 }
