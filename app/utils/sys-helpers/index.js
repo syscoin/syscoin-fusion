@@ -2,6 +2,11 @@
 const { exec } = require('child_process')
 const generateCmd = require('../cmd-gen')
 
+/*
+  SYS helpers. All results are returned following the callback pattern.
+  All functions accepts a callback, where the first argument is always an error and the second ones are the results.
+*/
+
 type AllocationInfoType = {
   assetId: string,
   aliasName: string
@@ -14,6 +19,7 @@ type SendAssetType = {
 };
 
 const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
+  // Get current SYS address
   exec(generateCmd('cli', 'getaccountaddress ""'), (err, stdout, stderror) => {
     if (err) {
       return cb(true)
@@ -28,6 +34,7 @@ const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
 }
 
 const currentBalance = (cb: (error: boolean, balance?: string) => void) => {
+  // Get current SYS Balance
   exec(generateCmd('cli', 'getbalance'), (err, stdout, stderror) => {
     if (err) {
       return cb(true)
@@ -42,6 +49,7 @@ const currentBalance = (cb: (error: boolean, balance?: string) => void) => {
 }
 
 const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
+  // Get current aliases
   exec(generateCmd('cli', 'syscoinlistreceivedbyaddress'), (err, stdout, stderror) => {
     if (err) {
       return cb(false, [])
@@ -56,6 +64,7 @@ const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
 }
 
 const getAssetInfo = (obj: AllocationInfoType, cb: (error: boolean, info?: any) => void) => {
+  // Get asset info
   exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
       return cb(true)
@@ -66,6 +75,7 @@ const getAssetInfo = (obj: AllocationInfoType, cb: (error: boolean, info?: any) 
 }
 
 const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) => void) => {
+  // Sends asset to specific alias
   const { fromAlias, toAlias, assetId, amount } = obj
   exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"aliasto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
     if (err) {
