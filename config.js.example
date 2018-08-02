@@ -1,0 +1,5 @@
+export default {
+    ASSET_API_IP: '127.0.0.1',
+    ASSET_API_PORT: '8080',
+    ASSET_API_PROTOCOL: 'http'
+}
