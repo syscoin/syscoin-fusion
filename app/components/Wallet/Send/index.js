@@ -12,7 +12,8 @@ import {
 
 type Props = {
   currentAliases: Array<Object>,
-  currentBalance: string
+  currentBalance: string,
+  updateWallet: () => void
 };
 type State = {
   asset: {
@@ -106,6 +107,8 @@ export default class Send extends Component<Props, State> {
       if (err) {
         return swal('Error', 'Something went wrong during the transaction', 'error')
       }
+
+      this.props.updateWallet()
 
       return swal('Success', `${amount} SYS has been successfully sent to ${address}.`, 'success')
     })

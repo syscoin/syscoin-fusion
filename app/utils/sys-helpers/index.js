@@ -110,7 +110,7 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
 const sendSysTransaction = (obj: sendSysTransactionType, cb: (error: boolean, result?: string) => void) => {
   // Send SYS to address
   const { address, amount, comment } = obj
-  exec(generateCmd('cli', `sendtoaddress ${address} ${amount} "${comment}"`), (err, result) => {
+  exec(generateCmd('cli', `sendtoaddress ${address} ${amount} "${comment || ''}"`), (err, result) => {
     if (err) {
       return cb(true)
     }

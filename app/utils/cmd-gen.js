@@ -20,7 +20,7 @@ const generateCmd = (type: string, cmdLine: string = ''): string => {
       cmd += `"${syscoinCliPath}" --datadir="${syscoinDataPath}" `
       break
     default:
-      return null
+      throw new Error('type should be either "cli" or "syscoind"')
   }
 
   if (cmdLine.length) {

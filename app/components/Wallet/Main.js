@@ -29,6 +29,13 @@ export default class Wallet extends Component<Props, State> {
   }
 
   componentWillMount() {
+    this.updateWallet()
+    setInterval(() => {
+      this.updateWallet()
+    }, 5000)
+  }
+
+  updateWallet() {
     this.getAliases()
     this.getCurrentAddress()
     this.getCurrentBalance()
@@ -77,12 +84,14 @@ export default class Wallet extends Component<Props, State> {
                 currentBalance={this.state.balance || ''}
                 currentAddress={this.state.address || ''}
                 getTransactionsForAlias={this.props.getTransactionsForAlias}
+                updateWallet={this.updateWallet.bind(this)}
               />
             </Tab>
             <Tab tab='Send' key='2'>
               <Send
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
+                updateWallet={this.updateWallet.bind(this)}
               />
             </Tab>
           </Tabs>
