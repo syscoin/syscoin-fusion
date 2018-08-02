@@ -51,3 +51,5 @@ main.js.map
 npm-debug.log.*
 sys_dependencies/syscore
 extra/*
+
+config.js
