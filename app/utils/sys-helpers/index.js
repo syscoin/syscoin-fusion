@@ -4,7 +4,7 @@ const generateCmd = require('../cmd-gen')
 
 /*
   SYS helpers. All results are returned following the callback pattern.
-  All functions accepts a callback, where the first argument is always an error and the second ones are the results.
+  All functions accepts a callback, where the first argument is always an error and the second one is the results.
 */
 
 type AllocationInfoType = {

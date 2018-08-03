@@ -9,6 +9,7 @@ import Root from './containers/Root'
 import { configureStore, history } from './store/configureStore'
 import detectSysdRunning from './utils/detect-sysd-running'
 import closeSysd from './utils/close-sysd'
+import isProd from './utils/is-production'
 import './app.global.css'
 
 const store = configureStore()
@@ -34,8 +35,7 @@ if (module.hot) {
 
 // Closes syscoind on exit
 window.onbeforeunload = (e) => {
-  e.preventDefault()
-  if (detectSysdRunning()) {
+  if (detectSysdRunning() && isProd) {
     closeSysd(() => {
       remote.app.quit()
     })

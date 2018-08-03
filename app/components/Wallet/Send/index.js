@@ -37,7 +37,7 @@ export default class Send extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this.state = {
+    this.stateSchema = {
       asset: {
         selectedAlias: '',
         assetId: '',
@@ -50,6 +50,8 @@ export default class Send extends Component<Props, State> {
         comment: ''
       }
     }
+
+    this.state = {...this.stateSchema}
   }
 
   isUserAssetOwner(cb: Function) {
@@ -91,6 +93,8 @@ export default class Send extends Component<Props, State> {
           return swal('Error', 'Error while sending the asset.', 'error')
         }
 
+        this.cleanFields()
+
         swal('Success', 'Asset sent.', 'success')
       })
     })
@@ -109,6 +113,7 @@ export default class Send extends Component<Props, State> {
       }
 
       this.props.updateWallet()
+      this.cleanFields()
 
       return swal('Success', `${amount} SYS has been successfully sent to ${address}.`, 'success')
     })
@@ -127,6 +132,12 @@ export default class Send extends Component<Props, State> {
     return this.props.currentAliases.filter(i => i.alias).map((i, key) => (
       <Option key={key} value={i.alias}>{i.alias}</Option>
     ))
+  }
+
+  cleanFields() {
+    this.setState({
+      ...this.stateSchema
+    })
   }
 
   render() {
