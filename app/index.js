@@ -4,10 +4,12 @@ require('dotenv').config()
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
+import { remote } from 'electron'
 import Root from './containers/Root'
 import { configureStore, history } from './store/configureStore'
 import detectSysdRunning from './utils/detect-sysd-running'
-import killPid from './utils/close-pid'
+import closeSysd from './utils/close-sysd'
+import isProd from './utils/is-production'
 import './app.global.css'
 
 const store = configureStore()
@@ -33,7 +35,9 @@ if (module.hot) {
 
 // Closes syscoind on exit
 window.onbeforeunload = (e) => {
-  if (detectSysdRunning()) {
-    killPid(detectSysdRunning(true))
+  if (detectSysdRunning() && isProd) {
+    closeSysd(() => {
+      remote.app.quit()
+    })
   }
 }

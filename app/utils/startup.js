@@ -1,11 +1,12 @@
 const { exec } = require('child_process')
 const fs = require('fs')
+const swal = require('sweetalert')
+const { app } = require('electron').remote
 
 const { changeSyscoinDataDir } = require('../actions/options')
 const { confError, successStart, reloadSysConf } = require('../actions/startup')
 const generateCmd = require('./cmd-gen')
 const getSysPath = require('./syspath')
-const detectQtRunning = require('./detect-qt-running')
 
 const checkSyscoind = (dispatch, cb) => {
   // Just a test to check if syscoind is ready
@@ -51,7 +52,13 @@ const startUpRoutine = (dispatch, env) => {
   dispatch(changeSyscoinDataDir('default'))
 
   // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
-  exec(generateCmd('syscoind', ''))
+  exec(generateCmd('syscoind', ''), (err) => {
+    if (err.message.indexOf('-reindex') !== -1) {
+      swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning').then(() => {
+        return exec(generateCmd('syscoind', '-reindex'))
+      }).catch(() => app.quit())
+    }
+  })
 
   const checkInterval = setInterval(() => {
     // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
