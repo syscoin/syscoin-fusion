@@ -3,10 +3,21 @@ import React, { Component } from 'react'
 import { Row, Col, Tabs } from 'antd'
 import Accounts from './Accounts'
 import Send from './Send'
+import Tools from './Tools'
 
 const Tab = Tabs.TabPane
 
 type Props = {
+  currentSysAddress: Function,
+  currentBalance: Function,
+  getAliases: Function,
+  getAssetInfo: Function,
+  getInfo: Function,
+  getTransactionsForAlias: Function,
+  getUnfinishedAliases: Function,
+  pushNewAlias: Function,
+  removeFinishedAlias: Function,
+  createNewAlias: Function
 };
 
 type State = {
@@ -30,15 +41,19 @@ export default class Wallet extends Component<Props, State> {
 
   componentWillMount() {
     this.updateWallet()
-    setInterval(() => {
-      this.updateWallet()
-    }, 5000)
+
+    if (!global.updateWalletInterval) {
+      global.updateWalletInterval = setInterval(() => {
+        this.updateWallet()
+      }, 10000)
+    }
   }
 
   updateWallet() {
     this.getAliases()
     this.getCurrentAddress()
     this.getCurrentBalance()
+    this.getInfo()
   }
 
   getCurrentAddress() {
@@ -65,9 +80,20 @@ export default class Wallet extends Component<Props, State> {
     })
   }
 
+  getInfo() {
+    this.props.getInfo((err, info) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+
+      global.appStorage.set('walletinfo', info)
+    })
+  }
+
   generateCurrentAliasBalance() {
     return (
-      <span style={{marginRight: 20}}>
+      <span style={{ marginRight: 20 }}>
         Balance: {this.state.aliases.filter(i => i.alias).map(i => i.balance).reduce((prev, next) => (next + prev), 0)} SYS
       </span>
     )
@@ -92,6 +118,14 @@ export default class Wallet extends Component<Props, State> {
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
                 updateWallet={this.updateWallet.bind(this)}
+              />
+            </Tab>
+            <Tab tab='Tools' key='3'>
+              <Tools
+                createNewAlias={this.props.createNewAlias}
+                getUnfinishedAliases={this.props.getUnfinishedAliases}
+                pushNewAlias={this.props.pushNewAlias}
+                removeFinishedAlias={this.props.removeFinishedAlias}
               />
             </Tab>
           </Tabs>

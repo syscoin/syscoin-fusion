@@ -6,11 +6,18 @@ import {
   currentSysAddress,
   currentBalance,
   getAliases,
-  getAssetInfo
+  getAssetInfo,
+  createNewAlias,
+  getInfo
 } from '../utils/sys-helpers'
 import {
   getTransactionsForAlias
 } from '../utils/api-calls'
+import {
+  getUnfinishedAliases,
+  pushNewAlias,
+  removeFinishedAlias
+} from '../utils/new-alias-manager'
 
 type Props = {};
 
@@ -20,11 +27,16 @@ class WalletHome extends Component<Props> {
   render() {
     return (
       <Wallet
+        createNewAlias={createNewAlias}
         currentSysAddress={currentSysAddress}
         currentBalance={currentBalance}
         getAliases={getAliases}
         getAssetInfo={getAssetInfo}
+        getInfo={getInfo}
         getTransactionsForAlias={getTransactionsForAlias}
+        getUnfinishedAliases={getUnfinishedAliases}
+        pushNewAlias={pushNewAlias}
+        removeFinishedAlias={removeFinishedAlias}
       />
     )
   }

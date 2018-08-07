@@ -1,6 +1,7 @@
 // @flow
 const { exec } = require('child_process')
 const generateCmd = require('../cmd-gen')
+const { waterfall } = require('async')
 
 /*
   SYS helpers. All results are returned following the callback pattern.
@@ -22,6 +23,16 @@ type sendSysTransactionType = {
   amount: string,
   comment?: string
 };
+
+const getInfo = (cb: (error: boolean, result?: Object) => void) => {
+  exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
+    if (err) {
+      return cb(err)
+    }
+
+    return cb(false, JSON.parse(stdout))
+  })
+}
 
 const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
   // Get current SYS address
@@ -119,11 +130,60 @@ const sendSysTransaction = (obj: sendSysTransactionType, cb: (error: boolean, re
   })
 }
 
+const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => any) => {
+  // Creates new alias
+  const { aliasName, publicValue, acceptTransferFlags, expireTimestamp, address, encryptionPrivKey, encryptionPublicKey, witness } = obj
+
+  waterfall([
+    done => {
+      exec(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`), (err, result) => {
+        try {
+          done(err, JSON.parse(result)[0])
+        } catch(e) {
+          done(err)
+        }
+      })
+    },
+    (firstResult, done) => {
+      exec(generateCmd('cli', `syscointxfund ${firstResult}`), (err, result) => {
+        try {
+          done(err, JSON.parse(result)[0])
+        } catch(e) {
+          done(err)
+        }
+      })
+    },
+    (secondResult, done) => {
+      exec(generateCmd('cli', `signrawtransaction ${secondResult}`), (err, result) => {
+        try {
+          done(err, JSON.parse(result).hex)
+        } catch(e) {
+          done(err)
+        }
+      })
+    },
+    (thirdResult , done) => {
+      exec(generateCmd('cli', `sendrawtransaction ${thirdResult}`), (err, result) => {
+        done(err, result)
+      })
+    }
+  ], (err, result) => {
+    if (err) {
+      console.log(err)
+      return cb(err)
+    }
+
+    return cb(false, result)
+  })
+}
+
 module.exports = {
   currentSysAddress,
   currentBalance,
   getAliases,
   getAssetInfo,
+  getInfo,
   sendAsset,
-  sendSysTransaction
+  sendSysTransaction,
+  createNewAlias
 }

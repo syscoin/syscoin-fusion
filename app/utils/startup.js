@@ -60,16 +60,18 @@ const startUpRoutine = (dispatch, env) => {
     }
   })
 
-  const checkInterval = setInterval(() => {
-    // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
-    checkSyscoind(dispatch, (isUp, info) => {
-      if (isUp) {
-        // if its up, clear the interval.
-        clearInterval(checkInterval)
-        dispatch(successStart(info))
-      }
-    })
-  }, 5000)
+  if (!global.checkInterval) {
+    global.checkInterval = setInterval(() => {
+      // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
+      checkSyscoind(dispatch, (isUp, info) => {
+        if (isUp) {
+          // if its up, clear the interval.
+          clearInterval(global.checkInterval)
+          dispatch(successStart(info))
+        }
+      })
+    }, 5000)
+  }
 }
 
 export default startUpRoutine
