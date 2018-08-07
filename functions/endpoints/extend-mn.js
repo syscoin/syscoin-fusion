@@ -4,9 +4,10 @@ const admin = require('firebase-admin')
 const makeCharge = require('./helpers/make-charge')
 const coinbaseCharge = require('./helpers/coinbase-charge')
 const updateExpiry = require('./helpers/update-expiry')
+const redeemCode = require('./helpers/redeem-code')
 
 module.exports = (req, res, next) => {
-    const { orderId, tokenId, months, email, coinbase, type, paymentMethod } = req.body
+    const { orderId, tokenId, months, email, coinbase, type, paymentMethod, code } = req.body
     const obj = {
         email,
         months,
@@ -35,6 +36,34 @@ module.exports = (req, res, next) => {
                         }
 
                         return res.send(data)
+                    })
+                } else if (paymentMethod === 'code') {
+                    redeemCode({
+                        code,
+                        email: req.user.email
+                    }, (err, codeMonths) => {
+                        if (err) {
+                            return res.status(401).json({
+                                error: true,
+                                message: 'Unauthorized'
+                            })
+                        }
+
+                        payload.months = codeMonths.months
+
+                        updateExpiry(payload, (err, data) => {
+                            if (err) {
+                                return res.status(500).send({
+                                    error: true,
+                                    message: 'Internal server error.'
+                                })
+                            }
+
+                            return res.status(200).send({
+                                error: false,
+                                message: 'Success'
+                            })
+                        })
                     })
                 } else {
                     makeCharge(obj, (err, data) => {

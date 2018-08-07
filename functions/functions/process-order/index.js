@@ -123,6 +123,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             }
                         ], (err) => {
                             if (err) {
+                                console.log(err)
                                 console.log('Failed for payment ' + snap[i].paymentId + '. Retrying in the next iteration')
                                 if (dropletId) {
                                     return new Promise((deleteResolve, deleteReject) => {
