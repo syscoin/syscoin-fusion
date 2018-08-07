@@ -37,10 +37,10 @@ module.exports = (req, res, next) => {
         let token = req.body.token,
             months = req.body.months,
             email = req.body.email
-            mnKey = req.body.key,
-            mnTxid = req.body.txid,
-            mnName = req.body.name,
-            mnIndex = req.body.index,
+            mnKey = req.body.mnKey,
+            mnTxid = req.body.mnTxid,
+            mnName = req.body.mnName,
+            mnIndex = req.body.mnIndex,
             method = req.body.method,
             code = req.body.code,
             nodeType = req.body.nodeType || 'sys'
@@ -48,18 +48,11 @@ module.exports = (req, res, next) => {
         const cryptoPaymentsSupported = ['btc', 'ltc', 'bch', 'eth']
 
         if (method === 'cc') {
-
-            token = token.token
-
-            if (token.error) {
-                // If the token has an error, return 400
-                return res.status(400).send({ error: token.error.message })
-            }
     
             return makeCharge({
                 email,
                 months,
-                tokenId: token.id
+                tokenId: token
             }, (err, charge) => {
                 if (err) {
                     return res.status(400).send({

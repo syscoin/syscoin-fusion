@@ -5,9 +5,10 @@ const { execSync } = require('child_process')
 const getMnDataUrl = 'https://us-central1-mm-dev-v2.cloudfunctions.net/app/droplets/get-mn-data'
 const sendRewardNotif = 'https://us-central1-mm-dev-v2.cloudfunctions.net/app/droplets/reward-notification'
 
-axios.get(getMnDataUrl).then(res => {
-    const { mnRewardAddress } = res.data,
-        lastTime = parseInt(localStorage.getItem('transactionCount')) || 0
+//axios.get(getMnDataUrl).then(res => {
+    //const { mnRewardAddress } = res.data,
+        const lastTime = parseInt(localStorage.getItem('transactionCount')) || 0
+        const mnRewardAddress = 'TVNkg91PEfY8DckJzYmA6w8o48S5nATBnV'
     
     let transactions, newOnes, hasReward
 
@@ -33,4 +34,4 @@ axios.get(getMnDataUrl).then(res => {
     } else {
         process.exit()
     }
-}).catch(() => process.exit())
+//}).catch(() => process.exit())
