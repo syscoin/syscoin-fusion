@@ -163,7 +163,7 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
       })
     },
     (thirdResult , done) => {
-      exec(generateCmd('cli', `sendrawtransaction ${thirdResult}`), (err, result) => {
+      exec(generateCmd('cli', `syscoinsendrawtransaction ${thirdResult}`), (err, result) => {
         done(err, result)
       })
     }

@@ -16,7 +16,8 @@ import {
 import {
   getUnfinishedAliases,
   pushNewAlias,
-  removeFinishedAlias
+  removeFinishedAlias,
+  incRoundToAlias
 } from '../utils/new-alias-manager'
 
 type Props = {};
@@ -35,6 +36,7 @@ class WalletHome extends Component<Props> {
         getInfo={getInfo}
         getTransactionsForAlias={getTransactionsForAlias}
         getUnfinishedAliases={getUnfinishedAliases}
+        incRoundToAlias={incRoundToAlias}
         pushNewAlias={pushNewAlias}
         removeFinishedAlias={removeFinishedAlias}
       />

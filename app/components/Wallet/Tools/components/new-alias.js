@@ -16,20 +16,24 @@ export default class NewAlias extends Component<Props> {
   props: Props;
 
   generateUnfinishedAliases() {
-    return (
-      <ul>
-        Unfinished aliases:
-        {this.props.getUnfinishedAliases().map(i => (
-          <li>{i.alias}</li>
-        ))}
-      </ul>
-    )
+    try {
+      return (
+        <ul>
+          Unfinished aliases:
+          {this.props.getUnfinishedAliases().map(i => (
+            <li key={JSON.stringify(i)}>{i.alias}</li>
+          ))}
+        </ul>
+      )
+    } catch(e) {
+      return []
+    }
   }
 
   createNewAlias() {
     this.props.createNewAlias({
       aliasName: this.props.aliasName
-    }, (err, result) => {
+    }, (err) => {
       if (err) {
         return swal('Error', err.toString(), 'error')
       }

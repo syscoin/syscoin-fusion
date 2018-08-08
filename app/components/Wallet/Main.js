@@ -15,6 +15,7 @@ type Props = {
   getInfo: Function,
   getTransactionsForAlias: Function,
   getUnfinishedAliases: Function,
+  incRoundToAlias: Function,
   pushNewAlias: Function,
   removeFinishedAlias: Function,
   createNewAlias: Function
@@ -47,6 +48,7 @@ export default class Wallet extends Component<Props, State> {
         this.updateWallet()
       }, 10000)
     }
+
   }
 
   updateWallet() {
@@ -54,6 +56,31 @@ export default class Wallet extends Component<Props, State> {
     this.getCurrentAddress()
     this.getCurrentBalance()
     this.getInfo()
+    this.checkIncompletedAliases()
+  }
+
+  checkIncompletedAliases() {
+    try {
+      const actualBlock = global.appStorage.get('walletinfo').blocks
+      global.appStorage.get('tools').newAliases.forEach(i => {
+        if (i.round === 3) {
+          return this.props.removeFinishedAlias(i.alias)
+        }
+        if (i.block < actualBlock) {
+          this.props.createNewAlias({
+            aliasName: i.alias
+          }, (err) => {
+            if (err) {
+              return false
+            }
+
+            this.props.incRoundToAlias(i.alias)
+          })
+        }
+      })
+    } catch (e) {
+      console.log('No user files yet.')
+    }
   }
 
   getCurrentAddress() {
