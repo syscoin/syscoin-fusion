@@ -6,12 +6,13 @@ const getKeyId = require('../helpers/get-keys-id')
 const deleteDropletByKey = require('../helpers/delete-droplet-by-key')
 
 module.exports = functions.pubsub.topic('expired-mn-watch').onPublish(event => {
-    return admin.database().ref('/orders')
+    return new Promise((resolve, reject) => {
+        admin.database().ref('/orders')
         .once('value', ev => {
             const data = ev.val()
             const keys = Object.keys(data)
 
-            keys.forEach(i => {
+            async.each(keys, (i, done) => {
                 if (data[i].expiresOn < Date.now()) {
                     admin.database().ref('/mn-data')
                         .orderByChild('orderId')
@@ -24,14 +25,13 @@ module.exports = functions.pubsub.topic('expired-mn-watch').onPublish(event => {
 
                             getKeyId(vpsId, (err, keyId) => {
                                 if (err) {
-                                    console.log('Cant find key.')
+                                    done('Cant find key')
                                     return false
                                 }
 
                                 deleteDropletByKey(vpsId, (err) => {
                                     if (err) {
-                                        console.log(err)
-                                        return err
+                                        return done(err)
                                     }
 
                                     async.parallel([
@@ -49,14 +49,21 @@ module.exports = functions.pubsub.topic('expired-mn-watch').onPublish(event => {
                                         }
                                     ], () => {
                                         console.log('Deleted order ' + orderId)
-                                        return true
+                                        done()
                                     })
                                 })
                             })
                         })
                 } else {
-                    return false
+                    return done()
                 }
+            }, (error) => {
+                if (error) {
+                    console.log(error)
+                }
+
+                return resolve()
             })
         })
+    })
 })
