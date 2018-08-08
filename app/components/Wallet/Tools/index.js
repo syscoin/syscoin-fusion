@@ -2,10 +2,14 @@
 import React, { Component } from 'react'
 import { Row, Col } from 'antd'
 import NewAlias from './components/new-alias'
+import BackupWallet from './components/backup-wallet'
+import ImportWallet from './components/import-wallet'
 
 type Props = {
   getUnfinishedAliases: Function,
   pushNewAlias: Function,
+  exportWallet: Function,
+  importWallet: Function,
   removeFinishedAlias: Function,
   createNewAlias: Function
 };
@@ -55,6 +59,10 @@ export default class Tools extends Component<Props, State> {
             pushNewAlias={this.props.pushNewAlias}
             removeFinishedAlias={this.props.removeFinishedAlias}
           />
+          <hr />
+          <BackupWallet exportWallet={this.props.exportWallet} />
+          <hr />
+          <ImportWallet importWallet={this.props.importWallet} />
         </Col>
       </Row>
     )

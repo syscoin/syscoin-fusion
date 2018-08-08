@@ -8,7 +8,9 @@ import {
   getAliases,
   getAssetInfo,
   createNewAlias,
-  getInfo
+  getInfo,
+  exportWallet,
+  importWallet
 } from '../utils/sys-helpers'
 import {
   getTransactionsForAlias
@@ -36,6 +38,8 @@ class WalletHome extends Component<Props> {
         getInfo={getInfo}
         getTransactionsForAlias={getTransactionsForAlias}
         getUnfinishedAliases={getUnfinishedAliases}
+        importWallet={importWallet}
+        exportWallet={exportWallet}
         incRoundToAlias={incRoundToAlias}
         pushNewAlias={pushNewAlias}
         removeFinishedAlias={removeFinishedAlias}

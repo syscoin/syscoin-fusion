@@ -177,6 +177,26 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
   })
 }
 
+const exportWallet = (backupDir: string, cb: (error: boolean) => void) => {
+  exec(generateCmd('cli', `dumpwallet "${backupDir}"`), (err) => {
+    if (err) {
+      return cb(err)
+    }
+
+    return cb(false)
+  })
+}
+
+const importWallet = (backupDir: string, cb: (error: boolean) => void) => {
+  exec(generateCmd('cli', `importwallet "${backupDir}"`), (err) => {
+    if (err) {
+      return cb(err)
+    }
+
+    return cb(false)
+  })
+}
+
 module.exports = {
   currentSysAddress,
   currentBalance,
@@ -185,5 +205,7 @@ module.exports = {
   getInfo,
   sendAsset,
   sendSysTransaction,
-  createNewAlias
+  createNewAlias,
+  exportWallet,
+  importWallet
 }

@@ -15,6 +15,14 @@ type Props = {
 export default class NewAlias extends Component<Props> {
   props: Props;
 
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isLoading: false
+    }
+  }
+
   generateUnfinishedAliases() {
     try {
       return (
@@ -31,9 +39,15 @@ export default class NewAlias extends Component<Props> {
   }
 
   createNewAlias() {
+    this.setState({
+      isLoading: true
+    })
     this.props.createNewAlias({
       aliasName: this.props.aliasName
     }, (err) => {
+      this.setState({
+        isLoading: false
+      })
       if (err) {
         return swal('Error', err.toString(), 'error')
       }
@@ -51,6 +65,7 @@ export default class NewAlias extends Component<Props> {
   render() {
     return (
       <div>
+        <h3 className='white-text'>Create new alias</h3>
         <div>
           {this.generateUnfinishedAliases()}
         </div>
@@ -60,12 +75,14 @@ export default class NewAlias extends Component<Props> {
           onChange={e => this.props.updateFields(e, 'newAlias')}
           value={this.props.aliasName}
         />
-        <Button
-          disabled={!this.props.aliasName}
-          onClick={this.createNewAlias.bind(this)}
-        >
-          Send
-        </Button>
+        <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
+          <Button
+            disabled={!this.props.aliasName || this.state.isLoading}
+            onClick={this.createNewAlias.bind(this)}
+          >
+            Send
+          </Button>
+        </div>
       </div>
     )
   }

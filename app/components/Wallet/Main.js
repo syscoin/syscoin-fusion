@@ -15,6 +15,8 @@ type Props = {
   getInfo: Function,
   getTransactionsForAlias: Function,
   getUnfinishedAliases: Function,
+  importWallet: Function,
+  exportWallet: Function,
   incRoundToAlias: Function,
   pushNewAlias: Function,
   removeFinishedAlias: Function,
@@ -151,6 +153,8 @@ export default class Wallet extends Component<Props, State> {
               <Tools
                 createNewAlias={this.props.createNewAlias}
                 getUnfinishedAliases={this.props.getUnfinishedAliases}
+                exportWallet={this.props.exportWallet}
+                importWallet={this.props.importWallet}
                 pushNewAlias={this.props.pushNewAlias}
                 removeFinishedAlias={this.props.removeFinishedAlias}
               />
