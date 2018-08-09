@@ -93,7 +93,8 @@ module.exports = (req, res, next) => {
                         mnKey: data.mnKey,
                         mnName: data.mnName,
                         mnTxid: data.mnTxid,
-                        ip: clientIp
+                        ip: clientIp,
+                        mnRewardAddress: data.mnRewardAddress
                     })
                 })
         }

@@ -1,5 +1,6 @@
 const admin = require('firebase-admin')
 const rewardTemplate = require('../../functions/email/templates/pool-reward')
+const nodemailer = require('../../functions/email')
 
 /**
  * @api {post} /droplets/email-reward Fires email reward notification
@@ -27,13 +28,13 @@ module.exports = (req, res, next) => {
                     const data = snapshot.val()
                     const key = Object.keys(data)
 
-                    firebase.auth().getUser(data[key].userId)
+                    admin.auth().getUser(data[key].userId)
                         .then(userRecord => {
                             return nodemailer.sendMail({
                                 from: 'notification@masterminer.tech',
                                 to: userRecord.email,
                                 subject: `New MN reward`,
-                                html: statusTemplate(mnData.mnName, nextData.status)
+                                html: rewardTemplate()
                             }, (err, info) => {
                                 if (err) {
                                     console.log(err)

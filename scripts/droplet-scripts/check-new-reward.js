@@ -1,15 +1,14 @@
-const localStorage = require('node-localstorage')
+const localStorage = new require('node-localstorage').LocalStorage('./storage')
 const axios = require('axios')
 const { execSync } = require('child_process')
 
 const getMnDataUrl = 'https://us-central1-mm-dev-v2.cloudfunctions.net/app/droplets/get-mn-data'
 const sendRewardNotif = 'https://us-central1-mm-dev-v2.cloudfunctions.net/app/droplets/reward-notification'
 
-//axios.get(getMnDataUrl).then(res => {
-    //const { mnRewardAddress } = res.data,
-        const lastTime = parseInt(localStorage.getItem('transactionCount')) || 0
-        const mnRewardAddress = 'TVNkg91PEfY8DckJzYmA6w8o48S5nATBnV'
-    
+axios.get(getMnDataUrl).then(res => {
+    const { mnRewardAddress } = res.data
+    const lastTime = parseInt(localStorage.getItem('transactionCount')) || 0
+
     let transactions, newOnes, hasReward
 
     // Get latest transactions
@@ -22,16 +21,18 @@ const sendRewardNotif = 'https://us-central1-mm-dev-v2.cloudfunctions.net/app/dr
 
         if (hasReward) {
             // If there is a new reward, send a notification
-            axios.post(sendRewardNotif).then(() => {
+            axios.post(sendRewardNotif).then((res) => {
                 // Saves transaction number in localStorage
                 localStorage.setItem('transactionCount', transactions.length)
 
                 process.exit()
-            }).catch(() => process.exit())
+            }).catch((err) => {
+                process.exit()
+            })
         } else {
             process.exit()
         }
     } else {
         process.exit()
     }
-//}).catch(() => process.exit())
+}).catch(() => process.exit())
