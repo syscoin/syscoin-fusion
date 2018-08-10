@@ -197,6 +197,21 @@ const importWallet = (backupDir: string, cb: (error: boolean) => void) => {
   })
 }
 
+const getPrivateKey = (cb: (error: boolean, result: string) => void) => {
+  currentSysAddress((err, address) => {
+    if (err) {
+      return cb(err)
+    }
+    exec(generateCmd('cli', `dumpprivkey "${address}"`), (errDump, key) => {
+      if (errDump) {
+        return cb(errDump)
+      }
+
+      return cb(false, key)
+    })
+  })
+}
+
 module.exports = {
   currentSysAddress,
   currentBalance,
@@ -207,5 +222,6 @@ module.exports = {
   sendSysTransaction,
   createNewAlias,
   exportWallet,
-  importWallet
+  importWallet,
+  getPrivateKey
 }
