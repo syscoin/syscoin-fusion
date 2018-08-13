@@ -55,17 +55,17 @@ export default class Send extends Component<Props, State> {
   }
 
   isUserAssetOwner(cb: Function) {
-    if (!this.state.selectedAlias.length &&
-      !this.state.toAddress.length &&
-      !this.state.assetId.length &&
-      !this.state.amount.length
+    if (!this.state.asset.selectedAlias.length &&
+      !this.state.asset.toAddress.length &&
+      !this.state.asset.assetId.length &&
+      !this.state.asset.amount.length
     ) {
       return cb(true)
     }
 
     getAssetInfo({
-      assetId: this.state.assetId,
-      aliasName: this.state.selectedAlias
+      assetId: this.state.asset.assetId,
+      aliasName: this.state.asset.selectedAlias
     }, (err) => {
       if (err) {
         return cb(true)
@@ -90,6 +90,7 @@ export default class Send extends Component<Props, State> {
         amount
       }, (errSend) => {
         if (errSend) {
+          console.log(errSend)
           return swal('Error', 'Error while sending the asset.', 'error')
         }
 
@@ -162,7 +163,7 @@ export default class Send extends Component<Props, State> {
             >
               {this.generateAliasesOptions()}
             </Select>
-            <Input name='assetId' placeholder='Asset ID' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.assetid}/>
+            <Input name='assetId' placeholder='Asset ID' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.assetId}/>
             <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.toAddress}/>
             <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.amount}/>
             <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>

@@ -95,24 +95,24 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
   const { fromAlias, toAlias, assetId, amount } = obj
   exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"aliasto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
     if (err) {
-      return cb(true)
+      return cb(err)
     }
 
     const assetAllocationOutput = JSON.parse(result.toString())[0]
 
     exec(generateCmd('cli', `signrawtransaction ${assetAllocationOutput}`), (errSign, resultSign) => {
       if (errSign) {
-        return cb(true)
+        return cb(errSign)
       }
 
       const signOutput = JSON.parse(resultSign.toString()).hex
 
-      exec(generateCmd('cli', `syscoinsendrawtransaction ${signOutput}`), (err, resultSend) => {
-        if (err) {
-          return cb(true)
+      exec(generateCmd('cli', `syscoinsendrawtransaction ${signOutput}`), (errSend, resultSend) => {
+        if (errSend) {
+          return cb(errSend)
         }
 
-        return cb(false, true)
+        return cb(false, resultSend)
       })
     })
   })
