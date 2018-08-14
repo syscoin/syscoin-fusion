@@ -96,7 +96,7 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
 
   waterfall([
     done => {
-      exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"aliasto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
+      exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
         if (err) {
           if (err.message.indexOf('ERRCODE: 1018') !== -1) {
             return cb(null)
@@ -109,7 +109,7 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
     },
     (firstOutput, done) => {
       if (!firstOutput) {
-        return exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"aliasto\\":\\"${toAlias}\\",\\"ranges\\": [{\\"start\\": 0, \\"end\\": ${parseFloat(amount)}}]}] "" ""`), (errTwo, resultTwo) => {
+        return exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"ranges\\": [{\\"start\\": 0, \\"end\\": ${parseFloat(amount)}}]}] "" ""`), (errTwo, resultTwo) => {
           if (errTwo) {
             return done(errTwo)
           }
