@@ -21,6 +21,7 @@ const coinbasePostback = require('./endpoints/coinbase-postback')
 const extendSubscription = require('./endpoints/extend-mn')
 const getPoolingData = require('./endpoints/pooling-data')
 const requestPooling = require('./endpoints/request-pooling')
+const editNode = require('./endpoints/edit-node')
 
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
@@ -101,6 +102,7 @@ app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
 app.post('/request-pooling', validateFirebaseIdToken, requestPooling)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
+app.post('/edit-node', validateFirebaseIdToken, editNode)
 
 app.post('/droplets/edit-status', checkIpWhitelist, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)

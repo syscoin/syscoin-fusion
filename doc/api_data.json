@@ -53,6 +53,26 @@
     "name": "PostDropletsEditStatus"
   },
   {
+    "type": "post",
+    "url": "/droplets/email-reward",
+    "title": "Fires email reward notification",
+    "description": "<p>Goes through API filter - Sends notification to user on new reward</p>",
+    "group": "Droplets_Endpoints",
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\n    error: false\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/droplet-endpoints/email-reward.js",
+    "groupTitle": "Droplets_Endpoints",
+    "name": "PostDropletsEmailReward"
+  },
+  {
     "type": "get",
     "url": "/nodes",
     "title": "Get user nodes",
@@ -101,6 +121,67 @@
     "filename": "functions/endpoints/coinbase-postback.js",
     "groupTitle": "Endpoints",
     "name": "PostCoinbasePostbackCoinbasePostback"
+  },
+  {
+    "type": "post",
+    "url": "/edit-node",
+    "title": "Edit node",
+    "description": "<p>Needs firebase authentication - You need to send ALL these fields, even if you want to edit only one</p>",
+    "group": "Endpoints",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mnIndex",
+            "description": "<p>new MN index</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mnKey",
+            "description": "<p>new MN key</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mnName",
+            "description": "<p>new MN name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mnTxid",
+            "description": "<p>new MN txid</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>mn-data DB id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\n       error: false\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/edit-node.js",
+    "groupTitle": "Endpoints",
+    "name": "PostEditNode"
   },
   {
     "type": "post",
