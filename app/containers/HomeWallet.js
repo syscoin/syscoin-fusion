@@ -7,6 +7,7 @@ import {
   currentBalance,
   getAliases,
   getAssetInfo,
+  getPrivateKey,
   createNewAlias,
   getInfo,
   exportWallet,
@@ -38,6 +39,7 @@ class WalletHome extends Component<Props> {
         getInfo={getInfo}
         getTransactionsForAlias={getTransactionsForAlias}
         getUnfinishedAliases={getUnfinishedAliases}
+        getPrivateKey={getPrivateKey}
         importWallet={importWallet}
         exportWallet={exportWallet}
         incRoundToAlias={incRoundToAlias}

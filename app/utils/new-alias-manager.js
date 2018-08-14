@@ -25,11 +25,13 @@ const removeFinishedAlias = (aliasName: string) => {
 
 const incRoundToAlias = (aliasName: string) => {
     const data = global.appStorage.get('tools')
+    const actualBlock = global.appStorage.get('walletinfo').blocks
     const aliasIndex = data.newAliases.map(i => i.alias).indexOf(aliasName)
 
     const selectedAlias = data.newAliases[aliasIndex]
 
     selectedAlias.round += 1
+    selectedAlias.block = actualBlock
 
     data.newAliases[aliasIndex] = selectedAlias
 
