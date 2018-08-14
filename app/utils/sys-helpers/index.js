@@ -1,5 +1,5 @@
 // @flow
-const { exec } = require('child_process')
+const { exec, execSync } = require('child_process')
 const generateCmd = require('../cmd-gen')
 const { waterfall } = require('async')
 
@@ -93,29 +93,52 @@ const getAssetInfo = (obj: AllocationInfoType, cb: (error: boolean, info?: any) 
 const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) => void) => {
   // Sends asset to specific alias
   const { fromAlias, toAlias, assetId, amount } = obj
-  exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"aliasto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
-    if (err) {
-      return cb(err)
-    }
 
-    const assetAllocationOutput = JSON.parse(result.toString())[0]
+  waterfall([
+    done => {
+      exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"aliasto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
+        if (err) {
+          if (err.message.indexOf('ERRCODE: 1018') !== -1) {
+            return cb(null)
+          }
+          return cb(err)
+        }
 
-    exec(generateCmd('cli', `signrawtransaction ${assetAllocationOutput}`), (errSign, resultSign) => {
-      if (errSign) {
-        return cb(errSign)
+        done(null, JSON.parse(result.toString())[0])
+      })
+    },
+    (firstOutput, done) => {
+      if (!firstOutput) {
+        return exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"aliasto\\":\\"${toAlias}\\",\\"ranges\\": [{\\"start\\": 0, \\"end\\": ${parseFloat(amount)}}]}] "" ""`), (errTwo, resultTwo) => {
+          if (errTwo) {
+            return done(errTwo)
+          }
+
+          done(null, JSON.parse(resultTwo.toString())[0])
+        })
       }
 
-      const signOutput = JSON.parse(resultSign.toString()).hex
+      done(null, firstOutput)
+    },
+    (assetAllocationOutput, done) => {
+      exec(generateCmd('cli', `signrawtransaction ${assetAllocationOutput}`), (errSign, resultSign) => {
+        if (errSign) {
+          return cb(errSign)
+        }
 
+        done(null, JSON.parse(resultSign.toString()).hex)
+      })
+    },
+    (signOutput, done) => {
       exec(generateCmd('cli', `syscoinsendrawtransaction ${signOutput}`), (errSend, resultSend) => {
         if (errSend) {
           return cb(errSend)
         }
 
-        return cb(false, resultSend)
+        return done(false, resultSend)
       })
-    })
-  })
+    }
+  ], (err) => cb(err))
 }
 
 const sendSysTransaction = (obj: sendSysTransactionType, cb: (error: boolean, result?: string) => void) => {
