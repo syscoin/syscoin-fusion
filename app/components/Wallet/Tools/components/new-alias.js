@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react'
-import { Input, Button } from 'antd'
+import { Input, Button, Select } from 'antd'
 import swal from 'sweetalert'
+
+const { Option } = Select
 
 type Props = {
   createNewAlias: Function,
@@ -9,10 +11,20 @@ type Props = {
   pushNewAlias: Function,
   removeFinishedAlias: Function,
   aliasName: string,
+  publicValue: string,
+  acceptTransferFlags: number,
+  expireTimestamp: string,
+  address: string,
+  encryptionPrivKey: string,
+  encryptionPublicKey: string,
+  witness: string,
   updateFields: Function
 };
+type State = {
+  isLoading: boolean
+};
 
-export default class NewAlias extends Component<Props> {
+export default class NewAlias extends Component<Props, State> {
   props: Props;
 
   constructor(props) {
@@ -43,7 +55,14 @@ export default class NewAlias extends Component<Props> {
       isLoading: true
     })
     this.props.createNewAlias({
-      aliasName: this.props.aliasName
+      aliasName: this.props.aliasName,
+      publicValue: this.props.publicValue,
+      acceptTransferFlags: this.props.acceptTransferFlags,
+      expireTimestamp: this.props.expireTimestamp,
+      address: this.props.address,
+      encryptionPrivKey: this.props.encryptionPrivKey,
+      encryptionPublicKey: this.props.encryptionPublicKey,
+      witness: this.props.witness,
     }, (err) => {
       this.setState({
         isLoading: false
@@ -64,7 +83,7 @@ export default class NewAlias extends Component<Props> {
 
   render() {
     return (
-      <div>
+      <div className='create-alias'>
         <h3 className='white-text'>Create new alias</h3>
         <div>
           {this.generateUnfinishedAliases()}
@@ -74,6 +93,59 @@ export default class NewAlias extends Component<Props> {
           placeholder='New alias name'
           onChange={e => this.props.updateFields(e, 'newAlias')}
           value={this.props.aliasName}
+        />
+        <Input
+          name='publicValue'
+          placeholder='Public Value'
+          onChange={e => this.props.updateFields(e, 'newAlias')}
+          value={this.props.publicValue}
+        />
+        <Select
+          name='acceptTransferFlags'
+          placeholder='Accept Transfer Flag'
+          onChange={e => this.props.updateFields({
+            target: {
+              name: 'acceptTransferFlags',
+              value: e
+            }
+          }, 'newAlias')}
+          style={{width: '100%'}}
+          value={this.props.acceptTransferFlags}
+        >
+          <Option value={0}>0 - None</Option>
+          <Option value={1}>1 - Accepting certificate transfers</Option>
+          <Option value={2}>2 - Accepting asset transfers</Option>
+          <Option value={3}>3 - All</Option>
+        </Select>
+        <Input
+          name='expireTimestamp'
+          placeholder='Expire timestamp'
+          onChange={e => this.props.updateFields(e, 'newAlias')}
+          value={this.props.expireTimestamp}
+        />
+        <Input
+          name='address'
+          placeholder='Address'
+          onChange={e => this.props.updateFields(e, 'newAlias')}
+          value={this.props.address}
+        />
+        <Input
+          name='encryptionPrivKey'
+          placeholder='Encryption Private Key'
+          onChange={e => this.props.updateFields(e, 'newAlias')}
+          value={this.props.encryptionPrivKey}
+        />
+        <Input
+          name='encryptionPublicKey'
+          placeholder='Encryption Public Key'
+          onChange={e => this.props.updateFields(e, 'newAlias')}
+          value={this.props.encryptionPublicKey}
+        />
+        <Input
+          name='witness'
+          placeholder='Witness'
+          onChange={e => this.props.updateFields(e, 'newAlias')}
+          value={this.props.witness}
         />
         <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
           <Button
