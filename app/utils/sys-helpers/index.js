@@ -240,7 +240,7 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
 
   waterfall([
     done => {
-      exec(generateCmd('cli', `aliasupdate ${aliasName} '${publicValue || ''}' ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} '${address || ''}' '${encPrivKey || ''}' '${encPubKey || ''}' '${witness || ''}'`), (err, result) => {
+      exec(generateCmd('cli', `aliasupdate ${aliasName} '${publicValue || ''}' ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} '${encPrivKey || ''}' '${encPubKey || ''}' '${witness || ''}'`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
         } catch(e) {
