@@ -25,6 +25,13 @@ module.exports = (req, res, next) => {
         id
     } = req.body
 
+    if (!(mnIndex && mnKey && mnName && mnTxid && id)) {
+        return res.status(422).json({
+            error: true,
+            message: 'Lacking required parameters.'
+        })
+    }
+
     admin.database().ref('/mn-data')
         .orderByChild('userId')
         .equalTo(req.user.uid)

@@ -8,13 +8,25 @@ const cliDir = '~/syscoin/src/syscoin-cli masternode status'
 const formatter = (obj) => `${(new Date()).toString()}: Message: ${obj.message} | Error: ${obj.error}\n`
 
 exec(cliDir, (err, stdout, stderr) => {
-    axios.post(appUrl, {
-        status: JSON.parse(stdout.toString()).status + stderr.toString()
-    }).then((res) => {
-        writeToLogs(formatter(res.data))
-        process.exit()
-    }).catch(res => {
-        writeToLogs(formatter(res.data))
-        process.exit()
-    })
+    try {
+        axios.post(appUrl, {
+            status: JSON.parse(stdout.toString()).status + stderr.toString()
+        }).then((res) => {
+            writeToLogs(formatter(res.data))
+            process.exit()
+        }).catch(res => {
+            writeToLogs(formatter(res.data))
+            process.exit()
+        })
+    } catch (e) {
+        axios.post(appUrl, {
+            status: 'ERROR: Incorrect config. Check your MN Key.'
+        }).then((res) => {
+            writeToLogs(formatter(res.data))
+            process.exit()
+        }).catch(res => {
+            writeToLogs(formatter(res.data))
+            process.exit()
+        })
+    }
 })
