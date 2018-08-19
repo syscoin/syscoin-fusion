@@ -15,7 +15,8 @@ const redeemCode = require('./helpers/redeem-code')
  * @apiParam {Number} months Numbr of months to extend
  * @apiParam {String} email User email
  * @apiParam {Boolean} coinbase Coinbase payment
- * @apiParam {String="cc","coin"} paymentMethod Payment method
+ * @apiParam {String} code Use code to extend MN
+ * @apiParam {String="cc","coin", "code"} paymentMethod Payment method
  * 
  * @apiSuccessExample {json} Success
  *  {

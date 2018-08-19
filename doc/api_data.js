@@ -229,9 +229,17 @@ define({ "api": [
           {
             "group": "Parameter",
             "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Use code to extend MN</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
             "allowedValues": [
               "\"cc\"",
-              "\"coin\""
+              "\"coin\"",
+              "\"code\""
             ],
             "optional": false,
             "field": "paymentMethod",
