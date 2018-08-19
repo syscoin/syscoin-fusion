@@ -27,6 +27,7 @@ const editNode = require('./endpoints/edit-node')
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
 const getMnData = require('./endpoints/droplet-endpoints/check-config')
 const notificationReward = require('./endpoints/droplet-endpoints/email-reward')
+const upgradeMn = require('./endpoints/user-upgrade')
 
 // Listeners
 const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
@@ -100,6 +101,7 @@ app.post('/signup', hostingSignup)
 app.post('/coinbase-postback', coinbasePostback)
 app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
 app.post('/request-pooling', validateFirebaseIdToken, requestPooling)
+app.post('/upgrade-mn', validateFirebaseIdToken, upgradeMn)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
