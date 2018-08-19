@@ -11,13 +11,15 @@ type Props = {
   editAlias: Function
 };
 type State = {
-  isLoading: boolean
+  isLoading: boolean,
+  aliasToEdit: string,
+  editValues: Object
 };
 
 export default class NewAlias extends Component<Props, State> {
   props: Props;
 
-  constructor(props) {
+  constructor(props: Object) {
     super(props)
 
     this.state = {
@@ -35,7 +37,7 @@ export default class NewAlias extends Component<Props, State> {
     }
   }
 
-  updateFields(e) {
+  updateFields(e: Object) {
     const { name, value } = e.target
     const newState = { ...this.state }
 
@@ -44,7 +46,7 @@ export default class NewAlias extends Component<Props, State> {
     this.setState(newState)
   }
 
-  selectAlias(name) {
+  selectAlias(name: string) {
 
     this.setState({
       isLoading: true,
@@ -56,6 +58,8 @@ export default class NewAlias extends Component<Props, State> {
           swal('Error', 'Error while getting alias info', 'error')
           return
         }
+
+        console.log(data)
 
         const newValues = {...this.state.editValues}
 
@@ -99,7 +103,7 @@ export default class NewAlias extends Component<Props, State> {
         return
       }
 
-      swal('Success', 'Alias updated', 'success')
+      swal('Success', 'Alias updated. The changes will take effect in a few blocks.', 'success')
 
       this.setState({
         isLoading: false,

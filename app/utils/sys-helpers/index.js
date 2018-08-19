@@ -1,5 +1,5 @@
 // @flow
-const { exec, execSync } = require('child_process')
+const { exec } = require('child_process')
 const generateCmd = require('../cmd-gen')
 const { waterfall } = require('async')
 
@@ -240,7 +240,8 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
 
   waterfall([
     done => {
-      exec(generateCmd('cli', `aliasupdate ${aliasName} '${publicValue || ''}' ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} '${encPrivKey || ''}' '${encPubKey || ''}' '${witness || ''}'`), (err, result) => {
+      console.log(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`))
+      exec(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
         } catch(e) {

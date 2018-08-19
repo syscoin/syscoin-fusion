@@ -74,7 +74,7 @@ export default class Wallet extends Component<Props, State> {
             aliasName: i.alias
           }, (err) => {
             if (err) {
-              if (err.message.indexOf('ERRCODE: 5506') !== -1) {
+              if (err.message.indexOf('ERRCODE: 5505') !== -1) {
                 this.props.removeFinishedAlias(i.alias)
               }
               return false
