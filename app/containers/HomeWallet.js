@@ -3,8 +3,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Wallet from '../components/Wallet/Main'
 import {
+  aliasInfo,
   currentSysAddress,
   currentBalance,
+  editAlias,
   getAliases,
   getAssetInfo,
   getPrivateKey,
@@ -31,9 +33,11 @@ class WalletHome extends Component<Props> {
   render() {
     return (
       <Wallet
+        aliasInfo={aliasInfo}
         createNewAlias={createNewAlias}
         currentSysAddress={currentSysAddress}
         currentBalance={currentBalance}
+        editAlias={editAlias}
         getAliases={getAliases}
         getAssetInfo={getAssetInfo}
         getInfo={getInfo}

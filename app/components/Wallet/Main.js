@@ -4,12 +4,15 @@ import { Row, Col, Tabs } from 'antd'
 import Accounts from './Accounts'
 import Send from './Send'
 import Tools from './Tools'
+import Personalize from './Personalize'
 
 const Tab = Tabs.TabPane
 
 type Props = {
+  aliasInfo: Function,
   currentSysAddress: Function,
   currentBalance: Function,
+  editAlias: Function,
   getAliases: Function,
   getAssetInfo: Function,
   getInfo: Function,
@@ -71,7 +74,7 @@ export default class Wallet extends Component<Props, State> {
             aliasName: i.alias
           }, (err) => {
             if (err) {
-              if (err.message.indexOf('ERRCODE: 5506') !== -1) {
+              if (err.message.indexOf('ERRCODE: 5505') !== -1) {
                 this.props.removeFinishedAlias(i.alias)
               }
               return false
@@ -159,6 +162,13 @@ export default class Wallet extends Component<Props, State> {
                 importWallet={this.props.importWallet}
                 pushNewAlias={this.props.pushNewAlias}
                 removeFinishedAlias={this.props.removeFinishedAlias}
+              />
+            </Tab>
+            <Tab tab='Personalize' key='4'>
+              <Personalize
+                aliasInfo={this.props.aliasInfo}
+                currentAliases={this.state.aliases || []}
+                editAlias={this.props.editAlias}
               />
             </Tab>
           </Tabs>

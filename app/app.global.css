@@ -5,8 +5,6 @@
 @import "~font-awesome/css/font-awesome.css";
 @import "css/custom.css";
 @import "components/Wallet/Main.css";
-@import "components/Wallet/Accounts/styles.css";
-@import "components/Wallet/Send/styles.css";
 
 body {
   position: relative;

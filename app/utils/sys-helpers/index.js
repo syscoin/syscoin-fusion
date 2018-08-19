@@ -1,5 +1,5 @@
 // @flow
-const { exec, execSync } = require('child_process')
+const { exec } = require('child_process')
 const generateCmd = require('../cmd-gen')
 const { waterfall } = require('async')
 
@@ -235,9 +235,59 @@ const getPrivateKey = (cb: (error: boolean, result: string) => void) => {
   })
 }
 
+const editAlias = (obj: Object, cb: (error: boolean) => void) => {
+  const { aliasName, publicValue, address, acceptTransfersFlag, expireTimestamp, encPrivKey, encPubKey, witness } = obj
+
+  waterfall([
+    done => {
+      console.log(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`))
+      exec(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`), (err, result) => {
+        try {
+          done(err, JSON.parse(result)[0])
+        } catch(e) {
+          done(err)
+        }
+      })
+    },
+    (firstResult, done) => {
+      exec(generateCmd('cli', `signrawtransaction ${firstResult}`), (err, result) => {
+        try {
+          done(err, JSON.parse(result).hex)
+        } catch(e) {
+          done(err)
+        }
+      })
+    },
+    (secondResult , done) => {
+      exec(generateCmd('cli', `syscoinsendrawtransaction ${secondResult}`), (err, result) => {
+        done(err, result)
+      })
+    }
+  ], (err) => {
+    if (err) {
+      console.log(err)
+      return cb(err)
+    }
+
+    return cb(false)
+  })
+}
+
+const aliasInfo = (name: string, cb: (error: boolean, cb: Function) => void) => {
+  exec(generateCmd('cli', `aliasinfo ${name}`), (err, result) => {
+    try {
+      return cb(err, JSON.parse(result))
+    } catch(e) {
+      return cb(err)
+    }
+  })
+}
+
 module.exports = {
+  aliasInfo,
   currentSysAddress,
   currentBalance,
+  editAlias,
   getAliases,
   getAssetInfo,
   getInfo,

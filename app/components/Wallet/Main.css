@@ -1,3 +1,7 @@
+@import "Accounts/styles.css";
+@import "Send/styles.css";
+@import "Tools/styles.css";
+
 .ant-tabs {
     color: white;
 }
