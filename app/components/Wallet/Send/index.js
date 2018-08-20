@@ -121,7 +121,7 @@ export default class Send extends Component<Props, State> {
     })
   }
 
-  updateFields(e, mode) {
+  updateFields(e: Object, mode: string) {
     const { name, value } = e.target
     const newState = {...this.state}
 
@@ -178,11 +178,11 @@ export default class Send extends Component<Props, State> {
               </Select>
             )}
             {this.state.asset.fromType === 1 && (
-              <Input name='fromAddress' placeholder='Address' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.fromAddress}/>
+              <Input name='fromAddress' placeholder='Address' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.fromAddress} />
             )}
-            <Input name='assetId' placeholder='Asset ID' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.assetId}/>
-            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.toAddress}/>
-            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.amount}/>
+            <Input name='assetId' placeholder='Asset ID' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.assetId} />
+            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.toAddress} />
+            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.amount} />
             <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
               <Button onClick={this.sendAsset.bind(this)}>Send</Button>
             </div>
@@ -201,9 +201,9 @@ export default class Send extends Component<Props, State> {
           <div className='send-form'>
             <h3 className='white-text'>Send SYS</h3>
             <h4 className='white-text'>Current balance: {this.props.currentBalance}</h4>
-            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.toAddress}/>
-            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.amount}/>
-            <Input name='comment' placeholder='Comment' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.comment}/>
+            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.toAddress} />
+            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.amount} />
+            <Input name='comment' placeholder='Comment' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.comment} />
             <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
               <Button
                 disabled={!this.state.sys.amount || !this.state.sys.toAddress}
