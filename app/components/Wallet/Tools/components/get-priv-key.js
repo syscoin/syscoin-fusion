@@ -6,11 +6,14 @@ import swal from 'sweetalert'
 type Props = {
   getPrivateKey: Function
 };
+type State = {
+  isLoading: boolean
+};
 
-export default class GetPrivateKey extends Component<Props> {
+export default class GetPrivateKey extends Component<Props, State> {
   props: Props;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {

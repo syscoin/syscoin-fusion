@@ -8,10 +8,14 @@ type Props = {
   exportWallet: Function
 };
 
-export default class ExportWallet extends Component<Props> {
+type State = {
+  isLoading: boolean
+};
+
+export default class ExportWallet extends Component<Props, State> {
   props: Props;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -19,7 +23,7 @@ export default class ExportWallet extends Component<Props> {
     }
   }
 
-  beforeUpload(dir) {
+  beforeUpload(dir: Object) {
     this.setState({
       isLoading: true
     })

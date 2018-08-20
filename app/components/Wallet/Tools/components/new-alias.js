@@ -9,7 +9,6 @@ type Props = {
   createNewAlias: Function,
   getUnfinishedAliases: Function,
   pushNewAlias: Function,
-  removeFinishedAlias: Function,
   aliasName: string,
   publicValue: string,
   acceptTransferFlags: number,
@@ -27,7 +26,7 @@ type State = {
 export default class NewAlias extends Component<Props, State> {
   props: Props;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
