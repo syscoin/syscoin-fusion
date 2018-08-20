@@ -8,12 +8,21 @@
 
 body {
   position: relative;
-  color: white;
+  color: black;
   height: 100%;
-  background-color: #232c39;
-  /*background-image: linear-gradient(45deg, rgba(0, 216, 255, 0.5) 10%, rgba(0, 1, 127, 0.7));*/
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   /*overflow-y: hidden;*/
+}
+
+a,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+span {
+  color: black;
 }
 
 h2 {
@@ -21,7 +30,7 @@ h2 {
   font-size: 2.25rem;
   font-weight: bold;
   letter-spacing: -0.025em;
-  color: #fff;
+  color: black;
 }
 
 p {
@@ -33,7 +42,7 @@ li {
 }
 
 a {
-  color: white;
+  color: #44c;
   opacity: 0.75;
   text-decoration: none;
 }

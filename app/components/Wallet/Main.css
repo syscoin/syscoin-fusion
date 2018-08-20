@@ -3,13 +3,13 @@
 @import "Tools/styles.css";
 
 .ant-tabs {
-    color: white;
+    color: black;
 }
 
 .ant-tabs-tab {
-    color: #ccc;
+    color: #555;
 }
 
 .ant-tabs-nav .ant-tabs-tab-active {
-    color: #fff;
+    color: black;
 }
