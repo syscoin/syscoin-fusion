@@ -17,7 +17,7 @@ if (!aliasName || !assetName) {
 
 const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetnew ${assetName} ${aliasName} "public_info" assets 8 false 100 5000000 0 false ""`).toString())
 
-const assetSend = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetsend ${assetUid} ${aliasName} [{\\"aliasto\\":\\"${aliasName}\\",\\"amount\\":100}] "memo" ""`).toString())[0]
+const assetSend = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetsend ${assetUid} ${aliasName} [{\\"ownerto\\":\\"${aliasName}\\",\\"amount\\":100}] "memo" ""`).toString())[0]
 
 const assetAllocation = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" assetallocationinfo ${assetUid} ${aliasName} false`).toString())
 
