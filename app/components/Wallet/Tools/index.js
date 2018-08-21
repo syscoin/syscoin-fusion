@@ -81,7 +81,6 @@ export default class Tools extends Component<Props, State> {
             witness={this.state.newAlias.witness}
             getUnfinishedAliases={this.props.getUnfinishedAliases}
             pushNewAlias={this.props.pushNewAlias}
-            removeFinishedAlias={this.props.removeFinishedAlias}
           />
           <hr />
           <BackupWallet exportWallet={this.props.exportWallet} />

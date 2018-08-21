@@ -17,6 +17,8 @@ type Props = {
 };
 type State = {
   asset: {
+    fromType: integer,
+    fromAddress: string,
     selectedAlias: string,
     assetId: string,
     toAddress: string,
@@ -39,6 +41,9 @@ export default class Send extends Component<Props, State> {
 
     this.stateSchema = {
       asset: {
+        // 0: none, 1: address, 2: alias
+        fromType: 0,
+        fromAddress: '',
         selectedAlias: '',
         assetId: '',
         toAddress: '',
@@ -55,17 +60,12 @@ export default class Send extends Component<Props, State> {
   }
 
   isUserAssetOwner(cb: Function) {
-    if (!this.state.asset.selectedAlias.length &&
-      !this.state.asset.toAddress.length &&
-      !this.state.asset.assetId.length &&
-      !this.state.asset.amount.length
-    ) {
-      return cb(true)
-    }
+    const { selectedAlias: fromAlias, fromType, fromAddress } = this.state.asset
+    const from = fromType === 1 ? fromAddress : fromAlias
 
     getAssetInfo({
       assetId: this.state.asset.assetId,
-      aliasName: this.state.asset.selectedAlias
+      aliasName: from
     }, (err) => {
       if (err) {
         return cb(true)
@@ -76,7 +76,8 @@ export default class Send extends Component<Props, State> {
   }
 
   sendAsset() {
-    const { selectedAlias: fromAlias, toAddress: toAlias, assetId, amount } = this.state.asset
+    const { selectedAlias: fromAlias, toAddress: toAlias, assetId, amount, fromType, fromAddress } = this.state.asset
+    const from = fromType === 1 ? fromAddress : fromAlias
 
     this.isUserAssetOwner((err) => {
       if (err) {
@@ -84,7 +85,7 @@ export default class Send extends Component<Props, State> {
       }
 
       sendAsset({
-        fromAlias,
+        fromAlias: from,
         toAlias,
         assetId,
         amount
@@ -120,7 +121,7 @@ export default class Send extends Component<Props, State> {
     })
   }
 
-  updateFields(e, mode) {
+  updateFields(e: Object, mode: string) {
     const { name, value } = e.target
     const newState = {...this.state}
 
@@ -156,16 +157,32 @@ export default class Send extends Component<Props, State> {
             <Select
               onChange={e => this.setState({asset: {
                 ...this.state.asset,
-                selectedAlias: e
+                fromType: e
               }})}
               style={{width: '100%', marginBottom: 10}}
-              placeholder='Select alias'
+              placeholder='Send from'
             >
-              {this.generateAliasesOptions()}
+              <Option value={1}>Address</Option>
+              <Option value={2}>Alias</Option>
             </Select>
-            <Input name='assetId' placeholder='Asset ID' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.assetId}/>
-            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.toAddress}/>
-            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.amount}/>
+            {this.state.asset.fromType === 2 && (
+              <Select
+                onChange={e => this.setState({asset: {
+                  ...this.state.asset,
+                  selectedAlias: e
+                }})}
+                style={{width: '100%', marginBottom: 10}}
+                placeholder='Select alias'
+              >
+                {this.generateAliasesOptions()}
+              </Select>
+            )}
+            {this.state.asset.fromType === 1 && (
+              <Input name='fromAddress' placeholder='Address' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.fromAddress} />
+            )}
+            <Input name='assetId' placeholder='Asset ID' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.assetId} />
+            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.toAddress} />
+            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.amount} />
             <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
               <Button onClick={this.sendAsset.bind(this)}>Send</Button>
             </div>
@@ -184,9 +201,9 @@ export default class Send extends Component<Props, State> {
           <div className='send-form'>
             <h3 className='white-text'>Send SYS</h3>
             <h4 className='white-text'>Current balance: {this.props.currentBalance}</h4>
-            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.toAddress}/>
-            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.amount}/>
-            <Input name='comment' placeholder='Comment' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.comment}/>
+            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.toAddress} />
+            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.amount} />
+            <Input name='comment' placeholder='Comment' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.comment} />
             <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
               <Button
                 disabled={!this.state.sys.amount || !this.state.sys.toAddress}
