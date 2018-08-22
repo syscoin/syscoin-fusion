@@ -1,5 +1,11 @@
-.send-form h3,
-.send-form input,
-.send-form button {
+.send-asset-form-container h3,
+.send-asset-form-container input,
+.send-asset-form-container button {
+    margin-bottom: 10px;
+}
+
+.send-sys-form-container h3,
+.send-sys-form-container input,
+.send-sys-form-container button {
     margin-bottom: 10px;
 }

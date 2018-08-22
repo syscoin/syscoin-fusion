@@ -49,10 +49,10 @@ export default class ExportWallet extends Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <h3 className='white-text'>Backup wallet</h3>
+      <div className='backup-wallet-container'>
+        <h3 className='backup-wallet-title'>Backup wallet</h3>
         <Upload action='' beforeUpload={this.beforeUpload.bind(this)} showUploadList={false} directory>
-          <Button disabled={this.state.isLoading}>
+          <Button className='backup-wallet-btn' disabled={this.state.isLoading}>
             <Icon type='download' /> Backup wallet
           </Button>
         </Upload>

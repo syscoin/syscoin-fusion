@@ -114,82 +114,92 @@ export default class NewAlias extends Component<Props, State> {
 
   render() {
     return (
-      <div className='create-alias'>
-        <h3 className='white-text'>Edit an alias</h3>
-        <Select
-          placeholder='Alias'
-          onChange={this.selectAlias.bind(this)}
-          style={{ width: '100%' }}
-          value={this.state.aliasToEdit}
-        >
-          {this.props.currentAliases.filter(i => i.alias).map(i => <Option value={i.alias} key={i.alias}>{i.alias}</Option>)}
-        </Select>
-        {this.state.aliasToEdit && (
-          <div>
-            <h3>Editing alias {this.state.aliasToEdit}</h3>
-            <Input
-              name='publicValue'
-              placeholder='Public Value'
-              onChange={this.updateFields.bind(this)}
-              value={this.state.editValues.publicValue}
-            />
-            <Select
-              name='acceptTransferFlag'
-              placeholder='Accept Transfer Flag'
-              onChange={val => this.updateFields({
-                target: {
-                  value: val,
-                  name: 'acceptTransferFlag'
-                }
-              })}
-              style={{ width: '100%' }}
-              value={this.state.editValues.acceptTransferFlag}
-            >
-              <Option value={0}>0 - None</Option>
-              <Option value={1}>1 - Accepting certificate transfers</Option>
-              <Option value={2}>2 - Accepting asset transfers</Option>
-              <Option value={3}>3 - All</Option>
-            </Select>
-            <Input
-              name='expireTimestamp'
-              placeholder='Expire timestamp'
-              onChange={this.updateFields.bind(this)}
-              value={this.state.editValues.expireTimestamp}
-            />
-            <Input
-              name='address'
-              placeholder='Address'
-              onChange={this.updateFields.bind(this)}
-              value={this.state.editValues.address}
-            />
-            <Input
-              name='encPrivKey'
-              placeholder='Encryption Private Key'
-              onChange={this.updateFields.bind(this)}
-              value={this.state.editValues.encPrivKey}
-            />
-            <Input
-              name='encPubKey'
-              placeholder='Encryption Public Key'
-              onChange={this.updateFields.bind(this)}
-              value={this.state.editValues.encPubKey}
-            />
-            <Input
-              name='witness'
-              placeholder='Witness'
-              onChange={this.updateFields.bind(this)}
-              value={this.state.editValues.witness}
-            />
-          </div>
-        )}
+      <div className='edit-alias-container'>
+        <h3 className='edit-alias-title'>Edit an alias</h3>
+        <div className='edit-alias-form-container'>
+          <Select
+            placeholder='Alias'
+            onChange={this.selectAlias.bind(this)}
+            style={{ width: '100%' }}
+            value={this.state.aliasToEdit}
+            className='edit-alias-form-control edit-alias-form-alias'
+          >
+            {this.props.currentAliases.filter(i => i.alias).map(i => <Option value={i.alias} key={i.alias}>{i.alias}</Option>)}
+          </Select>
+          {this.state.aliasToEdit && (
+            <div>
+              <h3 className='edit-alias-form-active-alias'>Editing alias {this.state.aliasToEdit}</h3>
+              <Input
+                name='publicValue'
+                placeholder='Public Value'
+                onChange={this.updateFields.bind(this)}
+                value={this.state.editValues.publicValue}
+                className='edit-alias-form-control edit-alias-form-publicvalue'
+              />
+              <Select
+                name='acceptTransferFlag'
+                placeholder='Accept Transfer Flag'
+                onChange={val => this.updateFields({
+                  target: {
+                    value: val,
+                    name: 'acceptTransferFlag'
+                  }
+                })}
+                style={{ width: '100%' }}
+                value={this.state.editValues.acceptTransferFlag}
+                className='edit-alias-form-control edit-alias-form-transferflag'
+              >
+                <Option value={0}>0 - None</Option>
+                <Option value={1}>1 - Accepting certificate transfers</Option>
+                <Option value={2}>2 - Accepting asset transfers</Option>
+                <Option value={3}>3 - All</Option>
+              </Select>
+              <Input
+                name='expireTimestamp'
+                placeholder='Expire timestamp'
+                onChange={this.updateFields.bind(this)}
+                value={this.state.editValues.expireTimestamp}
+                className='edit-alias-form-control edit-alias-form-timestamp'
+              />
+              <Input
+                name='address'
+                placeholder='Address'
+                onChange={this.updateFields.bind(this)}
+                value={this.state.editValues.address}
+                className='edit-alias-form-control edit-alias-form-address'
+              />
+              <Input
+                name='encPrivKey'
+                placeholder='Encryption Private Key'
+                onChange={this.updateFields.bind(this)}
+                value={this.state.editValues.encPrivKey}
+                className='edit-alias-form-control edit-alias-form-privkey'
+              />
+              <Input
+                name='encPubKey'
+                placeholder='Encryption Public Key'
+                onChange={this.updateFields.bind(this)}
+                value={this.state.editValues.encPubKey}
+                className='edit-alias-form-control edit-alias-form-pubkey'
+              />
+              <Input
+                name='witness'
+                placeholder='Witness'
+                onChange={this.updateFields.bind(this)}
+                value={this.state.editValues.witness}
+                className='edit-alias-form-control edit-alias-form-witness'
+              />
+            </div>
+          )}
 
-        {this.state.aliasToEdit && (
-          <div style={{ textAlign: 'right', padding: '10px 0 10px 0' }}>
-            <Button disabled={this.state.isLoading} onClick={this.updateAlias.bind(this)}>
-              Send
-            </Button>
-          </div>
-        )}
+          {this.state.aliasToEdit && (
+            <div style={{ textAlign: 'right', padding: '10px 0 10px 0' }}>
+              <Button disabled={this.state.isLoading} onClick={this.updateAlias.bind(this)}>
+                Send
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     )
   }

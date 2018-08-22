@@ -24,6 +24,7 @@ export default class Personalize extends Component<Props, State> {
           style={{
             textAlign: 'center'
           }}
+          className='personalize-container'
         >
           <EditAlias
             aliasInfo={this.props.aliasInfo}

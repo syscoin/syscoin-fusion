@@ -70,11 +70,11 @@ export default class Accounts extends Component<Props, State> {
 
   generateTransactions() {
     return (
-      <div>
-        <h3>Transactions for alias: {this.state.selectedAlias}</h3>
+      <div className='assets-transaction-container'>
+        <h3 className='assets-transaction-title'>Transactions for alias: <span className='assets-transaction-title-selected'>{this.state.selectedAlias}</span></h3>
         <Row>
-          <Col xs={12} offset={7} className='text-col'>
-            <table>
+          <Col xs={12} offset={7} className='assets-transaction-table-container'>
+            <table className='assets-transaction-table'>
               <thead>
                 <tr>
                   <th width='200px'>Sender</th>
@@ -106,11 +106,11 @@ export default class Accounts extends Component<Props, State> {
 
   generateAliasAssets() {
     return (
-      <div>
-        <h3>Assets for alias: {this.state.selectedAlias}</h3>
+      <div className='assets-table-container'>
+        <h3 className='assets-table-title'>Assets for alias/address: <span className='assets-table-title-selected'>{this.state.selectedAlias}</span></h3>
         <Row>
-          <Col xs={12} offset={7} className='text-col'>
-            <table>
+          <Col xs={12} offset={7} className='assets-table-container'>
+            <table className='assets-table'>
               <thead>
                 <tr>
                   <th width='200px'>Symbol</th>
@@ -217,21 +217,17 @@ export default class Accounts extends Component<Props, State> {
 
   render() {
     return (
-      <Row>
+      <Row className='accounts-container'>
         <Col
           xs={24}
           style={{
             textAlign: 'center'
           }}
         >
-          <p>This is your current address:</p>
-          <p>{this.props.currentAddress}</p>
-          <p>Current balance:</p>
-          <p>{this.props.currentBalance}</p>
-          <p>Your aliases:</p>
+          <p className='accounts-your-aliases-text'>Your aliases:</p>
           {this.generateAliasesBoxes()}
-          {this.state.aliasAssets.isLoading ? <h3>Loading Assets</h3> : this.generateAliasAssets()}
-          {this.state.transactions.isLoading ? <h3>Loading transactions</h3> : this.generateTransactions()}
+          {this.state.aliasAssets.isLoading ? <h3 className='loading-assets'>Loading Assets</h3> : this.generateAliasAssets()}
+          {this.state.transactions.isLoading ? <h3 className='loading-transactions'>Loading transactions</h3> : this.generateTransactions()}
         </Col>
       </Row>
     )
