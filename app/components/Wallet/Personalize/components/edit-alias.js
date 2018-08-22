@@ -193,8 +193,8 @@ export default class NewAlias extends Component<Props, State> {
           )}
 
           {this.state.aliasToEdit && (
-            <div style={{ textAlign: 'right', padding: '10px 0 10px 0' }}>
-              <Button disabled={this.state.isLoading} onClick={this.updateAlias.bind(this)}>
+            <div className='edit-alias-form-btn-container' style={{ textAlign: 'right', padding: '10px 0 10px 0' }}>
+              <Button className='edit-alias-form-btn-send' disabled={this.state.isLoading} onClick={this.updateAlias.bind(this)}>
                 Send
               </Button>
             </div>

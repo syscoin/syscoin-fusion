@@ -127,7 +127,7 @@ export default class Wallet extends Component<Props, State> {
   generateCurrentAliasBalance() {
     return (
       <span style={{ marginRight: 20 }}>
-        Balance: {this.state.aliases.filter(i => i.alias).map(i => i.balance).reduce((prev, next) => (next + prev), 0)} SYS
+        Balance: {this.state.aliases.map(i => i.balance).reduce((prev, next) => (next + prev), 0)} SYS
       </span>
     )
   }

@@ -1,7 +1,9 @@
 /*
     Custom CSS file.
+
     Class list:
-    App body: app-body
+
+    App body: .app-body
     Tabs container: .tabs-app
         Tabs: .tab
             Accounts: .tab-accounts
@@ -14,6 +16,7 @@
                 Container: .alias-box
                 Image: .alias-img
                 Text column: .text-col
+                    Type: .alias-type
                     Alias name: .alias-name
                     Alias balance: .alias-balance
                     Alias address: .alias-address
