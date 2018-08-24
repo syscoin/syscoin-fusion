@@ -4,6 +4,15 @@ const admin = require('firebase-admin')
 const upgradeMn = require('../functions/helpers/upgrade-mn')
 const saveMnStatus = require('../functions/helpers/save-vps-status')
 
+/**
+ * @api {post} /upgrade-mn Upgrade MN
+ * @apiDescription Needs firebase authentication - Upgrade the version of an specific MN
+ * @apiGroup Endpoints
+ * 
+ * @apiParam {String} dropletId Droplet ID (which can be found in vps collection as "vpsid" property)
+ * @apiSuccessExample {json} Success
+ * {error: false, message: 'Masternode updated successfully.' }
+ */
 module.exports = (req, res) => {
     const userId = req.user.uid,
           dropletId = req.body.dropletId

@@ -404,5 +404,38 @@
     "filename": "functions/endpoints/request-pooling.js",
     "groupTitle": "Endpoints",
     "name": "PostRequestPooling"
+  },
+  {
+    "type": "post",
+    "url": "/upgrade-mn",
+    "title": "Upgrade MN",
+    "description": "<p>Needs firebase authentication - Upgrade the version of an specific MN</p>",
+    "group": "Endpoints",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "dropletId",
+            "description": "<p>Droplet ID (which can be found in vps collection as &quot;vpsid&quot; property)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{error: false, message: 'Masternode updated successfully.' }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/user-upgrade.js",
+    "groupTitle": "Endpoints",
+    "name": "PostUpgradeMn"
   }
 ]
