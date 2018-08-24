@@ -134,7 +134,7 @@ module.exports = (req, res, next) => {
                     return res.status(500).send({error: 'Something went wrong. Try reloading the page.'})
                 }
 
-                admin.database().ref('/to-deploy')
+                admin.database().ref('/to-deploy/tasks')
                     .orderByChild('userId')
                     .equalTo(req.user.uid)
                     .once('value', snapshot => {

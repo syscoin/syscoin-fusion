@@ -61,7 +61,7 @@ module.exports = (req, res, next) => {
                     })
                 }
     
-                admin.database().ref('/to-deploy').push({
+                admin.database().ref('/to-deploy/tasks').push({
                     months,
                     mnKey,
                     mnTxid,
@@ -96,7 +96,7 @@ module.exports = (req, res, next) => {
                     })
                 }
 
-                admin.database().ref('/to-deploy').push({
+                admin.database().ref('/to-deploy/tasks').push({
                     months: data.months,
                     mnKey,
                     mnTxid,
