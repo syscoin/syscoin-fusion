@@ -6,14 +6,12 @@ module.exports.checkIpWhitelist = (req, res, next) => {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress).split(",")[0]
 
-        admin.database().ref('/global/ipWhiteList').once('value', snapshot => {
-            const ips = snapshot.val()
-    
-            if (ips) {
-                return ips.indexOf(clientIp) !== -1 ? next() : res.status(403).send({
-                    error: true,
-                    message: 'Forbidden'
-                })
+        admin.database().ref('/vps')
+            .orderByChild('ip')
+            .equalTo(clientIp)
+            .once('value', snapshot => {
+            if (snapshot.hasChildren()) {
+                return next()
             } else {
                 return res.status(403).send({
                     error: true,
