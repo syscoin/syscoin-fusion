@@ -38,7 +38,8 @@ const async = require('async')
 				"status": "Not capable masternode: Masternode not in masternode list",
 				"uptime": 0,
 				"userId": "mkIYEF2gCERwj0bzwghW7Z0A7A72",
-				"vpsid": 96358319,
+                "vpsid": 96358319,
+                "shouldUpdate": true, // Only if VPS is upgradable
 				"id": "-LEBMahUdZ_kJCNdKUNP"
 			}
 		}
