@@ -37,10 +37,10 @@ export default class NewAlias extends Component<Props, State> {
   generateUnfinishedAliases() {
     try {
       return (
-        <ul>
-          Unfinished aliases:
+        <ul className='create-alias-unfinished-aliases-ul'>
+          <span className='create-alias-unfinished-aliases-text'>Unfinished aliases:</span>
           {this.props.getUnfinishedAliases().map(i => (
-            <li key={JSON.stringify(i)}>{i.alias}</li>
+            <li key={JSON.stringify(i)} className='create-alias-unfinished-aliases-li'>{i.alias}</li>
           ))}
         </ul>
       )
@@ -82,77 +82,88 @@ export default class NewAlias extends Component<Props, State> {
 
   render() {
     return (
-      <div className='create-alias'>
-        <h3 className='white-text'>Create new alias</h3>
-        <div>
+      <div className='create-alias-container'>
+        <h3 className='create-alias-title'>Create new alias</h3>
+        <div className='create-alias-unfinished-aliases'>
           {this.generateUnfinishedAliases()}
         </div>
-        <Input
-          name='aliasName'
-          placeholder='New alias name'
-          onChange={e => this.props.updateFields(e, 'newAlias')}
-          value={this.props.aliasName}
-        />
-        <Input
-          name='publicValue'
-          placeholder='Public Value'
-          onChange={e => this.props.updateFields(e, 'newAlias')}
-          value={this.props.publicValue}
-        />
-        <Select
-          name='acceptTransferFlags'
-          placeholder='Accept Transfer Flag'
-          onChange={e => this.props.updateFields({
-            target: {
-              name: 'acceptTransferFlags',
-              value: e
-            }
-          }, 'newAlias')}
-          style={{width: '100%'}}
-          value={this.props.acceptTransferFlags}
-        >
-          <Option value={0}>0 - None</Option>
-          <Option value={1}>1 - Accepting certificate transfers</Option>
-          <Option value={2}>2 - Accepting asset transfers</Option>
-          <Option value={3}>3 - All</Option>
-        </Select>
-        <Input
-          name='expireTimestamp'
-          placeholder='Expire timestamp'
-          onChange={e => this.props.updateFields(e, 'newAlias')}
-          value={this.props.expireTimestamp}
-        />
-        <Input
-          name='address'
-          placeholder='Address'
-          onChange={e => this.props.updateFields(e, 'newAlias')}
-          value={this.props.address}
-        />
-        <Input
-          name='encryptionPrivKey'
-          placeholder='Encryption Private Key'
-          onChange={e => this.props.updateFields(e, 'newAlias')}
-          value={this.props.encryptionPrivKey}
-        />
-        <Input
-          name='encryptionPublicKey'
-          placeholder='Encryption Public Key'
-          onChange={e => this.props.updateFields(e, 'newAlias')}
-          value={this.props.encryptionPublicKey}
-        />
-        <Input
-          name='witness'
-          placeholder='Witness'
-          onChange={e => this.props.updateFields(e, 'newAlias')}
-          value={this.props.witness}
-        />
-        <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
-          <Button
-            disabled={!this.props.aliasName || this.state.isLoading}
-            onClick={this.createNewAlias.bind(this)}
+        <div className='create-alias-form-container'>
+          <Input
+            name='aliasName'
+            placeholder='New alias name'
+            onChange={e => this.props.updateFields(e, 'newAlias')}
+            value={this.props.aliasName}
+            className='create-alias-control create-alias-form-name'
+          />
+          <Input
+            name='publicValue'
+            placeholder='Public Value'
+            onChange={e => this.props.updateFields(e, 'newAlias')}
+            value={this.props.publicValue}
+            className='create-alias-control create-alias-form-publicvalue'
+          />
+          <Select
+            name='acceptTransferFlags'
+            placeholder='Accept Transfer Flag'
+            onChange={e => this.props.updateFields({
+              target: {
+                name: 'acceptTransferFlags',
+                value: e
+              }
+            }, 'newAlias')}
+            style={{width: '100%'}}
+            value={this.props.acceptTransferFlags}
+            className='create-alias-control create-alias-form-transferflag'
           >
-            Send
-          </Button>
+            <Option value={0}>0 - None</Option>
+            <Option value={1}>1 - Accepting certificate transfers</Option>
+            <Option value={2}>2 - Accepting asset transfers</Option>
+            <Option value={3}>3 - All</Option>
+          </Select>
+          <Input
+            name='expireTimestamp'
+            placeholder='Expire timestamp'
+            onChange={e => this.props.updateFields(e, 'newAlias')}
+            value={this.props.expireTimestamp}
+            className='create-alias-control create-alias-form-timestamp'
+          />
+          <Input
+            name='address'
+            placeholder='Address'
+            onChange={e => this.props.updateFields(e, 'newAlias')}
+            value={this.props.address}
+            className='create-alias-control create-alias-form-address'
+          />
+          <Input
+            name='encryptionPrivKey'
+            placeholder='Encryption Private Key'
+            onChange={e => this.props.updateFields(e, 'newAlias')}
+            value={this.props.encryptionPrivKey}
+            className='create-alias-control create-alias-form-privkey'
+          />
+          <Input
+            name='encryptionPublicKey'
+            placeholder='Encryption Public Key'
+            onChange={e => this.props.updateFields(e, 'newAlias')}
+            value={this.props.encryptionPublicKey}
+            className='create-alias-control create-alias-form-pubkey'
+          />
+          <Input
+            name='witness'
+            placeholder='Witness'
+            onChange={e => this.props.updateFields(e, 'newAlias')}
+            value={this.props.witness}
+            className='create-alias-control create-alias-form-witness'
+          />
+          <div className='create-alias-form-btn-container' style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
+            <Button
+              disabled={!this.props.aliasName || this.state.isLoading}
+              onClick={this.createNewAlias.bind(this)}
+              className='create-alias-form-btn-send'
+            >
+              Send
+            </Button>
+          </div>
         </div>
       </div>
     )

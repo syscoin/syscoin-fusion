@@ -127,17 +127,17 @@ export default class Wallet extends Component<Props, State> {
   generateCurrentAliasBalance() {
     return (
       <span style={{ marginRight: 20 }}>
-        Balance: {this.state.aliases.filter(i => i.alias).map(i => i.balance).reduce((prev, next) => (next + prev), 0)} SYS
+        Balance: {this.state.aliases.map(i => i.balance).reduce((prev, next) => (next + prev), 0)} SYS
       </span>
     )
   }
 
   render() {
     return (
-      <Row>
+      <Row className='app-body'>
         <Col xs={24}>
           <Tabs className='tabs-app' tabBarExtraContent={this.generateCurrentAliasBalance()}>
-            <Tab tab='Accounts' key='1'>
+            <Tab className='tab tab-accounts' tab='Accounts' key='1'>
               <Accounts
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
@@ -146,14 +146,14 @@ export default class Wallet extends Component<Props, State> {
                 updateWallet={this.updateWallet.bind(this)}
               />
             </Tab>
-            <Tab tab='Send' key='2'>
+            <Tab className='tab tab-send' tab='Send' key='2'>
               <Send
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
                 updateWallet={this.updateWallet.bind(this)}
               />
             </Tab>
-            <Tab tab='Tools' key='3'>
+            <Tab className='tab tab-tools' tab='Tools' key='3'>
               <Tools
                 createNewAlias={this.props.createNewAlias}
                 getUnfinishedAliases={this.props.getUnfinishedAliases}
@@ -164,7 +164,7 @@ export default class Wallet extends Component<Props, State> {
                 removeFinishedAlias={this.props.removeFinishedAlias}
               />
             </Tab>
-            <Tab tab='Personalize' key='4'>
+            <Tab className='tab tab-personalize' tab='Personalize' key='4'>
               <Personalize
                 aliasInfo={this.props.aliasInfo}
                 currentAliases={this.state.aliases || []}

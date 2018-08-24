@@ -1,3 +1,7 @@
-.create-alias input, .ant-select {
+.create-alias-container input, .ant-select {
+    margin-bottom: 10px;
+}
+
+.edit-alias-container input, .ant-select {
     margin-bottom: 10px;
 }

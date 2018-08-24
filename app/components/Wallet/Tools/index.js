@@ -67,6 +67,7 @@ export default class Tools extends Component<Props, State> {
           style={{
             textAlign: 'center'
           }}
+          className='tools-container'
         >
           <NewAlias
             createNewAlias={this.props.createNewAlias}

@@ -151,9 +151,10 @@ export default class Send extends Component<Props, State> {
           style={{
             textAlign: 'center'
           }}
+          className='send-asset-container'
         >
-          <div className='send-form'>
-            <h3 className='white-text'>Send assets</h3>
+          <div className='send-asset-form-container'>
+            <h3 className='send-asset-form-title'>Send assets</h3>
             <Select
               onChange={e => this.setState({asset: {
                 ...this.state.asset,
@@ -161,6 +162,7 @@ export default class Send extends Component<Props, State> {
               }})}
               style={{width: '100%', marginBottom: 10}}
               placeholder='Send from'
+              className='send-asset-form-control send-asset-form-type-from'
             >
               <Option value={1}>Address</Option>
               <Option value={2}>Alias</Option>
@@ -173,23 +175,49 @@ export default class Send extends Component<Props, State> {
                 }})}
                 style={{width: '100%', marginBottom: 10}}
                 placeholder='Select alias'
+                className='send-asset-form-control send-asset-form-select-alias'
               >
                 {this.generateAliasesOptions()}
               </Select>
             )}
             {this.state.asset.fromType === 1 && (
-              <Input name='fromAddress' placeholder='Address' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.fromAddress} />
+              <Input
+                name='fromAddress'
+                placeholder='Address'
+                onChange={e => this.updateFields(e, 'asset')}
+                value={this.state.asset.fromAddress}
+                className='send-asset-form-control send-asset-form-from-address'
+              />
             )}
-            <Input name='assetId' placeholder='Asset ID' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.assetId} />
-            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.toAddress} />
-            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'asset')} value={this.state.asset.amount} />
-            <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
-              <Button onClick={this.sendAsset.bind(this)}>Send</Button>
+            <Input
+              name='assetId'
+              placeholder='Asset ID'
+              onChange={e => this.updateFields(e, 'asset')}
+              value={this.state.asset.assetId}
+              className='send-asset-form-control send-asset-form-asset-id'
+            />
+            <Input
+              name='toAddress'
+              placeholder='Send to address...'
+              onChange={e => this.updateFields(e, 'asset')}
+              value={this.state.asset.toAddress}
+              className='send-asset-form-control send-asset-form-to-address'
+            />
+            <Input
+              name='amount'
+              placeholder='Amount'
+              pattern='\d+'
+              onChange={e => this.updateFields(e, 'asset')}
+              value={this.state.asset.amount}
+              className='send-asset-form control send-asset-form-asset'
+            />
+            <div className='send-asset-form-btn-container' style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
+              <Button onClick={this.sendAsset.bind(this)} className='send-asset-form-btn-send'>Send</Button>
             </div>
           </div>
         </Col>
-        <Col xs={24}>
-          <hr />
+        <Col xs={24} className='separator-container'>
+          <hr className='separator' />
         </Col>
         <Col
           xs={8}
@@ -197,17 +225,41 @@ export default class Send extends Component<Props, State> {
           style={{
             textAlign: 'center'
           }}
+          className='send-sys-container'
         >
-          <div className='send-form'>
-            <h3 className='white-text'>Send SYS</h3>
-            <h4 className='white-text'>Current balance: {this.props.currentBalance}</h4>
-            <Input name='toAddress' placeholder='Send to address...' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.toAddress} />
-            <Input name='amount' placeholder='Amount' pattern='\d+' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.amount} />
-            <Input name='comment' placeholder='Comment' onChange={e => this.updateFields(e, 'sys')} value={this.state.sys.comment} />
-            <div style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
+          <div className='send-sys-form-container'>
+            <h3 className='send-sys-form-title'>Send SYS</h3>
+            <h4 className='send-sys-form-balance'>Current balance: <span className='send-sys-form-balance-number'>{this.props.currentBalance}</span></h4>
+            <Input
+              name='toAddress'
+              placeholder='Send to address...'
+              onChange={e => this.updateFields(e, 'sys')}
+              value={this.state.sys.toAddress}
+              className='send-sys-form-control send-sys-form-to-address'
+            />
+            <Input
+              name='amount'
+              placeholder='Amount'
+              pattern='\d+'
+              onChange={e => this.updateFields(e, 'sys')}
+              value={this.state.sys.amount}
+              className='send-sys-form-control send-sys-form-amount'
+            />
+            <Input
+              name='comment'
+              placeholder='Comment'
+              onChange={e => this.updateFields(e, 'sys')}
+              value={this.state.sys.comment}
+              className='send-sys-form-control send-sys-form-comment'
+            />
+            <div
+              style={{textAlign: 'right', padding: '10px 0 10px 0'}}
+              className='send-asset-form-btn-container'
+            >
               <Button
                 disabled={!this.state.sys.amount || !this.state.sys.toAddress}
                 onClick={this.sendSys.bind(this)}
+                className='send-sys-form-btn-send'
               >
                 Send
               </Button>

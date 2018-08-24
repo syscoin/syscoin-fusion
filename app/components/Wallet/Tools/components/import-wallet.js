@@ -46,10 +46,10 @@ export default class ImportWallet extends Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <h3 className='white-text'>Import wallet</h3>
+      <div className='import-wallet-container'>
+        <h3 className='import-wallet-title'>Import wallet</h3>
         <Upload action='' beforeUpload={this.beforeUpload.bind(this)} showUploadList={false}>
-          <Button disabled={this.state.isLoading}>
+          <Button disabled={this.state.isLoading} className='import-wallet-btn'>
             <Icon type='upload' /> Import wallet
           </Button>
         </Upload>

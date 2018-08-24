@@ -40,15 +40,16 @@ export default class Accounts extends Component<Props, State> {
   }
 
   generateAliasesBoxes() {
-    return this.props.currentAliases.filter(i => i.alias).map((i, key) => (
-      <Row className='alias-box' key={key} onClick={() => this.updateSelectedAlias(i.alias)}>
+    return this.props.currentAliases.map((i, key) => (
+      <Row className='alias-box' key={key} onClick={() => this.updateSelectedAlias(i.alias ? i.alias : i.address)}>
         <Col xs={4} offset={7}>
           <img className='alias-img' src={`https://api.adorable.io/avatars/125/${i.address}@ert.io`} alt='Alias' />
         </Col>
         <Col xs={6} className='text-col'>
-          <div className='alias-name'>{i.alias || 'Unnamed alias'}</div>
+          <div className='alias-type'>Type: {i.alias ? 'Alias' : 'Address'}</div>
+          <div className='alias-name'>{i.alias ? i.alias : i.address}</div>
           <div className='alias-balance'>{i.balance} SYS</div>
-          <div className='alias-address'>{i.address}</div>
+          {i.alias && <div className='alias-address'>{i.address}</div>}
         </Col>
       </Row>
     ))
@@ -70,11 +71,11 @@ export default class Accounts extends Component<Props, State> {
 
   generateTransactions() {
     return (
-      <div>
-        <h3>Transactions for alias: {this.state.selectedAlias}</h3>
+      <div className='assets-transaction-container'>
+        <h3 className='assets-transaction-title'>Transactions for alias: <span className='assets-transaction-title-selected'>{this.state.selectedAlias}</span></h3>
         <Row>
-          <Col xs={12} offset={7} className='text-col'>
-            <table>
+          <Col xs={12} offset={7} className='assets-transaction-table-container'>
+            <table className='assets-transaction-table'>
               <thead>
                 <tr>
                   <th width='200px'>Sender</th>
@@ -106,11 +107,11 @@ export default class Accounts extends Component<Props, State> {
 
   generateAliasAssets() {
     return (
-      <div>
-        <h3>Assets for alias: {this.state.selectedAlias}</h3>
+      <div className='assets-table-container'>
+        <h3 className='assets-table-title'>Assets for alias/address: <span className='assets-table-title-selected'>{this.state.selectedAlias}</span></h3>
         <Row>
-          <Col xs={12} offset={7} className='text-col'>
-            <table>
+          <Col xs={12} offset={7} className='assets-table-container'>
+            <table className='assets-table'>
               <thead>
                 <tr>
                   <th width='200px'>Symbol</th>
@@ -217,21 +218,17 @@ export default class Accounts extends Component<Props, State> {
 
   render() {
     return (
-      <Row>
+      <Row className='accounts-container'>
         <Col
           xs={24}
           style={{
             textAlign: 'center'
           }}
         >
-          <p>This is your current address:</p>
-          <p>{this.props.currentAddress}</p>
-          <p>Current balance:</p>
-          <p>{this.props.currentBalance}</p>
-          <p>Your aliases:</p>
+          <p className='accounts-your-aliases-text'>Your aliases/addreses:</p>
           {this.generateAliasesBoxes()}
-          {this.state.aliasAssets.isLoading ? <h3>Loading Assets</h3> : this.generateAliasAssets()}
-          {this.state.transactions.isLoading ? <h3>Loading transactions</h3> : this.generateTransactions()}
+          {this.state.aliasAssets.isLoading ? <h3 className='loading-assets'>Loading Assets</h3> : this.generateAliasAssets()}
+          {this.state.transactions.isLoading ? <h3 className='loading-transactions'>Loading transactions</h3> : this.generateTransactions()}
         </Col>
       </Row>
     )
