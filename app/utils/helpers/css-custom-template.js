@@ -1,4 +1,5 @@
-module.exports = `
+module.exports = {
+    css: `
 /*\r\n
     Custom CSS file. User can customize his wallet from here.\r\n
     \r\n
@@ -101,5 +102,9 @@ module.exports = `
         General:\r\n
             Separator: .separator-container\r\n
                 hr: .separator\r\n
-*/\r\n
+*/\r\n`,
+    cfg: `
+# Place your assets here separated by a comma (Ex. guid=asset1,asset2,asset3...)\r\n
+guid=none\r\n
 `
+}

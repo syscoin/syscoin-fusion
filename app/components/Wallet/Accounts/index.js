@@ -168,7 +168,10 @@ export default class Accounts extends Component<Props, State> {
   }
 
   getAliasTransactions(alias: string) {
-    this.props.getTransactionsForAlias(alias).then(res => this.setState({
+    this.props.getTransactionsForAlias({
+      alias,
+      asset: global.appStorage.get('guid')
+    }).then(res => this.setState({
       transactions: {
         isLoading: false,
         data: res.data
@@ -177,7 +180,10 @@ export default class Accounts extends Component<Props, State> {
   }
 
   getAliasAssets(alias: string) {
-    this.props.getTransactionsForAlias(alias).then(res => {
+    this.props.getTransactionsForAlias({
+      alias,
+      asset: global.appStorage.get('guid')
+    }).then(res => {
       const assets = {}
 
       res.data.forEach(i => {

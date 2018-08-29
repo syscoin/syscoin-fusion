@@ -16,6 +16,12 @@ import './app.global.css'
 
 const store = configureStore()
 
+// App storage setup
+global.appStorage = new Storage({
+  configName: 'app-storage',
+  defaults: {...storageSchema}
+})
+
 render(
   <AppContainer>
     <Root store={store} history={history} />
@@ -34,12 +40,6 @@ if (module.hot) {
     )
   })
 }
-
-// App storage setup
-global.appStorage = new Storage({
-  configName: 'app-storage',
-  defaults: {...storageSchema}
-})
 
 // Closes syscoind on exit
 window.onbeforeunload = () => {

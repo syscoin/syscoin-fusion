@@ -9,6 +9,11 @@ const { confError, successStart, reloadSysConf } = require('../actions/startup')
 const generateCmd = require('./cmd-gen')
 const getSysPath = require('./syspath')
 
+// Get documents path
+const appDocsPath = join(app.getPath('documents'), 'Fusion')
+const customCssPath = join(appDocsPath, 'custom.css')
+const confPath = join(appDocsPath, 'fusion.cfg')
+
 const checkSyscoind = (dispatch, cb) => {
   // Just a test to check if syscoind is ready
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
@@ -38,10 +43,7 @@ const checkSyscoind = (dispatch, cb) => {
 }
 
 const checkAndCreateDocFolder = () => {
-  // Get Doc's path
-  const appDocsPath = join(app.getPath('documents'), 'Fusion')
-  const cssTemplate = require('./helpers/css-custom-template')
-  const customCssPath = join(appDocsPath, 'custom.css')
+  const docs = require('./helpers/css-custom-template') // eslint-disable-line global-require
 
   if (!fs.existsSync(appDocsPath)) {
     // If docs path doesnt exist, try to create it.
@@ -50,8 +52,8 @@ const checkAndCreateDocFolder = () => {
 
       // Attemps to copy custom files
       fs.writeFileSync(
-        join(appDocsPath, 'custom.css'),
-        cssTemplate
+        customCssPath,
+        docs.css
       )
     } catch (e) {
       // Show an alert if an error comes up
@@ -62,28 +64,61 @@ const checkAndCreateDocFolder = () => {
   if (!fs.existsSync(customCssPath)) {
     // If cant find custom.css file, regenerate it.
     fs.writeFileSync(
-      join(appDocsPath, 'custom.css'),
-      cssTemplate
+      customCssPath,
+      docs.css
+    )
+  }
+
+  if (!fs.existsSync(confPath)) {
+    // If cant find fusion.cfg file, regenerate it.
+    fs.writeFileSync(
+      confPath,
+      docs.cfg
     )
   }
 }
 
 const loadCustomCss = () => {
-  const customCssPath = join(app.getPath('documents'), 'Fusion', 'custom.css')
-
   try {
     const css = fs.readFileSync(customCssPath)
 
-    const style = document.createElement("style");
-    style.type = "text/css";
-    style.innerHTML = css;
-    document.body.appendChild(style);
+    const style = document.createElement("style")
+    style.type = "text/css"
+    style.innerHTML = css
+    document.body.appendChild(style)
   } catch(e) {
     swal('Error', 'Error while loading custom CSS', 'error')
   }
 }
 
-const startUpRoutine = (dispatch, env) => {
+const loadConfIntoEnv = () => {
+  let conf
+
+  try {
+    conf = fs.readFileSync(confPath, 'utf-8')
+  } catch (e) {
+    swal('Error', 'Error while loading fusion.conf', 'error')
+  }
+
+  conf.split('\r\n').forEach(i => {
+    // Parses fusion.cfg
+    const trimmed = i.trim()
+
+    if (trimmed[0] === '#' || !trimmed) {
+      // Ignore comments and empty lines
+      return
+    }
+
+    // Parses keys and values
+    const key = trimmed.split('=')[0]
+    const value = trimmed.split('=')[1].split(',')
+
+    // Write the key/value pair into environment variables
+    global.appStorage.set(key, value === 'none' ? [] : value)
+  })
+}
+
+const startUpRoutine = (dispatch) => {
   if (!fs.existsSync(getSysPath('default'))) {
     // Attemps to create SyscoinCore folder if this doesn't exists already.
     try {
@@ -100,14 +135,17 @@ const startUpRoutine = (dispatch, env) => {
 
   // Docs path initialization
   checkAndCreateDocFolder()
+
+  // Apply custom settings
   loadCustomCss()
+  loadConfIntoEnv()
 
   // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
   exec(generateCmd('syscoind', ''), (err) => {
     if (err.message.indexOf('-reindex') !== -1) {
-      swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning').then(() => {
-        return exec(generateCmd('syscoind', '-reindex'))
-      }).catch(() => app.quit())
+      swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning')
+        .then(() => exec(generateCmd('syscoind', '-reindex')))
+        .catch(() => app.quit())
     }
   })
 

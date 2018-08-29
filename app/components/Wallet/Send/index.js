@@ -131,8 +131,8 @@ export default class Send extends Component<Props, State> {
   }
 
   generateAliasesOptions() {
-    return this.props.currentAliases.filter(i => i.alias).map((i, key) => (
-      <Option key={key} value={i.alias}>{i.alias}</Option>
+    return this.props.currentAliases.filter(i => i.alias).map((i) => (
+      <Option key={i} value={i.alias}>{i.alias}</Option>
     ))
   }
 
@@ -140,6 +140,31 @@ export default class Send extends Component<Props, State> {
     this.setState({
       ...this.stateSchema
     })
+  }
+
+  generateAssetsOptions() {
+    return (
+      <Select
+        defaultValue='Asset ID'
+        onChange={e => this.setState({asset: {
+          ...this.state.asset,
+          assetId: e
+        }})}
+        style={{width: '100%', marginBottom: 10}}
+        placeholder='Asset'
+        className='send-asset-form-control send-asset-form-asset-id'
+        value={this.state.asset.assetId}
+      >
+        <Option value=''>
+            Asset ID
+        </Option>
+        {global.appStorage.get('guid').map(i => (
+          <Option value={i} key={i}>
+            {i}
+          </Option>
+        ))}
+      </Select>
+    )
   }
 
   render() {
@@ -189,13 +214,15 @@ export default class Send extends Component<Props, State> {
                 className='send-asset-form-control send-asset-form-from-address'
               />
             )}
-            <Input
-              name='assetId'
-              placeholder='Asset ID'
-              onChange={e => this.updateFields(e, 'asset')}
-              value={this.state.asset.assetId}
-              className='send-asset-form-control send-asset-form-asset-id'
-            />
+            {global.appStorage.get('guid').length ? this.generateAssetsOptions() : (
+              <Input
+                name='assetId'
+                placeholder='Asset ID'
+                onChange={e => this.updateFields(e, 'asset')}
+                value={this.state.asset.assetId}
+                className='send-asset-form-control send-asset-form-asset-id'
+              />
+            )}
             <Input
               name='toAddress'
               placeholder='Send to address...'
