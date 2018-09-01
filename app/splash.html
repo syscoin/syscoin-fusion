@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Fusion Wallet - Loading</title>
+  <script>
+    (function () {
+      if (!process.env.HOT) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = './dist/style.css';
+        // HACK: Writing the script path should be done with webpack
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+    }());
+  </script>
+  <style>
+    img.splash-img {
+      height: 420px;
+      width: 350px;
+    }
+
+    .progress-container {
+      width: 65%;
+      position: absolute;
+      bottom: 125px;
+      background: gray;
+      z-index: 9999;
+      height: 20px;
+      left: 50px;
+    }
+
+    .progress-container .progress {
+      width: 0%;
+      height: 20px;
+      background: #44f;
+    }
+  </style>
+</head>
+
+<body>
+  <img class='splash-img' />
+  <div class='progress-container'>
+    <div class='progress'>
+
+    </div>
+  </div>
+  <div id='root' style='display: none'></div>
+  <script>
+    {
+      const scripts = [];
+
+      // Dynamically insert the DLL script in development env in the
+      // renderer process
+      if (process.env.NODE_ENV === 'development') {
+        scripts.push('../dll/renderer.dev.dll.js');
+      }
+
+      // Dynamically insert the bundled app script in the renderer process
+      const port = process.env.PORT || 1212;
+      scripts.push(
+        (process.env.HOT)
+          ? 'http://localhost:' + port + '/dist/loading.dev.js'
+          : './dist/loading.prod.js'
+      );
+
+      document.write(
+        scripts
+          .map(script => `<script defer src="${script}"><\/script>`)
+          .join('')
+      );
+    }
+  </script>
+</body>
+
+</html>

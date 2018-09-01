@@ -41,6 +41,8 @@
             .map(script => `<script defer src="${script}"><\/script>`)
             .join('')
         );
+
+        global.starting = true;
       }
     </script>
   </body>
