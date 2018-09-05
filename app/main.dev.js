@@ -74,7 +74,7 @@ app.on('ready', async () => {
     height: 500,
     frame: false,
     transparent: true,
-    resizable: false
+    resizable: true
   })
 
   splashWindow.loadURL(`file://${__dirname}/splash.html`)
@@ -85,29 +85,33 @@ app.on('ready', async () => {
     }
     splashWindow.show()
     splashWindow.focus()
+  })
 
-    ipcMain.on('start-success', () => {
+  ipcMain.on('start-success', () => {
+    mainWindow.loadURL(`file://${__dirname}/app.html`)
+  })
 
-      mainWindow.loadURL(`file://${__dirname}/app.html`)
+  mainWindow.webContents.on('did-finish-load', () => {
+    if (!mainWindow) {
+      throw new Error('"mainWindow" is not defined')
+    }
 
-      mainWindow.webContents.on('did-finish-load', () => {
-        if (!mainWindow) {
-          throw new Error('"mainWindow" is not defined')
-        }
+    mainWindow.show()
+    mainWindow.focus()
 
-        splashWindow.close()
-        mainWindow.show()
-        mainWindow.focus()
-      })
-      
-      mainWindow.on('closed', () => {
-        mainWindow = null
-      })
-    })
+    splashWindow.close()
+  })
+  
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+
+  splashWindow.on('closed', () => {
+    splashWindow = null
   })
 
   const menuBuilder = new MenuBuilder(mainWindow)
-  // const menuSplashBuilder = new MenuBuilder(splashWindow)
-  // menuSplashBuilder.buildMenu()
+  const menuSplashBuilder = new MenuBuilder(splashWindow)
+  menuSplashBuilder.buildMenu()
   menuBuilder.buildMenu()
 })

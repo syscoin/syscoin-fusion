@@ -20,7 +20,7 @@
       height: 420px;
       width: 350px;
     }
-
+  
     .progress-container {
       width: 65%;
       position: absolute;
@@ -30,11 +30,15 @@
       height: 20px;
       left: 50px;
     }
-
+  
     .progress-container .progress {
+      display: flex;
+
       width: 0%;
       height: 20px;
       background: #44f;
+      align-content: center;
+      align-items: center;
     }
   </style>
 </head>
@@ -43,10 +47,9 @@
   <img class='splash-img' />
   <div class='progress-container'>
     <div class='progress'>
-
+      Initializing...
     </div>
   </div>
-  <div id='root' style='display: none'></div>
   <script>
     {
       const scripts = [];

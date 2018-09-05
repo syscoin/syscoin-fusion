@@ -1,5 +1,6 @@
 const { exec } = require('child_process')
 const { app } = require('electron').remote
+const { ipcRenderer } = require('electron')
 const fs = require('fs')
 const { join } = require('path')
 const swal = require('sweetalert')
@@ -137,14 +138,14 @@ const startUpRoutine = (cb) => {
     confPath
   })
 
-  updateProgressbar(30)
+  updateProgressbar(30, 'Loading custom CSS')
 
   // Apply custom settings
   loadCustomCss(customCssPath)
-  updateProgressbar(50)
+  updateProgressbar(50, 'Loading config')
   loadConfIntoEnv(confPath)
 
-  updateProgressbar(60)
+  updateProgressbar(60, 'Connecting to syscoin...')
 
   // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
   exec(generateCmd('syscoind', ''), (err) => {
@@ -160,6 +161,7 @@ const startUpRoutine = (cb) => {
       // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
       checkSyscoind((error, status, output) => {
         if (error) {
+          updateProgressbar(60, 'Something went wrong.')
           return swal('Error', 'Something went wrong. Exiting...', 'error').then(() => app.exit()).catch(() => app.exit())
         }
 
@@ -168,18 +170,21 @@ const startUpRoutine = (cb) => {
         }
 
         if (status === 'up') {
-          updateProgressbar(100)
+          updateProgressbar(100, 'Ready to launch')
           // if its up, clear the interval.
           clearInterval(global.checkInterval)
-          cb(null, output)
+          ipcRenderer.send('start-success')
         }
       })
     }, 5000)
   }
 }
 
-function updateProgressbar(value) {
+function updateProgressbar(value, text) {
   document.querySelectorAll('.progress')[0].style.width = `${value}%`
+  if (text) {
+    document.querySelectorAll('.progress')[0].innerHTML = text
+  }
 }
 
 export default startUpRoutine

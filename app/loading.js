@@ -1,16 +1,16 @@
-import splashSrc from './splash.png'
+import SplashImage from './splash.png'
 
-const SplashImage = new Image
+const splashImage = new Image
 
-SplashImage.onload = () => {
-    document.querySelectorAll('.splash-img')[0].src = SplashImage.src
+splashImage.onload = () => {
+    document.querySelectorAll('.splash-img')[0].src = splashImage.src
 }
 
-SplashImage.src = splashSrc
+splashImage.src = SplashImage
 
 const Storage = require('./utils/storage')
 const storageSchema = require('./utils/helpers/storage-schema')
-const { ipcRenderer } = require('electron')
+
 
 global.appStorage = new Storage({
     configName: 'app-storage',
@@ -19,10 +19,4 @@ global.appStorage = new Storage({
 
 const startUpRoutine = require('./utils/startup')
 
-startUpRoutine(err => {
-    if (err) {
-        return
-    }
-
-    ipcRenderer.send('start-success')
-})
+startUpRoutine(err => console.log(err))
