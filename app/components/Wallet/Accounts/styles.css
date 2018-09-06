@@ -1,15 +1,133 @@
+.accounts-container {
+    height: 100% !important;
+}
+
+.alias-separator {
+    border-color: rgba(120,120,120,0.5) !important;
+    border-width: 0.4px;
+}
+
+.accounts-container-left {
+    height: 100%;
+    background: #525252;
+    z-index: 999;
+    margin-bottom: 0;
+    box-shadow: inset 0 0 300px rgba(0, 0, 0, 0.1);
+    opacity: 0.9;
+}
+
+.accounts-container-left .balance-container {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.accounts-container-left .balance-container .your-balance-title {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgb(127, 178, 236);
+    text-shadow: 0 0 50px #888;
+    font-size: 17px;
+}
+
+.accounts-container-left .balance-container .your-balance-amount {
+    font-size: 25px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: #ddd;
+    margin-top: -10px;
+    text-shadow: 0 0 50px #888;
+}
+
+.aliases-container {
+    height: 60%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: #444;
+}
+
+.aliases-container::-webkit-scrollbar {
+    width: 0.3em;
+}
+ 
+.aliases-container::-webkit-scrollbar-thumb {
+    background-color: #333;
+    margin-top: 5px;
+    outline: 1px solid slategrey;
+    border-radius: 5px;
+}
+
+.aliases-container::-webkit-scrollbar-button:vertical:decrement {
+    height: 4px;
+}
+
+.aliases-container::-webkit-scrollbar-track {
+    
+}
+
 .alias-box {
-    position: relative;
+    z-index: 11;
     margin-bottom: 20px;
-    padding: 20px;
     cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.alias-box.non-expanded {
+    padding-left: 20px;
+    opacity: 0.5;
+}
+
+.alias-box.expanded {
+    background: #333;
+    padding: 10px 0;
+    position: sticky;
+    width: 110%;
+}
+
+.alias-box.expanded .alias-text-container {
+    padding-top: 15px;
+}
+
+.alias-box .alias-img-container {
+    padding-right: 20px;
+}
+
+.alias-box .alias-img {
+    border-radius: 50%;
+    width: 100%;
+}
+
+.alias-box .alias-img.tiny-img {
+    width: 20%;
 }
 
 .alias-box:hover {
     opacity: 0.8;
 }
 
-.alias-box .text-col div {
-    text-align: left;
-    margin-bottom: 10px;
+.alias-box .alias-type {
+    font-weight: bold;
+    color: #aaa;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.alias-box .alias-name {
+    font-weight: 400;
+    font-size: 14px;
+    color: #ddd;
+}
+
+.alias-box .alias-name.trim {
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    width: 220px;
+    white-space: nowrap;
+}
+
+.sys-logo-bg {
+    opacity: 0.7;
+    position: absolute;
+    top: 160px;
+    right: 160px;
 }

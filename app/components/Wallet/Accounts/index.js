@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col } from 'antd'
+import SyscoinLogo from '../../../syscoin-logo.png'
 
 type Props = {
   currentAddress: string,
@@ -27,7 +28,7 @@ export default class Accounts extends Component<Props, State> {
     super(props)
 
     this.state = {
-      selectedAlias: '',
+      selectedAlias: null,
       aliasAssets: {
         isLoading: false,
         data: []
@@ -39,17 +40,19 @@ export default class Accounts extends Component<Props, State> {
     }
   }
 
+  isAliasSelected(aliasInfo) {
+    return aliasInfo.alias ? aliasInfo.alias === this.state.selectedAlias : aliasInfo.address === this.state.selectedAlias
+  }
+
   generateAliasesBoxes() {
     return this.props.currentAliases.map((i, key) => (
-      <Row className='alias-box' key={key} onClick={() => this.updateSelectedAlias(i.alias ? i.alias : i.address)}>
-        <Col xs={4} offset={7}>
+      <Row className={`alias-box ${this.isAliasSelected(i) ? 'expanded' : 'non-expanded'}`} key={key} onClick={() => this.updateSelectedAlias(i.alias ? i.alias : i.address)}>
+        <Col xs={this.isAliasSelected(i) ? 6 : 4} offset={this.isAliasSelected(i) ? 1 : 0} className='alias-img-container'>
           <img className='alias-img' src={`https://api.adorable.io/avatars/125/${i.address}@ert.io`} alt='Alias' />
         </Col>
-        <Col xs={6} className='text-col'>
-          <div className='alias-type'>Type: {i.alias ? 'Alias' : 'Address'}</div>
-          <div className='alias-name'>{i.alias ? i.alias : i.address}</div>
-          <div className='alias-balance'>{i.balance} SYS</div>
-          {i.alias && <div className='alias-address'>{i.address}</div>}
+        <Col xs={16} className='alias-text-container'>
+          <div className={`alias-name ${this.isAliasSelected(i) ? 'trim' : ''}`}>{i.alias ? i.alias : i.address}</div>
+          <div className='alias-type'>{i.alias ? 'Alias' : 'Address'}</div>
         </Col>
       </Row>
     ))
@@ -225,16 +228,22 @@ export default class Accounts extends Component<Props, State> {
   render() {
     return (
       <Row className='accounts-container'>
-        <Col
-          xs={24}
-          style={{
-            textAlign: 'center'
-          }}
-        >
-          <p className='accounts-your-aliases-text'>Your aliases/addreses:</p>
-          {this.generateAliasesBoxes()}
-          {this.state.aliasAssets.isLoading ? <h3 className='loading-assets'>Loading Assets</h3> : this.generateAliasAssets()}
-          {this.state.transactions.isLoading ? <h3 className='loading-transactions'>Loading transactions</h3> : this.generateTransactions()}
+        <Col xs={9} className='accounts-container-left'>
+          <div className='balance-container'>
+            <h4 className='your-balance-title'>
+              Your balance
+            </h4>
+            <h2 className='your-balance-amount'>
+              {Number(this.props.currentBalance).toFixed(2)} SYS
+            </h2>
+          </div>
+          <hr className='alias-separator' />
+          <div className='aliases-container'>
+            {this.generateAliasesBoxes()}
+          </div>
+        </Col>
+        <Col xs={15} className='accounts-container-right'>
+          <img src={SyscoinLogo} alt='sys-logo' width='320' height='200' className='sys-logo-bg' />
         </Col>
       </Row>
     )

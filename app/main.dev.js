@@ -65,7 +65,9 @@ app.on('ready', async () => {
     show: false,
     width: 1024,
     height: 600,
-    frame: false
+    frame: false,
+    transparent: true,
+    resizable: false
   })
 
   splashWindow = new BrowserWindow({
@@ -74,7 +76,7 @@ app.on('ready', async () => {
     height: 500,
     frame: false,
     transparent: true,
-    resizable: true
+    resizable: false
   })
 
   splashWindow.loadURL(`file://${__dirname}/splash.html`)
@@ -111,7 +113,7 @@ app.on('ready', async () => {
   })
 
   const menuBuilder = new MenuBuilder(mainWindow)
-  const menuSplashBuilder = new MenuBuilder(splashWindow)
-  menuSplashBuilder.buildMenu()
+  //const menuSplashBuilder = new MenuBuilder(splashWindow)
+  //menuSplashBuilder.buildMenu()
   menuBuilder.buildMenu()
 })

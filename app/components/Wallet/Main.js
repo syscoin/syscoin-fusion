@@ -136,7 +136,7 @@ export default class Wallet extends Component<Props, State> {
     return (
       <Row className='app-body'>
         <Col xs={24}>
-          <Tabs className='tabs-app' tabBarExtraContent={this.generateCurrentAliasBalance()}>
+          <Tabs className='tabs-app'>
             <Tab className='tab tab-accounts' tab='Accounts' key='1'>
               <Accounts
                 currentAliases={this.state.aliases || []}

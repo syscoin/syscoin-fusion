@@ -183,7 +183,7 @@ const startUpRoutine = (cb) => {
 function updateProgressbar(value, text) {
   document.querySelectorAll('.progress')[0].style.width = `${value}%`
   if (text) {
-    document.querySelectorAll('.progress')[0].innerHTML = text
+    //document.querySelectorAll('.progress')[0].innerHTML = text
   }
 }
 
