@@ -41,9 +41,10 @@ module.exports = (req, res) => {
                 mnName = data.metadata.mnName,
                 mnIndex = data.metadata.mnIndex,
                 userId =  data.metadata.userId,
-                paymentMethod = data.metadata.method
+                paymentMethod = data.metadata.method,
+                nodeType = req.body.nodeType || 'sys'
 
-            admin.database().ref('/to-deploy').push({
+            admin.database().ref('/to-deploy/tasks').push({
                 months,
                 mnKey,
                 mnTxid,
@@ -55,7 +56,8 @@ module.exports = (req, res) => {
                 orderDate: data.created_at,
                 paymentId: data.code,
                 deployed: false,
-                userId
+                userId,
+                nodeType
             })
             return res.send().status(200);
         }
