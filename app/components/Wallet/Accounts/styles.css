@@ -40,7 +40,7 @@
 }
 
 .aliases-container {
-    height: 60%;
+    height: 61%;
     overflow-y: scroll;
     overflow-x: hidden;
     background: #444;
@@ -136,6 +136,26 @@
     white-space: nowrap;
 }
 
+/* Right column */
+
+.accounts-container-right::-webkit-scrollbar {
+    width: 0.3em;
+}
+ 
+.accounts-container-right::-webkit-scrollbar-thumb {
+    background-color: #525252;
+    margin-top: 5px;
+    outline: 1px solid slategrey;
+    border-radius: 30px;
+}
+
+.accounts-container-right::-webkit-scrollbar-button:vertical:decrement {
+    height: 4px;
+}
+.accounts-container-right::-webkit-scrollbar-button:vertical:increment {
+    height: 4px;
+}
+
 .asset-box {
     cursor: pointer;
     padding: 10px;
@@ -154,6 +174,11 @@
 
 .asset-box-container {
     margin-top: 30px;
+}
+
+.accounts-container-right {
+    overflow-y: scroll;
+    height: 93%;
 }
 
 .asset-box-container .asset-box-text {
@@ -203,6 +228,7 @@
 
 .transactions-table {
     margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .transactions-table .ant-table-thead th {
@@ -218,8 +244,20 @@
     color: #afa;
 }
 
-.transactions-table .transactions-table-row td span.amount {
+.transactions-table .transactions-table-row td span.amount.incoming {
     color: #afa;
+}
+
+.transactions-table .transactions-table-row td span.amount.outgoing {
+    color: #faa;
+}
+
+.transactions-table .transactions-table-row td span.arrow.incoming {
+    color: #afa;
+}
+
+.transactions-table .transactions-table-row td i.arrow.outgoing {
+    color: #faa;
 }
 
 .transactions-table .transactions-table-row td span {
@@ -236,8 +274,18 @@
 }
 
 .transactions-table .ant-pagination-item a {
-    color: #ddd;
+    color: #fff;
+    opacity: 0.5;
+}
+
+.transactions-table .ant-pagination-item-active a {
+    color: #fff;
     opacity: 1;
+}
+
+.transactions-table .ant-table-placeholder {
+    background: transparent;
+    color: #ddd;
 }
 
 .sys-logo-bg {

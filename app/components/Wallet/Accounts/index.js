@@ -170,16 +170,11 @@ export default class Accounts extends Component<Props, State> {
     return result
   }
 
-  getAliasTransactions(alias: string) {
-    this.props.getTransactionsForAlias({
-      alias,
-      asset: global.appStorage.get('guid')
-    }).then(res => this.setState({
-      transactions: {
-        isLoading: false,
-        data: res.data
-      }
-    })).catch(err => console.log(err))
+  getAliasTransactions(obj: Object, cb) {
+    const { asset, alias } = obj
+    return this.props.getTransactionsForAlias({
+      alias, asset
+    })
   }
 
   generateAliasAssets() {
@@ -199,21 +194,17 @@ export default class Accounts extends Component<Props, State> {
   }
 
   generateTransactionsTable() {
-    const data = [{
-      date: Date.now(),
-      symbol: 'PEPITO',
-      asset: '09f239023092',
-      sender: 'argvil192',
-      receiver: 'argvil193',
-      amount: '948.21'
-    }]
-
     const columns = [
       {
         title: ' ',
         key: 'symbol',
         dataIndex: 'symbol',
-        render: () => <Icon type='arrow-down' />
+        render: (text, transaction) => (
+          <Icon
+            className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}
+            type={`arrow-${this.isIncoming(transaction) ? 'down' : 'up'}`}
+          />
+        )
       },
       {
         title: 'From',
@@ -231,8 +222,8 @@ export default class Accounts extends Component<Props, State> {
         title: 'Details',
         key: 'amount',
         dataIndex: 'amount',
-        render: text => ({
-          children: <span className='amount'>+{text}</span>,
+        render: (amount, transaction) => ({
+          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>+{amount}</span>,
           props: {
             width: 300
           }
@@ -240,16 +231,55 @@ export default class Accounts extends Component<Props, State> {
       }
     ]
 
-    return <Table dataSource={data} columns={columns} className='transactions-table' rowClassName='transactions-table-row' />
+    return (
+      <Table
+        dataSource={this.state.transactions.data}
+        columns={columns}
+        className='transactions-table'
+        rowClassName='transactions-table-row'
+        pagination={{
+          defaultPageSize: 10
+        }}
+      />
+    )
+  }
+
+  isIncoming(transaction) {
+    if (transaction.receiver === this.state.selectedAlias) {
+      return true
+    }
+
+    return false
   }
 
   selectAsset(asset) {
+
     this.setState({
-      ...this.state,
       aliasAssets: {
         ...this.state.aliasAssets,
         selected: asset
+      },
+      transactions: {
+        ...this.state.transactions,
+        isLoading: true
       }
+    }, () => {
+
+      this.props.getTransactionsForAlias({
+        alias: this.state.selectedAlias,
+        asset
+      }).then(res => this.setState({
+        transactions: {
+          isLoading: false,
+          data: res.data
+        }
+      })).catch(err => this.setState({
+        transactions: {
+          data: [],
+          isLoading: false
+        }
+      }))
+
     })
   }
 
@@ -283,8 +313,12 @@ export default class Accounts extends Component<Props, State> {
           ) : null}
           <Row>
             <Col offset={1} xs={21}>
-              <h4 className='transactions-table-title'>Transactions</h4>
-              {this.generateTransactionsTable()}
+              {this.state.aliasAssets.selected ? (
+                <div>
+                  <h4 className='transactions-table-title'>Transactions</h4>
+                  {this.generateTransactionsTable()}
+                </div>
+              ) : null}
             </Col>
           </Row>
         </Col>
