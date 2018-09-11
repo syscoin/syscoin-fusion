@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col, Tabs } from 'antd'
+import { map } from 'async'
 import Accounts from './Accounts'
 import Send from './Send'
 import Tools from './Tools'
@@ -13,6 +14,7 @@ type Props = {
   currentSysAddress: Function,
   currentBalance: Function,
   editAlias: Function,
+  fetchAssetInfo: Function,
   getAliases: Function,
   getAssetInfo: Function,
   getInfo: Function,
@@ -63,6 +65,40 @@ export default class Wallet extends Component<Props, State> {
     this.getCurrentBalance()
     this.getInfo()
     this.checkIncompletedAliases()
+  }
+
+  getAssetsInfo(alias, cb) {
+    const guids = global.appStorage.get('guid')
+
+    if (guids[0] === 'none') {
+      return cb('NO_ASSET_SELECTED')
+    }
+
+    map(guids, (i, done) => {
+      this.props.getAssetInfo({
+        assetId: i,
+        aliasName: alias
+      }, (err, info) => {
+        if (err) {
+          if (err.message.indexOf('ERRCODE: 1507')) {
+            return done(null, {
+              balance: 0,
+              alias: alias,
+              asset: i
+            })
+          }
+          return done(err)
+        }
+
+        done(null, info)
+      })
+    }, (err, result) => {
+      if (err) {
+        return cb(err)
+      }
+
+      return cb(null, result)
+    })
   }
 
   checkIncompletedAliases() {
@@ -142,6 +178,8 @@ export default class Wallet extends Component<Props, State> {
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
                 currentAddress={this.state.address || ''}
+                fetchAssetInfo={this.props.fetchAssetInfo}
+                getAssetsInfo={this.getAssetsInfo.bind(this)}
                 getTransactionsForAlias={this.props.getTransactionsForAlias}
                 updateWallet={this.updateWallet.bind(this)}
               />
