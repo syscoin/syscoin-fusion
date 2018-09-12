@@ -223,7 +223,7 @@ export default class Accounts extends Component<Props, State> {
         key: 'amount',
         dataIndex: 'amount',
         render: (amount, transaction) => ({
-          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>+{amount}</span>,
+          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{amount}</span>,
           props: {
             width: 300
           }
