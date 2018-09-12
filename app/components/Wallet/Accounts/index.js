@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col, Icon, Table } from 'antd'
+import { Row, Col, Icon, Table, Spin } from 'antd'
 import swal from 'sweetalert'
 import map from 'async/map'
 import SyscoinLogo from '../../../syscoin-logo.png'
@@ -79,6 +79,11 @@ export default class Accounts extends Component<Props, State> {
   }
 
   updateSelectedAlias(alias: string) {
+
+    if (this.state.aliasAssets.isLoading) {
+      return false
+    }
+    
     this.setState({
       selectedAlias: alias,
       aliasAssets: {
@@ -253,7 +258,6 @@ export default class Accounts extends Component<Props, State> {
   }
 
   selectAsset(asset) {
-
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
@@ -321,6 +325,11 @@ export default class Accounts extends Component<Props, State> {
               ) : null}
             </Col>
           </Row>
+          {this.state.aliasAssets.isLoading && 
+            <div className='loading-container'>
+              <Spin indicator={<Icon type='loading' spin />} />
+            </div>
+          }
         </Col>
       </Row>
     )
