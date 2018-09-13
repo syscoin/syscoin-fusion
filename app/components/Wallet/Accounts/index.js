@@ -18,11 +18,13 @@ type State = {
   aliasAssets: {
     selected: '',
     isLoading: boolean,
-    data: Array<any>
+    data: Array<any>,
+    error: boolean
   },
   transactions: {
     isLoading: boolean,
-    data: Array<any>
+    data: Array<any>,
+    error: boolean
   }
 };
 
@@ -37,11 +39,13 @@ export default class Accounts extends Component<Props, State> {
       aliasAssets: {
         selected: '',
         isLoading: false,
-        data: []
+        data: [],
+        error: false
       },
       transactions: {
         isLoading: false,
-        data: []
+        data: [],
+        error: false
       }
     }
   }
@@ -52,7 +56,7 @@ export default class Accounts extends Component<Props, State> {
 
   generateAliasesBoxes() {
     return this.props.currentAliases.map((i, key) => (
-      <Row className={`alias-box ${this.isAliasSelected(i) ? 'expanded' : 'non-expanded'}`} key={key} onClick={() => this.updateSelectedAlias(i.alias ? i.alias : i.address)}>
+      <Row className={`alias-box ${this.isAliasSelected(i) ? 'expanded' : 'non-expanded'} ${this.state.aliasAssets.isLoading ? 'loading' : ''}`} key={key} onClick={() => this.updateSelectedAlias(i.alias ? i.alias : i.address)}>
         <Col xs={this.isAliasSelected(i) ? 6 : 4} offset={this.isAliasSelected(i) ? 1 : 0} className='alias-img-container'>
           <img className='alias-img' src={`https://api.adorable.io/avatars/125/${i.address}@ert.io`} alt='Alias' />
         </Col>
@@ -89,18 +93,20 @@ export default class Accounts extends Component<Props, State> {
       aliasAssets: {
         selected: '',
         isLoading: true,
-        data: []
+        data: [],
+        error: false
       },
       transactions: {
         isLoading: true,
-        data: []
+        data: [],
+        error: false
       }
     }, () => {
       this.getAssetsInfo(alias)
     })
   }
 
-  getAssetsInfo(alias) {
+  getAssetsInfo(alias: string) {
     this.props.getAssetsInfo(alias, (err, result) => {
       if (err) {
         if (err === 'NO_ASSET_SELECTED') {
@@ -110,7 +116,8 @@ export default class Accounts extends Component<Props, State> {
             aliasAssets: {
               selected: '',
               data: [],
-              isLoading: false
+              isLoading: false,
+              error: false
             }
           })
         }
@@ -134,9 +141,17 @@ export default class Accounts extends Component<Props, State> {
             x.not_exists = true
             return done(null, x)
 
-          }).catch(fetchErr => done(fetchErr.data))
+          }).catch(fetchErr => done(fetchErr))
         }, (error, finalResult) => {
           if (error) {
+            this.setState({
+              aliasAssets: {
+                selected: '',
+                data: [],
+                isLoading: false,
+                error: true
+              }
+            })
             return swal('Error', 'Something went wrong', 'error')
           }
 
@@ -144,7 +159,8 @@ export default class Accounts extends Component<Props, State> {
             aliasAssets: {
               selected: '',
               data: finalResult.filter(x => !x.not_exists),
-              isLoading: false
+              isLoading: false,
+              error: false
             }
           })
         })
@@ -154,7 +170,8 @@ export default class Accounts extends Component<Props, State> {
         aliasAssets: {
           selected: '',
           data: result,
-          isLoading: false
+          isLoading: false,
+          error: false
         }
       })
     })
@@ -261,11 +278,13 @@ export default class Accounts extends Component<Props, State> {
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
-        selected: asset
+        selected: asset,
+        error: false
       },
       transactions: {
         ...this.state.transactions,
-        isLoading: true
+        isLoading: true,
+        error: false
       }
     }, () => {
 
@@ -275,12 +294,14 @@ export default class Accounts extends Component<Props, State> {
       }).then(res => this.setState({
         transactions: {
           isLoading: false,
-          data: res.data
+          data: res.data,
+          error: false
         }
       })).catch(err => this.setState({
         transactions: {
           data: [],
-          isLoading: false
+          isLoading: false,
+          error: true
         }
       }))
 

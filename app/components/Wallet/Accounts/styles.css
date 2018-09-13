@@ -88,11 +88,21 @@
     transition: opacity 0.5s;
 }
 
+.alias-box.non-expanded.loading {
+    opacity: 0.2;
+    cursor: wait;
+}
+
 .alias-box.expanded {
     background: #333;
     padding: 10px 0;
     position: sticky;
     width: 110%;
+    transition: opacity 0.3s;
+}
+
+.alias-box.expanded:hover {
+    opacity: 0.9;
 }
 
 .alias-box.expanded .alias-text-container {
