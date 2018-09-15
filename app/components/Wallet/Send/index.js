@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 // import { Link } from 'react-router-dom'
-import { Row, Col, Input, Button, Select } from 'antd'
+import { Row, Col, Input, Button, Select, Spin, Icon } from 'antd'
 import swal from 'sweetalert'
 import {
   getAssetInfo,
@@ -17,17 +17,19 @@ type Props = {
 };
 type State = {
   asset: {
-    fromType: integer,
+    fromType: number,
     fromAddress: string,
     selectedAlias: string,
     assetId: string,
     toAddress: string,
-    amount: string
+    amount: string,
+    isLoading: boolean
   },
   sys: {
     toAddress: string,
     amount: string,
-    comment: string
+    comment: string,
+    isLoading: boolean
   }
 };
 
@@ -47,12 +49,14 @@ export default class Send extends Component<Props, State> {
         selectedAlias: '',
         assetId: '',
         toAddress: '',
-        amount: ''
+        amount: '',
+        isLoading: false
       },
       sys: {
         toAddress: '',
         amount: '',
-        comment: ''
+        comment: '',
+        isLoading: false
       }
     }
 
@@ -79,8 +83,21 @@ export default class Send extends Component<Props, State> {
     const { selectedAlias: fromAlias, toAddress: toAlias, assetId, amount, fromType, fromAddress } = this.state.asset
     const from = fromType === 1 ? fromAddress : fromAlias
 
+    this.setState({
+      asset: {
+        ...this.state.asset,
+        isLoading: true
+      }
+    })
+
     this.isUserAssetOwner((err) => {
       if (err) {
+        this.setState({
+          asset: {
+            ...this.state.asset,
+            isLoading: false
+          }
+        })
         return swal('Error', 'You do not own that asset.', 'error')
       }
 
@@ -90,8 +107,15 @@ export default class Send extends Component<Props, State> {
         assetId,
         amount
       }, (errSend) => {
+
+        this.setState({
+          asset: {
+            ...this.state.asset,
+            isLoading: false
+          }
+        })
+
         if (errSend) {
-          console.log(errSend)
           return swal('Error', 'Error while sending the asset.', 'error')
         }
 
@@ -105,17 +129,39 @@ export default class Send extends Component<Props, State> {
   sendSys() {
     const { amount, toAddress: address, comment } = this.state.sys
 
+    this.setState({
+      sys: {
+        ...this.state.sys,
+        isLoading: true
+      }
+    })
+
     sendSysTransaction({
       address,
       comment,
       amount: amount.toString()
     }, (err) => {
+
       if (err) {
+        this.setState({
+          sys: {
+            ...this.state.sys,
+            isLoading: false
+          }
+        })
         return swal('Error', 'Something went wrong during the transaction', 'error')
       }
 
+      this.setState({
+        sys: {
+          address: '',
+          amount: '',
+          comment: '',
+          isLoading: false
+        }
+      })
+
       this.props.updateWallet()
-      this.cleanFields()
 
       return swal('Success', `${amount} SYS has been successfully sent to ${address}.`, 'success')
     })
@@ -150,7 +196,6 @@ export default class Send extends Component<Props, State> {
           ...this.state.asset,
           assetId: e
         }})}
-        style={{width: '100%', marginBottom: 10}}
         placeholder='Asset'
         className='send-asset-form-control send-asset-form-asset-id'
         value={this.state.asset.assetId}
@@ -169,14 +214,13 @@ export default class Send extends Component<Props, State> {
 
   render() {
     return (
-      <Row>
+      <Row gutter={24}>
         <Col
-          xs={8}
-          offset={8}
-          style={{
-            textAlign: 'center'
-          }}
+          xs={12}
           className='send-asset-container'
+          style={{
+            padding: '40px 40px 40px 80px'
+          }}
         >
           <div className='send-asset-form-container'>
             <h3 className='send-asset-form-title'>Send assets</h3>
@@ -185,7 +229,6 @@ export default class Send extends Component<Props, State> {
                 ...this.state.asset,
                 fromType: e
               }})}
-              style={{width: '100%', marginBottom: 10}}
               placeholder='Send from'
               className='send-asset-form-control send-asset-form-type-from'
             >
@@ -198,7 +241,6 @@ export default class Send extends Component<Props, State> {
                   ...this.state.asset,
                   selectedAlias: e
                 }})}
-                style={{width: '100%', marginBottom: 10}}
                 placeholder='Select alias'
                 className='send-asset-form-control send-asset-form-select-alias'
               >
@@ -238,21 +280,24 @@ export default class Send extends Component<Props, State> {
               value={this.state.asset.amount}
               className='send-asset-form control send-asset-form-asset'
             />
-            <div className='send-asset-form-btn-container' style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
-              <Button onClick={this.sendAsset.bind(this)} className='send-asset-form-btn-send'>Send</Button>
+            <div className='send-asset-form-btn-container'>
+              {this.state.asset.isLoading && <Spin indicator={<Icon type='loading' spin />} className='send-loading' />}
+              <Button
+                className='send-asset-form-btn-send'
+                disabled={this.state.asset.isLoading}
+                onClick={this.sendAsset.bind(this)}
+              >
+                Send
+              </Button>
             </div>
           </div>
         </Col>
-        <Col xs={24} className='separator-container'>
-          <hr className='separator' />
-        </Col>
         <Col
-          xs={8}
-          offset={8}
-          style={{
-            textAlign: 'center'
-          }}
+          xs={12}
           className='send-sys-container'
+          style={{
+            padding: '40px 80px 40px 40px'
+          }}
         >
           <div className='send-sys-form-container'>
             <h3 className='send-sys-form-title'>Send SYS</h3>
@@ -280,11 +325,11 @@ export default class Send extends Component<Props, State> {
               className='send-sys-form-control send-sys-form-comment'
             />
             <div
-              style={{textAlign: 'right', padding: '10px 0 10px 0'}}
               className='send-asset-form-btn-container'
             >
+              {this.state.sys.isLoading && <Spin indicator={<Icon type='loading' spin />} className='send-loading' />}
               <Button
-                disabled={!this.state.sys.amount || !this.state.sys.toAddress}
+                disabled={!this.state.sys.amount || !this.state.sys.toAddress || this.state.sys.isLoading}
                 onClick={this.sendSys.bind(this)}
                 className='send-sys-form-btn-send'
               >

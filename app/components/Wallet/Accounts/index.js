@@ -35,7 +35,7 @@ export default class Accounts extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this.state = {
+    this.initialState = {
       selectedAlias: '',
       aliasAssets: {
         selected: '',
@@ -49,9 +49,13 @@ export default class Accounts extends Component<Props, State> {
         error: false
       }
     }
+
+    this.state = {
+      ...this.initialState
+    }
   }
 
-  isAliasSelected(aliasInfo) {
+  isAliasSelected(aliasInfo: Object) {
     return aliasInfo.alias ? aliasInfo.alias === this.state.selectedAlias : aliasInfo.address === this.state.selectedAlias
   }
 
@@ -111,6 +115,9 @@ export default class Accounts extends Component<Props, State> {
     this.props.getAssetsInfo(alias, (err, result) => {
       if (err) {
         if (err === 'NO_ASSET_SELECTED') {
+          this.setState({
+            ...this.initialState
+          })
           return swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
         } else if (err === 'DONT_HAVE_ASSET') {
           return this.setState({
@@ -193,7 +200,7 @@ export default class Accounts extends Component<Props, State> {
     return result
   }
 
-  getAliasTransactions(obj: Object, cb) {
+  getAliasTransactions(obj: Object) {
     const { asset, alias } = obj
     return this.props.getTransactionsForAlias({
       alias, asset
@@ -317,7 +324,7 @@ export default class Accounts extends Component<Props, State> {
           data: res.data,
           error: false
         }
-      })).catch(err => this.setState({
+      })).catch(() => this.setState({
         transactions: {
           data: [],
           isLoading: false,
