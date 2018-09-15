@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Table, Spin } from 'antd'
+import moment from 'moment'
 import swal from 'sweetalert'
 import map from 'async/map'
 import SyscoinLogo from '../../../syscoin-logo.png'
@@ -241,26 +242,45 @@ export default class Accounts extends Component<Props, State> {
         render: text => <span>{text}</span>
       },
       {
+        title: 'Date',
+        key: 'time',
+        dataIndex: 'time',
+        render: time => <span>{moment(time).format('DD-MM-YYYY HH:mm')}</span>
+      },
+      {
         title: 'Details',
         key: 'amount',
         dataIndex: 'amount',
         render: (amount, transaction) => ({
           children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{amount}</span>,
           props: {
-            width: 300
+            width: 200
           }
         })
       }
     ]
 
+    let emptyText
+
+    if (this.state.transactions.error) {
+      emptyText = 'Something went wrong. Try again later'
+    } else if (this.state.transactions.isLoading) {
+      emptyText = 'Loading...'
+    } else {
+      emptyText = 'No data'
+    }
+
     return (
       <Table
-        dataSource={this.state.transactions.data}
+        dataSource={this.state.transactions.data.sort((a, b) => b.time - a.time)}
         columns={columns}
         className='transactions-table'
         rowClassName='transactions-table-row'
         pagination={{
           defaultPageSize: 10
+        }}
+        locale={{
+          emptyText
         }}
       />
     )
@@ -327,7 +347,7 @@ export default class Accounts extends Component<Props, State> {
           </div>
         </Col>
         <Col xs={15} className='accounts-container-right'>
-          {!this.state.selectedAlias && <img src={SyscoinLogo} alt='sys-logo' width='320' height='200' className='sys-logo-bg' />}
+          {(!this.state.selectedAlias || this.state.aliasAssets.error) ? <img src={SyscoinLogo} alt='sys-logo' width='320' height='200' className='sys-logo-bg' /> : null}
           {this.state.aliasAssets.data.length ? (
             <div>
               <Row className='asset-box-container'>
