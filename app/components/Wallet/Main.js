@@ -54,7 +54,7 @@ export default class Wallet extends Component<Props, State> {
     if (!global.updateWalletInterval) {
       global.updateWalletInterval = setInterval(() => {
         this.updateWallet()
-      }, 10000)
+      }, 8000)
     }
 
   }

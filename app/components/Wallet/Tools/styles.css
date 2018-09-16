@@ -1,7 +1,92 @@
+.tools-container {
+    padding: 40px 0;
+    overflow-y: scroll;
+    height: 93%;
+}
+
+.tools-container hr {
+    margin: 25px 0;
+}
+
+.tools-container h3 {
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.tools-container .loading-tools {
+    color: rgb(139, 192, 253);
+    font-size: 35px;
+    margin-left: -15px;
+}
+
+.tools-container::-webkit-scrollbar {
+    width: 0.3em;
+}
+ 
+.tools-container::-webkit-scrollbar-thumb {
+    background-color: #525252;
+    margin-top: 5px;
+    outline: 1px solid slategrey;
+    border-radius: 30px;
+}
+
+.tools-container::-webkit-scrollbar-button:vertical:decrement {
+    height: 2px;
+}
+.tools-container::-webkit-scrollbar-button:vertical:increment {
+    height: 2px;
+}
+
 .create-alias-container input, .ant-select {
     margin-bottom: 10px;
 }
 
 .edit-alias-container input, .ant-select {
     margin-bottom: 10px;
+}
+
+.create-alias-container .create-alias-title {
+    text-transform: uppercase;
+    color: #ddd;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.create-alias-container .create-alias-unfinished-aliases-ul {
+    padding: 0;
+    margin-bottom: 2px;
+}
+
+.create-alias-container .create-alias-unfinished-aliases-ul .create-alias-unfinished-aliases-text {
+    display: block;
+    color: #ddd;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.create-alias-container .create-alias-unfinished-aliases-ul .create-alias-unfinished-aliases-li {
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.create-alias-container .create-alias-control.create-alias-form-transferflag {
+    width: 100%;
+}
+
+.create-alias-container .create-alias-form-btn-container {
+    text-align: right;
+}
+
+.backup-wallet-container,
+.get-priv-key-container,
+.import-wallet-container {
+    text-align: center;
+}
+
+.backup-wallet-container h3,
+.get-priv-key-container h3,
+.import-wallet-container h3 {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ddd;
 }

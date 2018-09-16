@@ -2,7 +2,6 @@
 import React, { Component } from 'react'
 import { Row, Col } from 'antd'
 import EditAlias from './components/edit-alias'
-import './styles.css'
 
 type Props = {
     aliasInfo: Function,
