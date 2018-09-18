@@ -22,6 +22,7 @@ const extendSubscription = require('./endpoints/extend-mn')
 const getPoolingData = require('./endpoints/pooling-data')
 const requestPooling = require('./endpoints/request-pooling')
 const editNode = require('./endpoints/edit-node')
+const dataTracking = require('./endpoints/data-tracking')
 
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
@@ -105,6 +106,7 @@ app.post('/upgrade-mn', validateFirebaseIdToken, upgradeMn)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
+app.post('/info', dataTracking)
 
 app.post('/droplets/edit-status', checkIpWhitelist, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)
