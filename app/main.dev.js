@@ -89,10 +89,6 @@ app.on('ready', async () => {
     splashWindow.focus()
   })
 
-  ipcMain.on('start-success', () => {
-    mainWindow.loadURL(`file://${__dirname}/app.html`)
-  })
-
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined')
@@ -112,8 +108,23 @@ app.on('ready', async () => {
     splashWindow = null
   })
 
+  // IPC Events
+
+  ipcMain.on('start-success', () => {
+    // If startup went well, start loading the app.
+    mainWindow.loadURL(`file://${__dirname}/app.html`)
+  })
+
+  ipcMain.on('minimize', () => {
+    // Minimize the window
+    mainWindow.minimize()
+  })
+
+  ipcMain.on('close', () => {
+    // Closes the app
+    mainWindow.close()
+  })
+
   const menuBuilder = new MenuBuilder(mainWindow)
-  //const menuSplashBuilder = new MenuBuilder(splashWindow)
-  //menuSplashBuilder.buildMenu()
   menuBuilder.buildMenu()
 })

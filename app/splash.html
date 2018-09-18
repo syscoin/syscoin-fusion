@@ -4,17 +4,6 @@
 <head>
   <meta charset="utf-8">
   <title>Fusion Wallet - Loading</title>
-  <script>
-    (function () {
-      if (!process.env.HOT) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = './dist/style.css';
-        // HACK: Writing the script path should be done with webpack
-        document.getElementsByTagName('head')[0].appendChild(link);
-      }
-    }());
-  </script>
   <style>
     img.splash-img {
       height: 420px;
@@ -24,11 +13,11 @@
     .progress-container {
       width: 65%;
       position: absolute;
-      bottom: 13%;
+      bottom: 23%;
       background: gray;
       z-index: 9999;
       height: 20px;
-      left: 50px;
+      left: 55px;
     }
   
     .progress-container .progress {

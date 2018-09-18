@@ -1,11 +1,15 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col, Tabs } from 'antd'
-import { map } from 'async'
+import { Row, Col, Tabs, Icon, Spin } from 'antd'
+import map from 'async/map'
+import { ipcRenderer } from 'electron'
+
 import Accounts from './Accounts'
 import Send from './Send'
 import Tools from './Tools'
 import Personalize from './Personalize'
+
+import isCliRunning from '../../utils/is-sys-cli-running'
 
 const Tab = Tabs.TabPane
 
@@ -53,8 +57,12 @@ export default class Wallet extends Component<Props, State> {
 
     if (!global.updateWalletInterval) {
       global.updateWalletInterval = setInterval(() => {
-        this.updateWallet()
-      }, 8000)
+        isCliRunning((err, isRunning) => {
+          if (!isRunning && !err) {
+            this.updateWallet()
+          }
+        })
+      }, 10000)
     }
 
   }
@@ -168,11 +176,28 @@ export default class Wallet extends Component<Props, State> {
     )
   }
 
+  generateWindowControls() {
+    return (
+      <div className='window-controls'>
+        <Icon type='minus' className='minimize' onClick={this.onMinimize} />
+        <Icon type='close' className='close' onClick={this.onClose} />
+      </div>
+    )
+  }
+
+  onMinimize() {
+    ipcRenderer.send('minimize')
+  }
+
+  onClose() {
+    ipcRenderer.send('close')
+  }
+
   render() {
     return (
       <Row className='app-body'>
         <Col xs={24}>
-          <Tabs className='tabs-app'>
+          <Tabs className='tabs-app' tabBarExtraContent={this.generateWindowControls()}>
             <Tab className='tab tab-accounts' tab='Accounts' key='1'>
               <Accounts
                 currentAliases={this.state.aliases || []}
