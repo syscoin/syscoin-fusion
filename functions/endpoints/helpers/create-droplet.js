@@ -55,7 +55,7 @@ module.exports = (coin, cb) => {
                     'name': 'massive-t-poo',
                     'region': 'sfo2',
                     'size': 's-1vcpu-1gb',
-                    'image': functions.config().dropletconfig.imageid,
+                    'image': imageid,
                     'ssh_keys': [keys.newAccKey.ssh_key.id],
                     'backups': false,
                     'ipv6': true,
