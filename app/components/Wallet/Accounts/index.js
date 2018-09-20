@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Table, Spin } from 'antd'
 import moment from 'moment'
@@ -60,13 +59,28 @@ export default class Accounts extends Component<Props, State> {
   }
 
   generateAliasesBoxes() {
-    return this.props.currentAliases.map((i, key) => (
+    const aliases = []
+    const addresses = []
+    
+    this.props.currentAliases.forEach(i => {
+      // Separating aliases and addresses for later ordering
+      // Using of sort method would result in unpredictable result and kinda complex ordering logic
+      if (i.alias) {
+        return aliases.push(i)
+      }
+
+      return addresses.push(i)
+    })
+    
+    return aliases.concat(addresses).map((i, key) => (
       <Row className={`alias-box ${this.isAliasSelected(i) ? 'expanded' : 'non-expanded'} ${this.state.aliasAssets.isLoading ? 'loading' : ''}`} key={key} onClick={() => this.updateSelectedAlias(i.alias ? i.alias : i.address)}>
-        <Col xs={this.isAliasSelected(i) ? 6 : 4} offset={this.isAliasSelected(i) ? 1 : 0} className='alias-img-container'>
-          <img className='alias-img' src={`https://api.adorable.io/avatars/125/${i.address}@ert.io`} alt='Alias' />
-        </Col>
-        <Col xs={16} className='alias-text-container'>
-          <div className={`alias-name ${this.isAliasSelected(i) ? 'trim' : ''}`}>{i.alias ? i.alias : i.address}</div>
+        {i.alias && (
+          <Col xs={this.isAliasSelected(i) ? 6 : 4} offset={this.isAliasSelected(i) ? 1 : 0} className='alias-img-container'>
+            <img className='alias-img' src={`https://ui-avatars.com/api/?name=${i.alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`} alt='Alias' />
+          </Col>
+        )}
+        <Col xs={16} className={`alias-text-container ${!i.alias ? 'address' : ''}`}>
+          <div className='alias-name'>{i.alias ? i.alias : i.address}</div>
           <div className='alias-type'>{i.alias ? 'Alias' : 'Address'}</div>
         </Col>
       </Row>
@@ -193,8 +207,8 @@ export default class Accounts extends Component<Props, State> {
     const result = []
     const keys = Object.keys(info)
 
-    keys.forEach((i, key) => result.push(
-      <p key={key} style={{ fontSize: 15 }}>{i}: {info[i]}</p>
+    keys.forEach(i => result.push(
+      <p key={i} style={{ fontSize: 15 }}>{i}: {info[i]}</p>
     ))
 
     return result

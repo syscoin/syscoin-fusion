@@ -38,7 +38,7 @@ export default class NewAlias extends Component<Props, State> {
     try {
       return (
         <ul className='create-alias-unfinished-aliases-ul'>
-          {this.props.getUnfinishedAliases().length && <span className='create-alias-unfinished-aliases-text'>Unfinished aliases:</span>}
+          {!!this.props.getUnfinishedAliases().length && <span className='create-alias-unfinished-aliases-text'>Unfinished aliases:</span>}
           {this.props.getUnfinishedAliases().map(i => (
             <li key={JSON.stringify(i)} className='create-alias-unfinished-aliases-li'><Tag color='#8bc0fd'>{i.alias}</Tag></li>
           ))}

@@ -109,6 +109,10 @@
     padding-top: 15px;
 }
 
+.alias-box.expanded .alias-text-container.address {
+    padding: 15px 0 15px 30px;
+}
+
 .alias-box .alias-img-container {
     padding-right: 20px;
 }
