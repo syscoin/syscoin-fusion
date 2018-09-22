@@ -102,7 +102,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                     uptime: 0,
                                     vpsid: dropletData.droplet.droplet.id,
                                     ip: dropletData.ip,
-                                    imageId: functions.config().dropletconfig.imageid
+                                    imageId: functions.config().images.sys
                                 }).then((vps) => {
                                     return cb(null, dropletData, order, vps)
                                 }).catch(err => cb(err))

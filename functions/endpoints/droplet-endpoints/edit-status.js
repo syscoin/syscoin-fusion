@@ -1,5 +1,4 @@
 const admin = require('firebase-admin')
-const checkIpWhitelist = require('../helpers/check-whitelist-ip')
 
 /**
  * @api {post} /droplets/edit-status Edit MN status
@@ -21,8 +20,6 @@ module.exports = (req, res, next) => {
         req.connection.socket.remoteAddress).split(",")[0]
 
     const newStatus = req.body.status
-
-    console.log(newStatus)
 
     admin.database().ref('/vps')
         .orderByChild('ip')

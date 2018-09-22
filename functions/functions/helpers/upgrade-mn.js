@@ -8,7 +8,7 @@ const DOHeader = {
 
 module.exports = (obj, cb) => {
     const { dropletId } = obj
-    const imageId = functions.config().dropletconfig.imageid
+    const imageId = functions.config().images.sys
 
     axios({
         method: 'post',

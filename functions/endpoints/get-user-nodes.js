@@ -48,7 +48,7 @@ const async = require('async')
 }
  */
 module.exports = (req, res, next) => {
-    const activeImage = firebase.config().dropletconfig.imageid
+    const activeImage = firebase.config().images.sys
     admin.database().ref('/orders')
         .orderByChild('userId')
         .equalTo(req.user.uid)
@@ -102,8 +102,6 @@ module.exports = (req, res, next) => {
                                 const returnData = snap[objectKey]
 
                                 returnData.id = objectKey
-
-                                console.log(returnData.imageId, activeImage)
 
                                 if (returnData.imageId !== activeImage) {
                                     returnData.shouldUpdate = true

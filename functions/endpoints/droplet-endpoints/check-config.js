@@ -57,10 +57,8 @@ module.exports = (req, res, next) => {
                 }))
         },
         (data, cb) => {
-            console.log(data.orderId)
             admin.database().ref('/orders/' + data.orderId + '/nodeType')
                 .once('value', snapshot => {
-                    console.log(snapshot.val())
                     data.nodeType = snapshot.val()
 
                     return cb(null, data)
@@ -93,9 +91,6 @@ module.exports = (req, res, next) => {
             const updateMaxDate = functions.config().images[data.nodeType.toLowerCase() + '_max_date']
 
             if (data.vpsImageId !== actualImageId && moment() >= moment(updateMaxDate)) {
-                console.log(actualImageId, updateMaxDate)
-                console.log(data.vpsImageId)
-                console.log('Upgrading vps')
                 return upgradeMn({
                     dropletId: data.vpsid
                 }, (err) => {
