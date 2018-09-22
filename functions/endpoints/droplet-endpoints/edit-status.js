@@ -22,6 +22,8 @@ module.exports = (req, res, next) => {
 
     const newStatus = req.body.status
 
+    console.log(newStatus)
+
     admin.database().ref('/vps')
         .orderByChild('ip')
         .equalTo(clientIp)
