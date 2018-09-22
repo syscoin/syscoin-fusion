@@ -2,6 +2,17 @@ const firebase = require('firebase-functions')
 const admin = require('firebase-admin')
 const async = require('async')
 
+/**
+ * @api {get} /pooling-data Get pooling data
+ * @apiDescription No params taken
+ * @apiGroup Endpoints
+ * @apiSuccessExample {json} Success-Response:
+ *      [
+ *          {"activeMasternodes":0,"nextMnProgress":0,"column":["Tier 1",0],"tier":1},
+ *          {"activeMasternodes":0,"nextMnProgress":0,"column":["Tier 2",0],"tier":2},
+ *          {"activeMasternodes":0,"nextMnProgress":0,"column":["Tier 3",0],"tier":3}
+ *      ]
+ */
 module.exports = (req, res, next) => {
     async.map([1, 2, 3], (tier, cb) => {
         admin.database().ref('/pooling/tier' + tier)

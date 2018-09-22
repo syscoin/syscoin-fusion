@@ -8,6 +8,18 @@ const templates = {
     review: require('../functions/email/templates/pooling_review')
 }
 
+
+/**
+ * @api {post} /request-pooling Request info about pooling 
+ * @apiDescription Needs firebase authentication
+ * @apiGroup Endpoints
+ * 
+ * @apiParam {Number} tier Tier number
+ * @apiParam {Number} shares Number of shares
+ * @apiParam {String} comments User special comments
+ * @apiSuccessExample {json} Success
+ * {"message":"Successfuly applied"}
+ */
 module.exports = (req, res, next) => {
     const { tier, shares, comments } = req.body
     const email = req.user.email

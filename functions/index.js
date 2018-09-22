@@ -21,21 +21,26 @@ const coinbasePostback = require('./endpoints/coinbase-postback')
 const extendSubscription = require('./endpoints/extend-mn')
 const getPoolingData = require('./endpoints/pooling-data')
 const requestPooling = require('./endpoints/request-pooling')
+const editNode = require('./endpoints/edit-node')
+const dataTracking = require('./endpoints/data-tracking')
+
+// ---- Droplet only endpoints
+const editStatus = require('./endpoints/droplet-endpoints/edit-status')
+const getMnData = require('./endpoints/droplet-endpoints/check-config')
+const notificationReward = require('./endpoints/droplet-endpoints/email-reward')
 const upgradeMn = require('./endpoints/user-upgrade')
 
 // Listeners
-const writeConfigToDroplet = require('./functions').writeConfigToDroplet
-const editNodeData = require('./functions').editNodeData
 const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
 const emailOnDeploy = require('./functions').emailOnDeploy
 
 // Tasks
-const startUpdateStatusQueue = require('./functions/status-queue')
 const processOrder = require('./functions/process-order')
 const unlockDeploys = require('./functions/unlock-orders')
 const deleteDeployLogs = require('./functions/deploy-queue-cleaner')
-const unlockVpsStatus = require('./functions/vps-status-queue-cleaner')
-const deleteExpiredMns = require('./functions/expired-mn-watch')
+
+// Middlewares
+const checkIpWhitelist = require('./middlewares').checkIpWhitelist
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -100,6 +105,12 @@ app.post('/request-pooling', validateFirebaseIdToken, requestPooling)
 app.post('/upgrade-mn', validateFirebaseIdToken, upgradeMn)
 app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
+app.post('/edit-node', validateFirebaseIdToken, editNode)
+app.post('/info', dataTracking)
+
+app.post('/droplets/edit-status', checkIpWhitelist, editStatus)
+app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)
+app.post('/droplets/reward-notification', checkIpWhitelist, notificationReward)
 
 app.use((err, req, res, next) => {
 	console.log(err)
@@ -111,14 +122,9 @@ app.use((err, req, res, next) => {
 // with value `Bearer <Firebase ID Token>`.
 exports.app = functions.https.onRequest(app)
 
-exports.writeConfigToDroplet = writeConfigToDroplet
-exports.editNodeData = editNodeData
 exports.emailUserOnStatusChange = emailUserOnStatusChange
 exports.emailOnDeploy = emailOnDeploy
 
-exports.startUpdateStatusQueue = startUpdateStatusQueue
 exports.processOrder = processOrder
 exports.deleteDeployLogs = deleteDeployLogs
 exports.unlockDeploys = unlockDeploys
-exports.unlockVpsStatus = unlockVpsStatus
-exports.deleteExpiredMns = deleteExpiredMns

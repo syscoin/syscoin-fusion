@@ -8,34 +8,51 @@ const createDroplet = require('./helpers/create-droplet')
 const getDropletIp = require('./helpers/get-droplet-ip')
 const redeemCode = require('./helpers/redeem-code')
 
+/**
+ * @api {post} /payment Node payment and creation
+ * @apiDescription Needs firebase authentication
+ * @apiGroup Endpoints
+ * 
+ * @apiParam {String} [token] Payment token received from Stripe - Required only if the payment method is 'cc'
+ * @apiParam {Number} months Number of paid months
+ * @apiParam {String} email User email
+ * @apiParam {String} mnKey Masternode key provided by the user
+ * @apiParam {String} mnTxid Masternode txid provided by the user
+ * @apiParam {String} mnName Masternode name provided by the user
+ * @apiParam {String} mnIndex Masternode index provided by the user
+ * @apiParam {String} method Payment method
+ * @apiParam {String} [code] Coupon code - required only if method is 'code'
+ * @apiParam {String} nodeType Coin selected
+ * @apiSuccessExample {json} Success
+ * {
+	"message": "Payment completed",
+	"expiresOn": 1535238405885,
+	"purchaseDate": 1532560005885,
+	"paymentId": "ch_1Crw48JiaRVP2JosFEAzwu82"
+}
+ */
 module.exports = (req, res, next) => {
     // Handles new Masternode orders
     try {
         let token = req.body.token,
             months = req.body.months,
             email = req.body.email
-            mnKey = req.body.key,
-            mnTxid = req.body.txid,
-            mnName = req.body.name,
-            mnIndex = req.body.index,
+            mnKey = req.body.mnKey,
+            mnTxid = req.body.mnTxid,
+            mnName = req.body.mnName,
+            mnIndex = req.body.mnIndex,
             method = req.body.method,
-            code = req.body.code
+            code = req.body.code,
+            nodeType = req.body.nodeType || 'sys'
 
         const cryptoPaymentsSupported = ['btc', 'ltc', 'bch', 'eth']
 
         if (method === 'cc') {
-
-            token = token.token
-
-            if (token.error) {
-                // If the token has an error, return 400
-                return res.status(400).send({ error: token.error.message })
-            }
     
             return makeCharge({
                 email,
                 months,
-                tokenId: token.id
+                tokenId: token
             }, (err, charge) => {
                 if (err) {
                     return res.status(400).send({
@@ -44,7 +61,7 @@ module.exports = (req, res, next) => {
                     })
                 }
     
-                admin.database().ref('/to-deploy').push({
+                admin.database().ref('/to-deploy/tasks').push({
                     months,
                     mnKey,
                     mnTxid,
@@ -56,7 +73,8 @@ module.exports = (req, res, next) => {
                     paymentId: charge.id,
                     deployed: false,
                     userId: req.user.uid,
-                    paymentMethod: 'cc'
+                    paymentMethod: 'cc',
+                    nodeType
                 })
     
                 return res.send({
@@ -78,7 +96,7 @@ module.exports = (req, res, next) => {
                     })
                 }
 
-                admin.database().ref('/to-deploy').push({
+                admin.database().ref('/to-deploy/tasks').push({
                     months: data.months,
                     mnKey,
                     mnTxid,
@@ -90,7 +108,8 @@ module.exports = (req, res, next) => {
                     paymentId: code,
                     deployed: false,
                     userId: req.user.uid,
-                    paymentMethod: 'code'
+                    paymentMethod: 'code',
+                    nodeType
                 })
     
                 return res.send({

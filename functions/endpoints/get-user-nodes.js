@@ -2,8 +2,53 @@ const firebase = require('firebase-functions')
 const admin = require('firebase-admin')
 const async = require('async')
 
+/**
+ * @api {get} /nodes Get user nodes
+ * @apiDescription Needs firebase authentication - no params taken
+ * @apiGroup Endpoints
+ * 
+ * @apiSuccessExample {json} Success
+ * {
+	"masternodes": [
+		{
+			"expiresOn": 1559678130103,
+			"numberOfMonths": 12,
+			"paymentId": "B4HMKMPV6RFR34UQ6",
+			"purchaseDate": 1528142130103,
+			"totalCharge": 180,
+			"userId": "mkIYEF2gCERwj0bzwghW7Z0A7A72",
+			"id": "-LEBMahKyDCv7Uhi8Lp9",
+			"mnData": {
+				"mnIndex": "0",
+				"mnKey": "5KSSq3TWJvsdReVAS9fCfGFCHaTrK6RDJbCBGewUbgRwJ5WBsTB",
+				"mnName": "mn3",
+				"mnTxid": "2465b4a92612ddd853f658c37d8b192b658a54691bf4441ebdbafe80971b0bb3",
+				"orderId": "-LEBMahKyDCv7Uhi8Lp9",
+				"userId": "mkIYEF2gCERwj0bzwghW7Z0A7A72",
+				"vpsId": "-LEBMahUdZ_kJCNdKUNP",
+				"id": "-LEBMaiIS1oev0Serw0r"
+			},
+			"vpsInfo": {
+				"configFile": "rpcuser=GanAtiOPENdsLaTeOtIBEhesUpespOSI\nrpcpassword=toNTImpaNDYBrustoGrUTomEndrayAtW\nrpcallowip=127.0.0.1\nrpcbind=127.0.0.1\n#\nlisten=1\nserver=1\ndaemon=1\nmaxconnections=24\nport=8369\nmasternode=1\nmasternodeprivkey=5KSSq3TWJvsdReVAS9fCfGFCHaTrK6RDJbCBGewUbgRwJ5WBsTB\nexternalip=138.68.230.49\n",
+				"imageId": "35666737",
+				"ip": "138.68.230.49",
+				"lastUpdate": 1532559841662,
+				"lock": true,
+				"orderId": "-LEBMahKyDCv7Uhi8Lp9",
+				"status": "Not capable masternode: Masternode not in masternode list",
+				"uptime": 0,
+				"userId": "mkIYEF2gCERwj0bzwghW7Z0A7A72",
+                "vpsid": 96358319,
+                "shouldUpdate": true, // Only if VPS is upgradable
+				"id": "-LEBMahUdZ_kJCNdKUNP"
+			}
+		}
+	],
+	"isDeploying": false
+}
+ */
 module.exports = (req, res, next) => {
-    const activeImage = firebase.config().dropletconfig.imageid
+    const activeImage = firebase.config().images.sys
     admin.database().ref('/orders')
         .orderByChild('userId')
         .equalTo(req.user.uid)
@@ -58,8 +103,6 @@ module.exports = (req, res, next) => {
 
                                 returnData.id = objectKey
 
-                                console.log(returnData.imageId, activeImage)
-
                                 if (returnData.imageId !== activeImage) {
                                     returnData.shouldUpdate = true
                                 }
@@ -89,7 +132,7 @@ module.exports = (req, res, next) => {
                     return res.status(500).send({error: 'Something went wrong. Try reloading the page.'})
                 }
 
-                admin.database().ref('/to-deploy')
+                admin.database().ref('/to-deploy/tasks')
                     .orderByChild('userId')
                     .equalTo(req.user.uid)
                     .once('value', snapshot => {

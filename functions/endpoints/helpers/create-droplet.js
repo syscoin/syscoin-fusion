@@ -5,6 +5,7 @@ const async = require('async')
 const randomKey = require('./generate-random-pwd')
 
 const createKeys = require('./create-keys')
+const getImageId = require('./get-imageid')
 
 const DOHeader = {
     'Authorization': 'Bearer ' + functions.config().keys.digitalocean
@@ -20,9 +21,10 @@ const doRegions = [
     'blr1'
 ]
 
-module.exports = (cb) => {
+module.exports = (coin, cb) => {
     // Creates new SSH RSA key
     const keys = createKeys()
+    const imageid = getImageId(coin)
 
     async.waterfall([
         (cb) => {
@@ -51,9 +53,9 @@ module.exports = (cb) => {
                 url: 'https://api.digitalocean.com/v2/droplets',
                 data: {
                     'name': 'massive-t-poo',
-                    'region': 'sfo2'/*doRegions[Math.floor(Math.random() * 7) + 0]*/,
+                    'region': 'sfo2',
                     'size': 's-1vcpu-1gb',
-                    'image': functions.config().dropletconfig.imageid,
+                    'image': imageid,
                     'ssh_keys': [keys.newAccKey.ssh_key.id],
                     'backups': false,
                     'ipv6': true,
@@ -71,6 +73,7 @@ module.exports = (cb) => {
                     droplet: response.data
                 })
             }).catch((error) => {
+                console.log(error.response.data)
                 return cb(error)
             })
         }

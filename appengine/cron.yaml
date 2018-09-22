@@ -1,8 +1,4 @@
 cron:
-- description: Starts mn status queue
-  url: /publish/status
-  schedule: every 1 minutes
-
 - description: Deploy new orders
   url: /publish/deploy
   schedule: every 1 minutes
@@ -14,10 +10,6 @@ cron:
 - description: Unlock deploy queue
   url: /publish/deploy-queue-unlock
   schedule: every 1 minutes
-
-- description: Unlock VPS status queue
-  url: /publish/vps-status-queue-clean
-  schedule: every 3 minutes
 
 - description: Expired MN watch
   url: /publish/expired-mn-watch
