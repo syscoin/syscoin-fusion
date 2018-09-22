@@ -1,6 +1,10 @@
 const admin = require('firebase-admin')
 const functions = require('firebase-functions')
 const async = require('async')
+const moment = require('moment')
+
+const maxUpgradeDate = functions.config().images.sys_max_date
+const maxUpgradeDateTime = moment(maxUpgradeDate, 'YYYY-MM-DD')
 
 const getUpdatableVps = require('../helpers/get-updatable-vps')
 const getSshKeys = require('../helpers/get-ssh-data')
@@ -39,9 +43,9 @@ module.exports = functions.pubsub.topic('status').onPublish(event => {
                                 .on('value', snapshot => {
                                     const snap = snapshot.val()
                                     const key = Object.keys(snap)[0]
-                                    const imageId = functions.config().dropletconfig.imageid
+                                    const imageId = functions.config().images.sys
 
-                                    if (imageId !== i.imageId) {
+                                    if (imageId !== i.imageId && moment() > maxUpgradeDateTime) {
                                         upgradeMn({
                                             dropletId: i.vpsid
                                         }, (err, data) => {

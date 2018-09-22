@@ -1,3 +1,8 @@
 appengine/lib/**
 node_modules
 .vscode
+serviceKey.json
+.env
+/scripts/.env
+/scripts/serviceKey.json
+.runtimeconfig.json

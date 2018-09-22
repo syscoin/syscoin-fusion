@@ -6,6 +6,7 @@ const createDroplet = require('../../endpoints/helpers/create-droplet')
 const getDropletIp = require('../../endpoints/helpers/get-droplet-ip')
 const deleteDropletById = require('../../endpoints/helpers/delete-droplet-id')
 const lockDeploys = require('../helpers/lock-deploys')
+const addIpToWhiteList = require('../helpers/add-ip-to-whitelist')
 
 module.exports = functions.pubsub.topic('deploy').onPublish(event => {
     return admin.database().ref('/to-deploy')
@@ -32,7 +33,8 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             mnTxid,
                             mnName,
                             mnIndex,
-                            months
+                            months,
+                            nodeType
                         } = snap[i]
                         let dropletId = null
 
@@ -40,7 +42,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             (cb) => {
                                 // Creates droplet and generate keys
                                 return new Promise((dropletResolve, dropletReject) => {
-                                    createDroplet((err, data) => {
+                                    createDroplet(nodeType, (err, data) => {
                                         if (err) {
                                             return cb(err)
                                         }
@@ -65,8 +67,18 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                 })
                             },
                             (dropletData, cb) => {
+                                addIpToWhiteList(dropletData.ip, (err) => {
+                                    if (err) {
+                                        return cb(err)
+                                    }
+
+                                    return cb(null, dropletData)
+                                })
+                            },
+                            (dropletData, cb) => {
                                 // Saves order info
                                 return admin.database().ref('/orders').push({
+                                    nodeType,
                                     userId: snap[i].userId,
                                     expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
                                     purchaseDate: Date.now(),
@@ -90,7 +102,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                                     uptime: 0,
                                     vpsid: dropletData.droplet.droplet.id,
                                     ip: dropletData.ip,
-                                    imageId: functions.config().dropletconfig.imageid
+                                    imageId: functions.config().images.sys
                                 }).then((vps) => {
                                     return cb(null, dropletData, order, vps)
                                 }).catch(err => cb(err))
@@ -123,6 +135,7 @@ module.exports = functions.pubsub.topic('deploy').onPublish(event => {
                             }
                         ], (err) => {
                             if (err) {
+                                console.log(err)
                                 console.log('Failed for payment ' + snap[i].paymentId + '. Retrying in the next iteration')
                                 if (dropletId) {
                                     return new Promise((deleteResolve, deleteReject) => {

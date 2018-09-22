@@ -1,0 +1,26 @@
+{
+  "name": "eye-of-sauron",
+  "version": "1.0.0",
+  "description": "Google App Engine provides a Cron service. Using this service for scheduling and\r Google Cloud Pub/Sub for distributed messaging, you can build an application to\r reliably schedule tasks which can trigger Google Cloud Functions.",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "firebase-admin": "^5.12.1",
+    "moment": "^2.22.2",
+    "random-key": "^0.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/ramyyahari/eye-of-sauron.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/ramyyahari/eye-of-sauron/issues"
+  },
+  "homepage": "https://gitlab.com/ramyyahari/eye-of-sauron#README"
+}
