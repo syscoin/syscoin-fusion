@@ -11,7 +11,7 @@ module.exports = (data, cb) => {
 
     switch(chargeAmount) {
         case 1:
-            chargeAmount = 7.50
+            chargeAmount = 15
             break
         case 3:
             chargeAmount = 45
