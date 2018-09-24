@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
-import { Row, Col, Icon, Table, Spin } from 'antd'
-import moment from 'moment'
+import { Row, Col, Icon, Spin } from 'antd'
 import swal from 'sweetalert'
 import map from 'async/map'
 import SyscoinLogo from '../../../syscoin-logo.png'
+import AliasAddressItem from './components/alias-address-item'
+import AssetBox from './components/asset-box'
+import TransactionList from './components/transaction-list'
+import UserBalance from './components/balance'
 
 type Props = {
   currentBalance: string,
@@ -72,18 +75,15 @@ export default class Accounts extends Component<Props, State> {
       return addresses.push(i)
     })
     
-    return aliases.concat(addresses).map((i, key) => (
-      <Row className={`alias-box ${this.isAliasSelected(i) ? 'expanded' : 'non-expanded'} ${this.state.aliasAssets.isLoading ? 'loading' : ''}`} key={key} onClick={() => this.updateSelectedAlias(i.alias ? i.alias : i.address)}>
-        {i.alias && (
-          <Col xs={this.isAliasSelected(i) ? 6 : 4} offset={this.isAliasSelected(i) ? 1 : 0} className='alias-img-container'>
-            <img className='alias-img' src={`https://ui-avatars.com/api/?name=${i.alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`} alt='Alias' />
-          </Col>
-        )}
-        <Col xs={16} className={`alias-text-container ${!i.alias ? 'address' : ''}`}>
-          <div className='alias-name'>{i.alias ? i.alias : i.address}</div>
-          <div className='alias-type'>{i.alias ? 'Alias' : 'Address'}</div>
-        </Col>
-      </Row>
+    return aliases.concat(addresses).map((i) => (
+      <AliasAddressItem
+        key={i.address}
+        alias={i.alias}
+        address={i.address}
+        isLoading={this.state.aliasAssets.isLoading}
+        isSelected={this.isAliasSelected(i)}
+        updateSelectedAlias={this.updateSelectedAlias.bind(this)}
+      />
     ))
   }
 
@@ -223,96 +223,26 @@ export default class Accounts extends Component<Props, State> {
 
   generateAliasAssets() {
     return this.state.aliasAssets.data.map(i => (
-      <Col
-        xs={10}
-        offset={1}
-        className={`asset-box ${this.state.aliasAssets.selected === i.asset ? 'selected' : ''}`}
+      <AssetBox
+        isSelected={this.state.aliasAssets.selected === i.asset}
+        selectAsset={this.selectAsset.bind(this)}
+        asset={i.asset}
+        balance={i.balance}
+        symbol={i.symbol}
         key={i.asset}
-        onClick={() => this.selectAsset(i.asset)}
-      >
-        <h3 className='asset-box-name'>{i.symbol}</h3>
-        <h5 className='asset-box-guid'>{i.asset}</h5>
-        <h4 className='asset-box-balance'>Balance: {Number(i.balance).toFixed(2)}</h4>
-      </Col>
+      />
     ))
   }
 
   generateTransactionsTable() {
-    const columns = [
-      {
-        title: ' ',
-        key: 'symbol',
-        dataIndex: 'symbol',
-        render: (text, transaction) => (
-          <Icon
-            className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}
-            type={`arrow-${this.isIncoming(transaction) ? 'down' : 'up'}`}
-          />
-        )
-      },
-      {
-        title: 'From',
-        key: 'sender',
-        dataIndex: 'sender',
-        render: text => <span>{text}</span>
-      },
-      {
-        title: 'To',
-        key: 'receiver',
-        dataIndex: 'receiver',
-        render: text => <span>{text}</span>
-      },
-      {
-        title: 'Date',
-        key: 'time',
-        dataIndex: 'time',
-        render: time => <span>{moment(time).format('DD-MM-YYYY HH:mm')}</span>
-      },
-      {
-        title: 'Details',
-        key: 'amount',
-        dataIndex: 'amount',
-        render: (amount, transaction) => ({
-          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{amount}</span>,
-          props: {
-            width: 200
-          }
-        })
-      }
-    ]
-
-    let emptyText
-
-    if (this.state.transactions.error) {
-      emptyText = 'Something went wrong. Try again later'
-    } else if (this.state.transactions.isLoading) {
-      emptyText = 'Loading...'
-    } else {
-      emptyText = 'No data'
-    }
-
     return (
-      <Table
-        dataSource={this.state.transactions.data.sort((a, b) => b.time - a.time)}
-        columns={columns}
-        className='transactions-table'
-        rowClassName='transactions-table-row'
-        pagination={{
-          defaultPageSize: 10
-        }}
-        locale={{
-          emptyText
-        }}
+      <TransactionList
+        data={this.state.transactions.data}
+        error={this.state.transactions.error}
+        isLoading={this.state.transactions.isLoading}
+        selectedAlias={this.state.transactions.selectedAlias}
       />
     )
-  }
-
-  isIncoming(transaction) {
-    if (transaction.receiver === this.state.selectedAlias) {
-      return true
-    }
-
-    return false
   }
 
   selectAsset(asset) {
@@ -353,14 +283,9 @@ export default class Accounts extends Component<Props, State> {
     return (
       <Row className='accounts-container'>
         <Col xs={9} className='accounts-container-left'>
-          <div className='balance-container'>
-            <h4 className='your-balance-title'>
-              Your balance
-            </h4>
-            <h2 className='your-balance-amount'>
-              {Number(this.props.currentBalance).toFixed(2)} SYS
-            </h2>
-          </div>
+          <UserBalance
+            currentBalance={this.props.currentBalance}
+          />
           <hr className='alias-separator' />
           <h4 className='your-aliases-text'>Your aliases/addresses</h4>
           <div className='aliases-container'>
