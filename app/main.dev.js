@@ -97,7 +97,9 @@ app.on('ready', async () => {
     mainWindow.show()
     mainWindow.focus()
 
-    splashWindow.close()
+    if (splashWindow) {
+      splashWindow.close()
+    }
   })
   
   mainWindow.on('closed', () => {
