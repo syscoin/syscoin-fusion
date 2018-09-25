@@ -18,11 +18,10 @@ type Props = {
   currentSysAddress: Function,
   currentBalance: Function,
   editAlias: Function,
-  fetchAssetInfo: Function,
   getAliases: Function,
   getAssetInfo: Function,
+  getAssetAllocationInfo: Function,
   getInfo: Function,
-  getTransactionsForAlias: Function,
   getUnfinishedAliases: Function,
   importWallet: Function,
   exportWallet: Function,
@@ -30,7 +29,8 @@ type Props = {
   pushNewAlias: Function,
   removeFinishedAlias: Function,
   createNewAlias: Function,
-  getPrivateKey: Function
+  getPrivateKey: Function,
+  getTransactionsPerAsset: Function
 };
 
 type State = {
@@ -75,7 +75,7 @@ export default class Wallet extends Component<Props, State> {
     this.checkIncompletedAliases()
   }
 
-  getAssetsInfo(alias, cb) {
+  getAssetAllocationInfo(alias, cb) {
     const guids = global.appStorage.get('guid')
 
     if (guids[0] === 'none') {
@@ -83,7 +83,7 @@ export default class Wallet extends Component<Props, State> {
     }
 
     map(guids, (i, done) => {
-      this.props.getAssetInfo({
+      this.props.getAssetAllocationInfo({
         assetId: i,
         aliasName: alias
       }, (err, info) => {
@@ -129,7 +129,7 @@ export default class Wallet extends Component<Props, State> {
         }
       })
     } catch (e) {
-      console.log('No user files yet.')
+      return false
     }
   }
 
@@ -203,9 +203,9 @@ export default class Wallet extends Component<Props, State> {
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
                 currentAddress={this.state.address || ''}
-                fetchAssetInfo={this.props.fetchAssetInfo}
-                getAssetsInfo={this.getAssetsInfo.bind(this)}
-                getTransactionsForAlias={this.props.getTransactionsForAlias}
+                getAssetInfo={this.props.getAssetInfo}
+                getAssetAllocationInfo={this.getAssetAllocationInfo.bind(this)}
+                getTransactionsPerAsset={this.props.getTransactionsPerAsset}
                 updateWallet={this.updateWallet.bind(this)}
               />
             </Tab>

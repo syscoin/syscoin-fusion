@@ -11,9 +11,9 @@ import UserBalance from './components/balance'
 type Props = {
   currentBalance: string,
   currentAliases: Array<any>,
-  fetchAssetInfo: Function,
-  getAssetsInfo: Function,
-  getTransactionsForAlias: Function
+  getAssetInfo: Function,
+  getAssetAllocationInfo: Function,
+  getTransactionsPerAsset: Function
 };
 type State = {
   assetInfoBySelectedAlias: Array<Object>,
@@ -126,44 +126,35 @@ export default class Accounts extends Component<Props, State> {
   }
 
   getAssetsInfo(alias: string) {
-    this.props.getAssetsInfo(alias, (err, result) => {
+    this.props.getAssetAllocationInfo(alias, (err, result) => {
       if (err) {
         if (err === 'NO_ASSET_SELECTED') {
           this.setState({
             ...this.initialState
           })
           return swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
-        } else if (err === 'DONT_HAVE_ASSET') {
-          return this.setState({
-            aliasAssets: {
-              selected: '',
-              data: [],
-              isLoading: false,
-              error: false
-            }
-          })
         }
         return swal('Error', 'Something went wrong', 'error')
       }
 
       if (result.find(i => !i.symbol)) {
-        return map(result, (x, done) => {
+        // If alias/address doesnt own any token, fallback to assetinfo.
+        return map(result, async (x, done) => {
           if (x.symbol) {
             return done(null, x)
           }
 
-          this.props.fetchAssetInfo({
-            asset: x.asset
-          }).then(res => {
-            if (res.data.length) {
-              x.symbol = res.data[0].symbol
-              return done(null, x)
-            }
+          let assetInfo
 
-            x.not_exists = true
-            return done(null, x)
+          try {
+            assetInfo = await this.props.getAssetInfo(x.asset)
+          } catch (assetInfoErr) {
+            return done(assetInfoErr)
+          }
 
-          }).catch(fetchErr => done(fetchErr))
+          x.symbol = assetInfo.symbol
+          x.balance = '0'
+          return done(null, x)
         }, (error, finalResult) => {
           if (error) {
             this.setState({
@@ -180,7 +171,7 @@ export default class Accounts extends Component<Props, State> {
           this.setState({
             aliasAssets: {
               selected: '',
-              data: finalResult.filter(x => !x.not_exists),
+              data: finalResult,
               isLoading: false,
               error: false
             }
@@ -214,13 +205,6 @@ export default class Accounts extends Component<Props, State> {
     return result
   }
 
-  getAliasTransactions(obj: Object) {
-    const { asset, alias } = obj
-    return this.props.getTransactionsForAlias({
-      alias, asset
-    })
-  }
-
   generateAliasAssets() {
     return this.state.aliasAssets.data.map(i => (
       <AssetBox
@@ -240,7 +224,7 @@ export default class Accounts extends Component<Props, State> {
         data={this.state.transactions.data}
         error={this.state.transactions.error}
         isLoading={this.state.transactions.isLoading}
-        selectedAlias={this.state.transactions.selectedAlias}
+        selectedAlias={this.state.selectedAlias}
       />
     )
   }
@@ -253,29 +237,35 @@ export default class Accounts extends Component<Props, State> {
         error: false
       },
       transactions: {
-        ...this.state.transactions,
-        isLoading: true,
-        error: false
+        ...this.initialState.transactions,
+        isLoading: true
       }
-    }, () => {
+    }, async () => {
 
-      this.props.getTransactionsForAlias({
-        alias: this.state.selectedAlias,
-        asset
-      }).then(res => this.setState({
+      let transactions
+
+      try {
+        transactions = await this.props.getTransactionsPerAsset({
+          alias: this.state.selectedAlias,
+          assetId: asset
+        })
+      } catch(err) {
+        this.setState({
+          transactions: {
+            data: [],
+            isLoading: false,
+            error: true
+          }
+        })
+      }
+      
+      this.setState({
         transactions: {
           isLoading: false,
-          data: res.data,
+          data: transactions,
           error: false
         }
-      })).catch(() => this.setState({
-        transactions: {
-          data: [],
-          isLoading: false,
-          error: true
-        }
-      }))
-
+      })
     })
   }
 

@@ -24,6 +24,11 @@ type sendSysTransactionType = {
   comment?: string
 };
 
+type getTransactionsPerAssetType = {
+  assetId: string,
+  alias: string
+};
+
 const getInfo = (cb: (error: boolean, result?: Object) => void) => {
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
@@ -79,8 +84,18 @@ const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
   })
 }
 
-const getAssetInfo = (obj: AllocationInfoType, cb: (error: string, info?: any) => void) => {
-  // Get asset info
+const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', `assetinfo ${assetId} false`), (err, stdout, stderror) => {
+    if (err || stderror.toString().length) {
+      return reject(err)
+    }
+
+    return resolve(JSON.parse(stdout.toString()))
+  })
+})
+
+const getAssetAllocationInfo = (obj: AllocationInfoType, cb: (error: string, info?: any) => void) => {
+  // Get asset allocation info
   exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
       return cb(err)
@@ -192,7 +207,6 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
     }
   ], (err, result) => {
     if (err) {
-      console.log(err)
       return cb(err)
     }
 
@@ -240,7 +254,6 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
 
   waterfall([
     done => {
-      console.log(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`))
       exec(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
@@ -265,7 +278,6 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
     }
   ], (err) => {
     if (err) {
-      console.log(err)
       return cb(err)
     }
 
@@ -283,6 +295,41 @@ const aliasInfo = (name: string, cb: (error: boolean, cb: Function) => void) => 
   })
 }
 
+const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', `listtransactions * 1999999999`), {
+    maxBuffer: 1024 * 500
+  }, (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    let data = JSON.parse(result)
+
+    data = data.filter(i => {
+      // Breaking down this conditional to lower complexity
+      if (i.sysguid === obj.assetId) {
+        // If asset is equal to the one we're fetching
+        if (
+          i.sysallocations &&
+          i.sysallocations[0] &&
+          i.sysallocations[0].aliasto === obj.alias
+        ) {
+          // If selected alias/address is the receiver
+          return true
+        }
+        if (i.sysalias === obj.alias && i.sysallocations.length) {
+          // If selected alias/address is the sender
+          return true
+        }
+      }
+
+      return false
+    })
+
+    return resolve(data)
+  })
+})
+
 module.exports = {
   aliasInfo,
   currentSysAddress,
@@ -290,11 +337,13 @@ module.exports = {
   editAlias,
   getAliases,
   getAssetInfo,
+  getAssetAllocationInfo,
   getInfo,
   sendAsset,
   sendSysTransaction,
   createNewAlias,
   exportWallet,
   importWallet,
-  getPrivateKey
+  getPrivateKey,
+  getTransactionsPerAsset
 }

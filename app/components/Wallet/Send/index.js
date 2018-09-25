@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Row, Col, Input, Button, Select, Spin, Icon } from 'antd'
 import swal from 'sweetalert'
 import {
-  getAssetInfo,
+  getAssetAllocationInfo,
   sendAsset,
   sendSysTransaction
 } from '../../../utils/sys-helpers'
@@ -67,7 +67,7 @@ export default class Send extends Component<Props, State> {
     const { selectedAlias: fromAlias, fromType, fromAddress } = this.state.asset
     const from = fromType === 1 ? fromAddress : fromAlias
 
-    getAssetInfo({
+    getAssetAllocationInfo({
       assetId: this.state.asset.assetId,
       aliasName: from
     }, (err) => {

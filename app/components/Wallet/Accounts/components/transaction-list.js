@@ -12,12 +12,16 @@ type Props = {
 
 export default class TransactionList extends Component<Props> {
 
+  cutTextIfNeeded(text) {
+    return text.length > 15 ? `${text.slice(0, 14)}...` : text
+  }
+
   generateColumns() {
     return [
       {
         title: ' ',
-        key: 'symbol',
-        dataIndex: 'symbol',
+        key: 'sysguid',
+        dataIndex: 'sysguid',
         render: (text, transaction) => (
           <Icon
             className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}
@@ -29,19 +33,19 @@ export default class TransactionList extends Component<Props> {
         title: 'From',
         key: 'sender',
         dataIndex: 'sender',
-        render: text => <span>{text}</span>
+        render: text => <span>{this.cutTextIfNeeded(text)}</span>
       },
       {
         title: 'To',
         key: 'receiver',
         dataIndex: 'receiver',
-        render: text => <span>{text}</span>
+        render: text => <span>{this.cutTextIfNeeded(text)}</span>
       },
       {
         title: 'Date',
         key: 'time',
         dataIndex: 'time',
-        render: time => <span>{moment(time).format('DD-MM-YYYY HH:mm')}</span>
+        render: time => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
       },
       {
         title: 'Details',
@@ -79,10 +83,25 @@ export default class TransactionList extends Component<Props> {
     return emptyText
   }
 
+  prepareData() {
+    // Sort time by date - more recent first
+    let data = this.props.data.sort((a, b) => b.time - a.time)
+
+    // Mapping to a more desirable structure
+    data = data.map(i => ({
+      time: i.time,
+      sender: i.sysalias,
+      receiver: i.sysallocations[0].aliasto,
+      amount: i.sysallocations[0].amount
+    }))
+
+    return data
+  }
+
   render() {
     return (
       <Table
-        dataSource={this.props.data.sort((a, b) => b.time - a.time)}
+        dataSource={this.prepareData()}
         columns={this.generateColumns()}
         className='transactions-table'
         rowClassName='transactions-table-row'

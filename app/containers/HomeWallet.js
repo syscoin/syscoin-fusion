@@ -9,16 +9,14 @@ import {
   editAlias,
   getAliases,
   getAssetInfo,
+  getAssetAllocationInfo,
   getPrivateKey,
   createNewAlias,
   getInfo,
   exportWallet,
-  importWallet
+  importWallet,
+  getTransactionsPerAsset
 } from '../utils/sys-helpers'
-import {
-  getTransactionsForAlias,
-  fetchAssetInfo  
-} from '../utils/api-calls'
 import {
   getUnfinishedAliases,
   pushNewAlias,
@@ -39,11 +37,10 @@ class WalletHome extends Component<Props> {
         currentSysAddress={currentSysAddress}
         currentBalance={currentBalance}
         editAlias={editAlias}
-        fetchAssetInfo={fetchAssetInfo}
         getAliases={getAliases}
         getAssetInfo={getAssetInfo}
+        getAssetAllocationInfo={getAssetAllocationInfo}
         getInfo={getInfo}
-        getTransactionsForAlias={getTransactionsForAlias}
         getUnfinishedAliases={getUnfinishedAliases}
         getPrivateKey={getPrivateKey}
         importWallet={importWallet}
@@ -51,6 +48,7 @@ class WalletHome extends Component<Props> {
         incRoundToAlias={incRoundToAlias}
         pushNewAlias={pushNewAlias}
         removeFinishedAlias={removeFinishedAlias}
+        getTransactionsPerAsset={getTransactionsPerAsset}
       />
     )
   }
