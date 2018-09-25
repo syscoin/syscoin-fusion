@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Upload, Button, Icon } from 'antd'
+import { Upload, Button, Icon, Spin } from 'antd'
 import swal from 'sweetalert'
 import { join } from 'path'
 
@@ -51,11 +51,15 @@ export default class ExportWallet extends Component<Props, State> {
     return (
       <div className='backup-wallet-container'>
         <h3 className='backup-wallet-title'>Backup wallet</h3>
-        <Upload action='' beforeUpload={this.beforeUpload.bind(this)} showUploadList={false} directory>
-          <Button className='backup-wallet-btn' disabled={this.state.isLoading}>
-            <Icon type='download' /> Backup wallet
-          </Button>
-        </Upload>
+        {this.state.isLoading ? (
+          <Spin indicator={<Icon type='loading' className='loading-tools' spin />} />
+        ) : (
+          <Upload action='' beforeUpload={this.beforeUpload.bind(this)} showUploadList={false} directory>
+            <Button className='backup-wallet-btn' disabled={this.state.isLoading}>
+              <Icon type='download' /> Backup wallet
+            </Button>
+          </Upload>
+        )}
       </div>
     )
   }

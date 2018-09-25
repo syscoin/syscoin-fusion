@@ -5,7 +5,6 @@ import NewAlias from './components/new-alias'
 import BackupWallet from './components/backup-wallet'
 import ImportWallet from './components/import-wallet'
 import GetPrivateKey from './components/get-priv-key'
-import './styles.css'
 
 type Props = {
   getUnfinishedAliases: Function,
@@ -60,14 +59,11 @@ export default class Tools extends Component<Props, State> {
 
   render() {
     return (
-      <Row>
+      <Row className='tools-container'>
         <Col
           xs={8}
           offset={8}
-          style={{
-            textAlign: 'center'
-          }}
-          className='tools-container'
+          className='tools-form-container'
         >
           <NewAlias
             createNewAlias={this.props.createNewAlias}

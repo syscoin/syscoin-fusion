@@ -79,11 +79,11 @@ const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
   })
 }
 
-const getAssetInfo = (obj: AllocationInfoType, cb: (error: boolean, info?: any) => void) => {
+const getAssetInfo = (obj: AllocationInfoType, cb: (error: string, info?: any) => void) => {
   // Get asset info
   exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
-      return cb(true)
+      return cb(err)
     }
 
     return cb(false, JSON.parse(stdout.toString()))

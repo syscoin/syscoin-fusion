@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Button } from 'antd'
+import { Button, Icon, Spin } from 'antd'
 import swal from 'sweetalert'
 
 type Props = {
@@ -41,7 +41,11 @@ export default class GetPrivateKey extends Component<Props, State> {
     return (
       <div className='get-priv-key-container'>
         <h3 className='get-priv-key-title'>Get Private Key</h3>
-        <Button className='get-priv-key-btn' disabled={this.state.isLoading} onClick={this.getKey.bind(this)}>Get Private Key</Button>
+        {this.state.isLoading ? (
+          <Spin indicator={<Icon type='loading' className='loading-tools' spin />} />
+        ) : (
+          <Button className='get-priv-key-btn' disabled={this.state.isLoading} onClick={this.getKey.bind(this)}>Get Private Key</Button>
+        )}
       </div>
     )
   }

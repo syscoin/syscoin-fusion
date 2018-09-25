@@ -59,8 +59,6 @@ export default class NewAlias extends Component<Props, State> {
           return
         }
 
-        console.log(data)
-
         const newValues = {...this.state.editValues}
 
         newValues.publicValue = data.publicvalue
@@ -115,12 +113,11 @@ export default class NewAlias extends Component<Props, State> {
   render() {
     return (
       <div className='edit-alias-container'>
-        <h3 className='edit-alias-title'>Edit an alias</h3>
+        <h3 className='edit-alias-title'>Edit alias</h3>
         <div className='edit-alias-form-container'>
           <Select
             placeholder='Alias'
             onChange={this.selectAlias.bind(this)}
-            style={{ width: '100%' }}
             value={this.state.aliasToEdit}
             className='edit-alias-form-control edit-alias-form-alias'
           >
@@ -128,7 +125,7 @@ export default class NewAlias extends Component<Props, State> {
           </Select>
           {this.state.aliasToEdit && (
             <div>
-              <h3 className='edit-alias-form-active-alias'>Editing alias {this.state.aliasToEdit}</h3>
+              <h3 className='edit-alias-form-active-alias'>Editing alias <span className='editing-alias'>{this.state.aliasToEdit}</span></h3>
               <Input
                 name='publicValue'
                 placeholder='Public Value'
@@ -145,7 +142,6 @@ export default class NewAlias extends Component<Props, State> {
                     name: 'acceptTransferFlag'
                   }
                 })}
-                style={{ width: '100%' }}
                 value={this.state.editValues.acceptTransferFlag}
                 className='edit-alias-form-control edit-alias-form-transferflag'
               >
@@ -193,8 +189,8 @@ export default class NewAlias extends Component<Props, State> {
           )}
 
           {this.state.aliasToEdit && (
-            <div className='edit-alias-form-btn-container' style={{ textAlign: 'right', padding: '10px 0 10px 0' }}>
-              <Button className='edit-alias-form-btn-send' disabled={this.state.isLoading} onClick={this.updateAlias.bind(this)}>
+            <div className='edit-alias-form-btn-container'>
+              <Button className='edit-alias-form-btn-send' disabled={this.state.isLoading} onClick={this.updateAlias.bind(this)} loading={this.state.isLoading}>
                 Send
               </Button>
             </div>

@@ -1,29 +1,22 @@
 const { exec } = require('child_process')
+const { app } = require('electron').remote
+const { ipcRenderer } = require('electron')
 const fs = require('fs')
 const { join } = require('path')
 const swal = require('sweetalert')
-const { app } = require('electron').remote
 
-const { changeSyscoinDataDir } = require('../actions/options')
-const { confError, successStart, reloadSysConf } = require('../actions/startup')
 const generateCmd = require('./cmd-gen')
 const getSysPath = require('./syspath')
 
-// Get documents path
-const appDocsPath = join(app.getPath('documents'), 'Fusion')
-const customCssPath = join(appDocsPath, 'custom.css')
-const confPath = join(appDocsPath, 'fusion.cfg')
-
-const checkSyscoind = (dispatch, cb) => {
+const checkSyscoind = (cb) => {
   // Just a test to check if syscoind is ready
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
-      console.log(err.message)
       if (err.message.indexOf('code: -28') !== -1) {
         // Verifying wallet... Let the user know.
-        return dispatch(reloadSysConf(err.message))
+        return cb(null, 'verify', err.message)
       }
-      dispatch(confError())
+      cb(err)
       return
     }
 
@@ -33,16 +26,16 @@ const checkSyscoind = (dispatch, cb) => {
     try {
       output = JSON.parse(stdout)
     } catch (error) {
-      dispatch(confError())
+      cb(error)
       return
     }
 
     // isUp, getinfo output
-    cb(true, output)
+    cb(false, 'up', output)
   })
 }
 
-const checkAndCreateDocFolder = () => {
+const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
   const docs = require('./helpers/css-custom-template') // eslint-disable-line global-require
 
   if (!fs.existsSync(appDocsPath)) {
@@ -78,7 +71,7 @@ const checkAndCreateDocFolder = () => {
   }
 }
 
-const loadCustomCss = () => {
+const loadCustomCss = customCssPath => {
   try {
     const css = fs.readFileSync(customCssPath)
 
@@ -91,13 +84,14 @@ const loadCustomCss = () => {
   }
 }
 
-const loadConfIntoEnv = () => {
+const loadConfIntoEnv = confPath => {
   let conf
 
   try {
     conf = fs.readFileSync(confPath, 'utf-8')
   } catch (e) {
     swal('Error', 'Error while loading fusion.conf', 'error')
+    return
   }
 
   conf.split('\r\n').forEach(i => {
@@ -118,27 +112,40 @@ const loadConfIntoEnv = () => {
   })
 }
 
-const startUpRoutine = (dispatch) => {
+const startUpRoutine = (cb) => {
   if (!fs.existsSync(getSysPath('default'))) {
     // Attemps to create SyscoinCore folder if this doesn't exists already.
     try {
       fs.mkdirSync(getSysPath('default'))
     } catch (err) {
       // Failed to create SyscoinCore folder
-      dispatch(confError())
+      swal('Error', 'Failed to create SyscoinCore folder.', 'error').then(() => cb(true)).catch(() => cb(true))
       return
     }
   }
-  
-  // Sets the datadir in reducer
-  dispatch(changeSyscoinDataDir('default'))
+
+  // Get documents path
+  const appDocsPath = join(app.getPath('documents'), 'Fusion')
+  const customCssPath = join(appDocsPath, 'custom.css')
+  const confPath = join(appDocsPath, 'fusion.cfg')
+
+  updateProgressbar(20)
 
   // Docs path initialization
-  checkAndCreateDocFolder()
+  checkAndCreateDocFolder({
+    appDocsPath,
+    customCssPath,
+    confPath
+  })
+
+  updateProgressbar(30, 'Loading custom CSS')
 
   // Apply custom settings
-  loadCustomCss()
-  loadConfIntoEnv()
+  loadCustomCss(customCssPath)
+  updateProgressbar(50, 'Loading config')
+  loadConfIntoEnv(confPath)
+
+  updateProgressbar(60, 'Connecting to syscoin...')
 
   // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
   exec(generateCmd('syscoind', ''), (err) => {
@@ -152,14 +159,31 @@ const startUpRoutine = (dispatch) => {
   if (!global.checkInterval) {
     global.checkInterval = setInterval(() => {
       // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
-      checkSyscoind(dispatch, (isUp, info) => {
-        if (isUp) {
+      checkSyscoind((error, status, output) => {
+        if (error) {
+          updateProgressbar(60, 'Something went wrong.')
+          return swal('Error', 'Something went wrong. Exiting...', 'error').then(() => app.exit()).catch(() => app.exit())
+        }
+
+        if (status === 'verify') {
+          return updateProgressbar(80, 'Verifying data...')
+        }
+
+        if (status === 'up') {
+          updateProgressbar(100, 'Ready to launch')
           // if its up, clear the interval.
           clearInterval(global.checkInterval)
-          dispatch(successStart(info))
+          ipcRenderer.send('start-success')
         }
       })
     }, 5000)
+  }
+}
+
+function updateProgressbar(value, text) {
+  document.querySelectorAll('.progress')[0].style.width = `${value}%`
+  if (text) {
+    //document.querySelectorAll('.progress')[0].innerHTML = text
   }
 }
 

@@ -10,12 +10,14 @@ const parseParams = (obj: Object) => {
             return obj[i].map(x => `${i}[]=${x}`).join('&')
         }
 
-        return i + '=' + obj[i]
+        return `${i}=${obj[i]}`
     }).join('&')
 }
 
 const getTransactionsForAlias = (obj: Object) => axios.get(`${apiUrl}/assetallocation?${parseParams(obj)}`)
+const fetchAssetInfo = (obj: Object) => axios.get(`${apiUrl}/assetrecord/info?${parseParams(obj)}`)
 
 module.exports = {
-    getTransactionsForAlias
+    getTransactionsForAlias,
+    fetchAssetInfo
 }

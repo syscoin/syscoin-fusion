@@ -10,10 +10,11 @@
  *
  * @flow
  */
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import MenuBuilder from './menu'
 
 let mainWindow = null
+let splashWindow = null
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support')
@@ -63,23 +64,65 @@ app.on('ready', async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
-    height: 600
+    height: 600,
+    frame: false,
+    transparent: true,
+    resizable: false
   })
 
-  mainWindow.loadURL(`file://${__dirname}/app.html`)
+  splashWindow = new BrowserWindow({
+    show: false,
+    width: 400,
+    height: 500,
+    frame: false,
+    transparent: true,
+    resizable: false
+  })
 
-  // @TODO: Use 'ready-to-show' event
-  //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
+  splashWindow.loadURL(`file://${__dirname}/splash.html`)
+
+  splashWindow.webContents.on('did-finish-load', () => {
+    if (!mainWindow) {
+      throw new Error('"mainWindow" is not defined')
+    }
+    splashWindow.show()
+    splashWindow.focus()
+  })
+
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined')
     }
+
     mainWindow.show()
     mainWindow.focus()
-  })
 
+    splashWindow.close()
+  })
+  
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  splashWindow.on('closed', () => {
+    splashWindow = null
+  })
+
+  // IPC Events
+
+  ipcMain.on('start-success', () => {
+    // If startup went well, start loading the app.
+    mainWindow.loadURL(`file://${__dirname}/app.html`)
+  })
+
+  ipcMain.on('minimize', () => {
+    // Minimize the window
+    mainWindow.minimize()
+  })
+
+  ipcMain.on('close', () => {
+    // Closes the app
+    mainWindow.close()
   })
 
   const menuBuilder = new MenuBuilder(mainWindow)

@@ -1,10 +1,15 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col, Tabs } from 'antd'
+import { Row, Col, Tabs, Icon, Spin } from 'antd'
+import map from 'async/map'
+import { ipcRenderer } from 'electron'
+
 import Accounts from './Accounts'
 import Send from './Send'
 import Tools from './Tools'
 import Personalize from './Personalize'
+
+import isCliRunning from '../../utils/is-sys-cli-running'
 
 const Tab = Tabs.TabPane
 
@@ -13,6 +18,7 @@ type Props = {
   currentSysAddress: Function,
   currentBalance: Function,
   editAlias: Function,
+  fetchAssetInfo: Function,
   getAliases: Function,
   getAssetInfo: Function,
   getInfo: Function,
@@ -51,7 +57,11 @@ export default class Wallet extends Component<Props, State> {
 
     if (!global.updateWalletInterval) {
       global.updateWalletInterval = setInterval(() => {
-        this.updateWallet()
+        isCliRunning((err, isRunning) => {
+          if (!isRunning && !err) {
+            this.updateWallet()
+          }
+        })
       }, 10000)
     }
 
@@ -63,6 +73,40 @@ export default class Wallet extends Component<Props, State> {
     this.getCurrentBalance()
     this.getInfo()
     this.checkIncompletedAliases()
+  }
+
+  getAssetsInfo(alias, cb) {
+    const guids = global.appStorage.get('guid')
+
+    if (guids[0] === 'none') {
+      return cb('NO_ASSET_SELECTED')
+    }
+
+    map(guids, (i, done) => {
+      this.props.getAssetInfo({
+        assetId: i,
+        aliasName: alias
+      }, (err, info) => {
+        if (err) {
+          if (err.message.indexOf('ERRCODE: 1507')) {
+            return done(null, {
+              balance: 0,
+              alias: alias,
+              asset: i
+            })
+          }
+          return done(err)
+        }
+
+        done(null, info)
+      })
+    }, (err, result) => {
+      if (err) {
+        return cb(err)
+      }
+
+      return cb(null, result)
+    })
   }
 
   checkIncompletedAliases() {
@@ -132,16 +176,35 @@ export default class Wallet extends Component<Props, State> {
     )
   }
 
+  generateWindowControls() {
+    return (
+      <div className='window-controls'>
+        <Icon type='minus' className='minimize' onClick={this.onMinimize} />
+        <Icon type='close' className='close' onClick={this.onClose} />
+      </div>
+    )
+  }
+
+  onMinimize() {
+    ipcRenderer.send('minimize')
+  }
+
+  onClose() {
+    ipcRenderer.send('close')
+  }
+
   render() {
     return (
       <Row className='app-body'>
         <Col xs={24}>
-          <Tabs className='tabs-app' tabBarExtraContent={this.generateCurrentAliasBalance()}>
+          <Tabs className='tabs-app' tabBarExtraContent={this.generateWindowControls()}>
             <Tab className='tab tab-accounts' tab='Accounts' key='1'>
               <Accounts
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
                 currentAddress={this.state.address || ''}
+                fetchAssetInfo={this.props.fetchAssetInfo}
+                getAssetsInfo={this.getAssetsInfo.bind(this)}
                 getTransactionsForAlias={this.props.getTransactionsForAlias}
                 updateWallet={this.updateWallet.bind(this)}
               />

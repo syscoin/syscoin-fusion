@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Input, Button, Select } from 'antd'
+import { Input, Button, Select, Tag } from 'antd'
 import swal from 'sweetalert'
 
 const { Option } = Select
@@ -38,9 +38,9 @@ export default class NewAlias extends Component<Props, State> {
     try {
       return (
         <ul className='create-alias-unfinished-aliases-ul'>
-          <span className='create-alias-unfinished-aliases-text'>Unfinished aliases:</span>
+          {!!this.props.getUnfinishedAliases().length && <span className='create-alias-unfinished-aliases-text'>Unfinished aliases:</span>}
           {this.props.getUnfinishedAliases().map(i => (
-            <li key={JSON.stringify(i)} className='create-alias-unfinished-aliases-li'>{i.alias}</li>
+            <li key={JSON.stringify(i)} className='create-alias-unfinished-aliases-li'><Tag color='#8bc0fd'>{i.alias}</Tag></li>
           ))}
         </ul>
       )
@@ -111,7 +111,6 @@ export default class NewAlias extends Component<Props, State> {
                 value: e
               }
             }, 'newAlias')}
-            style={{width: '100%'}}
             value={this.props.acceptTransferFlags}
             className='create-alias-control create-alias-form-transferflag'
           >
@@ -155,9 +154,10 @@ export default class NewAlias extends Component<Props, State> {
             value={this.props.witness}
             className='create-alias-control create-alias-form-witness'
           />
-          <div className='create-alias-form-btn-container' style={{textAlign: 'right', padding: '10px 0 10px 0'}}>
+          <div className='create-alias-form-btn-container'>
             <Button
               disabled={!this.props.aliasName || this.state.isLoading}
+              loading={this.state.isLoading}
               onClick={this.createNewAlias.bind(this)}
               className='create-alias-form-btn-send'
             >

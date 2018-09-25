@@ -16,7 +16,8 @@ import {
   importWallet
 } from '../utils/sys-helpers'
 import {
-  getTransactionsForAlias
+  getTransactionsForAlias,
+  fetchAssetInfo  
 } from '../utils/api-calls'
 import {
   getUnfinishedAliases,
@@ -38,6 +39,7 @@ class WalletHome extends Component<Props> {
         currentSysAddress={currentSysAddress}
         currentBalance={currentBalance}
         editAlias={editAlias}
+        fetchAssetInfo={fetchAssetInfo}
         getAliases={getAliases}
         getAssetInfo={getAssetInfo}
         getInfo={getInfo}

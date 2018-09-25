@@ -6,12 +6,25 @@
 @import "css/custom.css";
 @import "components/Wallet/Main.css";
 
+
 body {
   position: relative;
-  color: black;
+  color: #333;
+  background: #333;
   height: 100%;
-  font-family: Arial, Helvetica, Helvetica Neue, serif;
-  /*overflow-y: hidden;*/
+  font-family: 'Roboto', sans-serif;
+  overflow-y: hidden;
+}
+
+#root,
+#root > div,
+.app-body,
+.app-body > div,
+.app-body > div > div,
+.ant-tabs-content,
+.tab-accounts,
+.accounts-container {
+  height: 100%;
 }
 
 a,
