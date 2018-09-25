@@ -133,61 +133,10 @@ export default class Accounts extends Component<Props, State> {
             ...this.initialState
           })
           return swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
-        } else if (err === 'DONT_HAVE_ASSET') {
-          return this.setState({
-            aliasAssets: {
-              selected: '',
-              data: [],
-              isLoading: false,
-              error: false
-            }
-          })
         }
         return swal('Error', 'Something went wrong', 'error')
       }
-
-      if (result.find(i => !i.symbol)) {
-        return map(result, (x, done) => {
-          if (x.symbol) {
-            return done(null, x)
-          }
-
-          this.props.fetchAssetInfo({
-            asset: x.asset
-          }).then(res => {
-            if (res.data.length) {
-              x.symbol = res.data[0].symbol
-              return done(null, x)
-            }
-
-            x.not_exists = true
-            return done(null, x)
-
-          }).catch(fetchErr => done(fetchErr))
-        }, (error, finalResult) => {
-          if (error) {
-            this.setState({
-              aliasAssets: {
-                selected: '',
-                data: [],
-                isLoading: false,
-                error: true
-              }
-            })
-            return swal('Error', 'Something went wrong', 'error')
-          }
-
-          this.setState({
-            aliasAssets: {
-              selected: '',
-              data: finalResult.filter(x => !x.not_exists),
-              isLoading: false,
-              error: false
-            }
-          })
-        })
-      }
-
+      
       this.setState({
         aliasAssets: {
           selected: '',
@@ -226,7 +175,7 @@ export default class Accounts extends Component<Props, State> {
       <AssetBox
         isSelected={this.state.aliasAssets.selected === i.asset}
         selectAsset={this.selectAsset.bind(this)}
-        asset={i.asset}
+        asset={i._id}
         balance={i.balance}
         symbol={i.symbol}
         key={i.asset}

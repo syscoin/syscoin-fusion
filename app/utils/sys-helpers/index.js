@@ -9,8 +9,7 @@ const { waterfall } = require('async')
 */
 
 type AllocationInfoType = {
-  assetId: string,
-  aliasName: string
+  assetId: string
 };
 type SendAssetType = {
   fromAlias: string,
@@ -81,7 +80,7 @@ const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
 
 const getAssetInfo = (obj: AllocationInfoType, cb: (error: string, info?: any) => void) => {
   // Get asset info
-  exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
+  exec(generateCmd('cli', `assetinfo ${obj.assetId} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
       return cb(err)
     }
