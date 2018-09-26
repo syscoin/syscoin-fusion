@@ -149,7 +149,6 @@ const startUpRoutine = (cb) => {
 
   // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
   exec(generateCmd('syscoind', '-assetallocationindex'), (err) => {
-    alert(err)
     if (err.message.indexOf('-reindex') !== -1) {
       swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning')
         .then(() => exec(generateCmd('syscoind', '-reindex')))
@@ -162,7 +161,6 @@ const startUpRoutine = (cb) => {
       // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
       checkSyscoind((error, status, output) => {
         if (error) {
-          alert(error)
           updateProgressbar(60, 'Something went wrong.')
           return swal('Error', 'Unable to start syscoind. Exiting...', 'error').then(() => app.exit()).catch(() => app.exit())
         }
