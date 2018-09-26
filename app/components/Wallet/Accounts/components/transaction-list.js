@@ -13,7 +13,7 @@ type Props = {
 export default class TransactionList extends Component<Props> {
 
   cutTextIfNeeded(text) {
-    return text.length > 15 ? `${text.slice(0, 14)}...` : text
+    return text.length > 13 ? `${text.slice(0, 12)}...` : text
   }
 
   generateColumns() {
@@ -33,13 +33,13 @@ export default class TransactionList extends Component<Props> {
         title: 'From',
         key: 'sender',
         dataIndex: 'sender',
-        render: text => <span>{this.cutTextIfNeeded(text)}</span>
+        render: text => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },
       {
         title: 'To',
         key: 'receiver',
         dataIndex: 'receiver',
-        render: text => <span>{this.cutTextIfNeeded(text)}</span>
+        render: text => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },
       {
         title: 'Date',
@@ -85,15 +85,7 @@ export default class TransactionList extends Component<Props> {
 
   prepareData() {
     // Sort time by date - more recent first
-    let data = this.props.data.sort((a, b) => b.time - a.time)
-
-    // Mapping to a more desirable structure
-    data = data.map(i => ({
-      time: i.time,
-      sender: i.sysalias,
-      receiver: i.sysallocations[0].aliasto,
-      amount: i.sysallocations[0].amount
-    }))
+    const data = this.props.data.sort((a, b) => b.time - a.time)
 
     return data
   }

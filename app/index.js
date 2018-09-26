@@ -46,7 +46,7 @@ window.onbeforeunload = () => {
   // Clean intervals
   clearInterval(global.checkInterval)
   clearInterval(global.updateWalletInterval)
-  if (detectSysdRunning() && isProd) {
+  if (detectSysdRunning()) {
     closeSysd(() => {
       remote.app.quit()
     })

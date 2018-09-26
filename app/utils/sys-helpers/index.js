@@ -296,35 +296,21 @@ const aliasInfo = (name: string, cb: (error: boolean, cb: Function) => void) => 
 }
 
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', `listtransactions * 1999999999`), {
+  exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
     maxBuffer: 1024 * 500
   }, (err, result) => {
     if (err) {
       return reject(err)
     }
 
-    let data = JSON.parse(result)
-
-    data = data.filter(i => {
-      // Breaking down this conditional to lower complexity
-      if (i.sysguid === obj.assetId) {
-        // If asset is equal to the one we're fetching
-        if (
-          i.sysallocations &&
-          i.sysallocations[0] &&
-          i.sysallocations[0].aliasto === obj.alias
-        ) {
-          // If selected alias/address is the receiver
-          return true
-        }
-        if (i.sysalias === obj.alias && i.sysallocations.length) {
-          // If selected alias/address is the sender
-          return true
-        }
-      }
-
-      return false
-    })
+    // Parse JSON and filter out transactions that dont include selected alias. Then remove any undesired stuff from response
+    const data = JSON.parse(result)
+      .filter(i => i.asset === obj.assetId && (i.sender === obj.alias || i.receiver === obj.alias))
+      .map(i => {
+        i.amount = i.amount[0] === '-' ? i.amount.slice(1) : i.amount
+        i.time = (new Date(0)).setUTCSeconds(i.time)
+        return i
+      })
 
     return resolve(data)
   })
