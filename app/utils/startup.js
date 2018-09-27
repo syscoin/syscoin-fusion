@@ -2,11 +2,12 @@ const { exec } = require('child_process')
 const { app } = require('electron').remote
 const { ipcRenderer } = require('electron')
 const fs = require('fs')
-const { join } = require('path')
 const swal = require('sweetalert')
 
+const loadConfIntoEnv = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getSysPath = require('./syspath')
+const getPaths = require('./get-doc-paths')
 
 const checkSyscoind = (cb) => {
   // Just a test to check if syscoind is ready
@@ -71,47 +72,6 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
   }
 }
 
-const loadCustomCss = customCssPath => {
-  try {
-    const css = fs.readFileSync(customCssPath)
-
-    const style = document.createElement("style")
-    style.type = "text/css"
-    style.innerHTML = css
-    document.body.appendChild(style)
-  } catch(e) {
-    swal('Error', 'Error while loading custom CSS', 'error')
-  }
-}
-
-const loadConfIntoEnv = confPath => {
-  let conf
-
-  try {
-    conf = fs.readFileSync(confPath, 'utf-8')
-  } catch (e) {
-    swal('Error', 'Error while loading fusion.conf', 'error')
-    return
-  }
-
-  conf.split('\r\n').forEach(i => {
-    // Parses fusion.cfg
-    const trimmed = i.trim()
-
-    if (trimmed[0] === '#' || !trimmed) {
-      // Ignore comments and empty lines
-      return
-    }
-
-    // Parses keys and values
-    const key = trimmed.split('=')[0]
-    const value = trimmed.split('=')[1].split(',')
-
-    // Write the key/value pair into environment variables
-    global.appStorage.set(key, value === 'none' ? [] : value)
-  })
-}
-
 const startUpRoutine = (cb) => {
   if (!fs.existsSync(getSysPath('default'))) {
     // Attemps to create SyscoinCore folder if this doesn't exists already.
@@ -124,10 +84,11 @@ const startUpRoutine = (cb) => {
     }
   }
 
-  // Get documents path
-  const appDocsPath = join(app.getPath('documents'), 'Fusion')
-  const customCssPath = join(appDocsPath, 'custom.css')
-  const confPath = join(appDocsPath, 'fusion.cfg')
+  const {
+    appDocsPath,
+    customCssPath,
+    confPath
+  } = getPaths()
 
   updateProgressbar(20)
 
@@ -141,7 +102,6 @@ const startUpRoutine = (cb) => {
   updateProgressbar(30, 'Loading custom CSS')
 
   // Apply custom settings
-  loadCustomCss(customCssPath)
   updateProgressbar(50, 'Loading config')
   loadConfIntoEnv(confPath)
 

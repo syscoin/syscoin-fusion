@@ -10,6 +10,8 @@ import Tools from './Tools'
 import Personalize from './Personalize'
 
 import isCliRunning from '../../utils/is-sys-cli-running'
+import loadCustomCss from '../../utils/load-css'
+import getPaths from '../../utils/get-doc-paths'
 
 const Tab = Tabs.TabPane
 
@@ -42,7 +44,7 @@ type State = {
 export default class Wallet extends Component<Props, State> {
   props: Props
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -65,6 +67,7 @@ export default class Wallet extends Component<Props, State> {
       }, 10000)
     }
 
+    loadCustomCss(getPaths().customCssPath)
   }
 
   updateWallet() {
@@ -75,7 +78,7 @@ export default class Wallet extends Component<Props, State> {
     this.checkIncompletedAliases()
   }
 
-  getAssetAllocationInfo(alias, cb) {
+  getAssetAllocationInfo(alias: string, cb: Function) {
     const guids = global.appStorage.get('guid')
 
     if (guids[0] === 'none') {

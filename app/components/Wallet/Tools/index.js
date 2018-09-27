@@ -12,7 +12,6 @@ type Props = {
   exportWallet: Function,
   getPrivateKey: Function,
   importWallet: Function,
-  removeFinishedAlias: Function,
   createNewAlias: Function
 };
 type State = {
@@ -48,7 +47,7 @@ export default class Tools extends Component<Props, State> {
     }
   }
 
-  updateFields(e, mode) {
+  updateFields(e: Object, mode: string) {
     const { name, value } = e.target
     const newState = {...this.state}
 

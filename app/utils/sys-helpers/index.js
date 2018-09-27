@@ -94,7 +94,7 @@ const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
   })
 })
 
-const getAssetAllocationInfo = (obj: AllocationInfoType, cb: (error: string, info?: any) => void) => {
+const getAssetAllocationInfo = (obj: AllocationInfoType, cb: (error: string | boolean, info?: any) => void) => {
   // Get asset allocation info
   exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
@@ -290,7 +290,7 @@ const aliasInfo = (name: string, cb: (error: boolean, cb: Function) => void) => 
     try {
       return cb(err, JSON.parse(result))
     } catch(e) {
-      return cb(err)
+      return cb(err, null)
     }
   })
 }
