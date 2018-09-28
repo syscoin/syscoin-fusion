@@ -7,35 +7,35 @@ const fs = require('fs')
 var conn = new Client();
 var client = require('scp2')
 
-let serviceAccount, dbUrl;
+// let serviceAccount, dbUrl;
+//
+// try {
+//     serviceAccount = require('../serviceKey.json')
+//     dbUrl = 'https://mm-dev-v2.firebaseio.com'
+//
+// } catch (err) {
+//     throw new Error('ERROR: Cant find serviceKey.json (it should be located in the scripts folder)')
+// }
+//
+//
 
-try {
-    serviceAccount = require('../serviceKey.json')
-    dbUrl = 'https://mm-dev-v2.firebaseio.com'
 
-} catch (err) {
-    throw new Error('ERROR: Cant find serviceKey.json (it should be located in the scripts folder)')
-}
-
-
-
-
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: dbUrl
-})
-
-admin.database().ref('/configs')
-    .once('value', (snapshot) => {
-        if (snapshot.hasChildren()) {
-            const val = snapshot.val()
-
-            console.log('lalalala')
-            console.log(val)
-        } else {
-            console.log('ERROR: User does not have contributions to the pool.')
-        }
-    })
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//     databaseURL: dbUrl
+// })
+//
+// admin.database().ref('/configs')
+//     .once('value', (snapshot) => {
+//         if (snapshot.hasChildren()) {
+//             const val = snapshot.val()
+//
+//             console.log('lalalala')
+//             console.log(val)
+//         } else {
+//             console.log('ERROR: User does not have contributions to the pool.')
+//         }
+//     })
 
 
 start()
@@ -54,7 +54,7 @@ async function start(){
 
     await setTimeout(function(){
         console.log('in transferScript')
-        transferScript(dropletIp)
+        transferConfigScripts(dropletIp)
     }, 120000);
 
     await setTimeout(function(){
@@ -63,7 +63,8 @@ async function start(){
     }, 150000);
 
     //logMeIn('142.93.29.188')
-    //transferScript('104.248.76.183')
+    //transferScript('159.89.141.133')
+    //transferDropletScripts('142.93.26.132')
     //let keys = await mmKeyGen();
     //console.log(keys.keys)
 }
@@ -131,7 +132,7 @@ async function logMeIn(ip){
     var conn = new Client();
     conn.on('ready', function() {
         console.log('Client :: ready');
-        conn.exec('sh setup.sh; chaind', function(err, stream) {
+        conn.exec('sh syscoin-setup.sh; sh sentinel-setup.sh; venv/bin/python bin/sentinel.py; chaind;', function(err, stream) {
             if (err) throw err;
             stream.on('close', function(code, signal) {
                 console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -150,11 +151,24 @@ async function logMeIn(ip){
     });
 }
 
-async function transferScript(ip){
-    client.scp('configs/syscoin-setup.sh', {
+async function transferConfigScripts(ip){
+    client.scp('configs/', {
         host: ip,
         username: 'root',
-        path: '/root/setup.sh',
+        path: '/root/',
+        privateKey: fs.readFileSync('basekey.pem')
+    }, function(err) {
+        if(err){
+            throw new Error('unable to transfer')
+        }
+    })
+}
+
+async function transferDropletScripts(ip){
+    client.scp('../droplet-scripts/', {
+        host: ip,
+        username: 'root',
+        path: '/root/droplet-scripts',
         privateKey: fs.readFileSync('basekey.pem')
     }, function(err) {
         if(err){
