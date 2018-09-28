@@ -45,8 +45,8 @@ if (module.hot) {
 window.onbeforeunload = () => {
   // Clean intervals
   clearInterval(global.checkInterval)
-  clearInterval(global.updateWalletInterval)
-  if (detectSysdRunning()) {
+  clearInterval(global.AccountsUpdate)
+  if (detectSysdRunning() && isProd) {
     closeSysd(() => {
       remote.app.quit()
     })

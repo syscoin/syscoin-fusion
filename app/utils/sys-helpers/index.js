@@ -54,35 +54,27 @@ const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
   })
 }
 
-const currentBalance = (cb: (error: boolean, balance?: string) => void) => {
-  // Get current SYS Balance
+// Get current SYS Balance
+const currentBalance = () => new Promise((resolve, reject) => {
   exec(generateCmd('cli', 'getbalance'), (err, stdout, stderror) => {
-    if (err) {
-      return cb(true)
+    if (err || stderror) {
+      return reject(err || stderror)
     }
 
-    if (stderror.toString().length) {
-      return cb(false, '')
-    }
-
-    return cb(false, stdout.toString())
+    return resolve(stdout.toString())
   })
-}
+})
 
-const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
-  // Get current aliases
+// Get current aliases
+const getAliases = () => new Promise((resolve, reject) => {
   exec(generateCmd('cli', 'syscoinlistreceivedbyaddress'), (err, stdout, stderror) => {
-    if (err) {
-      return cb(false, [])
+    if (err || stderror) {
+      return reject(err || stderror)
     }
 
-    if (stderror.toString().length) {
-      return cb(false, [])
-    }
-
-    return cb(false, JSON.parse(stdout.toString()) || [])
+    return resolve(JSON.parse(stdout.toString()))
   })
-}
+})
 
 const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `assetinfo ${assetId} false`), (err, stdout, stderror) => {
@@ -177,7 +169,7 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
       exec(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
@@ -186,7 +178,7 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
       exec(generateCmd('cli', `syscointxfund ${firstResult}`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
@@ -195,12 +187,12 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
       exec(generateCmd('cli', `signrawtransaction ${secondResult}`), (err, result) => {
         try {
           done(err, JSON.parse(result).hex)
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
     },
-    (thirdResult , done) => {
+    (thirdResult, done) => {
       exec(generateCmd('cli', `syscoinsendrawtransaction ${thirdResult}`), (err, result) => {
         done(err, result)
       })
@@ -257,7 +249,7 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
       exec(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
@@ -266,12 +258,12 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
       exec(generateCmd('cli', `signrawtransaction ${firstResult}`), (err, result) => {
         try {
           done(err, JSON.parse(result).hex)
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
     },
-    (secondResult , done) => {
+    (secondResult, done) => {
       exec(generateCmd('cli', `syscoinsendrawtransaction ${secondResult}`), (err, result) => {
         done(err, result)
       })
@@ -289,7 +281,7 @@ const aliasInfo = (name: string, cb: (error: boolean, cb: Function) => void) => 
   exec(generateCmd('cli', `aliasinfo ${name}`), (err, result) => {
     try {
       return cb(err, JSON.parse(result))
-    } catch(e) {
+    } catch (e) {
       return cb(err, null)
     }
   })

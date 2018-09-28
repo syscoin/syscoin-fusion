@@ -12,7 +12,7 @@ type Props = {
 
 export default class TransactionList extends Component<Props> {
 
-  cutTextIfNeeded(text) {
+  cutTextIfNeeded(text: string) {
     return text.length > 13 ? `${text.slice(0, 12)}...` : text
   }
 
@@ -22,7 +22,7 @@ export default class TransactionList extends Component<Props> {
         title: ' ',
         key: 'sysguid',
         dataIndex: 'sysguid',
-        render: (text, transaction) => (
+        render: (text: string, transaction: Object) => (
           <Icon
             className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}
             type={`arrow-${this.isIncoming(transaction) ? 'down' : 'up'}`}
@@ -33,25 +33,25 @@ export default class TransactionList extends Component<Props> {
         title: 'From',
         key: 'sender',
         dataIndex: 'sender',
-        render: text => <span title={text}>{this.cutTextIfNeeded(text)}</span>
+        render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },
       {
         title: 'To',
         key: 'receiver',
         dataIndex: 'receiver',
-        render: text => <span title={text}>{this.cutTextIfNeeded(text)}</span>
+        render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },
       {
         title: 'Date',
         key: 'time',
         dataIndex: 'time',
-        render: time => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
+        render: (time: number) => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
       },
       {
         title: 'Details',
         key: 'amount',
         dataIndex: 'amount',
-        render: (amount, transaction) => ({
+        render: (amount: string, transaction: Object) => ({
           children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{amount}</span>,
           props: {
             width: 150
@@ -61,7 +61,7 @@ export default class TransactionList extends Component<Props> {
     ]
   }
 
-  isIncoming(transaction) {
+  isIncoming(transaction: Object) {
     if (transaction.receiver === this.props.selectedAlias) {
       return true
     }

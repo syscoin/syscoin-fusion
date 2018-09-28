@@ -3,6 +3,7 @@ const { app } = require('electron').remote
 const { ipcRenderer } = require('electron')
 const fs = require('fs')
 const swal = require('sweetalert')
+const waterfall = require('async/waterfall')
 
 const loadConfIntoEnv = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
@@ -107,37 +108,58 @@ const startUpRoutine = (cb) => {
 
   updateProgressbar(60, 'Connecting to syscoin...')
 
-  // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
-  exec(generateCmd('syscoind', '-assetallocationindex'), (err) => {
-    if (err.message.indexOf('-reindex') !== -1) {
-      swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning')
-        .then(() => exec(generateCmd('syscoind', '-reindex')))
-        .catch(() => app.quit())
+  waterfall([
+    done => {
+      exec(generateCmd('syscoind', '-addressindex -assetallocationindex'), (err) => {
+        if (err.message.indexOf('-reindex') !== -1) {
+          return done(null, 'reindex')
+        }
+
+        return done(null, false)
+      })
+    },
+    (reindex, done) => {
+      if (!reindex) {
+        return swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning')
+          .then(() => done(null, 'reindex'))
+          .catch(() => done(true))
+      }
+
+      return done()
+    },
+    (reindex, done) => {
+      console.log('hi')
+      exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex'))
+      done()
+    },
+    (done) => {
+      global.checkInterval = setInterval(() => {
+        // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
+        checkSyscoind((error, status, output) => {
+          if (error) {
+            updateProgressbar(60, 'Something went wrong.')
+            return done(true)
+          }
+  
+          if (status === 'verify') {
+            return updateProgressbar(80, 'Verifying data...')
+          }
+  
+          if (status === 'up') {
+            updateProgressbar(100, 'Ready to launch')
+            // if its up, clear the interval.
+            clearInterval(global.checkInterval)
+            ipcRenderer.send('start-success')
+          }
+        })
+      }, 3000)
+    }
+  ], err => {
+    if (err) {
+      return swal('Error', 'Something went wrong during wallet initialization. Exiting.', 'error')
+        .then(() => app.quit())
     }
   })
-
-  if (!global.checkInterval) {
-    global.checkInterval = setInterval(() => {
-      // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
-      checkSyscoind((error, status, output) => {
-        if (error) {
-          updateProgressbar(60, 'Something went wrong.')
-          return swal('Error', 'Unable to start syscoind. Exiting...', 'error').then(() => app.exit()).catch(() => app.exit())
-        }
-
-        if (status === 'verify') {
-          return updateProgressbar(80, 'Verifying data...')
-        }
-
-        if (status === 'up') {
-          updateProgressbar(100, 'Ready to launch')
-          // if its up, clear the interval.
-          clearInterval(global.checkInterval)
-          ipcRenderer.send('start-success')
-        }
-      })
-    }, 5000)
-  }
 }
 
 function updateProgressbar(value, text) {

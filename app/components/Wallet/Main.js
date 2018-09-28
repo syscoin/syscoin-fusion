@@ -4,7 +4,7 @@ import { Row, Col, Tabs, Icon, Spin } from 'antd'
 import map from 'async/map'
 import { ipcRenderer } from 'electron'
 
-import Accounts from './Accounts'
+import AccountsContainer from 'fw-containers/Accounts'
 import Send from './Send'
 import Tools from './Tools'
 import Personalize from './Personalize'
@@ -12,6 +12,7 @@ import Personalize from './Personalize'
 import isCliRunning from '../../utils/is-sys-cli-running'
 import loadCustomCss from '../../utils/load-css'
 import getPaths from '../../utils/get-doc-paths'
+
 
 const Tab = Tabs.TabPane
 
@@ -55,27 +56,7 @@ export default class Wallet extends Component<Props, State> {
   }
 
   componentWillMount() {
-    this.updateWallet()
-
-    if (!global.updateWalletInterval) {
-      global.updateWalletInterval = setInterval(() => {
-        isCliRunning((err, isRunning) => {
-          if (!isRunning && !err) {
-            this.updateWallet()
-          }
-        })
-      }, 10000)
-    }
-
     loadCustomCss(getPaths().customCssPath)
-  }
-
-  updateWallet() {
-    this.getAliases()
-    this.getCurrentAddress()
-    this.getCurrentBalance()
-    this.getInfo()
-    this.checkIncompletedAliases()
   }
 
   getAssetAllocationInfo(alias: string, cb: Function) {
@@ -202,21 +183,12 @@ export default class Wallet extends Component<Props, State> {
         <Col xs={24}>
           <Tabs className='tabs-app' tabBarExtraContent={this.generateWindowControls()}>
             <Tab className='tab tab-accounts' tab='Accounts' key='1'>
-              <Accounts
-                currentAliases={this.state.aliases || []}
-                currentBalance={this.state.balance || ''}
-                currentAddress={this.state.address || ''}
-                getAssetInfo={this.props.getAssetInfo}
-                getAssetAllocationInfo={this.getAssetAllocationInfo.bind(this)}
-                getTransactionsPerAsset={this.props.getTransactionsPerAsset}
-                updateWallet={this.updateWallet.bind(this)}
-              />
+              <AccountsContainer />
             </Tab>
             <Tab className='tab tab-send' tab='Send' key='2'>
               <Send
                 currentAliases={this.state.aliases || []}
                 currentBalance={this.state.balance || ''}
-                updateWallet={this.updateWallet.bind(this)}
               />
             </Tab>
             <Tab className='tab tab-tools' tab='Tools' key='3'>

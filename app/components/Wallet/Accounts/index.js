@@ -1,71 +1,32 @@
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin } from 'antd'
-import swal from 'sweetalert'
-import map from 'async/map'
-import SyscoinLogo from '../../../syscoin-logo.png'
+import SyscoinLogo from 'fw/syscoin-logo.png'
 import AliasAddressItem from './components/alias-address-item'
 import AssetBox from './components/asset-box'
 import TransactionList from './components/transaction-list'
 import UserBalance from './components/balance'
 
 type Props = {
-  currentBalance: string,
-  currentAliases: Array<any>,
-  getAssetInfo: Function,
-  getAssetAllocationInfo: Function,
-  getTransactionsPerAsset: Function
-};
-type State = {
-  assetInfoBySelectedAlias: Array<Object>,
+  balance: string,
+  aliases: Array<Object>,
+  transactions: Object,
   selectedAlias: string,
-  aliasAssets: {
-    selected: '',
-    isLoading: boolean,
-    data: Array<any>,
-    error: boolean
-  },
-  transactions: {
-    isLoading: boolean,
-    data: Array<any>,
-    error: boolean
-  }
+  aliasAssets: Object,
+  updateSelectedAlias: Function
 };
 
-export default class Accounts extends Component<Props, State> {
+export default class Accounts extends Component<Props> {
   props: Props;
 
-  constructor(props: Props) {
-    super(props)
-
-    this.initialState = {
-      selectedAlias: '',
-      aliasAssets: {
-        selected: '',
-        isLoading: false,
-        data: [],
-        error: false
-      },
-      transactions: {
-        isLoading: false,
-        data: [],
-        error: false
-      }
-    }
-
-    this.state = {
-      ...this.initialState
-    }
-  }
-
   isAliasSelected(aliasInfo: Object) {
-    return aliasInfo.alias ? aliasInfo.alias === this.state.selectedAlias : aliasInfo.address === this.state.selectedAlias
+    return aliasInfo.alias ? aliasInfo.alias === this.props.selectedAlias : aliasInfo.address === this.props.selectedAlias
   }
 
   generateAliasesBoxes() {
     const aliases = []
     const addresses = []
     
-    this.props.currentAliases.forEach(i => {
+    this.props.aliases.forEach(i => {
       // Separating aliases and addresses for later ordering
       // Using of sort method would result in unpredictable result and kinda complex ordering logic
       if (i.alias) {
@@ -80,135 +41,17 @@ export default class Accounts extends Component<Props, State> {
         key={i.address}
         alias={i.alias}
         address={i.address}
-        isLoading={this.state.aliasAssets.isLoading}
+        isLoading={this.props.aliasAssets.isLoading}
         isSelected={this.isAliasSelected(i)}
-        updateSelectedAlias={this.updateSelectedAlias.bind(this)}
+        updateSelectedAlias={this.props.updateSelectedAlias}
       />
     ))
   }
 
-  getOwnAliasBalance(obj: Object) {
-    if (obj.receiver === obj.sender) {
-      return obj.amount
-    }
-
-    if (obj.sender === this.state.selectedAlias) {
-      return obj.sender_balance
-    } else if (obj.receiver === this.state.selectedAlias) {
-      return obj.receiver_balance
-    }
-
-    return 0
-  }
-
-  updateSelectedAlias(alias: string) {
-
-    if (this.state.aliasAssets.isLoading) {
-      return false
-    }
-    
-    this.setState({
-      selectedAlias: alias,
-      aliasAssets: {
-        selected: '',
-        isLoading: true,
-        data: [],
-        error: false
-      },
-      transactions: {
-        isLoading: true,
-        data: [],
-        error: false
-      }
-    }, () => {
-      this.getAssetsInfo(alias)
-    })
-  }
-
-  getAssetsInfo(alias: string) {
-    this.props.getAssetAllocationInfo(alias, (err, result) => {
-      if (err) {
-        if (err === 'NO_ASSET_SELECTED') {
-          this.setState({
-            ...this.initialState
-          })
-          return swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
-        }
-        return swal('Error', 'Something went wrong', 'error')
-      }
-
-      if (result.find(i => !i.symbol)) {
-        // If alias/address doesnt own any token, fallback to assetinfo.
-        return map(result, async (x, done) => {
-          if (x.symbol) {
-            return done(null, x)
-          }
-
-          let assetInfo
-
-          try {
-            assetInfo = await this.props.getAssetInfo(x.asset)
-          } catch (assetInfoErr) {
-            return done(assetInfoErr)
-          }
-
-          x.symbol = assetInfo.symbol
-          x.balance = '0'
-          return done(null, x)
-        }, (error, finalResult) => {
-          if (error) {
-            this.setState({
-              aliasAssets: {
-                selected: '',
-                data: [],
-                isLoading: false,
-                error: true
-              }
-            })
-            return swal('Error', 'Something went wrong', 'error')
-          }
-
-          this.setState({
-            aliasAssets: {
-              selected: '',
-              data: finalResult,
-              isLoading: false,
-              error: false
-            }
-          })
-        })
-      }
-
-      this.setState({
-        aliasAssets: {
-          selected: '',
-          data: result,
-          isLoading: false,
-          error: false
-        }
-      })
-    })
-  }
-
-  renderAliasResult(info: Object | string) {
-    if (typeof info === 'string') {
-      return info
-    }
-
-    const result = []
-    const keys = Object.keys(info)
-
-    keys.forEach(i => result.push(
-      <p key={i} style={{ fontSize: 15 }}>{i}: {info[i]}</p>
-    ))
-
-    return result
-  }
-
   generateAliasAssets() {
-    return this.state.aliasAssets.data.map(i => (
+    return this.props.aliasAssets.data.map(i => (
       <AssetBox
-        isSelected={this.state.aliasAssets.selected === i.asset}
+        isSelected={this.props.aliasAssets.selected === i.asset}
         selectAsset={this.selectAsset.bind(this)}
         asset={i.asset}
         balance={i.balance}
@@ -221,52 +64,12 @@ export default class Accounts extends Component<Props, State> {
   generateTransactionsTable() {
     return (
       <TransactionList
-        data={this.state.transactions.data}
-        error={this.state.transactions.error}
-        isLoading={this.state.transactions.isLoading}
-        selectedAlias={this.state.selectedAlias}
+        data={this.props.transactions.data}
+        error={this.props.transactions.error}
+        isLoading={this.props.transactions.isLoading}
+        selectedAlias={this.props.selectedAlias}
       />
     )
-  }
-
-  selectAsset(asset) {
-    this.setState({
-      aliasAssets: {
-        ...this.state.aliasAssets,
-        selected: asset,
-        error: false
-      },
-      transactions: {
-        ...this.initialState.transactions,
-        isLoading: true
-      }
-    }, async () => {
-
-      let transactions
-
-      try {
-        transactions = await this.props.getTransactionsPerAsset({
-          alias: this.state.selectedAlias,
-          assetId: asset
-        })
-      } catch(err) {
-        this.setState({
-          transactions: {
-            data: [],
-            isLoading: false,
-            error: true
-          }
-        })
-      }
-      
-      this.setState({
-        transactions: {
-          isLoading: false,
-          data: transactions,
-          error: false
-        }
-      })
-    })
   }
 
   render() {
@@ -274,7 +77,7 @@ export default class Accounts extends Component<Props, State> {
       <Row className='accounts-container'>
         <Col xs={9} className='accounts-container-left'>
           <UserBalance
-            currentBalance={this.props.currentBalance}
+            currentBalance={this.props.balance}
           />
           <hr className='alias-separator' />
           <h4 className='your-aliases-text'>Your aliases/addresses</h4>
@@ -283,8 +86,8 @@ export default class Accounts extends Component<Props, State> {
           </div>
         </Col>
         <Col xs={15} className='accounts-container-right'>
-          {(!this.state.selectedAlias || this.state.aliasAssets.error) ? <img src={SyscoinLogo} alt='sys-logo' width='320' height='200' className='sys-logo-bg' /> : null}
-          {this.state.aliasAssets.data.length ? (
+          {(!this.props.selectedAlias || this.props.aliasAssets.error) ? <img src={SyscoinLogo} alt='sys-logo' width='320' height='200' className='sys-logo-bg' /> : null}
+          {this.props.aliasAssets.data.length ? (
             <div>
               <Row className='asset-box-container'>
                 <h4 className='asset-box-text'>Available assets</h4>
@@ -294,7 +97,7 @@ export default class Accounts extends Component<Props, State> {
           ) : null}
           <Row>
             <Col offset={1} xs={21}>
-              {this.state.aliasAssets.selected ? (
+              {this.props.aliasAssets.selected ? (
                 <div>
                   <h4 className='transactions-table-title'>Transactions</h4>
                   {this.generateTransactionsTable()}
@@ -302,7 +105,7 @@ export default class Accounts extends Component<Props, State> {
               ) : null}
             </Col>
           </Row>
-          {this.state.aliasAssets.isLoading && 
+          {this.props.aliasAssets.isLoading && 
             <div className='loading-container'>
               <Spin indicator={<Icon type='loading' spin />} />
             </div>

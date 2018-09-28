@@ -12,8 +12,7 @@ import {
 
 type Props = {
   currentAliases: Array<Object>,
-  currentBalance: string,
-  updateWallet: () => void
+  currentBalance: string
 };
 type State = {
   asset: {
@@ -160,8 +159,6 @@ export default class Send extends Component<Props, State> {
           isLoading: false
         }
       })
-
-      this.props.updateWallet()
 
       return swal('Success', `${amount} SYS has been successfully sent to ${address}.`, 'success')
     })
