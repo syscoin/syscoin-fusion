@@ -17,7 +17,7 @@ module.exports = (req, res) => {
     const userId = req.user.uid,
           dropletId = req.body.dropletId
 
-    const imageId = functions.config().dropletconfig.imageid
+    const imageId = functions.config().images.sys
 
     return admin.database().ref('/vps')
                     .orderByChild('userId')

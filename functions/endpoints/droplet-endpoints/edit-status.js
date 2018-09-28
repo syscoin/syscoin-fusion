@@ -1,5 +1,4 @@
 const admin = require('firebase-admin')
-const checkIpWhitelist = require('../helpers/check-whitelist-ip')
 
 /**
  * @api {post} /droplets/edit-status Edit MN status

@@ -1,6 +1,9 @@
 const fs = require('fs')
 
-const writeToLogs = (text) => {
+const writeToLogs = (obj) => {
+    const { error, message } = obj
+
+    const text = `${(new Date()).toString()}: Message: ${obj.message} | Error: ${obj.error}\n`
     const logSize = fs.statSync('/root/scripts/logs/usage-log.txt').size
 
     if (logSize > 200000000) {
