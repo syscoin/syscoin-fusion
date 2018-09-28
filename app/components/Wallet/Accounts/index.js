@@ -12,7 +12,8 @@ type Props = {
   transactions: Object,
   selectedAlias: string,
   aliasAssets: Object,
-  updateSelectedAlias: Function
+  updateSelectedAlias: Function,
+  selectAsset: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -52,7 +53,7 @@ export default class Accounts extends Component<Props> {
     return this.props.aliasAssets.data.map(i => (
       <AssetBox
         isSelected={this.props.aliasAssets.selected === i.asset}
-        selectAsset={this.selectAsset.bind(this)}
+        selectAsset={this.props.selectAsset}
         asset={i.asset}
         balance={i.balance}
         symbol={i.symbol}

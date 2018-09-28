@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import swal from 'sweetalert'
 import map from 'async/map'
+import waterfall from 'async/waterfall'
 
 import Accounts from 'fw-components/Wallet/Accounts/'
 import {
@@ -127,57 +128,77 @@ export default class AccountsContainer extends Component<Props, State> {
   }
 
   getAssetsInfo(alias: string) {
-    getAssetAllocationInfo(alias, (err, result) => {
-      if (err) {
-        if (err === 'NO_ASSET_SELECTED') {
-          this.setState({
-            ...this.initialState
-          })
-          return swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
+
+    waterfall([
+      done => {
+        // Get GUIDs
+        const guids = global.appStorage.get('guid')
+
+        if (guids[0] === 'none') {
+          swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
+          return done(true)
         }
-        return swal('Error', 'Something went wrong', 'error')
-      }
 
-      if (result.find(i => !i.symbol)) {
-        // If alias/address doesnt own any token, fallback to assetinfo.
-        return map(result, async (x, done) => {
-          if (x.symbol) {
-            return done(null, x)
-          }
-
-          let assetInfo
-
+        done(null, guids)
+      },
+      (guids, done) => {
+        // Get balance and symbol by using assetallocationinfo
+        map(guids, async (i, cb) => {
+          let data
           try {
-            assetInfo = await getAssetInfo(x.asset)
-          } catch (assetInfoErr) {
-            return done(assetInfoErr)
-          }
-
-          x.symbol = assetInfo.symbol
-          x.balance = '0'
-          return done(null, x)
-        }, (error, finalResult) => {
-          if (error) {
-            this.setState({
-              aliasAssets: {
-                selected: '',
-                data: [],
-                isLoading: false,
-                error: true
-              }
+            data = await getAssetAllocationInfo({
+              assetId: i,
+              aliasName: alias
             })
-            return swal('Error', 'Something went wrong', 'error')
+          } catch(err) {
+            if (err.message.indexOf('ERRCODE: 1507')) {
+              return cb(null, {
+                balance: '0',
+                alias,
+                asset: i,
+                symbol: ''
+              })
+            }
           }
 
-          this.setState({
-            aliasAssets: {
-              selected: '',
-              data: finalResult,
-              isLoading: false,
-              error: false
+          cb(null, data)
+        }, (err, result) => done(err, result))
+      },
+      (data, done) => {
+        // If alias/address doesnt own any token, fallback to assetinfo.
+        if (data.find(i => !i.symbol)) {
+          return map(data, async (x, cb) => {
+            if (x.symbol.lenght) {
+              return cb(null, x)
             }
-          })
+
+            let assetInfo
+
+            try {
+              assetInfo = await getAssetInfo(x.asset)
+            } catch (assetInfoErr) {
+              return cb(assetInfoErr)
+            }
+  
+            x.symbol = assetInfo.symbol
+            x.balance = '0'
+            return cb(null, x)
+          }, (error, finalResult) => done(null, finalResult))
+        }
+
+        return done(null, data)
+      }
+    ], (err, result) => {
+      if (err) {
+        this.setState({
+          aliasAssets: {
+            selected: '',
+            data: [],
+            isLoading: false,
+            error: true
+          }
         })
+        return swal('Error', 'Something went wrong', 'error')
       }
 
       this.setState({
@@ -191,7 +212,7 @@ export default class AccountsContainer extends Component<Props, State> {
     })
   }
 
-  selectAsset(asset) {
+  async selectAsset(asset) {
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
@@ -220,6 +241,8 @@ export default class AccountsContainer extends Component<Props, State> {
           }
         })
       }
+
+      console.log(transactions)
       
       this.setState({
         transactions: {
@@ -241,6 +264,7 @@ export default class AccountsContainer extends Component<Props, State> {
         selectedAlias={selectedAlias}
         aliasAssets={aliasAssets}
         updateSelectedAlias={this.updateSelectedAlias}
+        selectAsset={this.selectAsset}
       />
     )
   }

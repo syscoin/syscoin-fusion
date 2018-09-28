@@ -86,16 +86,16 @@ const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
   })
 })
 
-const getAssetAllocationInfo = (obj: AllocationInfoType, cb: (error: string | boolean, info?: any) => void) => {
-  // Get asset allocation info
+// Get asset allocation info
+const getAssetAllocationInfo = (obj: AllocationInfoType) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false, JSON.parse(stdout.toString()))
+    return resolve(JSON.parse(stdout.toString()))
   })
-}
+})
 
 const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) => void) => {
   // Sends asset to specific alias
