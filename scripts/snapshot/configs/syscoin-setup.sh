@@ -5,4 +5,6 @@ mv chain/bin/syscoind /usr/bin/chaind
 mv chain/bin/syscoin-cli /usr/bin/chain-cli
 cd droplet-scripts
 npm install
-cd
+cd ~/sentinel
+chaind -daemon
+venv/bin/python bin/sentinel.py

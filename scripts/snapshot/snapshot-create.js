@@ -137,7 +137,7 @@ async function logMeIn(ip){
     var conn = new Client();
     conn.on('ready', function() {
         console.log('Client :: ready');
-        conn.exec('sh deps.sh ;sh syscoin-setup.sh; sh sentinel-setup.sh; chaind;', function(err, stream) {
+        conn.exec('sh deps.sh; sh sentinel-setup.sh; sh syscoin-setup.sh;', function(err, stream) {
             if (err) throw err;
             stream.on('close', function(code, signal) {
                 console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);

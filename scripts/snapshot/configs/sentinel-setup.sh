@@ -7,4 +7,3 @@ cd sentinel
 apt-get install -y virtualenv
 virtualenv ./venv
 ./venv/bin/pip install -r requirements.txt
-venv/bin/python bin/sentinel.py
