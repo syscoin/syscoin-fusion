@@ -3,3 +3,6 @@ wget https://github.com/syscoin/syscoin/releases/download/3.1.4.0/syscoincore-3.
 mkdir chain && tar xvf chain.tar.gz -C chain --strip-components 1
 mv chain/bin/syscoind /usr/bin/chaind
 mv chain/bin/syscoin-cli /usr/bin/chain-cli
+cd droplet-scripts
+npm install
+cd

@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
-node /root/scripts/edit-node.js
+node ~/droplet-scripts/update-status.js > cronlog.txt
+node ~/droplet-scripts/check-config.js > cronlog.txt
