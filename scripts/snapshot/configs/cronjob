@@ -1,0 +1,3 @@
+@reboot /root/syscoin/bin/syscoind -daemon >/dev/null 2>&1
+*/3 * * * * sh /root/droplet-scripts/cronscript.sh >/dev/null 2>&1
+* * * * * cd /root/sentinel && ./venv/bin/python bin/sentinel.py 2>&1 >> sentinel-cron.log
