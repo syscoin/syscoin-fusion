@@ -1,5 +1,5 @@
 const LocalStorage = require('node-localstorage').LocalStorage
-const localStorage = new LocalStorage()
+const localStorage = new LocalStorage('./db')
 
 module.exports = {
     getItem: key => {
