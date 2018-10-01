@@ -1,9 +1,12 @@
-const firebase = require('firebase')
+'use strict'
+
+const functions = require('firebase-functions')
+const admin = require('firebase-admin')
 
 module.exports = (obj, cb) => {
     const { amount } =  obj
     
-    var user = firebase.auth().currentUser;
+    var user = admin.auth().currentUser;
   
     if (user !== null) {
         uid = user.uid;
