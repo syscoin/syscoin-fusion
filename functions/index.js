@@ -23,6 +23,8 @@ const getPoolingData = require('./endpoints/pooling-data')
 const requestPooling = require('./endpoints/request-pooling')
 const editNode = require('./endpoints/edit-node')
 const dataTracking = require('./endpoints/data-tracking')
+const createCharge = require('./endpoints/create-charge')
+const codeRedeem = require('./endpoints/code-redeem')
 
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
