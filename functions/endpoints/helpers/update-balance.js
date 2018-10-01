@@ -1,5 +1,4 @@
-const firebase = require('firebase-functions')
-const admin = require('firebase-admin')
+const firebase = require('firebase')
 
 module.exports = (obj, cb) => {
     const { amount } =  obj
@@ -13,6 +12,7 @@ module.exports = (obj, cb) => {
     var currentBalance;
     var readBalance = firebase.database().ref('balance/' + uid);
     readBalance.on('value', (snapshot) => {
+            console.log("value: "+snapshot.val());
            currentBalance = snapshot.val();
     });
 
