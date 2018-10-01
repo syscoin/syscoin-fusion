@@ -20,8 +20,8 @@ export default class TransactionList extends Component<Props> {
     return [
       {
         title: ' ',
-        key: 'sysguid',
-        dataIndex: 'sysguid',
+        key: 'asset',
+        dataIndex: 'asset',
         render: (text: string, transaction: Object) => (
           <Icon
             className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}

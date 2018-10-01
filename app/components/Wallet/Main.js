@@ -144,7 +144,6 @@ export default class Wallet extends Component<Props, State> {
   getInfo() {
     this.props.getInfo((err, info) => {
       if (err) {
-        console.log(err)
         return
       }
 

@@ -56,6 +56,7 @@ const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
 
 // Get current SYS Balance
 const currentBalance = () => new Promise((resolve, reject) => {
+  console.log(generateCmd('cli', 'getbalance'))
   exec(generateCmd('cli', 'getbalance'), (err, stdout, stderror) => {
     if (err || stderror) {
       return reject(err || stderror)

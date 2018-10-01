@@ -110,26 +110,38 @@ const startUpRoutine = (cb) => {
 
   waterfall([
     done => {
-      exec(generateCmd('syscoind', '-addressindex -assetallocationindex'), (err) => {
+      const isFirstTime = window.appStorage.get('firstTime')
+      let isDone = false
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex`), (err, stdout) => {
+        if (isDone) {
+          return
+        }
+        isDone = true
         if (err.message.indexOf('-reindex') !== -1) {
-          return done(null, 'reindex')
+          return done(null, true)
         }
 
         return done(null, false)
       })
+      setTimeout(() => {
+        if (!isDone) {
+          done(null, null)
+        }
+      }, 5000)
     },
     (reindex, done) => {
-      if (!reindex) {
+      if (reindex) {
         return swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning')
           .then(() => done(null, 'reindex'))
           .catch(() => done(true))
       }
 
-      return done()
+      return done(null, false)
     },
     (reindex, done) => {
-      console.log('hi')
-      exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex'))
+      if (reindex) {
+        exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex'))
+      }
       done()
     },
     (done) => {
@@ -146,6 +158,7 @@ const startUpRoutine = (cb) => {
           }
   
           if (status === 'up') {
+            window.appStorage.set('firstTime', false)
             updateProgressbar(100, 'Ready to launch')
             // if its up, clear the interval.
             clearInterval(global.checkInterval)

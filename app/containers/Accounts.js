@@ -212,7 +212,7 @@ export default class AccountsContainer extends Component<Props, State> {
     })
   }
 
-  async selectAsset(asset) {
+  selectAsset(asset) {
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
@@ -241,8 +241,6 @@ export default class AccountsContainer extends Component<Props, State> {
           }
         })
       }
-
-      console.log(transactions)
       
       this.setState({
         transactions: {
