@@ -33,12 +33,8 @@ type State = {
 
 export default class AccountsContainer extends Component<Props, State> {
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
-
-    this.updateSelectedAlias = this.updateSelectedAlias.bind(this)
-    this.getAssetsInfo = this.getAssetsInfo.bind(this)
-    this.selectAsset = this.selectAsset.bind(this)
 
     this.initialState = {
       selectedAlias: '',
@@ -139,6 +135,10 @@ export default class AccountsContainer extends Component<Props, State> {
           return done(true)
         }
 
+        if (!guids.length) {
+          return done(true)
+        }
+
         done(null, guids)
       },
       (guids, done) => {
@@ -183,7 +183,7 @@ export default class AccountsContainer extends Component<Props, State> {
             x.symbol = assetInfo.symbol
             x.balance = '0'
             return cb(null, x)
-          }, (error, finalResult) => done(null, finalResult))
+          }, (error, finalResult) => done(null, finalResult.filter(x => x)))
         }
 
         return done(null, data)
@@ -212,7 +212,7 @@ export default class AccountsContainer extends Component<Props, State> {
     })
   }
 
-  selectAsset(asset) {
+  selectAsset(asset: string) {
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
@@ -261,8 +261,8 @@ export default class AccountsContainer extends Component<Props, State> {
         transactions={transactions}
         selectedAlias={selectedAlias}
         aliasAssets={aliasAssets}
-        updateSelectedAlias={this.updateSelectedAlias}
-        selectAsset={this.selectAsset}
+        updateSelectedAlias={this.updateSelectedAlias.bind(this)}
+        selectAsset={this.selectAsset.bind(this)}
       />
     )
   }
