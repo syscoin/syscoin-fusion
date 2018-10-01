@@ -24,8 +24,7 @@ module.exports = (req, res, next) => {
                         message: 'Credit Something went wrong during the payment. Try again later.'
                     })
                 }
-    
-                updateBalance(chargeAmount, (err) => {
+                updateBalance(req.user.uid, chargeAmount, (err) => {
                     if (err) {
                         return res.status(400).send({
                             error: true,
@@ -34,9 +33,9 @@ module.exports = (req, res, next) => {
                     }
                 });
 
-                return res.send({
+                return res.status(200).send({
                     message: 'Payment completed',
-                    expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
+                    expiresOn: new Date().setMonth(new Date().getMonth()),
                     purchaseDate: Date.now(),
                     paymentId: charge.id
                 })
