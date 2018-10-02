@@ -56,7 +56,6 @@ const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
 
 // Get current SYS Balance
 const currentBalance = () => new Promise((resolve, reject) => {
-  console.log(generateCmd('cli', 'getbalance'))
   exec(generateCmd('cli', 'getbalance'), (err, stdout, stderror) => {
     if (err || stderror) {
       return reject(err || stderror)
@@ -98,7 +97,7 @@ const getAssetAllocationInfo = (obj: AllocationInfoType) => new Promise((resolve
   })
 })
 
-const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) => void) => {
+const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
   // Sends asset to specific alias
   const { fromAlias, toAlias, assetId, amount } = obj
 
@@ -107,9 +106,9 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
       exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
         if (err) {
           if (err.message.indexOf('ERRCODE: 1018') !== -1) {
-            return cb(null)
+            return done(null)
           }
-          return cb(err)
+          return done(err)
         }
 
         done(null, JSON.parse(result.toString())[0])
@@ -131,7 +130,7 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
     (assetAllocationOutput, done) => {
       exec(generateCmd('cli', `signrawtransaction ${assetAllocationOutput}`), (errSign, resultSign) => {
         if (errSign) {
-          return cb(errSign)
+          return done(errSign)
         }
 
         done(null, JSON.parse(resultSign.toString()).hex)
@@ -140,14 +139,20 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
     (signOutput, done) => {
       exec(generateCmd('cli', `syscoinsendrawtransaction ${signOutput}`), (errSend, resultSend) => {
         if (errSend) {
-          return cb(errSend)
+          return done(errSend)
         }
 
         return done(false, resultSend)
       })
     }
-  ], (err) => cb(err))
-}
+  ], (err) => {
+    if (err) {
+      return reject(err)
+    }
+
+    resolve()
+  })
+})
 
 const sendSysTransaction = (obj: sendSysTransactionType, cb: (error: boolean, result?: string) => void) => {
   // Send SYS to address

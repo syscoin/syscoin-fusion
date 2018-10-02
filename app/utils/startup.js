@@ -112,7 +112,7 @@ const startUpRoutine = (cb) => {
     done => {
       const isFirstTime = window.appStorage.get('firstTime')
       let isDone = false
-      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex`), (err, stdout) => {
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server`), (err, stdout) => {
         if (isDone) {
           return
         }
@@ -140,7 +140,7 @@ const startUpRoutine = (cb) => {
     },
     (reindex, done) => {
       if (reindex) {
-        exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex'))
+        exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex -server'))
       }
       done()
     },

@@ -5,7 +5,7 @@ import map from 'async/map'
 import { ipcRenderer } from 'electron'
 
 import AccountsContainer from 'fw-containers/Accounts'
-import Send from './Send'
+import SendContainer from 'fw-containers/Send'
 import Tools from './Tools'
 import Personalize from './Personalize'
 
@@ -185,10 +185,7 @@ export default class Wallet extends Component<Props, State> {
               <AccountsContainer />
             </Tab>
             <Tab className='tab tab-send' tab='Send' key='2'>
-              <Send
-                currentAliases={this.state.aliases || []}
-                currentBalance={this.state.balance || ''}
-              />
+              <SendContainer />
             </Tab>
             <Tab className='tab tab-tools' tab='Tools' key='3'>
               <Tools
