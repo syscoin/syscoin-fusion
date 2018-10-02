@@ -1,7 +1,9 @@
 // @flow
-import React, { Component } from 'react'
+import React, { Component  } from 'react'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Wallet from '../components/Wallet/Main'
+import { saveGetInfo } from 'fw-actions/wallet'
 import {
   aliasInfo,
   currentSysAddress,
@@ -29,6 +31,18 @@ type Props = {};
 class WalletHome extends Component<Props> {
   props: Props;
 
+  componentDidMount() {
+    if (!window.updateWallet) {
+      window.updateWallet = setInterval(() => this.updateWallet(), 10000)
+    }
+
+    this.updateWallet()
+  }
+
+  updateWallet() {
+    this.props.saveGetInfo()
+  }
+
   render() {
     return (
       <Wallet
@@ -54,6 +68,12 @@ class WalletHome extends Component<Props> {
   }
 }
 
-const mapStateToProps = () => ({})
+const mapStateToProps = state => ({
+  wallet: state.wallet
+})
 
-export default connect(mapStateToProps)(WalletHome)
+const mapDispatchToProps = dispatch => bindActionCreators({
+  saveGetInfo
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletHome)

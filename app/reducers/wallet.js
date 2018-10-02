@@ -1,9 +1,27 @@
 // @flow
 import { WALLET_GETINFO } from 'fw-types/wallet'
-import type { getInfoType } from 'fw-actions/wallet'
 
-export type counterStateType = {
-  +counter: number
+
+type StateType = {
+  getinfo: {
+    version: string,
+    dashversion: string,
+    protocolversion: number,
+    walletversion: number,
+    balance: number,
+    privatesend_balance: number,
+    blocks: number,
+    timeoffset: number,
+    connections: number,
+    proxy: string,
+    difficulty: number,
+    testnet: boolean,
+    keypoololdest: number,
+    keypoolsize: number,
+    paytxfee: number,
+    relayfee: number,
+    errors: string
+  }
 };
 
 type actionType = {
@@ -33,7 +51,7 @@ const initialState = {
   }
 }
 
-export default function wallet(state: getInfoType = initialState, action: actionType) {
+export default function wallet(state: StateType = initialState, action: actionType) {
   switch (action.type) {
     case WALLET_GETINFO:
       return {

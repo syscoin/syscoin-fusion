@@ -29,15 +29,15 @@ type getTransactionsPerAssetType = {
   alias: string
 };
 
-const getInfo = (cb: (error: boolean, result?: Object) => void) => {
+const getInfo = () => new Promise((resolve, reject) => {
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false, JSON.parse(stdout))
+    return resolve(JSON.parse(stdout))
   })
-}
+})
 
 const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
   // Get current SYS address

@@ -24,7 +24,6 @@ type Props = {
   getAliases: Function,
   getAssetInfo: Function,
   getAssetAllocationInfo: Function,
-  getInfo: Function,
   getUnfinishedAliases: Function,
   importWallet: Function,
   exportWallet: Function,
@@ -138,16 +137,6 @@ export default class Wallet extends Component<Props, State> {
       this.setState({
         aliases
       })
-    })
-  }
-
-  getInfo() {
-    this.props.getInfo((err, info) => {
-      if (err) {
-        return
-      }
-
-      global.appStorage.set('walletinfo', info)
     })
   }
 
