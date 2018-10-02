@@ -123,12 +123,13 @@ export default class SendAssetForm extends Component<Props, State> {
               className='send-asset-form-btn-send'
               disabled={isLoading}
               onClick={() => sendAsset(this.state, err => {
-                if (!err) {
-                  this.resetForm()
-                  return swal('Success', 'Asset successfully sent', 'success')
+                if (err) {
+                  console.log(err)
+                  return swal('Error', parseError(err.message), 'error')
                 }
 
-                swal('Error', parseError(err.message), 'error')
+                this.resetForm()
+                return swal('Success', 'Asset successfully sent', 'success')
               })}
             >
               Send

@@ -3,9 +3,10 @@ import React, { Component } from 'react'
 
 import Send from 'fw-components/Wallet/Send/'
 import {
+  getAliases,
   getAssetAllocationInfo,
   sendAsset,
-  getAliases
+  sendSysTransaction
 } from 'fw-sys'
 
 type isUserAssetOwnerType = {
@@ -19,13 +20,20 @@ type sendAssetType = {
   amount: string
 };
 
+type Props = {};
 type State = {
   assetIsLoading: boolean,
   sysIsLoading: boolean,
   aliases: Array<Object>
 };
 
-export default class SendContainer extends Component<State> {
+type sendSysType = {
+  amount: string,
+  address: string,
+  comment: string
+};
+
+export default class SendContainer extends Component<Props, State> {
 
   constructor() {
     super()
@@ -111,12 +119,38 @@ export default class SendContainer extends Component<State> {
     })
   }
 
+  async sendSys(obj: sendSysType, cb: Function) {
+
+    this.setState({
+      sysIsLoading: true
+    })
+
+    let result
+
+    try {
+      result = await sendSysTransaction(obj)
+    } catch(err) {
+      this.setState({
+        sysIsLoading: false
+      })
+      return cb(err)
+    }
+
+    this.setState({
+      sysIsLoading: false
+    })
+
+    return cb(null, result)
+  }
+
   render() {
     return (
       <Send
         assetIsLoading={this.state.assetIsLoading}
+        sysIsLoading={this.state.sysIsLoading}
         aliases={this.state.aliases.map(i => i.alias || i.address)}
         sendAsset={this.sendAsset.bind(this)}
+        sendSys={this.sendSys.bind(this)}
       />
     )
   }

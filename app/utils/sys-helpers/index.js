@@ -154,17 +154,17 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
   })
 })
 
-const sendSysTransaction = (obj: sendSysTransactionType, cb: (error: boolean, result?: string) => void) => {
+const sendSysTransaction = (obj: sendSysTransactionType) => new Promise((resolve, reject) => {
   // Send SYS to address
   const { address, amount, comment } = obj
   exec(generateCmd('cli', `sendtoaddress ${address} ${amount} "${comment || ''}"`), (err, result) => {
     if (err) {
-      return cb(true)
+      return reject(err)
     }
 
-    return cb(false, result)
+    return resolve(result)
   })
-}
+})
 
 const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => any) => {
   // Creates new alias
@@ -305,9 +305,10 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
     const data = JSON.parse(result)
       .filter(i => i.asset === obj.assetId && (i.sender === obj.alias || i.receiver === obj.alias))
       .map(i => {
-        i.amount = i.amount[0] === '-' ? i.amount.slice(1) : i.amount
-        i.time = (new Date(0)).setUTCSeconds(i.time)
-        return i
+        const asset = {...i}
+        asset.amount = asset.amount[0] === '-' ? asset.amount.slice(1) : asset.amount
+        asset.time = (new Date(0)).setUTCSeconds(asset.time)
+        return asset
       })
 
     return resolve(data)
