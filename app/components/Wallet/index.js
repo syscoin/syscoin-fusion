@@ -4,7 +4,7 @@ import { Row, Col, Tabs } from 'antd'
 
 import AccountsContainer from 'fw-containers/Accounts'
 import SendContainer from 'fw-containers/Send'
-// import Tools from './Tools'
+import ToolsContainer from 'fw-containers/Tools'
 // import Personalize from './Personalize'
 
 import WindowControls from './components/window-control'
@@ -34,18 +34,10 @@ class Wallet extends Component<Props> {
             <Tab className='tab tab-send' tab='Send' key='2'>
               <SendContainer />
             </Tab>
-            {/*<Tab className='tab tab-tools' tab='Tools' key='3'>
-              <Tools
-                createNewAlias={this.props.createNewAlias}
-                getUnfinishedAliases={this.props.getUnfinishedAliases}
-                getPrivateKey={this.props.getPrivateKey}
-                exportWallet={this.props.exportWallet}
-                importWallet={this.props.importWallet}
-                pushNewAlias={this.props.pushNewAlias}
-                removeFinishedAlias={this.props.removeFinishedAlias}
-              />
+            <Tab className='tab tab-tools' tab='Tools' key='3'>
+              <ToolsContainer />
             </Tab>
-            <Tab className='tab tab-personalize' tab='Personalize' key='4'>
+            {/*<Tab className='tab tab-personalize' tab='Personalize' key='4'>
               <Personalize
                 aliasInfo={this.props.aliasInfo}
                 currentAliases={this.state.aliases || []}

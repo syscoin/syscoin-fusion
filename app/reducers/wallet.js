@@ -1,5 +1,9 @@
 // @flow
-import { WALLET_GETINFO, WALLET_ALIASES } from 'fw-types/wallet'
+import {
+  WALLET_GETINFO,
+  WALLET_ALIASES,
+  WALLET_UNFINISHED_ALIASES
+} from 'fw-types/wallet'
 
 type actionType = {
   +type: string,
@@ -26,7 +30,8 @@ const initialState = {
     relayfee: 0,
     errors: ""
   },
-  aliases: []
+  aliases: [],
+  unfinishedAliases: []
 }
 
 export default function wallet(state: StateType = initialState, action: actionType) {
@@ -40,6 +45,11 @@ export default function wallet(state: StateType = initialState, action: actionTy
       return {
         ...state,
         aliases: action.payload
+      }
+    case WALLET_UNFINISHED_ALIASES:
+      return {
+        ...state,
+        unfinishedAliases: action.payload
       }
     default:
       return state

@@ -7,12 +7,16 @@ import ImportWallet from './components/import-wallet'
 import GetPrivateKey from './components/get-priv-key'
 
 type Props = {
-  getUnfinishedAliases: Function,
-  pushNewAlias: Function,
-  exportWallet: Function,
+  currentBlock: number,
+  unfinishedAliases: Array<{
+    aliasName: string,
+    block: number,
+    round: number
+  }>,
+  createNewAlias: Function,
   getPrivateKey: Function,
   importWallet: Function,
-  createNewAlias: Function
+  exportWallet: Function
 };
 type State = {
   newAlias: {
@@ -49,7 +53,7 @@ export default class Tools extends Component<Props, State> {
 
   updateFields(e: Object, mode: string) {
     const { name, value } = e.target
-    const newState = {...this.state}
+    const newState = { ...this.state }
 
     newState[mode][name] = value
 
@@ -65,25 +69,17 @@ export default class Tools extends Component<Props, State> {
           className='tools-form-container'
         >
           <NewAlias
+            unfinishedAliases={this.props.unfinishedAliases}
             createNewAlias={this.props.createNewAlias}
-            updateFields={this.updateFields.bind(this)}
-            aliasName={this.state.newAlias.aliasName}
-            publicValue={this.state.newAlias.publicValue}
-            acceptTransferFlags={this.state.newAlias.acceptTransferFlags}
-            expireTimestamp={this.state.newAlias.expireTimestamp}
-            address={this.state.newAlias.address}
-            encryptionPrivKey={this.state.newAlias.encryptionPrivKey}
-            encryptionPublicKey={this.state.newAlias.encryptionPublicKey}
-            witness={this.state.newAlias.witness}
-            getUnfinishedAliases={this.props.getUnfinishedAliases}
-            pushNewAlias={this.props.pushNewAlias}
+            title='Create new alias'
+            currentBlock={this.props.currentBlock}
           />
-          <hr />
+          {/*<hr />
           <BackupWallet exportWallet={this.props.exportWallet} />
           <hr />
           <ImportWallet importWallet={this.props.importWallet} />
           <hr />
-          <GetPrivateKey getPrivateKey={this.props.getPrivateKey} />
+          <GetPrivateKey getPrivateKey={this.props.getPrivateKey} />*/}
         </Col>
       </Row>
     )

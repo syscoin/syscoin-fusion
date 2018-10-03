@@ -166,10 +166,10 @@ const sendSysTransaction = (obj: sendSysTransactionType) => new Promise((resolve
   })
 })
 
-const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => any) => {
+const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   // Creates new alias
   const { aliasName, publicValue, acceptTransferFlags, expireTimestamp, address, encryptionPrivKey, encryptionPublicKey, witness } = obj
-
+  console.log(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`))
   waterfall([
     done => {
       exec(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`), (err, result) => {
@@ -205,47 +205,47 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
     }
   ], (err, result) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false, result)
+    return resolve(result)
   })
-}
+})
 
-const exportWallet = (backupDir: string, cb: (error: boolean) => void) => {
+const exportWallet = (backupDir: string) => new Promise((resolve, reject) =>{
   exec(generateCmd('cli', `dumpwallet "${backupDir}"`), (err) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false)
+    return resolve()
   })
-}
+})
 
-const importWallet = (backupDir: string, cb: (error: boolean) => void) => {
+const importWallet = (backupDir: string) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `importwallet "${backupDir}"`), (err) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false)
+    return resolve()
   })
-}
+})
 
-const getPrivateKey = (cb: (error: boolean, result: string) => void) => {
+const getPrivateKey = () => new Promise((resolve, reject) => {
   currentSysAddress((err, address) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
     exec(generateCmd('cli', `dumpprivkey "${address}"`), (errDump, key) => {
       if (errDump) {
-        return cb(errDump)
+        return reject(errDump)
       }
 
-      return cb(false, key)
+      return resolve(key)
     })
   })
-}
+})
 
 const editAlias = (obj: Object, cb: (error: boolean) => void) => {
   const { aliasName, publicValue, address, acceptTransfersFlag, expireTimestamp, encPrivKey, encPubKey, witness } = obj
@@ -305,7 +305,7 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
     const data = JSON.parse(result)
       .filter(i => i.asset === obj.assetId && (i.sender === obj.alias || i.receiver === obj.alias))
       .map(i => {
-        const asset = {...i}
+        const asset = { ...i }
         asset.amount = asset.amount[0] === '-' ? asset.amount.slice(1) : asset.amount
         asset.time = (new Date(0)).setUTCSeconds(asset.time)
         return asset

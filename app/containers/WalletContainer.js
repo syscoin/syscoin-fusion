@@ -3,8 +3,8 @@ import React, { Component  } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ipcRenderer } from 'electron'
-import Wallet from '../components/Wallet'
-import { saveGetInfo, saveAliases } from 'fw-actions/wallet'
+import Wallet from 'fw-components/Wallet'
+import { saveGetInfo, saveAliases, saveUnfinishedAliases } from 'fw-actions/wallet'
 import saveGuids from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 
@@ -14,7 +14,9 @@ import getPaths from 'fw-utils/get-doc-paths'
 type Props = {
   saveGetInfo: Function,
   saveAliases: Function,
-  saveGuids: Function
+  saveGuids: Function,
+  saveUnfinishedAliases: Function,
+  wallet: Object
 };
 
 class WalletContainer extends Component<Props> {
@@ -36,7 +38,11 @@ class WalletContainer extends Component<Props> {
   updateWallet() {
     this.props.saveGetInfo()
     this.props.saveAliases()
-    processIncompleteAliases()
+    this.props.saveUnfinishedAliases()
+    processIncompleteAliases({
+      unfinishedAliases: this.props.wallet.unfinishedAliases,
+      actualBlock: this.props.wallet.getinfo.blocks
+    })
   }
 
   onMinimize() {
@@ -61,7 +67,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   saveGetInfo,
   saveAliases,
-  saveGuids
+  saveGuids,
+  saveUnfinishedAliases
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletContainer)

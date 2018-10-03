@@ -5,33 +5,31 @@ import {
   removeFinishedAlias,
   incRoundToAlias
 } from 'fw-utils/new-alias-manager'
-import { configureStore } from 'fw/store/configureStore'
+
+type Params = {
+  unfinishedAliases: Array<Object>,
+  actualBlock: number
+};
 
 
-export default () => {
-  try {
-    const actualBlock = configureStore().getState().wallet.getinfo.blocks
-    const unfinishedAliases = global.appStorage.get('tools').newAliases
-    if (unfinishedAliases) {
-      unfinishedAliases.forEach(i => {
+export default (obj: Params) => {
+    const { unfinishedAliases, actualBlock } = obj
+    if (unfinishedAliases.length) {
+      unfinishedAliases.forEach(async i => {
         if (i.block < actualBlock) {
-          createNewAlias({
-            aliasName: i.alias
-          }, (err) => {
-            if (err) {
+          try {
+            await createNewAlias({
+              ...i
+            })
+          } catch(err) {
               if (err.message.indexOf('ERRCODE: 5505') !== -1) {
-                removeFinishedAlias(i.alias)
+                removeFinishedAlias(i.aliasName)
               }
               return false
-            }
+          }
 
-            incRoundToAlias(i.alias)
-          })
+          incRoundToAlias(i.aliasName, actualBlock)
         }
       })
     }
-  } catch (e) {
-    console.log(e)
-    return false
-  }
 }

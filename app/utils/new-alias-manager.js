@@ -1,9 +1,21 @@
 // @flow
 
-const getUnfinishedAliases = () => global.appStorage.get('tools').newAliases
+type pushNewAliasType = {
+    aliasName: string,
+    block: number,
+    round: number
+};
 
-const pushNewAlias = (alias: Object) => {
-    const data = global.appStorage.get('tools')
+const getUnfinishedAliases = () => {
+    try {
+        return global.appStorage.get('tools').newAliases
+    } catch(err) {
+        return []
+    }
+}
+
+const pushNewAlias = (alias: pushNewAliasType) => {
+    const data = global.appStorage.get('tools') || {}
 
     if (!data.newAliases) {
         data.newAliases = []
@@ -16,17 +28,17 @@ const pushNewAlias = (alias: Object) => {
 
 const removeFinishedAlias = (aliasName: string) => {
     const data = global.appStorage.get('tools')
-    const aliasIndex = data.newAliases.map(i => i.alias).indexOf(aliasName)
+    const aliasIndex = data.newAliases.map(i => i.aliasName).indexOf(aliasName)
 
     data.newAliases.splice(aliasIndex, 1)
 
     global.appStorage.set('tools', data)
 }
 
-const incRoundToAlias = (aliasName: string) => {
+const incRoundToAlias = (aliasName: string, block?: number) => {
     const data = global.appStorage.get('tools')
-    const actualBlock = global.appStorage.get('walletinfo').blocks
-    const aliasIndex = data.newAliases.map(i => i.alias).indexOf(aliasName)
+    const actualBlock = block || global.appStorage.get('walletinfo').blocks
+    const aliasIndex = data.newAliases.map(i => i.aliasName).indexOf(aliasName)
 
     const selectedAlias = data.newAliases[aliasIndex]
 
