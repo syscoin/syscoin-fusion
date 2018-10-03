@@ -4,7 +4,11 @@
  */
 @import "~font-awesome/css/font-awesome.css";
 @import "css/custom.css";
-@import "components/Wallet/Main.css";
+@import "~fw-components/Wallet/styles.css";
+@import '~fw-components/Accounts/styles.css';
+@import '~fw-components/Personalize/styles.css';
+@import '~fw-components/Send/styles.css';
+@import '~fw-components/Tools/styles.css';
 
 
 body {

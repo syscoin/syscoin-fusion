@@ -1,9 +1,8 @@
 // @flow
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Send from 'fw-components/Wallet/Send/'
+import Send from 'fw-components/Send'
 import {
-  getAliases,
   getAssetAllocationInfo,
   sendAsset,
   sendSysTransaction

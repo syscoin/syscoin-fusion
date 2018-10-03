@@ -5,9 +5,8 @@ import swal from 'sweetalert'
 import map from 'async/map'
 import waterfall from 'async/waterfall'
 
-import Accounts from 'fw-components/Wallet/Accounts/'
+import Accounts from 'fw-components/Accounts/'
 import {
-  currentBalance,
   getAliases,
   getAssetInfo,
   getAssetAllocationInfo,
