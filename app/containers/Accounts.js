@@ -15,7 +15,8 @@ import {
 } from 'fw-sys'
 
 type Props = {
-  balance: number
+  balance: number,
+  aliases: Array<Object>
 };
 type State = {
   selectedAlias: string,
@@ -29,8 +30,7 @@ type State = {
     isLoading: boolean,
     data: Array<any>,
     error: boolean
-  },
-  aliases: Array<Object>
+  }
 };
 
 class AccountsContainer extends Component<Props, State> {
@@ -241,8 +241,8 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   render() {
-    const { aliases, transactions, selectedAlias, aliasAssets } = this.state
-    const { balance } = this.props
+    const { transactions, selectedAlias, aliasAssets } = this.state
+    const { balance, aliases } = this.props
 
     return (
       <Accounts
@@ -259,7 +259,8 @@ class AccountsContainer extends Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  balance: state.wallet.getinfo.balance
+  balance: state.wallet.getinfo.balance,
+  aliases: state.wallet.aliases
 })
 
 export default connect(mapStateToProps)(AccountsContainer)

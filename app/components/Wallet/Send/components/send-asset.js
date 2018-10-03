@@ -82,7 +82,7 @@ export default class SendAssetForm extends Component<Props, State> {
             onChange={val => this.updateField(val, 'from')}
             placeholder='Select alias'
             className='send-asset-form-control send-asset-form-select-alias'
-            value={from}
+            value={from.length ? from : undefined}
           >
             {aliases.map(i => (
               <Option value={i} key={i}>
@@ -94,7 +94,7 @@ export default class SendAssetForm extends Component<Props, State> {
             onChange={val => this.updateField(val, 'asset')}
             placeholder='Select asset'
             className='send-asset-form-control send-asset-form-select-alias'
-            value={asset}
+            value={asset.length ? asset : undefined}
           >
             {assets.map(i => (
               <Option value={i} key={i}>

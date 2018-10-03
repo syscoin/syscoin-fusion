@@ -3,7 +3,7 @@ import React, { Component  } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Wallet from '../components/Wallet/Main'
-import { saveGetInfo } from 'fw-actions/wallet'
+import { saveGetInfo, saveAliases } from 'fw-actions/wallet'
 import {
   aliasInfo,
   currentSysAddress,
@@ -27,7 +27,8 @@ import {
 } from '../utils/new-alias-manager'
 
 type Props = {
-  saveGetInfo: Function
+  saveGetInfo: Function,
+  saveAliases: Function
 };
 
 class WalletHome extends Component<Props> {
@@ -43,6 +44,7 @@ class WalletHome extends Component<Props> {
 
   updateWallet() {
     this.props.saveGetInfo()
+    this.props.saveAliases()
   }
 
   render() {
@@ -75,7 +77,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  saveGetInfo
+  saveGetInfo,
+  saveAliases
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletHome)

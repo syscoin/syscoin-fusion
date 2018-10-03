@@ -5,7 +5,7 @@ const fs = require('fs')
 const swal = require('sweetalert')
 const waterfall = require('async/waterfall')
 
-const loadConfIntoEnv = require('./load-conf-into-dev')
+const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getSysPath = require('./syspath')
 const getPaths = require('./get-doc-paths')
@@ -104,7 +104,7 @@ const startUpRoutine = (cb) => {
 
   // Apply custom settings
   updateProgressbar(50, 'Loading config')
-  loadConfIntoEnv(confPath)
+  loadConfIntoStore(confPath)
 
   updateProgressbar(60, 'Connecting to syscoin...')
 
@@ -112,7 +112,7 @@ const startUpRoutine = (cb) => {
     done => {
       const isFirstTime = window.appStorage.get('firstTime')
       let isDone = false
-      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server`), (err, stdout) => {
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server`), (err) => {
         if (isDone) {
           return
         }
@@ -147,7 +147,7 @@ const startUpRoutine = (cb) => {
     (done) => {
       global.checkInterval = setInterval(() => {
         // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
-        checkSyscoind((error, status, output) => {
+        checkSyscoind((error, status) => {
           if (error) {
             updateProgressbar(60, 'Something went wrong.')
             return done(true)
@@ -178,7 +178,7 @@ const startUpRoutine = (cb) => {
 function updateProgressbar(value, text) {
   document.querySelectorAll('.progress')[0].style.width = `${value}%`
   if (text) {
-    //document.querySelectorAll('.progress')[0].innerHTML = text
+    // document.querySelectorAll('.progress')[0].innerHTML = text
   }
 }
 

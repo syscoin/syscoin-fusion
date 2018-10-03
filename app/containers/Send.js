@@ -11,12 +11,12 @@ import {
 
 
 type Props = {
-  balance: number
+  balance: number,
+  aliases: Array<Object>
 };
 type State = {
   assetIsLoading: boolean,
-  sysIsLoading: boolean,
-  aliases: Array<Object>
+  sysIsLoading: boolean
 };
 
 type isUserAssetOwnerType = {
@@ -42,13 +42,8 @@ class SendContainer extends Component<Props, State> {
 
     this.state = {
       assetIsLoading: false,
-      sysIsLoading: false,
-      aliases: []
+      sysIsLoading: false
     }
-  }
-
-  componentDidMount() {
-    this.getAliases()
   }
 
   async isUserAssetOwner(obj: isUserAssetOwnerType) {
@@ -108,19 +103,6 @@ class SendContainer extends Component<Props, State> {
     return cb(null, sendResult)
   }
 
-  async getAliases() {
-    let aliases
-    try {
-      aliases = await getAliases()
-    } catch (err) {
-      return []
-    }
-
-    this.setState({
-      aliases
-    })
-  }
-
   async sendSys(obj: sendSysType, cb: Function) {
 
     this.setState({
@@ -151,7 +133,7 @@ class SendContainer extends Component<Props, State> {
         balance={this.props.balance}
         assetIsLoading={this.state.assetIsLoading}
         sysIsLoading={this.state.sysIsLoading}
-        aliases={this.state.aliases.map(i => i.alias || i.address)}
+        aliases={this.props.aliases.map(i => i.alias || i.address)}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
       />
@@ -160,7 +142,8 @@ class SendContainer extends Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  balance: state.wallet.getinfo.balance
+  balance: state.wallet.getinfo.balance,
+  aliases: state.wallet.aliases
 })
 
 export default connect(mapStateToProps)(SendContainer)

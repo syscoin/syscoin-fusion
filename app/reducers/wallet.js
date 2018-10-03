@@ -1,32 +1,9 @@
 // @flow
-import { WALLET_GETINFO } from 'fw-types/wallet'
-
-
-type StateType = {
-  getinfo: {
-    version: string,
-    dashversion: string,
-    protocolversion: number,
-    walletversion: number,
-    balance: number,
-    privatesend_balance: number,
-    blocks: number,
-    timeoffset: number,
-    connections: number,
-    proxy: string,
-    difficulty: number,
-    testnet: boolean,
-    keypoololdest: number,
-    keypoolsize: number,
-    paytxfee: number,
-    relayfee: number,
-    errors: string
-  }
-};
+import { WALLET_GETINFO, WALLET_ALIASES } from 'fw-types/wallet'
 
 type actionType = {
   +type: string,
-  +payload: getInfoType
+  payload?: Object
 };
 
 const initialState = {
@@ -48,7 +25,8 @@ const initialState = {
     paytxfee: 0,
     relayfee: 0,
     errors: ""
-  }
+  },
+  aliases: []
 }
 
 export default function wallet(state: StateType = initialState, action: actionType) {
@@ -57,6 +35,11 @@ export default function wallet(state: StateType = initialState, action: actionTy
       return {
         ...state,
         getinfo: action.payload
+      }
+    case WALLET_ALIASES:
+      return {
+        ...state,
+        aliases: action.payload
       }
     default:
       return state

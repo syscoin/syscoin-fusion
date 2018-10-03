@@ -1,7 +1,7 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo } from 'fw-sys'
+import { getInfo, getAliases } from 'fw-sys'
 
 type getInfoActionType = {
   type: string,
@@ -26,17 +26,32 @@ type getInfoActionType = {
   }
 };
 
+type getAliasesActionType = {
+  type: string,
+  payload: Array<{
+    address: string,
+    balance: number,
+    label: string,
+    alias: string,
+    change: boolean
+  }>
+};
+
 const saveGetInfoAction = createAction(types.WALLET_GETINFO)
+const saveAliasesAction = createAction(types.WALLET_ALIASES)
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
-  let info
   try {
-    info = await getInfo()
+    dispatch(saveGetInfoAction(await getInfo()))
   } catch(err) {
-    return
+    console.log(err)
   }
-
-  dispatch(saveGetInfoAction(info))
 }
 
-export const saveAliases = () => ({})
+export const saveAliases = () => async (dispatch: (action: getAliasesActionType) => void) => {
+  try {
+    dispatch(saveAliasesAction(await getAliases()))
+  } catch(err) {
+    console.log(err)
+  }
+}
