@@ -8,7 +8,7 @@ import parseError from 'fw-utils/error-parser'
 type Props = {
   title: string,
   columnSize: number,
-  balance: string,
+  balance: number,
   isLoading: boolean,
   sendSys: Function
 };

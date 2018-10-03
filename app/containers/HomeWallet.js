@@ -26,7 +26,9 @@ import {
   incRoundToAlias
 } from '../utils/new-alias-manager'
 
-type Props = {};
+type Props = {
+  saveGetInfo: Function
+};
 
 class WalletHome extends Component<Props> {
   props: Props;

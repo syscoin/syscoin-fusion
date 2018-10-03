@@ -2,7 +2,7 @@
 import React from 'react'
 
 type Props = {
-  currentBalance: string
+  currentBalance: number
 };
 
 export default (props: Props) => (

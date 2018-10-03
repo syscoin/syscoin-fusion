@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import swal from 'sweetalert'
 import map from 'async/map'
 import waterfall from 'async/waterfall'
@@ -13,7 +14,9 @@ import {
   getTransactionsPerAsset
 } from 'fw-sys'
 
-type Props = {};
+type Props = {
+  balance: number
+};
 type State = {
   selectedAlias: string,
   aliasAssets: {
@@ -27,11 +30,10 @@ type State = {
     data: Array<any>,
     error: boolean
   },
-  aliases: Array<Object>,
-  balance: string
+  aliases: Array<Object>
 };
 
-export default class AccountsContainer extends Component<Props, State> {
+class AccountsContainer extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
@@ -49,8 +51,7 @@ export default class AccountsContainer extends Component<Props, State> {
         data: [],
         error: false
       },
-      aliases: [],
-      balance: ''
+      aliases: []
     }
 
     this.state = {
@@ -72,20 +73,7 @@ export default class AccountsContainer extends Component<Props, State> {
   }
 
   updateAccountsTab() {
-    this.getBalance()
     this.getAliases()
-  }
-
-  async getBalance() {
-    try {
-      this.setState({
-        balance: await currentBalance()
-      })
-    } catch(err) {
-      this.setState({
-        balance: '0.00'
-      })
-    }
   }
 
   async getAliases() {
@@ -253,7 +241,9 @@ export default class AccountsContainer extends Component<Props, State> {
   }
 
   render() {
-    const { balance, aliases, transactions, selectedAlias, aliasAssets } = this.state
+    const { aliases, transactions, selectedAlias, aliasAssets } = this.state
+    const { balance } = this.props
+
     return (
       <Accounts
         balance={balance}
@@ -267,3 +257,9 @@ export default class AccountsContainer extends Component<Props, State> {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  balance: state.wallet.getinfo.balance
+})
+
+export default connect(mapStateToProps)(AccountsContainer)

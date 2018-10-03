@@ -7,7 +7,7 @@ import TransactionList from './components/transaction-list'
 import UserBalance from './components/balance'
 
 type Props = {
-  balance: string,
+  balance: number,
   aliases: Array<Object>,
   transactions: Object,
   selectedAlias: string,

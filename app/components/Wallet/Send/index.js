@@ -9,9 +9,11 @@ import SendSysForm from './components/send-sys'
 
 type Props = {
   assetIsLoading: boolean,
+  sysIsLoading: boolean,
   aliases: Array<string>,
   sendAsset: Function,
-  sendSys: Function
+  sendSys: Function,
+  balance: number
 };
 
 type sendAssetType = {
@@ -52,7 +54,7 @@ export default class Send extends Component<Props, State> {
           isLoading={this.props.sysIsLoading}
           title='Send SYS'
           columnSize={12}
-          balance='0.00'
+          balance={this.props.balance}
           sendSys={this.sendSys.bind(this)}
         />
       </Row>
