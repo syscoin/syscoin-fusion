@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { Button, Icon, Spin } from 'antd'
 import swal from 'sweetalert'
+import parseError from 'fw-utils/error-parser'
 
 type Props = {
   getPrivateKey: Function
@@ -30,7 +31,7 @@ export default class GetPrivateKey extends Component<Props, State> {
         isLoading: false
       })
       if (err) {
-        return swal('Error', err, 'error')
+        return swal('Error', parseError(err.message), 'error')
       }
 
       return swal('Here is your key', key, 'success')

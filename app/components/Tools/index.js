@@ -74,12 +74,12 @@ export default class Tools extends Component<Props, State> {
             title='Create new alias'
             currentBlock={this.props.currentBlock}
           />
-          {/*<hr />
+          <hr />
           <BackupWallet exportWallet={this.props.exportWallet} />
           <hr />
           <ImportWallet importWallet={this.props.importWallet} />
           <hr />
-          <GetPrivateKey getPrivateKey={this.props.getPrivateKey} />*/}
+          <GetPrivateKey getPrivateKey={this.props.getPrivateKey} />
         </Col>
       </Row>
     )

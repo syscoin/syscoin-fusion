@@ -8,8 +8,6 @@ type Props = {
     currentAliases: Array<Object>,
     editAlias: Function
 };
-type State = {
-};
 
 export default class Personalize extends Component<Props, State> {
   props: Props;
@@ -27,7 +25,7 @@ export default class Personalize extends Component<Props, State> {
         >
           <EditAlias
             aliasInfo={this.props.aliasInfo}
-            currentAliases={this.props.currentAliases || []}
+            currentAliases={this.props.currentAliases}
             editAlias={this.props.editAlias}
           />
         </Col>

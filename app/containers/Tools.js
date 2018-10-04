@@ -45,13 +45,14 @@ class ToolsContainer extends Component<Props> {
   }
 
   async getPrivateKey(cb) {
+    let result
     try {
-      await getPrivateKey()
+      result = await getPrivateKey()
     } catch (err) {
       return cb(err)
     }
 
-    cb()
+    cb(null, result)
   }
 
   createNewAlias(obj: Object, cb: Function) {

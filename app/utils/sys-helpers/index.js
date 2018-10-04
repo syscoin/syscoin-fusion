@@ -247,7 +247,7 @@ const getPrivateKey = () => new Promise((resolve, reject) => {
   })
 })
 
-const editAlias = (obj: Object, cb: (error: boolean) => void) => {
+const editAlias = (obj: Object) => new Promise((resolve, reject) => {
   const { aliasName, publicValue, address, acceptTransfersFlag, expireTimestamp, encPrivKey, encPubKey, witness } = obj
 
   waterfall([
@@ -276,22 +276,22 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
     }
   ], (err) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false)
+    return resolve()
   })
-}
+})
 
-const aliasInfo = (name: string, cb: (error: boolean, cb: Function) => void) => {
+const aliasInfo = (name: string) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `aliasinfo ${name}`), (err, result) => {
     try {
-      return cb(err, JSON.parse(result))
+      return resolve(JSON.parse(result))
     } catch (e) {
-      return cb(err, null)
+      return reject(err)
     }
   })
-}
+})
 
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {

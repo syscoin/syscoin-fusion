@@ -51,28 +51,30 @@ export default class NewAlias extends Component<Props, State> {
     this.setState({
       isLoading: true,
       aliasToEdit: ''
-    }, () => {
-      this.props.aliasInfo(name, (err, data) => {
-        if (err) {
-          this.setState({ isLoading: false })
-          swal('Error', 'Error while getting alias info', 'error')
-          return
-        }
+    }, async () => {
 
-        const newValues = {...this.state.editValues}
+      let data
 
-        newValues.publicValue = data.publicvalue
-        newValues.address = data.address
-        newValues.encPrivKey = data.encryption_privatekey
-        newValues.encPubKey= data.encryption_publickey
-        newValues.acceptTransferFlag = data.accepttransferflags
-        newValues.expireTimestamp = data.expires_on
+      try {
+        data = await this.props.aliasInfo(name)
+      } catch (err) {
+        this.setState({ isLoading: false })
+        return swal('Error', 'Error while getting alias info', 'error')
+      }
 
-        this.setState({
-          isLoading: false,
-          aliasToEdit: name,
-          editValues: newValues
-        })
+      const newValues = { ...this.state.editValues }
+
+      newValues.publicValue = data.publicvalue
+      newValues.address = data.address
+      newValues.encPrivKey = data.encryption_privatekey
+      newValues.encPubKey = data.encryption_publickey
+      newValues.acceptTransferFlag = data.accepttransferflags
+      newValues.expireTimestamp = data.expires_on
+
+      this.setState({
+        isLoading: false,
+        aliasToEdit: name,
+        editValues: newValues
       })
     })
   }
@@ -80,25 +82,23 @@ export default class NewAlias extends Component<Props, State> {
   updateAlias() {
     this.setState({
       isLoading: true
-    })
-    const obj = {
-      aliasName: this.state.aliasToEdit,
-      publicValue: this.state.editValues.publicValue,
-      address: this.state.editValues.address,
-      acceptTransfersFlag: this.state.editValues.acceptTransferFlag,
-      expireTimestamp: this.state.editValues.expireTimestamp,
-      encPrivKey: this.state.editValues.encPrivKey,
-      encPubKey: this.state.editValues.encPubKey,
-      witness: this.state.editValues.witness
-    }
+    }, async () => {
+      const obj = {
+        aliasName: this.state.aliasToEdit,
+        publicValue: this.state.editValues.publicValue,
+        address: this.state.editValues.address,
+        acceptTransfersFlag: this.state.editValues.acceptTransferFlag,
+        expireTimestamp: this.state.editValues.expireTimestamp.toString(),
+        encPrivKey: this.state.editValues.encPrivKey,
+        encPubKey: this.state.editValues.encPubKey,
+        witness: this.state.editValues.witness
+      }
 
-    this.props.editAlias(obj, err => {
-      if (err) {
-        this.setState({
-          isLoading: false
-        })
-        swal('Error', 'Error while updating alias.', 'error')
-        return
+      try {
+        await this.props.editAlias(obj)
+      } catch (err) {
+        this.setState({ isLoading: false })
+        return swal('Error', 'Error while updating alias.', 'error')
       }
 
       swal('Success', 'Alias updated. The changes will take effect in a few blocks.', 'success')
