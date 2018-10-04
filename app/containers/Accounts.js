@@ -15,7 +15,8 @@ import {
 
 type Props = {
   balance: number,
-  aliases: Array<Object>
+  aliases: Array<Object>,
+  assets: Array<string>
 };
 type State = {
   selectedAlias: string,
@@ -115,14 +116,10 @@ class AccountsContainer extends Component<Props, State> {
     waterfall([
       done => {
         // Get GUIDs
-        const guids = global.appStorage.get('guid')
-
-        if (guids[0] === 'none') {
-          swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
-          return done(true)
-        }
+        const guids = this.props.assets
 
         if (!guids.length) {
+          swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
           return done(true)
         }
 
@@ -259,7 +256,8 @@ class AccountsContainer extends Component<Props, State> {
 
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
-  aliases: state.wallet.aliases
+  aliases: state.wallet.aliases,
+  assets: state.options.guids
 })
 
 export default connect(mapStateToProps)(AccountsContainer)

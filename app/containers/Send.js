@@ -11,7 +11,8 @@ import {
 
 type Props = {
   balance: number,
-  aliases: Array<Object>
+  aliases: Array<Object>,
+  assets: Array<string>
 };
 type State = {
   assetIsLoading: boolean,
@@ -135,6 +136,7 @@ class SendContainer extends Component<Props, State> {
         aliases={this.props.aliases.map(i => i.alias || i.address)}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
+        assets={this.props.assets}
       />
     )
   }
@@ -142,7 +144,8 @@ class SendContainer extends Component<Props, State> {
 
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
-  aliases: state.wallet.aliases
+  aliases: state.wallet.aliases,
+  assets: state.options.guids
 })
 
 export default connect(mapStateToProps)(SendContainer)

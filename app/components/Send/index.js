@@ -13,7 +13,8 @@ type Props = {
   aliases: Array<string>,
   sendAsset: Function,
   sendSys: Function,
-  balance: number
+  balance: number,
+  assets: Array<string>
 };
 
 type sendAssetType = {
@@ -46,7 +47,7 @@ export default class Send extends Component<Props, State> {
           isLoading={this.props.assetIsLoading}
           title='Send Asset'
           columnSize={12}
-          assets={window.appStorage.get('guid')}
+          assets={this.props.assets}
           aliases={this.props.aliases}
           sendAsset={this.sendAsset.bind(this)}
         />

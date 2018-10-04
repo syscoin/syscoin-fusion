@@ -73,6 +73,7 @@ export default class SendAssetForm extends Component<Props, State> {
           <h3 className='send-sys-form-title'>{title}</h3>
           <h4 className='send-sys-form-balance'>Current balance: <span className='send-sys-form-balance-number'>{balance}</span></h4>
           <Input
+            disabled={isLoading}
             name='address'
             placeholder='Send to address...'
             onChange={e => this.updateField(e, 'address')}
@@ -80,6 +81,7 @@ export default class SendAssetForm extends Component<Props, State> {
             className='send-sys-form-control send-sys-form-to-address'
           />
           <Input
+            disabled={isLoading}
             name='amount'
             placeholder='Amount'
             pattern='\d+'
@@ -88,6 +90,7 @@ export default class SendAssetForm extends Component<Props, State> {
             className='send-sys-form-control send-sys-form-amount'
           />
           <Input
+            disabled={isLoading}
             name='comment'
             placeholder='Comment'
             onChange={e => this.updateField(e, 'comment')}
@@ -103,6 +106,7 @@ export default class SendAssetForm extends Component<Props, State> {
               onClick={() => {
                 sendSys(this.state, err => {
                   if (err) {
+                    console.log(err)
                     return swal('Error', parseError(err.message), 'error')
                   }
 

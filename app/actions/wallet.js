@@ -3,6 +3,7 @@ import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
 import { getInfo, getAliases } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
+import { initialState } from 'fw-reducers/wallet'
 
 type getInfoActionType = {
   type: string,
@@ -55,7 +56,7 @@ export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) =>
   try {
     dispatch(saveGetInfoAction(await getInfo()))
   } catch(err) {
-    console.log(err)
+    dispatch(saveGetInfoAction(initialState))
   }
 }
 
@@ -63,7 +64,7 @@ export const saveAliases = () => async (dispatch: (action: getAliasesActionType)
   try {
     dispatch(saveAliasesAction(await getAliases()))
   } catch(err) {
-    console.log(err)
+    dispatch(saveAliasesAction([]))
   }
 }
 
@@ -71,6 +72,6 @@ export const saveUnfinishedAliases = () => (dispatch: (action: saveUnfinishedAli
   try {
     dispatch(saveUnfinishedAliasesAction(getUnfinishedAliases()))
   } catch(err) {
-    console.log(err)
+    dispatch(saveUnfinishedAliasesAction([]))
   }
 }

@@ -10,7 +10,7 @@ type actionType = {
   payload?: Object
 };
 
-const initialState = {
+export const initialState = {
   getinfo: {
     version: "",
     dashversion: "",

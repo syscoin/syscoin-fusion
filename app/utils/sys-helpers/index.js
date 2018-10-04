@@ -34,8 +34,13 @@ const getInfo = () => new Promise((resolve, reject) => {
     if (err) {
       return reject(err)
     }
-
-    return resolve(JSON.parse(stdout))
+    
+    try {
+      return resolve(JSON.parse(stdout))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+    
   })
 })
 
@@ -72,7 +77,12 @@ const getAliases = () => new Promise((resolve, reject) => {
       return reject(err || stderror)
     }
 
-    return resolve(JSON.parse(stdout.toString()))
+    try {
+      return resolve(JSON.parse(stdout.toString()))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+    
   })
 })
 
@@ -82,7 +92,11 @@ const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
       return reject(err)
     }
 
-    return resolve(JSON.parse(stdout.toString()))
+    try {
+      return resolve(JSON.parse(stdout.toString()))
+    } catch(errParse) {
+      return reject(errParse)
+    }
   })
 })
 
@@ -93,7 +107,11 @@ const getAssetAllocationInfo = (obj: AllocationInfoType) => new Promise((resolve
       return reject(err)
     }
 
-    return resolve(JSON.parse(stdout.toString()))
+    try {
+      return resolve(JSON.parse(stdout.toString()))
+    } catch(errParse) {
+      return reject(errParse)
+    }
   })
 })
 
@@ -111,7 +129,11 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
           return done(err)
         }
 
-        done(null, JSON.parse(result.toString())[0])
+        try {
+          done(null, JSON.parse(result.toString())[0])
+        } catch(errParse) {
+          done(errParse)
+        }
       })
     },
     (firstOutput, done) => {
@@ -121,7 +143,11 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
             return done(errTwo)
           }
 
-          done(null, JSON.parse(resultTwo.toString())[0])
+          try {
+            done(null, JSON.parse(resultTwo.toString())[0])
+          } catch(errParse) {
+            done(errParse)
+          }
         })
       }
 
@@ -133,7 +159,11 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
           return done(errSign)
         }
 
-        done(null, JSON.parse(resultSign.toString()).hex)
+        try {
+          done(null, JSON.parse(resultSign.toString()).hex)
+        } catch(errParse) {
+          done(errParse)
+        }
       })
     },
     (signOutput, done) => {
@@ -315,6 +345,20 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
   })
 })
 
+const listAssets = () => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', 'listassets'), (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(result))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
 module.exports = {
   aliasInfo,
   currentSysAddress,
@@ -330,5 +374,6 @@ module.exports = {
   exportWallet,
   importWallet,
   getPrivateKey,
-  getTransactionsPerAsset
+  getTransactionsPerAsset,
+  listAssets
 }

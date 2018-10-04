@@ -40,8 +40,14 @@ export default class SendAssetForm extends Component<Props, State> {
     }
   }
 
-  updateField(value, name) {
-    const toUpdate = formChangeFormat(value, name)
+  updateField(value, name, filter) {
+    const toUpdate = formChangeFormat(value, name, filter)
+
+    if (filter && !filter.test(toUpdate[name])) {
+      if (toUpdate[name]) {
+        return
+      }
+    }
 
     this.setState(toUpdate)
   }
@@ -79,6 +85,7 @@ export default class SendAssetForm extends Component<Props, State> {
         <div className='send-asset-form-container'>
           <h3 className='send-asset-form-title'>{title}</h3>
           <Select
+            disabled={isLoading}
             onChange={val => this.updateField(val, 'from')}
             placeholder='Select alias'
             className='send-asset-form-control send-asset-form-select-alias'
@@ -91,6 +98,7 @@ export default class SendAssetForm extends Component<Props, State> {
             ))}
           </Select>
           <Select
+            disabled={isLoading}
             onChange={val => this.updateField(val, 'asset')}
             placeholder='Select asset'
             className='send-asset-form-control send-asset-form-select-alias'
@@ -103,6 +111,7 @@ export default class SendAssetForm extends Component<Props, State> {
             ))}
           </Select>
           <Input
+            disabled={isLoading}
             name='toAddress'
             placeholder='Send to address...'
             onChange={e => this.updateField(e, 'toAddress')}
@@ -110,10 +119,10 @@ export default class SendAssetForm extends Component<Props, State> {
             className='send-asset-form-control send-asset-form-to-address'
           />
           <Input
+            disabled={isLoading}
             name='amount'
             placeholder='Amount'
-            pattern='\d+'
-            onChange={e => this.updateField(e, 'amount')}
+            onChange={e => this.updateField(e, 'amount', /^\d+(\.)?(\d+)?$/)}
             value={amount}
             className='send-asset-form control send-asset-form-asset'
           />
@@ -121,7 +130,7 @@ export default class SendAssetForm extends Component<Props, State> {
             {isLoading && <Spin indicator={<Icon type='loading' spin />} className='send-loading' />}
             <Button
               className='send-asset-form-btn-send'
-              disabled={isLoading}
+              disabled={isLoading || !from || !asset || !toAddress || !amount}
               onClick={() => sendAsset(this.state, err => {
                 if (err) {
                   return swal('Error', parseError(err.message), 'error')

@@ -1,13 +1,13 @@
 export default (e, name) => {
-    if (e.target) {
-      const { name: fieldName, value } = e.target
-
-      return {
-        [fieldName]: value
-      }
-    }
+  if (e.target) {
+    const { name: fieldName, value } = e.target
 
     return {
-      [name]: e
+      [fieldName]: value
     }
+  }
+
+  return {
+    [name]: e
+  }
 }
