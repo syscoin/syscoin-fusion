@@ -21,6 +21,16 @@ module.exports = (req, res, next) => {
                     })
                 }
 
+
+                updateBalance(req.user.uid, data.chargeAmount, (err) => {
+                    if (err) {
+                        return res.status(400).send({
+                            error: true,
+                            message: 'Error updating balance. Contact support'
+                        })
+                    }
+                });
+
                 return res.send({
                     message: 'Payment completed',
                     expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(data.months)),
