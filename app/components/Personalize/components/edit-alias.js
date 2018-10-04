@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Input, Button, Select } from 'antd'
+import { Input, Button, Select, Spin, Icon } from 'antd'
 import swal from 'sweetalert'
 
 const { Option } = Select
@@ -111,11 +111,13 @@ export default class NewAlias extends Component<Props, State> {
   }
 
   render() {
+    const { isLoading } = this.state
     return (
       <div className='edit-alias-container'>
         <h3 className='edit-alias-title'>Edit alias</h3>
         <div className='edit-alias-form-container'>
           <Select
+            disabled={isLoading}
             placeholder='Alias'
             onChange={this.selectAlias.bind(this)}
             value={this.state.aliasToEdit}
@@ -123,10 +125,12 @@ export default class NewAlias extends Component<Props, State> {
           >
             {this.props.currentAliases.filter(i => i.alias).map(i => <Option value={i.alias} key={i.alias}>{i.alias}</Option>)}
           </Select>
+          {isLoading && <Spin indicator={<Icon className='personalize-loader' type='loading' spin />} />}
           {this.state.aliasToEdit && (
             <div>
               <h3 className='edit-alias-form-active-alias'>Editing alias <span className='editing-alias'>{this.state.aliasToEdit}</span></h3>
               <Input
+                disabled={isLoading}
                 name='publicValue'
                 placeholder='Public Value'
                 onChange={this.updateFields.bind(this)}
@@ -134,6 +138,7 @@ export default class NewAlias extends Component<Props, State> {
                 className='edit-alias-form-control edit-alias-form-publicvalue'
               />
               <Select
+                disabled={isLoading}
                 name='acceptTransferFlag'
                 placeholder='Accept Transfer Flag'
                 onChange={val => this.updateFields({
@@ -151,6 +156,7 @@ export default class NewAlias extends Component<Props, State> {
                 <Option value={3}>3 - All</Option>
               </Select>
               <Input
+                disabled={isLoading}
                 name='expireTimestamp'
                 placeholder='Expire timestamp'
                 onChange={this.updateFields.bind(this)}
@@ -158,6 +164,7 @@ export default class NewAlias extends Component<Props, State> {
                 className='edit-alias-form-control edit-alias-form-timestamp'
               />
               <Input
+                disabled={isLoading}
                 name='address'
                 placeholder='Address'
                 onChange={this.updateFields.bind(this)}
@@ -165,6 +172,7 @@ export default class NewAlias extends Component<Props, State> {
                 className='edit-alias-form-control edit-alias-form-address'
               />
               <Input
+                disabled={isLoading}
                 name='encPrivKey'
                 placeholder='Encryption Private Key'
                 onChange={this.updateFields.bind(this)}
@@ -172,6 +180,7 @@ export default class NewAlias extends Component<Props, State> {
                 className='edit-alias-form-control edit-alias-form-privkey'
               />
               <Input
+                disabled={isLoading}
                 name='encPubKey'
                 placeholder='Encryption Public Key'
                 onChange={this.updateFields.bind(this)}
@@ -179,6 +188,7 @@ export default class NewAlias extends Component<Props, State> {
                 className='edit-alias-form-control edit-alias-form-pubkey'
               />
               <Input
+                disabled={isLoading}
                 name='witness'
                 placeholder='Witness'
                 onChange={this.updateFields.bind(this)}
@@ -190,7 +200,12 @@ export default class NewAlias extends Component<Props, State> {
 
           {this.state.aliasToEdit && (
             <div className='edit-alias-form-btn-container'>
-              <Button className='edit-alias-form-btn-send' disabled={this.state.isLoading} onClick={this.updateAlias.bind(this)} loading={this.state.isLoading}>
+              <Button
+                className='edit-alias-form-btn-send'
+                disabled={isLoading}
+                onClick={this.updateAlias.bind(this)}
+                loading={isLoading}
+              >
                 Send
               </Button>
             </div>
