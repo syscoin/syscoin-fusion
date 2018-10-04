@@ -59,35 +59,6 @@ class AccountsContainer extends Component<Props, State> {
     }
   }
 
-  componentWillMount() {
-    this.updateAccountsTab()
-    if (!window.AccountsUpdate) {
-      window.AccountsUpdate = setInterval(() => {
-        this.updateAccountsTab()
-      }, 10000)
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(window.AccountsUpdate)
-  }
-
-  updateAccountsTab() {
-    this.getAliases()
-  }
-
-  async getAliases() {
-    try {
-      this.setState({
-        aliases: await getAliases()
-      })
-    } catch(err) {
-      this.setState({
-        aliases: []
-      })
-    }
-  }
-
   updateSelectedAlias(alias: string) {
     if (this.state.aliasAssets.isLoading) {
       return false
@@ -119,8 +90,16 @@ class AccountsContainer extends Component<Props, State> {
         const guids = this.props.assets
 
         if (!guids.length) {
+          this.setState({
+            aliasAssets: {
+              selected: '',
+              data: [],
+              isLoading: false,
+              error: true
+            }
+          })
           swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
-          return done(true)
+          return
         }
 
         done(null, guids)
