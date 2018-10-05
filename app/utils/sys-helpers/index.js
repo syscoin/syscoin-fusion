@@ -199,7 +199,6 @@ const sendSysTransaction = (obj: sendSysTransactionType) => new Promise((resolve
 const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   // Creates new alias
   const { aliasName, publicValue, acceptTransferFlags, expireTimestamp, address, encryptionPrivKey, encryptionPublicKey, witness } = obj
-  console.log(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`))
   waterfall([
     done => {
       exec(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`), (err, result) => {
@@ -345,8 +344,38 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
   })
 })
 
+const getAssetAllocationTransactions = () => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
+    maxBuffer: 1024 * 500
+  }, (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(result))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
 const listAssets = () => new Promise((resolve, reject) => {
   exec(generateCmd('cli', 'listassets'), (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(result))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
+const getBlockchainInfo = () => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', 'getblockchaininfo'), (err, result) => {
     if (err) {
       return reject(err)
     }
@@ -375,5 +404,7 @@ module.exports = {
   importWallet,
   getPrivateKey,
   getTransactionsPerAsset,
-  listAssets
+  listAssets,
+  getBlockchainInfo,
+  getAssetAllocationTransactions
 }

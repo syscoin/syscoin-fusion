@@ -125,9 +125,10 @@ const startUpRoutine = (cb) => {
       })
       setTimeout(() => {
         if (!isDone) {
+          isDone = true
           done(null, null)
         }
-      }, 5000)
+      }, 10000)
     },
     (reindex, done) => {
       if (reindex) {
@@ -149,6 +150,7 @@ const startUpRoutine = (cb) => {
         // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
         checkSyscoind((error, status) => {
           if (error) {
+            clearInterval(global.checkInterval)
             updateProgressbar(60, 'Something went wrong.')
             return done(true)
           }

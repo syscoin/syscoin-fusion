@@ -13,14 +13,25 @@ const Tab = Tabs.TabPane
 
 type Props = {
   onMinimize: Function,
-  onClose: Function
+  onClose: Function,
+  syncPercentage: number,
+  currentBlock: number,
+  headBlock: number
 };
 
 class Wallet extends Component<Props> {
   props: Props
 
   generateWindowControls() {
-    return <WindowControls onMinimize={this.props.onMinimize} onClose={this.props.onClose} />
+    return (
+      <WindowControls
+        currentBlock={this.props.currentBlock}
+        headBlock={this.props.headBlock}
+        syncPercentage={this.props.syncPercentage}
+        onMinimize={this.props.onMinimize}
+        onClose={this.props.onClose}
+      />
+    )
   }
 
   render() {

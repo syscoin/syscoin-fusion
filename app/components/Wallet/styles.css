@@ -22,6 +22,11 @@
     color: #faa;
 }
 
+.window-controls .window-controls-loader {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
 
 /* Tabs style */
 
@@ -40,7 +45,7 @@
 
 .ant-tabs-tab { 
     color: #ccc;
-    width: 50%;
+    width: 45%;
     text-align: center;
 }
 

@@ -204,6 +204,7 @@
     opacity: 0.6;
     line-height: 13px;
     transition: opacity 0.5s;
+    margin-bottom:10px;
 }
 
 .asset-box.selected {

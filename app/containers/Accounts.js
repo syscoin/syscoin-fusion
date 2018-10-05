@@ -7,7 +7,6 @@ import waterfall from 'async/waterfall'
 
 import Accounts from 'fw-components/Accounts/'
 import {
-  getAliases,
   getAssetInfo,
   getAssetAllocationInfo,
   getTransactionsPerAsset
@@ -122,6 +121,7 @@ class AccountsContainer extends Component<Props, State> {
                 symbol: ''
               })
             }
+            return cb(true)
           }
 
           cb(null, data)

@@ -57,6 +57,11 @@
     margin-bottom: 2px;
 }
 
+.create-alias-container .create-alias-form-required-fields {
+    color: #ddd;
+    font-size: 12px;
+}
+
 .create-alias-container .create-alias-unfinished-aliases-ul .create-alias-unfinished-aliases-text {
     display: block;
     color: #ddd;

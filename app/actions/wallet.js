@@ -1,7 +1,7 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
 
@@ -48,15 +48,33 @@ type saveUnfinishedAliasesActionType = {
   }>
 };
 
+type saveBlockchainInfoActionType = {
+  type: string,
+  payload: {
+    chain: string,
+    blocks: number,
+    headers: numbers,
+    bestblockhash: string,
+    difficulty: number,
+    mediantime: number,
+    verificationprogress: number,
+    chainwork: string,
+    pruned: boolean,
+    softforks: Array<Object>,
+    bip9_softforks: Object
+  }
+};
+
 const saveGetInfoAction = createAction(types.WALLET_GETINFO)
 const saveAliasesAction = createAction(types.WALLET_ALIASES)
 const saveUnfinishedAliasesAction = createAction(types.WALLET_UNFINISHED_ALIASES)
+const saveBlockchainInfoAction = createAction(types.WALLET_BLOCKCHAIN_INFO)
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
   try {
     dispatch(saveGetInfoAction(await getInfo()))
   } catch(err) {
-    dispatch(saveGetInfoAction(initialState))
+    dispatch(saveGetInfoAction(initialState.getinfo))
   }
 }
 
@@ -73,5 +91,13 @@ export const saveUnfinishedAliases = () => (dispatch: (action: saveUnfinishedAli
     dispatch(saveUnfinishedAliasesAction(getUnfinishedAliases()))
   } catch(err) {
     dispatch(saveUnfinishedAliasesAction([]))
+  }
+}
+
+export const saveBlockchainInfo = () => async (dispatch: (action: saveBlockchainInfoActionType) => void) => {
+  try {
+    dispatch(saveBlockchainInfoAction(await getBlockchainInfo()))
+  } catch(err) {
+    dispatch(saveBlockchainInfoAction(initialState.blockchaininfo))
   }
 }
