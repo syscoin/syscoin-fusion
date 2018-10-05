@@ -4,6 +4,7 @@ import { Input, Button, Select, Tag, Tooltip } from 'antd'
 import swal from 'sweetalert'
 import formChangeFormat from 'fw-utils/form-change-format'
 import parseError from 'fw-utils/error-parser'
+import QueuedAlias from './queued-alias'
 
 const { Option } = Select
 
@@ -66,7 +67,12 @@ export default class NewAlias extends Component<Props, State> {
       <ul className='create-alias-unfinished-aliases-ul'>
         {<span className='create-alias-unfinished-aliases-text'>Unfinished aliases:</span>}
         {unfinishedAliases.map(i => (
-          <li key={i.aliasName} className='create-alias-unfinished-aliases-li'><Tag color='#8bc0fd'>{i.aliasName}</Tag></li>
+          <li key={i.aliasName} className='create-alias-unfinished-aliases-li'>
+            <QueuedAlias
+              aliasName={i.aliasName}
+              error={i.error}
+            />
+          </li>
         ))}
       </ul>
     ) : []
@@ -86,7 +92,8 @@ export default class NewAlias extends Component<Props, State> {
       encryptionPublicKey: this.state.encryptionPublicKey,
       witness: this.state.witness,
       block: this.props.currentBlock,
-      round: 0
+      round: 0,
+      error: null
     }, (err) => {
       this.setState({
         isLoading: false

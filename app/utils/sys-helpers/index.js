@@ -234,6 +234,7 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
     }
   ], (err, result) => {
     if (err) {
+      console.log(err)
       return reject(err)
     }
 

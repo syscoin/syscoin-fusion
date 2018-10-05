@@ -106,7 +106,6 @@ export default class SendAssetForm extends Component<Props, State> {
               onClick={() => {
                 sendSys(this.state, err => {
                   if (err) {
-                    console.log(err)
                     return swal('Error', parseError(err.message), 'error')
                   }
 
