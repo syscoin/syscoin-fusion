@@ -131,21 +131,22 @@ class AccountsContainer extends Component<Props, State> {
         // If alias/address doesnt own any token, fallback to assetinfo.
         if (data.find(i => !i.symbol)) {
           return map(data, async (x, cb) => {
-            if (x.symbol.lenght) {
-              return cb(null, x)
+            const xObj = {...x}
+            if (xObj.symbol.lenght) {
+              return cb(null, xObj)
             }
 
             let assetInfo
 
             try {
-              assetInfo = await getAssetInfo(x.asset)
+              assetInfo = await getAssetInfo(xObj.asset)
             } catch (assetInfoErr) {
               return cb(assetInfoErr)
             }
   
-            x.symbol = assetInfo.symbol
-            x.balance = '0'
-            return cb(null, x)
+            xObj.symbol = assetInfo.symbol
+            xObj.balance = '0'
+            return cb(null, xObj)
           }, (error, finalResult) => done(null, finalResult.filter(x => x)))
         }
 

@@ -7,7 +7,6 @@ const waterfall = require('async/waterfall')
 
 const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
-const getSysPath = require('./syspath')
 const getPaths = require('./get-doc-paths')
 
 const checkSyscoind = (cb) => {

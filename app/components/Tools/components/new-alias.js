@@ -51,8 +51,14 @@ export default class NewAlias extends Component<Props, State> {
     this.state = { ...this.initialState }
   }
 
-  updateField(value, name) {
+  updateField(value: string | Object, name: string, filter: RegExp) {
     const toUpdate = formChangeFormat(value, name)
+
+    if (filter && !filter.test(toUpdate[name])) {
+      if (toUpdate[name]) {
+        return
+      }
+    }
 
     this.setState(toUpdate)
   }
@@ -140,7 +146,7 @@ export default class NewAlias extends Component<Props, State> {
             <Input
               name='aliasName'
               placeholder='New alias name'
-              onChange={e => this.updateField(e, 'aliasName')}
+              onChange={e => this.updateField(e, 'aliasName', /^(\d|\w|\W){0,36}$/)}
               value={this.state.aliasName}
               className='create-alias-control create-alias-form-name'
               maxLength='64'
@@ -150,10 +156,9 @@ export default class NewAlias extends Component<Props, State> {
             <Input
               name='publicValue'
               placeholder='Public Value'
-              onChange={e => this.updateField(e, 'publicValue')}
+              onChange={e => this.updateField(e, 'publicValue', /^(\d|\w|\W){0,256}$/)}
               value={this.state.publicValue}
               className='create-alias-control create-alias-form-publicvalue'
-              maxLength='256'
             />
           </Tooltip>
           <Tooltip trigger={['focus']} title='Defaults to 3.' placement='right'>
@@ -174,7 +179,7 @@ export default class NewAlias extends Component<Props, State> {
             <Input
               name='expireTimestamp'
               placeholder='Expire timestamp'
-              onChange={e => this.updateField(e, 'expireTimestamp')}
+              onChange={e => this.updateField(e, 'expireTimestamp', /^\d+$/)}
               value={this.state.expireTimestamp}
               className='create-alias-control create-alias-form-timestamp'
             />
@@ -183,7 +188,7 @@ export default class NewAlias extends Component<Props, State> {
             <Input
               name='address'
               placeholder='Address'
-              onChange={e => this.updateField(e, 'address')}
+              onChange={e => this.updateField(e, 'address', /^(\d|\w){0,36}$/)}
               value={this.state.address}
               className='create-alias-control create-alias-form-address'
             />

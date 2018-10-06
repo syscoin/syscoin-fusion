@@ -2,6 +2,8 @@
 import React, { Component } from 'react'
 import { Input, Button, Select, Spin, Icon, Tooltip } from 'antd'
 import swal from 'sweetalert'
+import formChangeFormat from 'fw-utils/form-change-format'
+import parseError from 'fw-utils/error-parser'
 
 const { Option } = Select
 
@@ -37,13 +39,21 @@ export default class NewAlias extends Component<Props, State> {
     }
   }
 
-  updateFields(e: Object) {
-    const { name, value } = e.target
-    const newState = { ...this.state }
+  updateFields(value: string | Object, name: string, filter?: RegExp) {
+    const toUpdate = formChangeFormat(value, name)
 
-    newState.editValues[name] = value
+    if (filter && !filter.test(toUpdate[name])) {
+      if (toUpdate[name]) {
+        return
+      }
+    }
 
-    this.setState(newState)
+    this.setState({
+      editValues: {
+        ...this.state.editValues,
+        ...toUpdate
+      }
+    })
   }
 
   selectAlias(name: string) {
@@ -59,7 +69,7 @@ export default class NewAlias extends Component<Props, State> {
         data = await this.props.aliasInfo(name)
       } catch (err) {
         this.setState({ isLoading: false })
-        return swal('Error', 'Error while getting alias info', 'error')
+        return swal('Error', parseError(err.message), 'error')
       }
 
       const newValues = { ...this.state.editValues }
@@ -98,7 +108,7 @@ export default class NewAlias extends Component<Props, State> {
         await this.props.editAlias(obj)
       } catch (err) {
         this.setState({ isLoading: false })
-        return swal('Error', 'Error while updating alias.', 'error')
+        return swal('Error', parseError(err.message), 'error')
       }
 
       swal('Success', 'Alias updated. The changes will take effect in a few blocks.', 'success')
@@ -134,10 +144,9 @@ export default class NewAlias extends Component<Props, State> {
                   disabled={isLoading}
                   name='publicValue'
                   placeholder='Public Value'
-                  onChange={this.updateFields.bind(this)}
+                  onChange={e => this.updateFields(e, 'publicValue', /^(\d|\w|\W){0,256}$/)}
                   value={this.state.editValues.publicValue}
                   className='edit-alias-form-control edit-alias-form-publicvalue'
-                  maxLength='256'
                 />
               </Tooltip>
               <Tooltip trigger={['focus']} title='Defaults to 3.' placement='right'>
@@ -145,12 +154,7 @@ export default class NewAlias extends Component<Props, State> {
                   disabled={isLoading}
                   name='acceptTransferFlag'
                   placeholder='Accept Transfer Flag'
-                  onChange={val => this.updateFields({
-                    target: {
-                      value: val,
-                      name: 'acceptTransferFlag'
-                    }
-                  })}
+                  onChange={val => this.updateFields(val, 'acceptTransferFlag')}
                   value={this.state.editValues.acceptTransferFlag}
                   className='edit-alias-form-control edit-alias-form-transferflag'
                 >
@@ -165,7 +169,7 @@ export default class NewAlias extends Component<Props, State> {
                   disabled={isLoading}
                   name='expireTimestamp'
                   placeholder='Expire timestamp'
-                  onChange={this.updateFields.bind(this)}
+                  onChange={val => this.updateFields(val, 'expireTimestamp', /^\d+$/)}
                   value={this.state.editValues.expireTimestamp}
                   className='edit-alias-form-control edit-alias-form-timestamp'
                 />
@@ -175,9 +179,10 @@ export default class NewAlias extends Component<Props, State> {
                   disabled={isLoading}
                   name='address'
                   placeholder='Address'
-                  onChange={this.updateFields.bind(this)}
+                  onChange={val => this.updateFields(val, 'address', /^(\d|\w){0,36}$/)}
                   value={this.state.editValues.address}
                   className='edit-alias-form-control edit-alias-form-address'
+                  maxLength='34'
                 />
               </Tooltip>
               <Tooltip trigger={['focus']} title='Encrypted private key used for encryption/decryption of private data related to this alias. Should be encrypted to publickey.' placement='right'>
@@ -185,7 +190,7 @@ export default class NewAlias extends Component<Props, State> {
                   disabled={isLoading}
                   name='encPrivKey'
                   placeholder='Encryption Private Key'
-                  onChange={this.updateFields.bind(this)}
+                  onChange={val => this.updateFields(val, 'encPrivKey')}
                   value={this.state.editValues.encPrivKey}
                   className='edit-alias-form-control edit-alias-form-privkey'
                 />
@@ -195,7 +200,7 @@ export default class NewAlias extends Component<Props, State> {
                   disabled={isLoading}
                   name='encPubKey'
                   placeholder='Encryption Public Key'
-                  onChange={this.updateFields.bind(this)}
+                  onChange={val => this.updateFields(val, 'encPubKey')}
                   value={this.state.editValues.encPubKey}
                   className='edit-alias-form-control edit-alias-form-pubkey'
                 />
@@ -205,7 +210,7 @@ export default class NewAlias extends Component<Props, State> {
                   disabled={isLoading}
                   name='witness'
                   placeholder='Witness'
-                  onChange={this.updateFields.bind(this)}
+                  onChange={val => this.updateFields(val, 'witness')}
                   value={this.state.editValues.witness}
                   className='edit-alias-form-control edit-alias-form-witness'
                 />
