@@ -71,7 +71,7 @@ export default class NewAlias extends Component<Props, State> {
     const { unfinishedAliases } = this.props
     return unfinishedAliases.length ? (
       <ul className='create-alias-unfinished-aliases-ul'>
-        {<span className='create-alias-unfinished-aliases-text'>Unfinished aliases:</span>}
+        {<span className='create-alias-unfinished-aliases-text'>Processing aliases:</span>}
         {unfinishedAliases.map(i => (
           <li key={i.aliasName} className='create-alias-unfinished-aliases-li'>
             <QueuedAlias
@@ -91,8 +91,8 @@ export default class NewAlias extends Component<Props, State> {
     this.props.createNewAlias({
       aliasName: this.state.aliasName.trim(),
       publicValue: this.state.publicValue,
-      acceptTransferFlags: this.state.acceptTransferFlags,
-      expireTimestamp: this.state.expireTimestamp === -1 ? 3 : this.state.expireTimestamp,
+      acceptTransferFlags: this.state.acceptTransferFlags === -1 ? 3 : this.state.acceptTransferFlags,
+      expireTimestamp: this.state.expireTimestamp || '1548184538',
       address: this.state.address,
       encryptionPrivKey: this.state.encryptionPrivKey,
       encryptionPublicKey: this.state.encryptionPublicKey,
@@ -115,20 +115,13 @@ export default class NewAlias extends Component<Props, State> {
 
   checkCorrectFormat() {
     const {
-      aliasName,
-      expireTimestamp,
-      address,
-      encryptionPrivKey,
-      encryptionPublicKey,
-      witness
+      aliasName
     } = this.state
     let isCorrect = true
 
     if (aliasName.length < 3 || aliasName.length > 64 || aliasName[0] === '-' || aliasName.trim() !== aliasName) {
       isCorrect = false
     }
-
-
 
     return isCorrect
   }

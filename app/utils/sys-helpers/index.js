@@ -30,7 +30,6 @@ type getTransactionsPerAssetType = {
 };
 
 const getInfo = () => new Promise((resolve, reject) => {
-  console.log(generateCmd('cli', 'getinfo'))
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
       return reject(err)
@@ -235,7 +234,6 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
     }
   ], (err, result) => {
     if (err) {
-      console.log(err)
       return reject(err)
     }
 

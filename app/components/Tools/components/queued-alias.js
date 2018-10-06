@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default (props: Props) => (
-  <Tooltip title={props.error || 'Queued'} placement='top'>
+  <Tooltip title={props.error || 'Queued'} placement='bottom'>
     <Tag color={props.error ? '#faa' : '#8bc0fd'}>{props.aliasName}</Tag>
   </Tooltip>
 )

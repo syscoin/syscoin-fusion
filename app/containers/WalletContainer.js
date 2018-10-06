@@ -40,7 +40,8 @@ class WalletContainer extends Component<Props> {
     }
 
     this.updateWalletHigh()
-    this.updateWalletLow()
+    // Firing low priority queue a few secs later so aliases can get to the store first.
+    setTimeout(() => this.updateWalletLow(), 5000)
   }
 
   updateWalletHigh() {

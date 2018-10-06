@@ -97,6 +97,7 @@ export default class TransactionList extends Component<Props> {
         columns={this.generateColumns()}
         className='transactions-table'
         rowClassName='transactions-table-row'
+        rowKey='txid'
         pagination={{
           defaultPageSize: 10
         }}
