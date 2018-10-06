@@ -24,6 +24,7 @@ type State = {
 };
 
 export default class SendAssetForm extends Component<Props, State> {
+  initialState: State;
 
   constructor(props: Props) {
     super(props)
@@ -40,7 +41,7 @@ export default class SendAssetForm extends Component<Props, State> {
     }
   }
 
-  updateField(value, name, filter) {
+  updateField(value: string | Object, name: string, filter?: RegExp) {
     const toUpdate = formChangeFormat(value, name, filter)
 
     if (filter && !filter.test(toUpdate[name])) {

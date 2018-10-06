@@ -73,18 +73,7 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
   }
 }
 
-const startUpRoutine = (cb) => {
-  if (!fs.existsSync(getSysPath('default'))) {
-    // Attemps to create SyscoinCore folder if this doesn't exists already.
-    try {
-      fs.mkdirSync(getSysPath('default'))
-    } catch (err) {
-      // Failed to create SyscoinCore folder
-      swal('Error', 'Failed to create SyscoinCore folder.', 'error').then(() => cb(true)).catch(() => cb(true))
-      return
-    }
-  }
-
+const startUpRoutine = () => {
   const {
     appDocsPath,
     customCssPath,
@@ -132,7 +121,7 @@ const startUpRoutine = (cb) => {
     },
     (reindex, done) => {
       if (reindex) {
-        return swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning')
+        return swal('Corruption detected', 'Your files dont not look quite well, reindexing.', 'warning')
           .then(() => done(null, 'reindex'))
           .catch(() => done(true))
       }

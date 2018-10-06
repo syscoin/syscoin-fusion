@@ -9,7 +9,7 @@ type Props = {
     editAlias: Function
 };
 
-export default class Personalize extends Component<Props, State> {
+export default class Personalize extends Component<Props> {
   props: Props;
 
   render() {

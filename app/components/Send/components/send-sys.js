@@ -20,6 +20,7 @@ type State = {
 };
 
 export default class SendAssetForm extends Component<Props, State> {
+  initialState: State;
 
   constructor(props: Props) {
     super(props)
@@ -35,7 +36,7 @@ export default class SendAssetForm extends Component<Props, State> {
     }
   }
 
-  updateField(value, name) {
+  updateField(value: string | Object, name: string) {
     const toUpdate = formChangeFormat(value, name)
 
     this.setState(toUpdate)

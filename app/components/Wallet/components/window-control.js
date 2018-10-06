@@ -17,7 +17,10 @@ export default (props: Props) => (
         className='window-controls-loader'
         type='loading'
         spin
-        title={`${props.syncPercentage}% synced: ${props.currentBlock} out of ${props.headBlock} blocks downloaded`} />}
+        title={`${props.syncPercentage}% synced: ${props.currentBlock} out of ${props.headBlock} blocks processed.
+This might affect some wallet functionalities.`}
+      />
+    }
       />
     )}
     <Icon type='minus' className='minimize' onClick={props.onMinimize} />

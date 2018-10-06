@@ -97,7 +97,7 @@ class AccountsContainer extends Component<Props, State> {
               error: true
             }
           })
-          swal('No asset selected', 'Add some in Fusion/fusion.cfg file located in your Documents folder', 'warning')
+          swal('No asset detected', 'The wallet hasn\'t detected any asset yet. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
           return
         }
 

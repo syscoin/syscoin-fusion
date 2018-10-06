@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Input, Button, Select, Spin, Icon } from 'antd'
+import { Input, Button, Select, Spin, Icon, Tooltip } from 'antd'
 import swal from 'sweetalert'
 
 const { Option } = Select
@@ -125,76 +125,91 @@ export default class NewAlias extends Component<Props, State> {
           >
             {this.props.currentAliases.filter(i => i.alias).map(i => <Option value={i.alias} key={i.alias}>{i.alias}</Option>)}
           </Select>
-          {isLoading && <Spin indicator={<Icon className='personalize-loader' type='loading' spin />} />}
+          {(isLoading && !this.state.aliasToEdit) && <Spin indicator={<Icon className='personalize-loader' type='loading' spin />} />}
           {this.state.aliasToEdit && (
             <div>
               <h3 className='edit-alias-form-active-alias'>Editing alias <span className='editing-alias'>{this.state.aliasToEdit}</span></h3>
-              <Input
-                disabled={isLoading}
-                name='publicValue'
-                placeholder='Public Value'
-                onChange={this.updateFields.bind(this)}
-                value={this.state.editValues.publicValue}
-                className='edit-alias-form-control edit-alias-form-publicvalue'
-              />
-              <Select
-                disabled={isLoading}
-                name='acceptTransferFlag'
-                placeholder='Accept Transfer Flag'
-                onChange={val => this.updateFields({
-                  target: {
-                    value: val,
-                    name: 'acceptTransferFlag'
-                  }
-                })}
-                value={this.state.editValues.acceptTransferFlag}
-                className='edit-alias-form-control edit-alias-form-transferflag'
-              >
-                <Option value={0}>0 - None</Option>
-                <Option value={1}>1 - Accepting certificate transfers</Option>
-                <Option value={2}>2 - Accepting asset transfers</Option>
-                <Option value={3}>3 - All</Option>
-              </Select>
-              <Input
-                disabled={isLoading}
-                name='expireTimestamp'
-                placeholder='Expire timestamp'
-                onChange={this.updateFields.bind(this)}
-                value={this.state.editValues.expireTimestamp}
-                className='edit-alias-form-control edit-alias-form-timestamp'
-              />
-              <Input
-                disabled={isLoading}
-                name='address'
-                placeholder='Address'
-                onChange={this.updateFields.bind(this)}
-                value={this.state.editValues.address}
-                className='edit-alias-form-control edit-alias-form-address'
-              />
-              <Input
-                disabled={isLoading}
-                name='encPrivKey'
-                placeholder='Encryption Private Key'
-                onChange={this.updateFields.bind(this)}
-                value={this.state.editValues.encPrivKey}
-                className='edit-alias-form-control edit-alias-form-privkey'
-              />
-              <Input
-                disabled={isLoading}
-                name='encPubKey'
-                placeholder='Encryption Public Key'
-                onChange={this.updateFields.bind(this)}
-                value={this.state.editValues.encPubKey}
-                className='edit-alias-form-control edit-alias-form-pubkey'
-              />
-              <Input
-                disabled={isLoading}
-                name='witness'
-                placeholder='Witness'
-                onChange={this.updateFields.bind(this)}
-                value={this.state.editValues.witness}
-                className='edit-alias-form-control edit-alias-form-witness'
-              />
+              <Tooltip trigger={['focus']} title='Max 256 characters.' placement='right'>
+                <Input
+                  disabled={isLoading}
+                  name='publicValue'
+                  placeholder='Public Value'
+                  onChange={this.updateFields.bind(this)}
+                  value={this.state.editValues.publicValue}
+                  className='edit-alias-form-control edit-alias-form-publicvalue'
+                  maxLength='256'
+                />
+              </Tooltip>
+              <Tooltip trigger={['focus']} title='Defaults to 3.' placement='right'>
+                <Select
+                  disabled={isLoading}
+                  name='acceptTransferFlag'
+                  placeholder='Accept Transfer Flag'
+                  onChange={val => this.updateFields({
+                    target: {
+                      value: val,
+                      name: 'acceptTransferFlag'
+                    }
+                  })}
+                  value={this.state.editValues.acceptTransferFlag}
+                  className='edit-alias-form-control edit-alias-form-transferflag'
+                >
+                  <Option value={0}>0 - None</Option>
+                  <Option value={1}>1 - Accepting certificate transfers</Option>
+                  <Option value={2}>2 - Accepting asset transfers</Option>
+                  <Option value={3}>3 - All</Option>
+                </Select>
+              </Tooltip>
+              <Tooltip trigger={['focus']} title='Unix epoch time in seconds for when to expire the alias. It is exponentially more expensive per year, calculation is FEERATE*(2.88^years). FEERATE is the dynamic based on the size of the transaction and what the minimum fee rate is currently which depends on how congested the network is. Defaults to 1548184538.' placement='right'>
+                <Input
+                  disabled={isLoading}
+                  name='expireTimestamp'
+                  placeholder='Expire timestamp'
+                  onChange={this.updateFields.bind(this)}
+                  value={this.state.editValues.expireTimestamp}
+                  className='edit-alias-form-control edit-alias-form-timestamp'
+                />
+              </Tooltip>
+              <Tooltip trigger={['focus']} title='Address for this alias.' placement='right'>
+                <Input
+                  disabled={isLoading}
+                  name='address'
+                  placeholder='Address'
+                  onChange={this.updateFields.bind(this)}
+                  value={this.state.editValues.address}
+                  className='edit-alias-form-control edit-alias-form-address'
+                />
+              </Tooltip>
+              <Tooltip trigger={['focus']} title='Encrypted private key used for encryption/decryption of private data related to this alias. Should be encrypted to publickey.' placement='right'>
+                <Input
+                  disabled={isLoading}
+                  name='encPrivKey'
+                  placeholder='Encryption Private Key'
+                  onChange={this.updateFields.bind(this)}
+                  value={this.state.editValues.encPrivKey}
+                  className='edit-alias-form-control edit-alias-form-privkey'
+                />
+              </Tooltip>
+              <Tooltip trigger={['focus']} title='Public key used for encryption/decryption of private data related to this alias.' placement='right'>
+                <Input
+                  disabled={isLoading}
+                  name='encPubKey'
+                  placeholder='Encryption Public Key'
+                  onChange={this.updateFields.bind(this)}
+                  value={this.state.editValues.encPubKey}
+                  className='edit-alias-form-control edit-alias-form-pubkey'
+                />
+              </Tooltip>
+              <Tooltip trigger={['focus']} title='Witness alias name that will sign for web-of-trust notarization of this transaction.' placement='right'>
+                <Input
+                  disabled={isLoading}
+                  name='witness'
+                  placeholder='Witness'
+                  onChange={this.updateFields.bind(this)}
+                  value={this.state.editValues.witness}
+                  className='edit-alias-form-control edit-alias-form-witness'
+                />
+              </Tooltip>
             </div>
           )}
 

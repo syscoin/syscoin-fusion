@@ -6,7 +6,7 @@ import {
   incRoundToAlias,
   addErrorToAlias
 } from 'fw-utils/new-alias-manager'
-import errorParser from 'fw-sys/error-parser'
+import errorParser from 'fw-utils/error-parser'
 
 type Params = {
   unfinishedAliases: Array<Object>,

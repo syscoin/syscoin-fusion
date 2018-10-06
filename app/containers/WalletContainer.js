@@ -77,6 +77,8 @@ class WalletContainer extends Component<Props> {
           .filter(i => aliases.find(x => x.alias === i.sender || x.alias === i.receiver || x.alias === i.sender || x.alias === i.receiver))
           // Only need the guid, discard the rest.
           .map(i => i.asset) 
+          // Delete duplicates
+        guids = guids.filter((i, ind) => guids.indexOf(i) === ind)
       } catch(err) {
         guids = []
       }
