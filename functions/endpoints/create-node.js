@@ -1,11 +1,7 @@
-const firebase = require('firebase-functions')
 const admin = require('firebase-admin')
-const async = require('async')
 
 const makeCharge = require('./helpers/make-charge')
 const coinbaseCharge = require('./helpers/coinbase-charge')
-const createDroplet = require('./helpers/create-droplet')
-const getDropletIp = require('./helpers/get-droplet-ip')
 const redeemCode = require('./helpers/redeem-code')
 
 /**

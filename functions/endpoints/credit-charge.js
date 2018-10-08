@@ -1,7 +1,3 @@
-const firebase = require('firebase-functions')
-const admin = require('firebase-admin')
-const async = require('async')
-
 const makeCharge = require('./helpers/make-charge')
 const updateBalance = require('./helpers/update-balance')
 
