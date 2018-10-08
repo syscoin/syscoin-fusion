@@ -1,37 +1,42 @@
 const localStorage = new require('node-localstorage').LocalStorage('./storage')
 const axios = require('axios')
 const { execSync } = require('child_process')
+const config = require('./config')
+const chainConfig = require('/root/chain-config')
 
-const getMnDataUrl = 'https://us-central1-mm-dev-v2.cloudfunctions.net/app/droplets/get-mn-data'
-const sendRewardNotif = 'https://us-central1-mm-dev-v2.cloudfunctions.net/app/droplets/reward-notification'
+const getMnDataUrl = config.appUrl + '/droplets/get-mn-data'
+const sendRewardNotif = config.appUrl + '/droplets/reward-notification'
 
 axios.get(getMnDataUrl).then(res => {
     const { mnRewardAddress } = res.data
     const lastTime = parseInt(localStorage.getItem('transactionCount')) || 0
 
-    let transactions, newOnes, hasReward
+    let transactions
 
     // Get latest transactions
-    transactions = JSON.parse(execSync(`~/syscoin/src/syscoin-cli getaddressdeltas '{"addresses": ["${mnRewardAddress}"]}'`).toString())
+    try {
+        transactions = JSON.parse(execSync(chainConfig.checkReward(mnRewardAddress)).toString())
+        // filter out all the spent outputs;  only consider debited tx
+        transactions = transactions.filter(tx => { return tx.satoshis > 0 })
+    } catch(err) {
+        throw new Error(err)
+    }
 
     if (transactions.length !== lastTime) {
-        // If new transactions since the last time the script ran, check if its a reward
-        newOnes = transactions.slice(lastTime)
-        hasReward = newOnes.find(i => i.satoshis === 2598750000)
+        // If number of transactions is different from the last time it checked, send a notification
+        newOne = transactions.slice().pop()
 
-        if (hasReward) {
-            // If there is a new reward, send a notification
-            axios.post(sendRewardNotif).then((res) => {
-                // Saves transaction number in localStorage
-                localStorage.setItem('transactionCount', transactions.length)
+        axios.post(sendRewardNotif, {
+            amount: newOne.satoshis / 100000000,
+            address: mnRewardAddress
+        }).then((res) => {
+            // Saves transaction number in localStorage
+            localStorage.setItem('transactionCount', transactions.length)
 
-                process.exit()
-            }).catch((err) => {
-                process.exit()
-            })
-        } else {
             process.exit()
-        }
+        }).catch((err) => {
+            process.exit()
+        })
     } else {
         process.exit()
     }

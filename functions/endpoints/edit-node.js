@@ -9,6 +9,7 @@ const admin = require('firebase-admin')
  * @apiParam {String} mnKey new MN key
  * @apiParam {String} mnName new MN name
  * @apiParam {String} mnTxid new MN txid
+ * @apiParam {String} mnRewardAddress SYS address where user is receiving rewards
  * @apiParam {String} id mn-data DB id
  * 
  * @apiSuccessExample {json} Success
@@ -22,10 +23,11 @@ module.exports = (req, res, next) => {
         mnKey,
         mnName,
         mnTxid,
+        mnRewardAddress,
         id
     } = req.body
 
-    if (!(mnIndex && mnKey && mnName && mnTxid && id)) {
+    if (!(mnIndex && mnKey && mnName && mnTxid && id && mnRewardAddress)) {
         return res.status(422).json({
             error: true,
             message: 'Lacking required parameters.'
@@ -54,7 +56,8 @@ module.exports = (req, res, next) => {
                 mnIndex,
                 mnKey,
                 mnName,
-                mnTxid
+                mnTxid,
+                mnRewardAddress
             }).then(() => res.json({
                 error: false
             })).catch(() => res.status(500).json({

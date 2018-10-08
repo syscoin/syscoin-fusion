@@ -2,9 +2,12 @@ const axios = require('axios')
 const { exec } = require('child_process')
 const writeToLogs = require('./write-log')
 const config = require('./config')
-
+const chainConfig = require('/root/chain-config')
 const appUrl = config.appUrl + '/droplets/edit-status'
-const cliDir = '~/syscoin/src/syscoin-cli masternode status'
+
+if(!chainConfig.nodeStatus) {throw new Error('unable to get node status command')}
+const cliDir = `chain-cli ${chainConfig.nodeStatus()}`;
+
 
 exec(cliDir, (err, stdout, stderr) => {
     try {
@@ -19,7 +22,7 @@ exec(cliDir, (err, stdout, stderr) => {
         })
     } catch (e) {
         axios.post(appUrl, {
-            status: 'ERROR: Incorrect config. Check your MN Key.'
+            status: 'ERROR: Incorrect config. Please check your MN Key.'
         }).then((res) => {
             writeToLogs(res.data)
             process.exit()

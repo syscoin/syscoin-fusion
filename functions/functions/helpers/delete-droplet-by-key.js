@@ -15,12 +15,6 @@ module.exports = (vpsKey, cb) => {
                 method: 'delete',
                 url: 'https://api.digitalocean.com/v2/droplets/' + data.vpsid,
                 headers: DOHeader
-            }).then(() => {
-                cb()
-                return console.log('deleted droplet ' + id)
-            }).catch((error) => {
-                cb(error)
-                return console.log(error)
-            })
+            }).then(() => cb()).catch(error => cb(error))
         })
 }

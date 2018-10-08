@@ -10,14 +10,33 @@ const saveMnStatus = require('../functions/helpers/save-vps-status')
  * @apiGroup Endpoints
  * 
  * @apiParam {String} dropletId Droplet ID (which can be found in vps collection as "vpsid" property)
+ * @apiParam {String} nodeType Node Type (which can be found in orders collection as "nodeType" property)
  * @apiSuccessExample {json} Success
  * {error: false, message: 'Masternode updated successfully.' }
  */
 module.exports = (req, res) => {
     const userId = req.user.uid,
           dropletId = req.body.dropletId
+          nodeType = req.body.nodeType
+    
+    let imageId
 
-    const imageId = functions.config().images.sys
+    if (!dropletId || !nodeType) {
+        return res.status(400).send({
+            message: 'Missing required parameter',
+            error: true
+        })
+    }
+
+    if (functions.config().images[nodeType.toLowerString()]) {
+        imageId = functions.config().images[nodeType.toLowerString()]
+    }
+
+    if (!imageId) {
+        return res.status(400).send({
+            message: 'Invalid coin.'
+        })
+    }
 
     return admin.database().ref('/vps')
                     .orderByChild('userId')
@@ -49,7 +68,8 @@ module.exports = (req, res) => {
                         }
 
                         upgradeMn({
-                            dropletId
+                            dropletId,
+                            nodeType: imageId
                         }, (err, data) => {
                             if (err) {
                                 return res.status(500).send({

@@ -43,12 +43,13 @@ module.exports = (req, res, next) => {
             mnIndex = req.body.mnIndex,
             method = req.body.method,
             code = req.body.code,
-            nodeType = req.body.nodeType || 'sys'
+            nodeType = req.body.nodeType || 'sys',
+            mnRewardAddress = req.body.mnRewardAddress || ''
 
         const cryptoPaymentsSupported = ['btc', 'ltc', 'bch', 'eth']
 
         if (method === 'cc') {
-    
+
             return makeCharge({
                 email,
                 months,
@@ -74,7 +75,8 @@ module.exports = (req, res, next) => {
                     deployed: false,
                     userId: req.user.uid,
                     paymentMethod: 'cc',
-                    nodeType
+                    nodeType,
+                    mnRewardAddress
                 })
     
                 return res.send({
