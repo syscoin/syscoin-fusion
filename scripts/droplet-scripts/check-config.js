@@ -1,14 +1,23 @@
 const axios = require('axios')
 const fs = require('fs')
-const { execSync } = require('child_process')
+const {execSync} = require('child_process')
 const writeToLogs = require('./write-log')
 const makeConfig = require('./helpers/default-config')
 const config = require('./config')
 
 const Storage = require('./db')
+const chainConfig = require('/root/chain-config')
 
 const appUrl = config.appUrl + '/droplets/get-mn-data'
-const syscoinFile = fs.readFileSync('/root/.syscoincore/syscoin.conf', 'utf-8')
+
+let syscoinFile
+
+try {
+    syscoinFile = fs.readFileSync(chainConfig.path(), 'utf-8')
+} catch (e) {
+    syscoinFile = ''
+}
+
 
 axios.get(appUrl).then(res => {
     const data = res.data
@@ -18,8 +27,8 @@ axios.get(appUrl).then(res => {
         error: false
     })
 
-    if (syscoinFile.indexOf(data.mnKey) === -1 || syscoinFile.indexOf(data.ip) === -1) {
-        fs.writeFileSync('/root/.syscoincore/syscoin.conf', makeConfig(data.mnKey, data.ip))
+    if (syscoinFile === '' || syscoinFile.indexOf(data.mnKey) === -1 || syscoinFile.indexOf(data.ip) === -1) {
+        fs.writeFileSync(chainConfig.path(), chainConfig.config(data.mnKey, data.ip))
         writeToLogs({
             error: false,
             message: 'Updated config to MnKey: ' + data.mnKey + ' and IP: ' + data.ip
@@ -27,7 +36,7 @@ axios.get(appUrl).then(res => {
         execSync('sudo reboot')
     }
 
-    // Save response to DB
+    // Save response to local DB
     Storage.setItem('vpsInfo', data)
 
     process.exit()

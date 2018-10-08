@@ -5,6 +5,5 @@ mv chain/bin/syscoind /usr/bin/chaind
 mv chain/bin/syscoin-cli /usr/bin/chain-cli
 cd droplet-scripts
 npm install
-cd ~/sentinel
-chaind -daemon
-venv/bin/python bin/sentinel.py
+# need to sync with addressindex tag,  otherwise when droplet adds in config with it later, sysd will not start
+chaind -daemon -addressindex

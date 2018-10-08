@@ -48,7 +48,6 @@ const async = require('async')
 }
  */
 module.exports = (req, res, next) => {
-    const activeImage = firebase.config().images.sys
     admin.database().ref('/orders')
         .orderByChild('userId')
         .equalTo(req.user.uid)
@@ -100,12 +99,13 @@ module.exports = (req, res, next) => {
                                 const snap = snapshot.val()
                                 let objectKey = Object.keys(snap)[0]
                                 const returnData = snap[objectKey]
-
-                                returnData.id = objectKey
+                                const activeImage = firebase.config().images[i.nodeType.toLowerCase()]
 
                                 if (returnData.imageId !== activeImage) {
                                     returnData.shouldUpdate = true
                                 }
+
+                                returnData.id = objectKey
 
                                 cb(null, returnData)
                             })
@@ -117,8 +117,6 @@ module.exports = (req, res, next) => {
                         finalData.masternodes.push(i)
                         return cb(null, err)
                     }
-
-                    const newObj = i
 
                     i.mnData = data[0]
                     i.vpsInfo = data[1]
