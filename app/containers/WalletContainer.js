@@ -2,7 +2,7 @@
 import React, { Component  } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 import Wallet from 'fw-components/Wallet'
 import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo } from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
@@ -29,6 +29,15 @@ class WalletContainer extends Component<Props> {
 
   componentWillMount() {
     loadCustomCss(getPaths().customCssPath)
+
+    ipcRenderer.on('maximize', () => {
+      this.props.toggleMaximize(true)
+    })
+    ipcRenderer.on('unmaximize', () => {
+      this.props.toggleMaximize(false)
+    })
+
+    this.props.toggleMaximize(remote.getCurrentWindow().isMaximized())
   }
 
   componentDidMount() {
@@ -99,12 +108,10 @@ class WalletContainer extends Component<Props> {
   }
 
   onMaximize() {
-    this.props.toggleMaximize()
     ipcRenderer.send('maximize')
   }
   
   onUnmaximize() {
-    this.props.toggleMaximize()
     ipcRenderer.send('unmaximize')
   }
 
@@ -114,8 +121,8 @@ class WalletContainer extends Component<Props> {
         isMaximized={this.props.isMaximized}
         onMinimize={this.onMinimize}
         onClose={this.onClose}
-        onMaximize={this.onMaximize}
-        onUnmaximize={this.onUnmaximize}
+        onMaximize={this.onMaximize.bind(this)}
+        onUnmaximize={this.onUnmaximize.bind(this)}
       />
     )
   }

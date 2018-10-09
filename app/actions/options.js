@@ -18,6 +18,6 @@ export const saveGuids = (arr: Array<string>) => (dispatch: (action: saveAllowed
   dispatch(saveAllowedGuids(arr))
 }
 
-export const toggleMaximize = () => (dispatch: (action: toggleMaximizeActionType) => void) => {
-  dispatch(toggleMaximizeAction())
+export const toggleMaximize = (isMaximized?: boolean) => (dispatch: (action: toggleMaximizeActionType) => void) => {
+  dispatch(toggleMaximizeAction(isMaximized))
 }

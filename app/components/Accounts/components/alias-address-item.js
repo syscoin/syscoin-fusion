@@ -15,7 +15,7 @@ export default (props: Props) => {
     return (
       <Row className={`alias-box ${isSelected ? 'expanded' : 'non-expanded'} ${isLoading ? 'loading' : ''}`} onClick={() => updateSelectedAlias(alias || address)}>
         {alias && (
-          <Col xs={isSelected ? 6 : 4} offset={isSelected ? 1 : 0} className='alias-img-container'>
+          <Col xs={isSelected ? 6 : 4} lg={isSelected ? 4 : 3} offset={isSelected ? 1 : 0} className='alias-img-container'>
             <img className='alias-img' src={`https://ui-avatars.com/api/?name=${alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`} alt='Alias' />
           </Col>
         )}

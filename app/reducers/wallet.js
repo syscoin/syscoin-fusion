@@ -8,7 +8,7 @@ import {
 
 type actionType = {
   +type: string,
-  payload?: Object
+  payload?: any
 };
 
 export const initialState = {

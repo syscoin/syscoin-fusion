@@ -17,9 +17,12 @@ export default (props: Props) => (
     <div className='window-controls-drag' />
     <div className='window-controls-buttons'>
       <Icon type='minus' className='minimize' onClick={props.onMinimize} />
-      <i className={props.isMaximized ? 'maximize' : 'unmaximize'}>
+      <i // eslint-disable-line
+        className={props.isMaximized ? 'unmaximize' : 'maximize'}
+        onClick={props.isMaximized ? props.onUnmaximize : props.onMaximize}
+      >
         {
-          props.isMaximized ? <MaximizeIcon /> : <UnmaximizeIcon />
+          props.isMaximized ? <UnmaximizeIcon /> : <MaximizeIcon />
         }
       </i>
       <Icon type='close' className='close' onClick={props.onClose} />

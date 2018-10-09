@@ -3,7 +3,7 @@ import { ALLOWED_GUIDS, TOGGLE_MAXIMIZE } from 'fw-types/options'
 
 type actionType = {
   +type: string,
-  payload?: Array<string> | Object
+  payload?: any
 };
 
 const initialState = {
@@ -21,7 +21,7 @@ export default function wallet(state: StateType = initialState, action: actionTy
     case TOGGLE_MAXIMIZE:
       return {
         ...state,
-        isMaximized: !state.isMaximized
+        isMaximized: action.payload
       }
     default:
       return state

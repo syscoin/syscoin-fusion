@@ -101,6 +101,14 @@ app.on('ready', async () => {
       splashWindow.close()
     }
   })
+
+  mainWindow.on('maximize', () => {
+    mainWindow.webContents.send('maximize')
+  })
+
+  mainWindow.on('unmaximize', () => {
+    mainWindow.webContents.send('unmaximize')
+  })
   
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -127,14 +135,16 @@ app.on('ready', async () => {
     mainWindow.close()
   })
 
-  ipcMain.on('maximize', () => {
+  ipcMain.on('maximize', (e) => {
     // Maximize the window
     mainWindow.maximize()
+    e.sender.send('maximize')
   })
 
-  ipcMain.on('unmaximize', () => {
+  ipcMain.on('unmaximize', (e) => {
     // Unmaximize the window
     mainWindow.unmaximize()
+    e.sender.send('unmaximize')
   })
 
   const menuBuilder = new MenuBuilder(mainWindow)

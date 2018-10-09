@@ -30,6 +30,7 @@ type getTransactionsPerAssetType = {
 };
 
 const getInfo = () => new Promise((resolve, reject) => {
+  console.log(generateCmd('cli', 'getinfo'))
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
       return reject(err)

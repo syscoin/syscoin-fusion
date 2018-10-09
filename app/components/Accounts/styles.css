@@ -40,14 +40,14 @@
 }
 
 .accounts-container-left .sync-loader {
-    width: 20%;
+    float: right;
+    margin-top: 10px;
     cursor: pointer;
-    text-align: right;
     padding-right: 15px;
 }
 
 .aliases-container {
-    height: 61%;
+    height: 68.2%;
     overflow-y: scroll;
     overflow-x: hidden;
     background: #444;
@@ -334,7 +334,7 @@
 
 .sys-logo-bg {
     opacity: 0.7;
+    margin: auto;
     position: absolute;
-    top: 160px;
-    right: 160px;
+    top: -40px; left: 0; bottom: 0; right: 0;
 }
