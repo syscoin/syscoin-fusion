@@ -1,1 +1,2 @@
-export const ALLOWED_GUIDS = 'ALLOWED_GUIDS' // eslint-disable-line import/prefer-default-export
+export const ALLOWED_GUIDS = 'ALLOWED_GUIDS'
+export const TOGGLE_MAXIMIZE = 'TOGGLE_MAXIMIZE'

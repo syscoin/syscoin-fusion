@@ -1,38 +1,53 @@
 /* Window Controls */
 
 .window-controls {
-    padding-top: 5px;
-    padding-right: 10px;
+    height: 25px !important;
+}
+
+.window-controls .window-controls-drag {
+    height: 30px;
+    width: 83%;
+    left: 0;
+    -webkit-app-region: drag;
+}
+
+.window-controls > div {
+    position: absolute;
+    right: 0;
 }
 
 .window-controls .close,
-.window-controls .minimize {
+.window-controls .minimize,
+.window-controls .maximize,
+.window-controls .unmaximize {
+    z-index: 9999;
     color: #ddd;
     cursor: pointer;
-    margin-right: 10px;
     font-size: 15px;
-    transition: color 0.3s;
+    transition: background 0.3s, color 0.5s;
+    padding: 5px 20px;
 }
 
-.window-controls .minimize:hover {
-    color: rgb(127, 178, 236);
+.window-controls .maximize svg,
+.window-controls .unmaximize svg {
+    width: 15px;
+    transform: rotate(90deg);
+}
+
+.window-controls .minimize:hover,
+.window-controls .maximize:hover,
+.window-controls .unmaximize:hover {
+    background: rgb(127, 178, 236);
+    color: white;
 }
 
 .window-controls .close:hover {
-    color: #faa;
-}
-
-.window-controls .window-controls-loader {
-    margin-right: 15px;
-    cursor: pointer;
+    background: #f55;
+    color: white;
 }
 
 
 /* Tabs style */
-
-.ant-tabs-nav-container {
-    padding-left: 10px;
-}
 
 .ant-tabs-bar {
     position: relative;
@@ -41,11 +56,17 @@
     box-shadow: 0 -2px 15px #000;
     border: 0;
     margin: 0;
-}   
+}
 
-.ant-tabs-tab { 
+.ant-tabs-bar > div {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.ant-tabs-tab {
+    position: relative;
     color: #ccc;
-    width: 45%;
+    width: 55.9%;
     text-align: center;
 }
 

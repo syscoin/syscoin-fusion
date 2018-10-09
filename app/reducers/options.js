@@ -1,5 +1,5 @@
 // @flow
-import { ALLOWED_GUIDS } from 'fw-types/options'
+import { ALLOWED_GUIDS, TOGGLE_MAXIMIZE } from 'fw-types/options'
 
 type actionType = {
   +type: string,
@@ -7,7 +7,8 @@ type actionType = {
 };
 
 const initialState = {
-  guids: []
+  guids: [],
+  isMaximized: false
 }
 
 export default function wallet(state: StateType = initialState, action: actionType) {
@@ -16,6 +17,11 @@ export default function wallet(state: StateType = initialState, action: actionTy
       return {
         ...state,
         guids: action.payload
+      }
+    case TOGGLE_MAXIMIZE:
+      return {
+        ...state,
+        isMaximized: !state.isMaximized
       }
     default:
       return state

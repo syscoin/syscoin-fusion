@@ -1,29 +1,28 @@
 // @flow
 import React from 'react'
-import { Icon, Spin } from 'antd'
+import { Icon } from 'antd'
+import MaximizeIcon from './maximize'
+import UnmaximizeIcon from './unmaximize'
 
 type Props = {
+  isMaximized: boolean,
   onMinimize: Function,
   onClose: Function,
-  syncPercentage: number,
-  currentBlock: number,
-  headBlock: number
+  onMaximize: Function,
+  onUnmaximize: Function
 };
 
 export default (props: Props) => (
   <div className='window-controls'>
-    {props.syncPercentage < 100 && (
-      <Spin indicator={<Icon
-        className='window-controls-loader'
-        type='loading'
-        spin
-        title={`${props.syncPercentage}% synced: ${props.currentBlock} out of ${props.headBlock} blocks processed.
-This might affect some wallet functionalities.`}
-      />
-    }
-      />
-    )}
-    <Icon type='minus' className='minimize' onClick={props.onMinimize} />
-    <Icon type='close' className='close' onClick={props.onClose} />
+    <div className='window-controls-drag' />
+    <div className='window-controls-buttons'>
+      <Icon type='minus' className='minimize' onClick={props.onMinimize} />
+      <i className={props.isMaximized ? 'maximize' : 'unmaximize'}>
+        {
+          props.isMaximized ? <MaximizeIcon /> : <UnmaximizeIcon />
+        }
+      </i>
+      <Icon type='close' className='close' onClick={props.onClose} />
+    </div>
   </div>
 )

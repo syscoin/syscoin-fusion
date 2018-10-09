@@ -5,6 +5,7 @@ import AliasAddressItem from './components/alias-address-item'
 import AssetBox from './components/asset-box'
 import TransactionList from './components/transaction-list'
 import UserBalance from './components/balance'
+import SyncLoader from './components/sync-loader'
 
 type Props = {
   balance: number,
@@ -13,7 +14,10 @@ type Props = {
   selectedAlias: string,
   aliasAssets: Object,
   updateSelectedAlias: Function,
-  selectAsset: Function
+  selectAsset: Function,
+  headBlock: number,
+  currentBlock: number,
+  syncPercentage: number
 };
 
 export default class Accounts extends Component<Props> {
@@ -73,8 +77,6 @@ export default class Accounts extends Component<Props> {
     )
   }
 
-  
-
   render() {
     return (
       <Row className='accounts-container'>
@@ -84,6 +86,13 @@ export default class Accounts extends Component<Props> {
           />
           <hr className='alias-separator' />
           <h4 className='your-aliases-text'>Your aliases/addresses</h4>
+          {this.props.syncPercentage !== 100 ? (
+            <SyncLoader
+              syncPercentage={this.props.syncPercentage}
+              headBlock={this.props.headBlock}
+              currentBlock={this.props.currentBlock}
+            />
+          ) : null}
           <div className='aliases-container'>
             {this.generateAliasesBoxes()}
           </div>

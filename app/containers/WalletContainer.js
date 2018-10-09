@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { ipcRenderer } from 'electron'
 import Wallet from 'fw-components/Wallet'
 import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo } from 'fw-actions/wallet'
-import saveGuids from 'fw-actions/options'
+import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import { getAssetAllocationTransactions } from 'fw-sys'
 
@@ -13,15 +13,15 @@ import loadCustomCss from 'fw-utils/load-css'
 import getPaths from 'fw-utils/get-doc-paths'
 
 type Props = {
-  headBlock: number,
-  currentBlock: number,
+  isMaximized: boolean,
   unfinishedAliases: Array<Object>,
   aliases: Array<Object>,
   saveGetInfo: Function,
   saveAliases: Function,
   saveGuids: Function,
   saveUnfinishedAliases: Function,
-  saveBlockchainInfo: Function
+  saveBlockchainInfo: Function,
+  toggleMaximize: Function
 };
 
 class WalletContainer extends Component<Props> {
@@ -32,6 +32,8 @@ class WalletContainer extends Component<Props> {
   }
 
   componentDidMount() {
+    window.max = this.onMaximize
+
     if (!window.updateWalletHigh) {
       window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 10000)
     }
@@ -96,24 +98,24 @@ class WalletContainer extends Component<Props> {
     ipcRenderer.send('close')
   }
 
-  syncPercentage() {
-    const { currentBlock, headBlock } = this.props
-
-    if (headBlock === 0) {
-      return 0
-    }
-
-    return parseInt((currentBlock / headBlock) * 100, 10)
+  onMaximize() {
+    this.props.toggleMaximize()
+    ipcRenderer.send('maximize')
+  }
+  
+  onUnmaximize() {
+    this.props.toggleMaximize()
+    ipcRenderer.send('unmaximize')
   }
 
   render() {
     return (
       <Wallet
-        syncPercentage={this.syncPercentage()}
-        currentBlock={this.props.currentBlock}
-        headBlock={this.props.headBlock}
+        isMaximized={this.props.isMaximized}
         onMinimize={this.onMinimize}
         onClose={this.onClose}
+        onMaximize={this.onMaximize}
+        onUnmaximize={this.onUnmaximize}
       />
     )
   }
@@ -123,7 +125,8 @@ const mapStateToProps = state => ({
   unfinishedAliases: state.wallet.unfinishedAliases,
   aliases: state.wallet.aliases,
   headBlock: state.wallet.blockchaininfo.headers,
-  currentBlock: state.wallet.getinfo.blocks
+  currentBlock: state.wallet.getinfo.blocks,
+  isMaximized: state.options.isMaximized
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -131,7 +134,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   saveAliases,
   saveGuids,
   saveUnfinishedAliases,
-  saveBlockchainInfo
+  saveBlockchainInfo,
+  toggleMaximize
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletContainer)

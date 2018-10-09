@@ -39,6 +39,13 @@
     text-shadow: 0 0 50px #888;
 }
 
+.accounts-container-left .sync-loader {
+    width: 20%;
+    cursor: pointer;
+    text-align: right;
+    padding-right: 15px;
+}
+
 .aliases-container {
     height: 61%;
     overflow-y: scroll;
@@ -47,14 +54,16 @@
 }
 
 .your-aliases-text {
+    display: inline-block;
+    width: 80%;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 12px;
-    margin-left: 20px;
     color: rgb(139, 192, 253);
     margin-top: 15px;
     margin-bottom: 15px;
+    padding-left: 20px;
 }
 
 .aliases-container::-webkit-scrollbar {

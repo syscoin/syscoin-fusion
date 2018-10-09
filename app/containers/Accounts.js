@@ -15,7 +15,9 @@ import {
 type Props = {
   balance: number,
   aliases: Array<Object>,
-  assets: Array<string>
+  assets: Array<string>,
+  headBlock: number,
+  currentBlock: number
 };
 type State = {
   selectedAlias: string,
@@ -216,12 +218,25 @@ class AccountsContainer extends Component<Props, State> {
     })
   }
 
+  syncPercentage() {
+    const { currentBlock, headBlock } = this.props
+
+    if (headBlock === 0) {
+      return 0
+    }
+
+    return parseInt((currentBlock / headBlock) * 100, 10)
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
 
     return (
       <Accounts
+        syncPercentage={this.syncPercentage()}
+        headBlock={this.props.headBlock}
+        currentBlock={this.props.currentBlock}
         balance={balance}
         aliases={aliases}
         transactions={transactions}
@@ -237,7 +252,9 @@ class AccountsContainer extends Component<Props, State> {
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
   aliases: state.wallet.aliases,
-  assets: state.options.guids
+  assets: state.options.guids,
+  headBlock: state.wallet.blockchaininfo.headers,
+  currentBlock: state.wallet.getinfo.blocks
 })
 
 export default connect(mapStateToProps)(AccountsContainer)

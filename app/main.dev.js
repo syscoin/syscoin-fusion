@@ -67,7 +67,7 @@ app.on('ready', async () => {
     height: 600,
     frame: false,
     transparent: true,
-    resizable: false
+    resizable: true
   })
 
   splashWindow = new BrowserWindow({
@@ -125,6 +125,16 @@ app.on('ready', async () => {
   ipcMain.on('close', () => {
     // Closes the app
     mainWindow.close()
+  })
+
+  ipcMain.on('maximize', () => {
+    // Maximize the window
+    mainWindow.maximize()
+  })
+
+  ipcMain.on('unmaximize', () => {
+    // Unmaximize the window
+    mainWindow.unmaximize()
   })
 
   const menuBuilder = new MenuBuilder(mainWindow)

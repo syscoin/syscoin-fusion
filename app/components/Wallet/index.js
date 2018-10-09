@@ -12,33 +12,28 @@ import WindowControls from './components/window-control'
 const Tab = Tabs.TabPane
 
 type Props = {
+  isMaximized: boolean,
   onMinimize: Function,
   onClose: Function,
-  syncPercentage: number,
-  currentBlock: number,
-  headBlock: number
+  onMaximize: Function,
+  onUnmaximize: Function
 };
 
 class Wallet extends Component<Props> {
   props: Props
 
-  generateWindowControls() {
-    return (
-      <WindowControls
-        currentBlock={this.props.currentBlock}
-        headBlock={this.props.headBlock}
-        syncPercentage={this.props.syncPercentage}
-        onMinimize={this.props.onMinimize}
-        onClose={this.props.onClose}
-      />
-    )
-  }
-
   render() {
     return (
       <Row className='app-body'>
+        <WindowControls
+          isMaximized={this.props.isMaximized}
+          onMinimize={this.props.onMinimize}
+          onClose={this.props.onClose}
+          onMaximize={this.props.onMaximize}
+          onUnmaximize={this.props.onUnmaximize}
+        />
         <Col xs={24}>
-          <Tabs className='tabs-app' tabBarExtraContent={this.generateWindowControls()}>
+          <Tabs className='tabs-app'>
             <Tab className='tab tab-accounts' tab='Accounts' key='1'>
               <AccountsContainer />
             </Tab>

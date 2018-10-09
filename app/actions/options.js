@@ -7,8 +7,17 @@ type saveAllowedGuidsType = {
     payload: Array<string>
 };
 
-const saveAllowedGuids = createAction(types.ALLOWED_GUIDS)
+type toggleMaximizeActionType = {
+  type: string
+};
 
-export default (arr: Array<string>) => (dispatch: (action: saveAllowedGuidsType) => void) => {
+const saveAllowedGuids = createAction(types.ALLOWED_GUIDS)
+const toggleMaximizeAction = createAction(types.TOGGLE_MAXIMIZE)
+
+export const saveGuids = (arr: Array<string>) => (dispatch: (action: saveAllowedGuidsType) => void) => {
   dispatch(saveAllowedGuids(arr))
+}
+
+export const toggleMaximize = () => (dispatch: (action: toggleMaximizeActionType) => void) => {
+  dispatch(toggleMaximizeAction())
 }
