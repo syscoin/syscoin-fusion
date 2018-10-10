@@ -42,6 +42,10 @@ const incRoundToAlias = (aliasName: string, block?: number) => {
 
     const selectedAlias = data.newAliases[aliasIndex]
 
+    if (!selectedAlias) {
+        throw new Error('Cant find alias. This might mean that the alias is ready to use')
+    }
+
     selectedAlias.round += 1
     selectedAlias.block = actualBlock
     selectedAlias.error = null
