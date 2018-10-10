@@ -28,5 +28,25 @@ module.exports = (req, res) => {
         });  
 
         return res.send().status(200);
-    } 
+    } else if (typeof  _.findKey(data.timeline, {status: 'UNRESOLVED'}) !== 'undefined') {
+    	console.log('Charge Unresolved: ', data.code)
+
+        // Check payments blob for these cases
+        if (typeof  _.findKey(data.timeline, {context: 'UNDERPAID'}) !== 'undefined' || typeof  _.findKey(data.timeline, {context: 'OVERPAID'}) !== 'undefined') {
+            updateBalance(data.metadata.uid, data.pricing.local.amount, (err) => {
+                if (err) {
+                    return res.status(400).send({
+                        error: true,
+                        message: 'Error updating balance. Contact support'
+                    })
+                }
+            });  
+
+            return res.send().status(200);
+        } else {
+            // send email
+        }
+    }   else {
+        return res.send().status(200);
+    }
 }
