@@ -119,7 +119,7 @@ module.exports = (req, res, next) => {
                     
                     const activeImage = firebase.config().images[i.mnData.nodeType.toLowerCase()]
 
-                    if (i.mnData.imageId !== activeImage) {
+                    if (i.vpsInfo.imageId !== activeImage) {
                         i.shouldUpdate = true
                     }
 
