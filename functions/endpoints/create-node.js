@@ -1,11 +1,9 @@
-const firebase = require('firebase-functions')
+const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const async = require('async')
 
 const makeCharge = require('./helpers/make-charge')
 const coinbaseCharge = require('./helpers/coinbase-charge')
-const createDroplet = require('./helpers/create-droplet')
-const getDropletIp = require('./helpers/get-droplet-ip')
 const redeemCode = require('./helpers/redeem-code')
 
 /**
@@ -47,6 +45,14 @@ module.exports = (req, res, next) => {
             mnRewardAddress = req.body.mnRewardAddress || ''
 
         const cryptoPaymentsSupported = ['btc', 'ltc', 'bch', 'eth']
+        const images = functions.config().images
+
+        if (!images[nodeType.toLowerCase()]) {
+            return res.status(400).send({
+                error: true,
+                message: 'Node type is not valid.'
+            })
+        }
 
         if (method === 'cc') {
 
