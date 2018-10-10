@@ -99,11 +99,6 @@ module.exports = (req, res, next) => {
                                 const snap = snapshot.val()
                                 let objectKey = Object.keys(snap)[0]
                                 const returnData = snap[objectKey]
-                                const activeImage = firebase.config().images[i.nodeType.toLowerCase()]
-
-                                if (returnData.imageId !== activeImage) {
-                                    returnData.shouldUpdate = true
-                                }
 
                                 returnData.id = objectKey
 
@@ -120,6 +115,13 @@ module.exports = (req, res, next) => {
 
                     i.mnData = data[0]
                     i.vpsInfo = data[1]
+
+                    
+                    const activeImage = firebase.config().images[i.mnData.nodeType.toLowerCase()]
+
+                    if (i.mnData.imageId !== activeImage) {
+                        i.shouldUpdate = true
+                    }
 
                     finalData.masternodes.push(i)
 
