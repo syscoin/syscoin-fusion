@@ -74,7 +74,10 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
 }
 
 const startUpRoutine = () => {
+  let isFirstTime
+
   if (!fs.existsSync(getSysPath('default'))) {
+    isFirstTime = true
     // Attemps to create SyscoinCore folder if this doesn't exists already.
     try {
       fs.mkdirSync(getSysPath('default'))
@@ -110,7 +113,6 @@ const startUpRoutine = () => {
 
   waterfall([
     done => {
-      const isFirstTime = window.appStorage.get('firstTime')
       let isDone = false
       exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server`), (err) => {
         if (isDone) {
