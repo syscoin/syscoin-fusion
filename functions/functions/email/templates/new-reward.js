@@ -1,4 +1,4 @@
-module.exports = (amount, address) => `
+module.exports = (amount, address, type) => `
 
     <html>
 <head>
@@ -21,9 +21,9 @@ module.exports = (amount, address) => `
       <tr style="height: 18px;">
         <td style="height: 18px;">
           <h4 style="text-align: left;"><span style="color: #000000;">Hey
-              Miner!</span></h4>
+              There!</span></h4>
           <p>
-            A reward of ${amount} SYS has been received at ${address}!
+            A reward of ${amount} ${type} has been received at ${address}!
           </p>
 
           <p><span style="color: #808080;">
