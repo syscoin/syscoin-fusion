@@ -8,6 +8,7 @@ const waterfall = require('async/waterfall')
 const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
+const getSysPath = require('./syspath')
 
 const checkSyscoind = (cb) => {
   // Just a test to check if syscoind is ready
@@ -73,6 +74,17 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
 }
 
 const startUpRoutine = () => {
+  if (!fs.existsSync(getSysPath('default'))) {
+    // Attemps to create SyscoinCore folder if this doesn't exists already.
+    try {
+      fs.mkdirSync(getSysPath('default'))
+    } catch (err) {
+      // Failed to create SyscoinCore folder
+      swal('Error', 'Failed to create SyscoinCore folder.', 'error').then(() => cb(true)).catch(() => cb(true))
+      return
+    }
+  }
+
   const {
     appDocsPath,
     customCssPath,
@@ -104,6 +116,7 @@ const startUpRoutine = () => {
         if (isDone) {
           return
         }
+
         isDone = true
         if (err.message.indexOf('-reindex') !== -1) {
           return done(null, true)
@@ -140,7 +153,7 @@ const startUpRoutine = () => {
           if (error) {
             clearInterval(global.checkInterval)
             updateProgressbar(60, 'Something went wrong.')
-            return done(true)
+            return done(err)
           }
   
           if (status === 'verify') {
@@ -159,6 +172,7 @@ const startUpRoutine = () => {
     }
   ], err => {
     if (err) {
+      console.log(err)
       return swal('Error', 'Something went wrong during wallet initialization. Exiting.', 'error')
         .then(() => app.quit())
     }
