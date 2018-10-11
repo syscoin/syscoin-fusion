@@ -85,8 +85,11 @@ app.on('ready', async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined')
     }
-    splashWindow.show()
-    splashWindow.focus()
+
+    if (splashWindow) {
+      splashWindow.show()
+      splashWindow.focus()
+    }
   })
 
   mainWindow.webContents.on('did-finish-load', () => {
@@ -103,11 +106,15 @@ app.on('ready', async () => {
   })
 
   mainWindow.on('maximize', () => {
-    mainWindow.webContents.send('maximize')
+    if (mainWindow) {
+      mainWindow.webContents.send('maximize')
+    }
   })
 
   mainWindow.on('unmaximize', () => {
-    mainWindow.webContents.send('unmaximize')
+    if (mainWindow) {
+      mainWindow.webContents.send('unmaximize')
+    }
   })
   
   mainWindow.on('closed', () => {
@@ -122,28 +129,38 @@ app.on('ready', async () => {
 
   ipcMain.on('start-success', () => {
     // If startup went well, start loading the app.
-    mainWindow.loadURL(`file://${__dirname}/app.html`)
+    if (mainWindow) {
+      mainWindow.loadURL(`file://${__dirname}/app.html`)
+    }
   })
 
   ipcMain.on('minimize', () => {
     // Minimize the window
-    mainWindow.minimize()
+    if (mainWindow) {
+      mainWindow.minimize()
+    }
   })
 
   ipcMain.on('close', () => {
     // Closes the app
-    mainWindow.close()
+    if (mainWindow) {
+      mainWindow.close()
+    }
   })
 
   ipcMain.on('maximize', (e) => {
     // Maximize the window
-    mainWindow.maximize()
+    if (mainWindow) {
+      mainWindow.maximize()
+    }
     e.sender.send('maximize')
   })
 
   ipcMain.on('unmaximize', (e) => {
     // Unmaximize the window
-    mainWindow.unmaximize()
+    if (mainWindow) {
+      mainWindow.unmaximize()
+    }
     e.sender.send('unmaximize')
   })
 

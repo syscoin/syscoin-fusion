@@ -83,7 +83,9 @@ const startUpRoutine = () => {
       fs.mkdirSync(getSysPath('default'))
     } catch (err) {
       // Failed to create SyscoinCore folder
-      swal('Error', 'Failed to create SyscoinCore folder.', 'error').then(() => cb(true)).catch(() => cb(true))
+      swal('Error', 'Failed to create SyscoinCore folder.', 'error')
+        .then(() => app.quit())
+        .catch(() => app.quit())
       return
     }
   }
@@ -155,7 +157,7 @@ const startUpRoutine = () => {
           if (error) {
             clearInterval(global.checkInterval)
             updateProgressbar(60, 'Something went wrong.')
-            return done(err)
+            return done(error)
           }
   
           if (status === 'verify') {

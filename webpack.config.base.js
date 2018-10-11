@@ -59,7 +59,9 @@ export default {
   /**
    * Determine the array of extensions that should be used to resolve modules.
    */
-  resolve,
+  resolve: {
+    ...resolve.resolve
+  },
 
   plugins: [
     new webpack.EnvironmentPlugin({

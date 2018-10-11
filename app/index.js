@@ -12,7 +12,7 @@ import Storage from './utils/storage'
 import storageSchema from './utils/helpers/storage-schema'
 import closeSysd from './utils/close-sysd'
 import isProd from './utils/is-production'
-import './app.global.css'
+import './app.global.scss'
 
 const store = configureStore()
 

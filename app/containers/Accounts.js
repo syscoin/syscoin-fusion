@@ -35,6 +35,7 @@ type State = {
 };
 
 class AccountsContainer extends Component<Props, State> {
+  initialState: State
 
   constructor(props: Props) {
     super(props)
