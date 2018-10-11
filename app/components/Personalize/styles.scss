@@ -1,10 +1,12 @@
+@import "~fw/css/variables.scss";
+
 .edit-alias-container {
     padding: 30px 0;
 }
 
 .edit-alias-container .edit-alias-title {
     text-align: center;
-    color: #ddd;
+    color: $main_white;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -18,11 +20,11 @@
 }
 
 .edit-alias-container .edit-alias-form-active-alias {
-    color: #ddd;
+    color: $main_white;
 }
 
 .edit-alias-container .edit-alias-form-active-alias .editing-alias {
-    color: rgb(139, 192, 253);
+    color: $main_blue;
 }
 
 .edit-alias-container .edit-alias-form-btn-container {

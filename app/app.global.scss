@@ -2,8 +2,10 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+
+@import "css/variables.scss";
 @import "~font-awesome/css/font-awesome.css";
-/*@import "css/custom.css";*/
+@import "css/custom.scss";
 @import "~fw-components/Wallet/styles.scss";
 @import '~fw-components/Accounts/styles.scss';
 @import '~fw-components/Personalize/styles.scss';
@@ -13,8 +15,8 @@
 
 body {
   position: relative;
-  color: #333;
-  background: #333;
+  color: $main_background;
+  background: $main_background;
   height: 100%;
   font-family: 'Roboto', sans-serif;
   overflow-y: hidden;

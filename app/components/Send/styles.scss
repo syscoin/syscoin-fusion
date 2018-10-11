@@ -1,3 +1,5 @@
+@import "~fw/css/variables.scss";
+
 .send-asset-container {
     padding: 80px;
     text-align: center;
@@ -5,7 +7,7 @@
 
 .send-loading {
     margin-right: 20px;
-    color: rgb(127, 178, 236);
+    color: $main_blue;
 }
 
 .send-asset-container .send-asset-form-control.send-asset-form-type-from,
@@ -16,7 +18,7 @@
 }
 
 .send-asset-form-title {
-    color: #ddd;
+    color: $main_white;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -43,16 +45,16 @@
 }
 
 .send-sys-container .send-sys-form-title {
-    color: #ddd;
+    color: $main_white;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin: 0;
 }
 
 .send-sys-container .send-sys-form-balance {
-    color: #ddd;
+    color: $main_white;
 }
 
 .send-sys-container .send-sys-form-balance .send-sys-form-balance-number {
-    color: rgb(127, 178, 236);
+    color: $main_blue;
 }

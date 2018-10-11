@@ -9,6 +9,6 @@ type Props = {
 
 export default (props: Props) => (
   <Tooltip title={props.error || 'Queued'} placement='bottom'>
-    <Tag color={props.error ? '#faa' : '#8bc0fd'}>{props.aliasName}</Tag>
+    <Tag color={props.error ? '#faa' : '#7fb2ec'}>{props.aliasName}</Tag>
   </Tooltip>
 )

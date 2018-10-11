@@ -1,3 +1,5 @@
+@import "~fw/css/variables.scss";
+
 .accounts-container {
     height: 100% !important;
 }
@@ -34,7 +36,7 @@
     font-size: 25px;
     font-weight: 400;
     letter-spacing: 2px;
-    color: #ddd;
+    color: $main_white;
     margin-top: -10px;
     text-shadow: 0 0 50px #888;
 }
@@ -60,7 +62,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 12px;
-    color: rgb(139, 192, 253);
+    color: $main_blue;
     margin-top: 15px;
     margin-bottom: 15px;
     padding-left: 20px;
@@ -71,7 +73,7 @@
 }
  
 .aliases-container::-webkit-scrollbar-thumb {
-    background-color: #333;
+    background-color: $main_background;
     margin-top: 5px;
     outline: 1px solid slategrey;
     border-radius: 30px;
@@ -103,7 +105,7 @@
 }
 
 .alias-box.expanded {
-    background: #333;
+    background: $main_background;
     padding: 10px 0;
     position: sticky;
     width: 110%;
@@ -141,7 +143,7 @@
 
 .alias-box .alias-type {
     font-weight: bold;
-    color: #aaa;
+    color: $title_color;
     font-weight: 400;
     font-size: 12px;
 }
@@ -149,7 +151,7 @@
 .alias-box .alias-name {
     font-weight: 400;
     font-size: 14px;
-    color: #ddd;
+    color: $main_white;
 }
 
 .alias-box .alias-name.trim {
@@ -183,7 +185,7 @@
     right: 30px;
     bottom: 10px;
     font-size: 80px;
-    color: rgb(127, 178, 236);
+    color: $main_blue;
 }
 
 .accounts-container-right::-webkit-scrollbar {
@@ -191,7 +193,7 @@
 }
  
 .accounts-container-right::-webkit-scrollbar-thumb {
-    background-color: #525252;
+    background-color: $accounts_background;
     margin-top: 5px;
     outline: 1px solid slategrey;
     border-radius: 30px;
@@ -230,7 +232,7 @@
     padding-left: 27px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #aaa;
+    color: $title_color;
 }
 
 .asset-box:hover {
@@ -240,11 +242,11 @@
 .asset-box .asset-box-name {
     font-size: 20px;
     margin-bottom: 8px;
-    color: #ddd;
+    color: $main_white;
 }
 
 .asset-box .asset-box-guid {
-    color: #999;
+    color: $asset_guid;
     font-style: italic;
     font-size: 12px;
 }
@@ -258,14 +260,14 @@
 .asset-box h3,
 .asset-box h4,
 .asset-box h5 {
-    color: #ccc;
+    color: $title_color;
 }
 
 .transactions-table-title {
     font-size: 15px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #aaa;
+    color: $title_color;
     margin-top: 40px;
     margin-bottom: 0
 }
@@ -280,32 +282,32 @@
 }
 
 .transactions-table .ant-table-thead th span {
-    color: #ddd;
+    color: $main_white;
     font-weight: 500;
 }
 
 .transactions-table .transactions-table-row td {
-    color: #afa;
+    color: $main_green;
 }
 
 .transactions-table .transactions-table-row td span.amount.incoming {
-    color: #afa;
+    color: $main_green;
 }
 
 .transactions-table .transactions-table-row td span.amount.outgoing {
-    color: #faa;
+    color: $main_red;
 }
 
 .transactions-table .transactions-table-row td span.arrow.incoming {
-    color: #afa;
+    color: $main_green;
 }
 
 .transactions-table .transactions-table-row td i.arrow.outgoing {
-    color: #faa;
+    color: $main_red;
 }
 
 .transactions-table .transactions-table-row td span {
-    color: #ddd;
+    color: $main_white;
 }
 
 .transactions-table .transactions-table-row:hover td {
@@ -314,7 +316,7 @@
 
 .transactions-table .ant-pagination-item {
     background: transparent;
-    border: 1px solid #ddd;
+    border: 1px solid $main_white;
 }
 
 .transactions-table .ant-pagination-item a {
@@ -329,7 +331,7 @@
 
 .transactions-table .ant-table-placeholder {
     background: transparent;
-    color: #ddd;
+    color: $main_white;
 }
 
 .sys-logo-bg {

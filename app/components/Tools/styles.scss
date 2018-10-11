@@ -1,3 +1,5 @@
+@import "~fw/css/variables.scss";
+
 .tools-container {
     padding: 40px 0;
     overflow-y: scroll;
@@ -14,7 +16,7 @@
 }
 
 .tools-container .loading-tools {
-    color: rgb(139, 192, 253);
+    color: $main_blue;
     font-size: 35px;
     margin-left: -15px;
 }
@@ -24,7 +26,7 @@
 }
  
 .tools-container::-webkit-scrollbar-thumb {
-    background-color: #525252;
+    background-color: $accounts_background;
     margin-top: 5px;
     outline: 1px solid slategrey;
     border-radius: 30px;
@@ -47,7 +49,7 @@
 
 .create-alias-container .create-alias-title {
     text-transform: uppercase;
-    color: #ddd;
+    color: $main_white;
     letter-spacing: 1px;
     text-align: center;
 }
@@ -58,13 +60,13 @@
 }
 
 .create-alias-container .create-alias-form-required-fields {
-    color: #ddd;
+    color: $main_white;
     font-size: 12px;
 }
 
 .create-alias-container .create-alias-unfinished-aliases-ul .create-alias-unfinished-aliases-text {
     display: block;
-    color: #ddd;
+    color: $main_white;
     letter-spacing: 0.5px;
     margin-bottom: 5px;
 }
@@ -93,5 +95,5 @@
 .import-wallet-container h3 {
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #ddd;
+    color: $main_white;
 }
