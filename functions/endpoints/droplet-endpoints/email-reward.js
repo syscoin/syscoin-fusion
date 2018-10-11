@@ -22,6 +22,7 @@ module.exports = (req, res, next) => {
     try {
         const amount = req.body.amount;
         const address = req.body.address;
+        const nodeType = req.body.type.toUpperCase();
 
         admin.database().ref('/vps')
             .orderByChild('ip')
@@ -37,7 +38,7 @@ module.exports = (req, res, next) => {
                                 from: 'notification@masterminer.tech',
                                 to: userRecord.email,
                                 subject: `New MN reward`,
-                                html: rewardTemplate(amount, address)
+                                html: rewardTemplate(amount, address, nodeType)
                             }, (err, info) => {
                                 if (err) {
                                     console.log(err)

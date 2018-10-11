@@ -1,21 +1,23 @@
 module.exports.config = (mnKey, ip) => {
-    return 'rpcuser=GanAtiOPENdsLaTeOtIBEhesUpespOSI\r\n' +
-        'rpcpassword=toNTImpaNDYBrustoGrUTomEndrayAtW\r\n' +
-        'port=9678\r\n' +
-        'daemon=1\r\n' +
-        'listen=1\r\n' +
-        'server=1\r\n' +
-        'smartnode=1\r\n' +
-        'txindex=1\r\n' +
-        'smartnodeprivkey=' + mnKey
+    return 'rpcuser=GanAtiOPENdsLaTeOtIBEhesUpespOSI\n' +
+        'rpcpassword=toNTImpaNDYBrustoGrUTomEndrayAtW\n' +
+        'port=9678\n' +
+        'daemon=1\n' +
+        'listen=1\n' +
+        'server=1\n' +
+        'smartnode=1\n' +
+        'txindex=1\n' +
+        'addressindex=1\n' +
+        'smartnodeprivkey=' + mnKey + '\n' +
+        'externalip=' + ip
 };
 
 module.exports.path = () => {
-    return '/root/.syscoincore/syscoin.conf'
+    return '/root/.smartcash/smartcash.conf'
 };
 
 module.exports.nodeStatus = () => {
     return 'smartnode status'
 };
 
-module.exports.checkReward = address => ``
+module.exports.checkReward = address => `chain-cli getaddressdeltas '{"addresses": ["${address}"]}'`

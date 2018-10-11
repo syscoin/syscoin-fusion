@@ -18,7 +18,7 @@ const admin = require('firebase-admin')
     }
  */
 module.exports = (req, res, next) => {
-    const {
+    let {
         mnIndex,
         mnKey,
         mnName,
@@ -27,7 +27,9 @@ module.exports = (req, res, next) => {
         id
     } = req.body
 
-    if (!(mnIndex && mnKey && mnName && mnTxid && id && mnRewardAddress)) {
+    mnRewardAddress = mnRewardAddress ? mnRewardAddress : '';
+
+    if (!(mnIndex && mnKey && mnName && mnTxid && id)) {
         return res.status(422).json({
             error: true,
             message: 'Lacking required parameters.'
@@ -51,7 +53,6 @@ module.exports = (req, res, next) => {
                     message: 'You are not allowed to do that'
                 })
             }
-
             admin.database().ref('/mn-data/' + id).update({
                 mnIndex,
                 mnKey,

@@ -8,7 +8,7 @@ const getMnDataUrl = config.appUrl + '/droplets/get-mn-data'
 const sendRewardNotif = config.appUrl + '/droplets/reward-notification'
 
 axios.get(getMnDataUrl).then(res => {
-    const { mnRewardAddress } = res.data
+    const { mnRewardAddress, nodeType } = res.data
     const lastTime = parseInt(localStorage.getItem('transactionCount')) || 0
 
     let transactions
@@ -28,7 +28,8 @@ axios.get(getMnDataUrl).then(res => {
 
         axios.post(sendRewardNotif, {
             amount: newOne.satoshis / 100000000,
-            address: mnRewardAddress
+            address: mnRewardAddress,
+            type: nodeType
         }).then((res) => {
             // Saves transaction number in localStorage
             localStorage.setItem('transactionCount', transactions.length)
