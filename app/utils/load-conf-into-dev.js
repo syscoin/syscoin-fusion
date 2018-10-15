@@ -1,17 +1,17 @@
 import fs from 'fs'
-import swal from 'sweetalert'
+import each from 'async/each'
 
-export default (confPath: string) => {
+export default (confPath: string, cb: Function) => {
     let conf
   
     try {
       conf = fs.readFileSync(confPath, 'utf-8')
     } catch (e) {
-      swal('Error', 'Error while loading fusion.conf', 'error')
-      return
+      cb(e)
+      throw new Error('Error while loading fusion.conf. Directory exists?')
     }
-  
-    conf.split('\r\n').forEach(i => {
+
+    each(conf.split('\r\n'), (i, done) => {
       // Parses fusion.cfg
       const trimmed = i.trim()
   
@@ -26,5 +26,9 @@ export default (confPath: string) => {
   
       // Write the key/value pair into environment variables
       global.appStorage.set(key, value === 'none' ? [] : value)
+
+      done()
+    }, () => {
+      cb()
     })
   }

@@ -109,7 +109,13 @@ const startUpRoutine = () => {
 
   // Apply custom settings
   updateProgressbar(50, 'Loading config')
-  loadConfIntoStore(confPath)
+  loadConfIntoStore(confPath, (e) => {
+    if (e) {
+      swal('Error', 'Error while loading fusion.conf', 'error')
+        .then(() => app.quit())
+        .catch(() => app.quit())
+    }
+  })
 
   updateProgressbar(60, 'Connecting to syscoin...')
 
