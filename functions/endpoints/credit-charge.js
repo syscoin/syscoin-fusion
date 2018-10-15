@@ -3,7 +3,7 @@ const updateBalance = require('./helpers/update-balance')
 
 module.exports = (req, res, next) => {
     try {
-        let tokenId = req.body.tokenId,
+        let tokenId = req.body.token,
             chargeAmount = req.body.amount*1000,
             email = req.body.email
 

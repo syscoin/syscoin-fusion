@@ -19,7 +19,7 @@ module.exports = (data, cb) => {
 			name: 'Masterminer subscription',
 			description: 'Masternode hosting service',
 			local_price: {
-            	amount: parseInt(data.chargeAmount),
+            	amount: data.chargeAmount,
              	currency: "USD"
             },
 	        pricing_type: "fixed_price",
@@ -65,6 +65,8 @@ module.exports = (data, cb) => {
                 break;
             default:
         }
+
+        console.log("Charge creation data: ", data)
 
 		return cb(null, data)
 	})

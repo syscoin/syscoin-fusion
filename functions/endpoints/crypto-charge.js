@@ -30,9 +30,12 @@ module.exports = (req, res, next) => {
             
         return coinbaseCharge({   
             chargeAmount,
+            method: req.body.method,
             userId: req.user.uid
         },  (err, charge) => {
             if (err) {
+                console.log("Error creating crypto charge: ", err)
+                
                 return res.status(400).send({
                     error: true,
                     message: 'Something went wrong during the payment. Try again later.'
