@@ -6,6 +6,7 @@ const swal = require('sweetalert')
 const waterfall = require('async/waterfall')
 
 const loadConfIntoStore = require('./load-conf-into-dev')
+const loadCustomColorPallete = require('./replace-color-palette')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 const getSysPath = require('./syspath')
@@ -111,7 +112,7 @@ const startUpRoutine = () => {
   updateProgressbar(50, 'Loading config')
   loadConfIntoStore(confPath, (e) => {
     if (e) {
-      swal('Error', 'Error while loading fusion.conf', 'error')
+      return swal('Error', 'Error while loading fusion.conf', 'error')
         .then(() => app.quit())
         .catch(() => app.quit())
     }

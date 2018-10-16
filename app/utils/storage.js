@@ -18,6 +18,19 @@ class Store {
     this.data[key] = val
     fs.writeFileSync(this.path, JSON.stringify(this.data))
   }
+
+  eraseAll() {
+    this.set('guid', '')
+    this.set('main_white', '')
+    this.set('full_white', '')
+    this.set('main_blue', '')
+    this.set('main_background', '')
+    this.set('accounts_background', '')
+    this.set('asset_guid', '')
+    this.set('main_red', '')
+    this.set('main_green', '')
+    this.set('title_color', '')
+  }
 }
 
 function parseDataFile(filePath, defaults) {

@@ -7,6 +7,7 @@ import Wallet from 'fw-components/Wallet'
 import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo } from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
+import replaceColorPalette from 'fw-utils/replace-color-palette'
 import { getAssetAllocationTransactions } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
@@ -38,6 +39,7 @@ class WalletContainer extends Component<Props> {
     })
 
     this.props.toggleMaximize(remote.getCurrentWindow().isMaximized())
+    replaceColorPalette()
   }
 
   componentDidMount() {

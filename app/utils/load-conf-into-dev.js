@@ -22,7 +22,13 @@ export default (confPath: string, cb: Function) => {
   
       // Parses keys and values
       const key = trimmed.split('=')[0]
-      const value = trimmed.split('=')[1].split(',')
+      let value
+
+      if (key === 'guid') {
+        value = trimmed.split('=')[1].split(',')
+      } else {
+        value = trimmed.split('=')[1] // eslint-disable-line prefer-destructuring
+      }
   
       // Write the key/value pair into environment variables
       global.appStorage.set(key, value === 'none' ? [] : value)

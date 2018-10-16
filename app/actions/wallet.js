@@ -53,7 +53,7 @@ type saveBlockchainInfoActionType = {
   payload: {
     chain: string,
     blocks: number,
-    headers: numbers,
+    headers: number,
     bestblockhash: string,
     difficulty: number,
     mediantime: number,

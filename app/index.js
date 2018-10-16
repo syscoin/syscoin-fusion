@@ -47,6 +47,7 @@ window.onbeforeunload = () => {
   clearInterval(global.checkInterval)
   clearInterval(global.AccountsUpdate)
   if (detectSysdRunning() && isProd) {
+    global.appStorage.eraseAll()
     closeSysd(() => {
       remote.app.quit()
     })

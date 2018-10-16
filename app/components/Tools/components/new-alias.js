@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Input, Button, Select, Tag, Tooltip } from 'antd'
+import { Input, Button, Select, Tooltip } from 'antd'
 import swal from 'sweetalert'
 import formChangeFormat from 'fw-utils/form-change-format'
 import parseError from 'fw-utils/error-parser'
@@ -32,6 +32,7 @@ type State = {
 
 export default class NewAlias extends Component<Props, State> {
   props: Props;
+  initialState: State;
 
   constructor(props: Props) {
     super(props)
@@ -51,7 +52,7 @@ export default class NewAlias extends Component<Props, State> {
     this.state = { ...this.initialState }
   }
 
-  updateField(value: string | Object, name: string, filter: RegExp) {
+  updateField(value: string | Object, name: string, filter?: RegExp) {
     const toUpdate = formChangeFormat(value, name)
 
     if (filter && !filter.test(toUpdate[name])) {

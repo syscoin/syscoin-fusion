@@ -30,7 +30,7 @@ type sendSysType = {
   comment: string
 };
 
-export default class Send extends Component<Props, State> {
+export default class Send extends Component<Props> {
 
   sendSys(obj: sendSysType, cb: Function) {
     this.props.sendSys(obj, err => cb(err))
