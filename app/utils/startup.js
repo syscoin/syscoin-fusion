@@ -6,7 +6,6 @@ const swal = require('sweetalert')
 const waterfall = require('async/waterfall')
 
 const loadConfIntoStore = require('./load-conf-into-dev')
-const loadCustomColorPallete = require('./replace-color-palette')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 const getSysPath = require('./syspath')

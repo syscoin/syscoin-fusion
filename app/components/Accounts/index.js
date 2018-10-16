@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin } from 'antd'
-import SyscoinLogo from 'fw/syscoin-logo.png'
 import AliasAddressItem from './components/alias-address-item'
 import AssetBox from './components/asset-box'
 import TransactionList from './components/transaction-list'
@@ -8,6 +7,7 @@ import UserBalance from './components/balance'
 import SyncLoader from './components/sync-loader'
 
 type Props = {
+  backgroundLogo: string,
   balance: number,
   aliases: Array<Object>,
   transactions: Object,
@@ -98,7 +98,7 @@ export default class Accounts extends Component<Props> {
           </div>
         </Col>
         <Col xs={15} className='accounts-container-right'>
-          {(!this.props.selectedAlias || this.props.aliasAssets.error) ? <img src={SyscoinLogo} alt='sys-logo' width='320' height='200' className='sys-logo-bg' /> : null}
+          {(!this.props.selectedAlias || this.props.aliasAssets.error) ? <img src={this.props.backgroundLogo} alt='sys-logo' className='sys-logo-bg' /> : null}
           {this.props.aliasAssets.data.length ? (
             <div>
               <Row className='asset-box-container'>

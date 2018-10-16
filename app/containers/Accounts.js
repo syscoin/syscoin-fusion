@@ -11,6 +11,7 @@ import {
   getAssetAllocationInfo,
   getTransactionsPerAsset
 } from 'fw-sys'
+import SyscoinLogo from 'fw/syscoin-logo.png'
 
 type Props = {
   balance: number,
@@ -229,12 +230,23 @@ class AccountsContainer extends Component<Props, State> {
     return parseInt((currentBlock / headBlock) * 100, 10)
   }
 
+  getBackgroundLogo() {
+    const bgLogo = global.appStorage.get('background_logo')
+
+    if (bgLogo) {
+      return bgLogo
+    }
+
+    return SyscoinLogo
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
 
     return (
       <Accounts
+        backgroundLogo={this.getBackgroundLogo()}
         syncPercentage={this.syncPercentage()}
         headBlock={this.props.headBlock}
         currentBlock={this.props.currentBlock}

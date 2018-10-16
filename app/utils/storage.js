@@ -32,6 +32,7 @@ class Store {
     this.set('title_color', '')
     this.set('splashscreen_url', '')
     this.set('progress_bar_color', '')
+    this.set('background_logo', '')
   }
 }
 
