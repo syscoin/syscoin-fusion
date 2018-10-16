@@ -1,0 +1,2 @@
+export const ALLOWED_GUIDS = 'ALLOWED_GUIDS'
+export const TOGGLE_MAXIMIZE = 'TOGGLE_MAXIMIZE'

@@ -2,10 +2,12 @@ const { exec } = require('child_process')
 const { app } = require('electron').remote
 const { ipcRenderer } = require('electron')
 const fs = require('fs')
-const { join } = require('path')
 const swal = require('sweetalert')
+const waterfall = require('async/waterfall')
 
+const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
+const getPaths = require('./get-doc-paths')
 const getSysPath = require('./syspath')
 
 const checkSyscoind = (cb) => {
@@ -71,63 +73,28 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
   }
 }
 
-const loadCustomCss = customCssPath => {
-  try {
-    const css = fs.readFileSync(customCssPath)
-
-    const style = document.createElement("style")
-    style.type = "text/css"
-    style.innerHTML = css
-    document.body.appendChild(style)
-  } catch(e) {
-    swal('Error', 'Error while loading custom CSS', 'error')
-  }
-}
-
-const loadConfIntoEnv = confPath => {
-  let conf
-
-  try {
-    conf = fs.readFileSync(confPath, 'utf-8')
-  } catch (e) {
-    swal('Error', 'Error while loading fusion.conf', 'error')
-    return
-  }
-
-  conf.split('\r\n').forEach(i => {
-    // Parses fusion.cfg
-    const trimmed = i.trim()
-
-    if (trimmed[0] === '#' || !trimmed) {
-      // Ignore comments and empty lines
-      return
-    }
-
-    // Parses keys and values
-    const key = trimmed.split('=')[0]
-    const value = trimmed.split('=')[1].split(',')
-
-    // Write the key/value pair into environment variables
-    global.appStorage.set(key, value === 'none' ? [] : value)
-  })
-}
-
 const startUpRoutine = (cb) => {
+  let isFirstTime
+
   if (!fs.existsSync(getSysPath('default'))) {
+    isFirstTime = true
     // Attemps to create SyscoinCore folder if this doesn't exists already.
     try {
       fs.mkdirSync(getSysPath('default'))
     } catch (err) {
       // Failed to create SyscoinCore folder
-      swal('Error', 'Failed to create SyscoinCore folder.', 'error').then(() => cb(true)).catch(() => cb(true))
+      swal('Error', 'Failed to create SyscoinCore folder.', 'error')
+        .then(() => app.quit())
+        .catch(() => app.quit())
       return
     }
   }
 
-  // Get documents path
-  const appDocsPath = join(app.getPath('documents'), 'Fusion')
-  const customCssPath = join(appDocsPath, 'custom.css')
-  const confPath = join(appDocsPath, 'fusion.cfg')
+  const {
+    appDocsPath,
+    customCssPath,
+    confPath
+  } = getPaths()
 
   updateProgressbar(20)
 
@@ -141,49 +108,91 @@ const startUpRoutine = (cb) => {
   updateProgressbar(30, 'Loading custom CSS')
 
   // Apply custom settings
-  loadCustomCss(customCssPath)
   updateProgressbar(50, 'Loading config')
-  loadConfIntoEnv(confPath)
-
-  updateProgressbar(60, 'Connecting to syscoin...')
-
-  // Executes syscoind (just in case it's not running already). It'll fail gracefully if its already running
-  exec(generateCmd('syscoind', ''), (err) => {
-    if (err.message.indexOf('-reindex') !== -1) {
-      swal('Corruption detected', 'Your files does not look quite well, reindexing.', 'warning')
-        .then(() => exec(generateCmd('syscoind', '-reindex')))
+  loadConfIntoStore(confPath, (e) => {
+    cb() // Calls callback after fusion.cfg variables are loaded so loading.js can start processing custom vars.
+    if (e) {
+      return swal('Error', 'Error while loading fusion.conf', 'error')
+        .then(() => app.quit())
         .catch(() => app.quit())
     }
   })
 
-  if (!global.checkInterval) {
-    global.checkInterval = setInterval(() => {
-      // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
-      checkSyscoind((error, status, output) => {
-        if (error) {
-          updateProgressbar(60, 'Something went wrong.')
-          return swal('Error', 'Something went wrong. Exiting...', 'error').then(() => app.exit()).catch(() => app.exit())
+  updateProgressbar(60, 'Connecting to syscoin...')
+
+  waterfall([
+    done => {
+      let isDone = false
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server`), (err) => {
+        if (isDone) {
+          return
         }
 
-        if (status === 'verify') {
-          return updateProgressbar(80, 'Verifying data...')
+        isDone = true
+        if (err.message.indexOf('-reindex') !== -1) {
+          return done(null, true)
         }
 
-        if (status === 'up') {
-          updateProgressbar(100, 'Ready to launch')
-          // if its up, clear the interval.
-          clearInterval(global.checkInterval)
-          ipcRenderer.send('start-success')
-        }
+        return done(null, false)
       })
-    }, 5000)
-  }
+      setTimeout(() => {
+        if (!isDone) {
+          isDone = true
+          done(null, null)
+        }
+      }, 10000)
+    },
+    (reindex, done) => {
+      if (reindex) {
+        return swal('Corruption detected', 'Your files dont not look quite well, reindexing.', 'warning')
+          .then(() => done(null, 'reindex'))
+          .catch(() => done(true))
+      }
+
+      return done(null, false)
+    },
+    (reindex, done) => {
+      if (reindex) {
+        exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex -server'))
+      }
+      done()
+    },
+    (done) => {
+      global.checkInterval = setInterval(() => {
+        // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
+        checkSyscoind((error, status) => {
+          if (error) {
+            clearInterval(global.checkInterval)
+            updateProgressbar(60, 'Something went wrong.')
+            return done(error)
+          }
+  
+          if (status === 'verify') {
+            return updateProgressbar(80, 'Verifying data...')
+          }
+  
+          if (status === 'up') {
+            updateProgressbar(100, 'Ready to launch')
+            // if its up, clear the interval.
+            clearInterval(global.checkInterval)
+            ipcRenderer.send('start-success')
+          }
+        })
+      }, 3000)
+    }
+  ], err => {
+    if (err) {
+      console.log(err)
+      return swal('Error', 'Something went wrong during wallet initialization. Exiting.', 'error')
+        .then(() => app.quit())
+    }
+  })
 }
 
 function updateProgressbar(value, text) {
   document.querySelectorAll('.progress')[0].style.width = `${value}%`
   if (text) {
-    //document.querySelectorAll('.progress')[0].innerHTML = text
+    // document.querySelectorAll('.progress')[0].innerHTML = text
   }
 }
 

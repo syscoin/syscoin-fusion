@@ -1,16 +1,23 @@
 // @flow
+import { createAction } from 'redux-actions'
+import * as types from 'fw-types/options'
 
-type startUpType = {
+type saveAllowedGuidsType = {
     type: string,
-    +syscoinDataDir?: string
-  };
-  
-  export const SYSCOINCONF_DATADIR = 'SYSCOINCONF_DATADIR'
-  export const changeSyscoinDataDirAction = (path: string): startUpType => ({
-    type: SYSCOINCONF_DATADIR,
-    syscoinDataDir: path
-  })
-  
-  export const changeSyscoinDataDir = (path: string) => (dispatch: (action: startUpType) => null) => {
-    dispatch(changeSyscoinDataDirAction(path))
-  }
+    payload: Array<string>
+};
+
+type toggleMaximizeActionType = {
+  type: string
+};
+
+const saveAllowedGuids = createAction(types.ALLOWED_GUIDS)
+const toggleMaximizeAction = createAction(types.TOGGLE_MAXIMIZE)
+
+export const saveGuids = (arr: Array<string>) => (dispatch: (action: saveAllowedGuidsType) => void) => {
+  dispatch(saveAllowedGuids(arr))
+}
+
+export const toggleMaximize = (isMaximized?: boolean) => (dispatch: (action: toggleMaximizeActionType) => void) => {
+  dispatch(toggleMaximizeAction(isMaximized))
+}

@@ -1,33 +1,29 @@
 // @flow
-import {
-    SYSCOINCONF_DATADIR
-} from '../actions/options'
-  
-  export type startUpStateType = {
-    +syscoinDataDir: string
-  };
-  
-  type actionType = {
-    +type: string,
-    +syscoinDataDir?: string
-  };
-  
-  const initialState = {
-    syscoinDataDir: 'default'
+import { ALLOWED_GUIDS, TOGGLE_MAXIMIZE } from 'fw-types/options'
+
+type actionType = {
+  +type: string,
+  payload?: any
+};
+
+const initialState = {
+  guids: [],
+  isMaximized: false
+}
+
+export default function wallet(state: StateType = initialState, action: actionType) {
+  switch (action.type) {
+    case ALLOWED_GUIDS:
+      return {
+        ...state,
+        guids: action.payload
+      }
+    case TOGGLE_MAXIMIZE:
+      return {
+        ...state,
+        isMaximized: action.payload
+      }
+    default:
+      return state
   }
-  
-  export default function startUp(
-    state: startUpStateType = initialState,
-    action: actionType
-  ) {
-    switch (action.type) {
-      case SYSCOINCONF_DATADIR:
-        return {
-          ...state,
-          syscoinDataDir: action.syscoinDataDir
-        }
-      default:
-        return state
-    }
-  }
-  
+}

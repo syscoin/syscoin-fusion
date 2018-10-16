@@ -67,7 +67,7 @@ app.on('ready', async () => {
     height: 600,
     frame: false,
     transparent: true,
-    resizable: false
+    resizable: true
   })
 
   splashWindow = new BrowserWindow({
@@ -85,8 +85,11 @@ app.on('ready', async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined')
     }
-    splashWindow.show()
-    splashWindow.focus()
+
+    if (splashWindow) {
+      splashWindow.show()
+      splashWindow.focus()
+    }
   })
 
   mainWindow.webContents.on('did-finish-load', () => {
@@ -97,7 +100,21 @@ app.on('ready', async () => {
     mainWindow.show()
     mainWindow.focus()
 
-    splashWindow.close()
+    if (splashWindow) {
+      splashWindow.close()
+    }
+  })
+
+  mainWindow.on('maximize', () => {
+    if (mainWindow) {
+      mainWindow.webContents.send('maximize')
+    }
+  })
+
+  mainWindow.on('unmaximize', () => {
+    if (mainWindow) {
+      mainWindow.webContents.send('unmaximize')
+    }
   })
   
   mainWindow.on('closed', () => {
@@ -112,17 +129,39 @@ app.on('ready', async () => {
 
   ipcMain.on('start-success', () => {
     // If startup went well, start loading the app.
-    mainWindow.loadURL(`file://${__dirname}/app.html`)
+    if (mainWindow) {
+      mainWindow.loadURL(`file://${__dirname}/app.html`)
+    }
   })
 
   ipcMain.on('minimize', () => {
     // Minimize the window
-    mainWindow.minimize()
+    if (mainWindow) {
+      mainWindow.minimize()
+    }
   })
 
   ipcMain.on('close', () => {
     // Closes the app
-    mainWindow.close()
+    if (mainWindow) {
+      mainWindow.close()
+    }
+  })
+
+  ipcMain.on('maximize', (e) => {
+    // Maximize the window
+    if (mainWindow) {
+      mainWindow.maximize()
+    }
+    e.sender.send('maximize')
+  })
+
+  ipcMain.on('unmaximize', (e) => {
+    // Unmaximize the window
+    if (mainWindow) {
+      mainWindow.unmaximize()
+    }
+    e.sender.send('unmaximize')
   })
 
   const menuBuilder = new MenuBuilder(mainWindow)

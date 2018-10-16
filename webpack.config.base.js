@@ -7,6 +7,7 @@ import webpack from 'webpack'
 import fs from 'fs'
 import { dependencies as externals } from './app/package.json'
 import { dependencies as possibleExternals } from './package.json'
+import resolve from './webpack.config.resolve'
 
 // Find all the dependencies without a `main` property and add them as webpack externals
 function filterDepWithoutEntryPoints(dep: string): boolean {
@@ -59,8 +60,7 @@ export default {
    * Determine the array of extensions that should be used to resolve modules.
    */
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
-    modules: [path.join(__dirname, 'app'), 'node_modules']
+    ...resolve.resolve
   },
 
   plugins: [

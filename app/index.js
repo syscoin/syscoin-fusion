@@ -12,7 +12,7 @@ import Storage from './utils/storage'
 import storageSchema from './utils/helpers/storage-schema'
 import closeSysd from './utils/close-sysd'
 import isProd from './utils/is-production'
-import './app.global.css'
+import './app.global.scss'
 
 const store = configureStore()
 
@@ -45,8 +45,9 @@ if (module.hot) {
 window.onbeforeunload = () => {
   // Clean intervals
   clearInterval(global.checkInterval)
-  clearInterval(global.updateWalletInterval)
+  clearInterval(global.AccountsUpdate)
   if (detectSysdRunning() && isProd) {
+    global.appStorage.eraseAll()
     closeSysd(() => {
       remote.app.quit()
     })

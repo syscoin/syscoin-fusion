@@ -1,0 +1,32 @@
+@import "~fw/css/variables.scss";
+
+.edit-alias-container {
+    padding: 30px 0;
+}
+
+.edit-alias-container .edit-alias-title {
+    text-align: center;
+    color: $main_white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.edit-alias-container .edit-alias-form-control.edit-alias-form-alias {
+    width: 100%;
+}
+
+.edit-alias-container .edit-alias-form-control.edit-alias-form-transferflag {
+    width: 100%;
+}
+
+.edit-alias-container .edit-alias-form-active-alias {
+    color: $main_white;
+}
+
+.edit-alias-container .edit-alias-form-active-alias .editing-alias {
+    color: $main_blue;
+}
+
+.edit-alias-container .edit-alias-form-btn-container {
+    text-align: right;
+}

@@ -1,0 +1,73 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+
+@import "css/variables.scss";
+@import "~font-awesome/css/font-awesome.css";
+@import "css/custom.scss";
+@import "~fw-components/Wallet/styles.scss";
+@import '~fw-components/Accounts/styles.scss';
+@import '~fw-components/Personalize/styles.scss';
+@import '~fw-components/Send/styles.scss';
+@import '~fw-components/Tools/styles.scss';
+
+
+body {
+  position: relative;
+  color: $main_background;
+  background: $main_background;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  overflow-y: hidden;
+}
+
+#root,
+#root > div,
+.app-body,
+.app-body > div,
+.app-body > div > div,
+.ant-tabs-content,
+.tab-accounts,
+.accounts-container {
+  height: 100%;
+}
+
+a,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+span {
+  color: black;
+}
+
+h2 {
+  margin: 0;
+  font-size: 2.25rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  color: black;
+}
+
+p {
+  font-size: 24px;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: #44c;
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 1;
+  text-decoration: none;
+  cursor: pointer;
+}

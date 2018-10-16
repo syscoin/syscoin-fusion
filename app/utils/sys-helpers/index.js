@@ -24,15 +24,26 @@ type sendSysTransactionType = {
   comment?: string
 };
 
-const getInfo = (cb: (error: boolean, result?: Object) => void) => {
+type getTransactionsPerAssetType = {
+  assetId: string,
+  alias: string
+};
+
+const getInfo = () => new Promise((resolve, reject) => {
+  console.log(generateCmd('cli', 'getinfo'))
   exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
-
-    return cb(false, JSON.parse(stdout))
+    
+    try {
+      return resolve(JSON.parse(stdout))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+    
   })
-}
+})
 
 const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
   // Get current SYS address
@@ -49,48 +60,63 @@ const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
   })
 }
 
-const currentBalance = (cb: (error: boolean, balance?: string) => void) => {
-  // Get current SYS Balance
+// Get current SYS Balance
+const currentBalance = () => new Promise((resolve, reject) => {
   exec(generateCmd('cli', 'getbalance'), (err, stdout, stderror) => {
-    if (err) {
-      return cb(true)
+    if (err || stderror) {
+      return reject(err || stderror)
     }
 
-    if (stderror.toString().length) {
-      return cb(false, '')
-    }
-
-    return cb(false, stdout.toString())
+    return resolve(stdout.toString())
   })
-}
+})
 
-const getAliases = (cb: (error: boolean, addresses?: Array<any>) => void) => {
-  // Get current aliases
+// Get current aliases
+const getAliases = () => new Promise((resolve, reject) => {
   exec(generateCmd('cli', 'syscoinlistreceivedbyaddress'), (err, stdout, stderror) => {
-    if (err) {
-      return cb(false, [])
+    if (err || stderror) {
+      return reject(err || stderror)
     }
 
-    if (stderror.toString().length) {
-      return cb(false, [])
+    try {
+      return resolve(JSON.parse(stdout.toString()))
+    } catch(errParse) {
+      return reject(errParse)
     }
-
-    return cb(false, JSON.parse(stdout.toString()) || [])
+    
   })
-}
+})
 
-const getAssetInfo = (obj: AllocationInfoType, cb: (error: string, info?: any) => void) => {
-  // Get asset info
+const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', `assetinfo ${assetId} false`), (err, stdout, stderror) => {
+    if (err || stderror.toString().length) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(stdout.toString()))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
+// Get asset allocation info
+const getAssetAllocationInfo = (obj: AllocationInfoType) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
     if (err || stderror.toString().length) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false, JSON.parse(stdout.toString()))
+    try {
+      return resolve(JSON.parse(stdout.toString()))
+    } catch(errParse) {
+      return reject(errParse)
+    }
   })
-}
+})
 
-const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) => void) => {
+const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
   // Sends asset to specific alias
   const { fromAlias, toAlias, assetId, amount } = obj
 
@@ -99,12 +125,16 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
       exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
         if (err) {
           if (err.message.indexOf('ERRCODE: 1018') !== -1) {
-            return cb(null)
+            return done(null)
           }
-          return cb(err)
+          return done(err)
         }
 
-        done(null, JSON.parse(result.toString())[0])
+        try {
+          done(null, JSON.parse(result.toString())[0])
+        } catch(errParse) {
+          done(errParse)
+        }
       })
     },
     (firstOutput, done) => {
@@ -114,7 +144,11 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
             return done(errTwo)
           }
 
-          done(null, JSON.parse(resultTwo.toString())[0])
+          try {
+            done(null, JSON.parse(resultTwo.toString())[0])
+          } catch(errParse) {
+            done(errParse)
+          }
         })
       }
 
@@ -123,46 +157,55 @@ const sendAsset = (obj: SendAssetType, cb: (error: boolean, result?: boolean) =>
     (assetAllocationOutput, done) => {
       exec(generateCmd('cli', `signrawtransaction ${assetAllocationOutput}`), (errSign, resultSign) => {
         if (errSign) {
-          return cb(errSign)
+          return done(errSign)
         }
 
-        done(null, JSON.parse(resultSign.toString()).hex)
+        try {
+          done(null, JSON.parse(resultSign.toString()).hex)
+        } catch(errParse) {
+          done(errParse)
+        }
       })
     },
     (signOutput, done) => {
       exec(generateCmd('cli', `syscoinsendrawtransaction ${signOutput}`), (errSend, resultSend) => {
         if (errSend) {
-          return cb(errSend)
+          return done(errSend)
         }
 
         return done(false, resultSend)
       })
     }
-  ], (err) => cb(err))
-}
+  ], (err) => {
+    if (err) {
+      return reject(err)
+    }
 
-const sendSysTransaction = (obj: sendSysTransactionType, cb: (error: boolean, result?: string) => void) => {
+    resolve()
+  })
+})
+
+const sendSysTransaction = (obj: sendSysTransactionType) => new Promise((resolve, reject) => {
   // Send SYS to address
   const { address, amount, comment } = obj
   exec(generateCmd('cli', `sendtoaddress ${address} ${amount} "${comment || ''}"`), (err, result) => {
     if (err) {
-      return cb(true)
+      return reject(err)
     }
 
-    return cb(false, result)
+    return resolve(result)
   })
-}
+})
 
-const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => any) => {
+const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   // Creates new alias
   const { aliasName, publicValue, acceptTransferFlags, expireTimestamp, address, encryptionPrivKey, encryptionPublicKey, witness } = obj
-
   waterfall([
     done => {
       exec(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
@@ -171,7 +214,7 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
       exec(generateCmd('cli', `syscointxfund ${firstResult}`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
@@ -180,71 +223,69 @@ const createNewAlias = (obj: Object, cb: (error: boolean, result?: Object) => an
       exec(generateCmd('cli', `signrawtransaction ${secondResult}`), (err, result) => {
         try {
           done(err, JSON.parse(result).hex)
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
     },
-    (thirdResult , done) => {
+    (thirdResult, done) => {
       exec(generateCmd('cli', `syscoinsendrawtransaction ${thirdResult}`), (err, result) => {
         done(err, result)
       })
     }
   ], (err, result) => {
     if (err) {
-      console.log(err)
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false, result)
+    return resolve(result)
   })
-}
+})
 
-const exportWallet = (backupDir: string, cb: (error: boolean) => void) => {
+const exportWallet = (backupDir: string) => new Promise((resolve, reject) =>{
   exec(generateCmd('cli', `dumpwallet "${backupDir}"`), (err) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false)
+    return resolve()
   })
-}
+})
 
-const importWallet = (backupDir: string, cb: (error: boolean) => void) => {
+const importWallet = (backupDir: string) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `importwallet "${backupDir}"`), (err) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false)
+    return resolve()
   })
-}
+})
 
-const getPrivateKey = (cb: (error: boolean, result: string) => void) => {
+const getPrivateKey = () => new Promise((resolve, reject) => {
   currentSysAddress((err, address) => {
     if (err) {
-      return cb(err)
+      return reject(err)
     }
     exec(generateCmd('cli', `dumpprivkey "${address}"`), (errDump, key) => {
       if (errDump) {
-        return cb(errDump)
+        return reject(errDump)
       }
 
-      return cb(false, key)
+      return resolve(key)
     })
   })
-}
+})
 
-const editAlias = (obj: Object, cb: (error: boolean) => void) => {
+const editAlias = (obj: Object) => new Promise((resolve, reject) => {
   const { aliasName, publicValue, address, acceptTransfersFlag, expireTimestamp, encPrivKey, encPubKey, witness } = obj
 
   waterfall([
     done => {
-      console.log(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`))
       exec(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`), (err, result) => {
         try {
           done(err, JSON.parse(result)[0])
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
@@ -253,35 +294,100 @@ const editAlias = (obj: Object, cb: (error: boolean) => void) => {
       exec(generateCmd('cli', `signrawtransaction ${firstResult}`), (err, result) => {
         try {
           done(err, JSON.parse(result).hex)
-        } catch(e) {
+        } catch (e) {
           done(err)
         }
       })
     },
-    (secondResult , done) => {
+    (secondResult, done) => {
       exec(generateCmd('cli', `syscoinsendrawtransaction ${secondResult}`), (err, result) => {
         done(err, result)
       })
     }
   ], (err) => {
     if (err) {
-      console.log(err)
-      return cb(err)
+      return reject(err)
     }
 
-    return cb(false)
+    return resolve()
   })
-}
+})
 
-const aliasInfo = (name: string, cb: (error: boolean, cb: Function) => void) => {
+const aliasInfo = (name: string) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `aliasinfo ${name}`), (err, result) => {
     try {
-      return cb(err, JSON.parse(result))
-    } catch(e) {
-      return cb(err)
+      return resolve(JSON.parse(result))
+    } catch (e) {
+      return reject(err)
     }
   })
-}
+})
+
+const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
+    maxBuffer: 1024 * 500
+  }, (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    // Parse JSON and filter out transactions that dont include selected alias. Then remove any undesired stuff from response
+    const data = JSON.parse(result)
+      .filter(i => i.asset === obj.assetId && (i.sender === obj.alias || i.receiver === obj.alias))
+      .map(i => {
+        const asset = { ...i }
+        asset.amount = asset.amount[0] === '-' ? asset.amount.slice(1) : asset.amount
+        asset.time = (new Date(0)).setUTCSeconds(asset.time)
+        return asset
+      })
+
+    return resolve(data)
+  })
+})
+
+const getAssetAllocationTransactions = () => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
+    maxBuffer: 1024 * 500
+  }, (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(result))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
+const listAssets = () => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', 'listassets'), (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(result))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
+const getBlockchainInfo = () => new Promise((resolve, reject) => {
+  exec(generateCmd('cli', 'getblockchaininfo'), (err, result) => {
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(result))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
 
 module.exports = {
   aliasInfo,
@@ -290,11 +396,16 @@ module.exports = {
   editAlias,
   getAliases,
   getAssetInfo,
+  getAssetAllocationInfo,
   getInfo,
   sendAsset,
   sendSysTransaction,
   createNewAlias,
   exportWallet,
   importWallet,
-  getPrivateKey
+  getPrivateKey,
+  getTransactionsPerAsset,
+  listAssets,
+  getBlockchainInfo,
+  getAssetAllocationTransactions
 }

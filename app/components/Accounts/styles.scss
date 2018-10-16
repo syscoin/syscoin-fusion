@@ -1,0 +1,342 @@
+@import "~fw/css/variables.scss";
+
+.accounts-container {
+    height: 100% !important;
+}
+
+.alias-separator {
+    border-color: rgba(120,120,120,1) !important;
+    border-width: 0.5px;
+    margin-top: 0;
+}
+
+.accounts-container-left {
+    height: 100%;
+    background: #525252;
+    z-index: 999;
+    margin-bottom: 0;
+    box-shadow: inset 0 0 300px rgba(0, 0, 0, 0.1);
+    opacity: 0.9;
+}
+
+.accounts-container-left .balance-container {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.accounts-container-left .balance-container .your-balance-title {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgb(127, 178, 236);
+    text-shadow: 0 0 50px #888;
+    font-size: 17px;
+}
+
+.accounts-container-left .balance-container .your-balance-amount {
+    font-size: 25px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: $main_white;
+    margin-top: -10px;
+    text-shadow: 0 0 50px #888;
+}
+
+.accounts-container-left .sync-loader {
+    float: right;
+    margin-top: 10px;
+    cursor: pointer;
+    padding-right: 15px;
+}
+
+.aliases-container {
+    height: 68.2%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: #444;
+}
+
+.your-aliases-text {
+    display: inline-block;
+    width: 80%;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+    color: $main_blue;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+.aliases-container::-webkit-scrollbar {
+    width: 0.3em;
+}
+ 
+.aliases-container::-webkit-scrollbar-thumb {
+    background-color: $main_background;
+    margin-top: 5px;
+    outline: 1px solid slategrey;
+    border-radius: 30px;
+}
+
+.aliases-container::-webkit-scrollbar-button:vertical:decrement {
+    height: 2px;
+}
+.aliases-container::-webkit-scrollbar-button:vertical:increment {
+    height: 2px;
+}
+
+.alias-box {
+    padding-top: 9px;
+    padding-bottom: 9px;
+    z-index: 11;
+    cursor: pointer;
+}
+
+.alias-box.non-expanded {
+    padding-left: 20px;
+    opacity: 0.5;
+    transition: opacity 0.5s;
+}
+
+.alias-box.non-expanded.loading {
+    opacity: 0.2;
+    cursor: wait;
+}
+
+.alias-box.expanded {
+    background: $main_background;
+    padding: 10px 0;
+    position: sticky;
+    width: 110%;
+    transition: opacity 0.3s;
+}
+
+.alias-box.expanded:hover {
+    opacity: 0.9;
+}
+
+.alias-box.expanded .alias-text-container {
+    padding-top: 15px;
+}
+
+.alias-box.expanded .alias-text-container.address {
+    padding: 15px 0 15px 30px;
+}
+
+.alias-box .alias-img-container {
+    padding-right: 20px;
+}
+
+.alias-box .alias-img {
+    border-radius: 50%;
+    width: 100%;
+}
+
+.alias-box .alias-img.tiny-img {
+    width: 20%;
+}
+
+.alias-box:hover {
+    opacity: 0.8;
+}
+
+.alias-box .alias-type {
+    font-weight: bold;
+    color: $title_color;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.alias-box .alias-name {
+    font-weight: 400;
+    font-size: 14px;
+    color: $main_white;
+}
+
+.alias-box .alias-name.trim {
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    width: 220px;
+    white-space: nowrap;
+}
+
+/* Right column */
+
+.accounts-container-right {
+    position: relative;
+    overflow-y: scroll;
+    height: 93%;
+}
+
+.accounts-container-right .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+
+.accounts-container-right .loading-container i {
+    position: relative;
+    right: 30px;
+    bottom: 10px;
+    font-size: 80px;
+    color: $main_blue;
+}
+
+.accounts-container-right::-webkit-scrollbar {
+    width: 0.3em;
+}
+ 
+.accounts-container-right::-webkit-scrollbar-thumb {
+    background-color: $accounts_background;
+    margin-top: 5px;
+    outline: 1px solid slategrey;
+    border-radius: 30px;
+}
+
+.accounts-container-right::-webkit-scrollbar-button:vertical:decrement {
+    height: 4px;
+}
+.accounts-container-right::-webkit-scrollbar-button:vertical:increment {
+    height: 4px;
+}
+
+.asset-box {
+    cursor: pointer;
+    padding: 10px;
+    border: 0.5px solid #777;
+    border-radius: 2px;
+    background: #666;
+    opacity: 0.6;
+    line-height: 13px;
+    transition: opacity 0.5s;
+    margin-bottom:10px;
+}
+
+.asset-box.selected {
+    opacity: 1;
+
+}
+
+.asset-box-container {
+    margin-top: 30px;
+}
+
+.asset-box-container .asset-box-text {
+    font-size: 15px;
+    padding-left: 27px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: $title_color;
+}
+
+.asset-box:hover {
+    opacity: 1;
+}
+
+.asset-box .asset-box-name {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: $main_white;
+}
+
+.asset-box .asset-box-guid {
+    color: $asset_guid;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.asset-box .asset-box-balance {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.asset-box h2,
+.asset-box h3,
+.asset-box h4,
+.asset-box h5 {
+    color: $title_color;
+}
+
+.transactions-table-title {
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: $title_color;
+    margin-top: 40px;
+    margin-bottom: 0
+}
+
+.transactions-table {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.transactions-table .ant-table-thead th {
+    background: transparent;
+}
+
+.transactions-table .ant-table-thead th span {
+    color: $main_white;
+    font-weight: 500;
+}
+
+.transactions-table .transactions-table-row td {
+    color: $main_green;
+}
+
+.transactions-table .transactions-table-row td span.amount.incoming {
+    color: $main_green;
+}
+
+.transactions-table .transactions-table-row td span.amount.outgoing {
+    color: $main_red;
+}
+
+.transactions-table .transactions-table-row td span.arrow.incoming {
+    color: $main_green;
+}
+
+.transactions-table .transactions-table-row td i.arrow.outgoing {
+    color: $main_red;
+}
+
+.transactions-table .transactions-table-row td span {
+    color: $main_white;
+}
+
+.transactions-table .transactions-table-row:hover td {
+    background: transparent;
+}
+
+.transactions-table .ant-pagination-item {
+    background: transparent;
+    border: 1px solid $main_white;
+}
+
+.transactions-table .ant-pagination-item a {
+    color: #fff;
+    opacity: 0.5;
+}
+
+.transactions-table .ant-pagination-item-active a {
+    color: #fff;
+    opacity: 1;
+}
+
+.transactions-table .ant-table-placeholder {
+    background: transparent;
+    color: $main_white;
+}
+
+.sys-logo-bg {
+    opacity: 0.7;
+    margin: auto;
+    position: absolute;
+    top: -40px; left: 0; bottom: 0; right: 0;
+}

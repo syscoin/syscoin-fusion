@@ -2,12 +2,12 @@
 import React from 'react'
 import { Switch, Route } from 'react-router'
 import App from './containers/App'
-import HomeWallet from './containers/HomeWallet'
+import WalletContainer from './containers/WalletContainer'
 
 export default () => (
   <App>
     <Switch>
-      <Route path="/" component={HomeWallet} />
+      <Route path="/" component={WalletContainer} />
     </Switch>
   </App>
 )
