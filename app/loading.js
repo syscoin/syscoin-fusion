@@ -1,16 +1,7 @@
 import SplashImage from './splash.png'
 
-const splashImage = new Image
-
-splashImage.onload = () => {
-    document.querySelectorAll('.splash-img')[0].src = splashImage.src
-}
-
-splashImage.src = SplashImage
-
 const Storage = require('./utils/storage')
 const storageSchema = require('./utils/helpers/storage-schema')
-
 
 global.appStorage = new Storage({
     configName: 'app-storage',
@@ -19,4 +10,22 @@ global.appStorage = new Storage({
 
 const startUpRoutine = require('./utils/startup')
 
-startUpRoutine(err => console.log(err))
+startUpRoutine(() => {
+    const splashScreenUrl = global.appStorage.get('splashscreen_url')
+    const progressBarColor = global.appStorage.get('progress_bar_color')
+    const splashImage = new Image
+
+    splashImage.onload = () => {
+        document.querySelectorAll('.splash-img')[0].src = splashImage.src
+    }
+
+    if (splashScreenUrl) {
+        splashImage.src = splashScreenUrl
+    } else {
+        splashImage.src = SplashImage
+    }
+
+    if (progressBarColor) {
+        document.querySelector('.progress').style.background = progressBarColor
+    }
+})

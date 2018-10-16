@@ -30,6 +30,8 @@ class Store {
     this.set('main_red', '')
     this.set('main_green', '')
     this.set('title_color', '')
+    this.set('splashscreen_url', '')
+    this.set('progress_bar_color', '')
   }
 }
 

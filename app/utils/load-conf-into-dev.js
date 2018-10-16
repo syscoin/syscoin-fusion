@@ -3,6 +3,8 @@ import each from 'async/each'
 
 export default (confPath: string, cb: Function) => {
     let conf
+
+    global.appStorage.eraseAll()
   
     try {
       conf = fs.readFileSync(confPath, 'utf-8')
@@ -17,7 +19,7 @@ export default (confPath: string, cb: Function) => {
   
       if (trimmed[0] === '#' || !trimmed) {
         // Ignore comments and empty lines
-        return
+        return done()
       }
   
       // Parses keys and values
@@ -35,6 +37,7 @@ export default (confPath: string, cb: Function) => {
 
       done()
     }, () => {
+      console.log('mister')
       cb()
     })
   }

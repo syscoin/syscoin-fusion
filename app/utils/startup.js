@@ -74,7 +74,7 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
   }
 }
 
-const startUpRoutine = () => {
+const startUpRoutine = (cb) => {
   let isFirstTime
 
   if (!fs.existsSync(getSysPath('default'))) {
@@ -111,6 +111,7 @@ const startUpRoutine = () => {
   // Apply custom settings
   updateProgressbar(50, 'Loading config')
   loadConfIntoStore(confPath, (e) => {
+    cb() // Calls callback after fusion.cfg variables are loaded so loading.js can start processing custom vars.
     if (e) {
       return swal('Error', 'Error while loading fusion.conf', 'error')
         .then(() => app.quit())
@@ -172,7 +173,6 @@ const startUpRoutine = () => {
           }
   
           if (status === 'up') {
-            window.appStorage.set('firstTime', false)
             updateProgressbar(100, 'Ready to launch')
             // if its up, clear the interval.
             clearInterval(global.checkInterval)
