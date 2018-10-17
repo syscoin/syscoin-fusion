@@ -1,4 +1,5 @@
 const admin = require('firebase-admin')
+const updateBalance = require('./helpers/update-balance')
 
 /**
  * @api {post} /payment Node payment and creation
@@ -28,7 +29,7 @@ module.exports = (req, res, next) => {
     try {
         let token = req.body.token,
             months = req.body.months,
-            amount = req.body.chargeAmount,
+            amount = parseFloat(req.body.chargeAmount) * -100,
             email = req.body.email
             mnKey = req.body.mnKey,
             mnTxid = req.body.mnTxid,
@@ -37,17 +38,18 @@ module.exports = (req, res, next) => {
             uid = req.user.uid,
             nodeType = req.body.nodeType || 'sys'
 
-        return updateBalance({
+        return updateBalance(
             uid,
-            chargeAmount
-        }, (err) => {
-            if (err) {
-                return res.status(400).send({
-                    error: true,
-                    message: 'Something went wrong during the payment. Try again later.'
-                })
-            }
-
+            amount,
+            (err) => {
+                if (err) {
+                    console.log("Error in update balance")
+                    return res.status(400).send({
+                        error: true,
+                        message: err
+                    })
+                }
+                
             admin.database().ref('/to-deploy/tasks').push({
                 months,
                 mnKey,
@@ -57,7 +59,7 @@ module.exports = (req, res, next) => {
                 lock: false,
                 lockDate: null,
                 orderDate: Date.now(),
-                paymentId: charge.id,
+                paymentId: 'XYZ',
                 deployed: false,
                 userId: req.user.uid,
                 paymentMethod: 'cc',
@@ -68,7 +70,7 @@ module.exports = (req, res, next) => {
                 message: 'Payment completed',
                 expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
                 purchaseDate: Date.now(),
-                paymentId: charge.id
+                paymentId: 'XYZ'
             })
         })
     } catch (err) {
