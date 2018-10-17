@@ -48,7 +48,6 @@ const async = require('async')
 }
  */
 module.exports = (req, res, next) => {
-    const activeImage = firebase.config().images.sys
     admin.database().ref('/orders')
         .orderByChild('userId')
         .equalTo(req.user.uid)
@@ -103,10 +102,6 @@ module.exports = (req, res, next) => {
 
                                 returnData.id = objectKey
 
-                                if (returnData.imageId !== activeImage) {
-                                    returnData.shouldUpdate = true
-                                }
-
                                 cb(null, returnData)
                             })
                             .catch(err => cb(err))
@@ -118,10 +113,15 @@ module.exports = (req, res, next) => {
                         return cb(null, err)
                     }
 
-                    const newObj = i
-
                     i.mnData = data[0]
                     i.vpsInfo = data[1]
+
+                    
+                    const activeImage = firebase.config().images[i.mnData.nodeType.toLowerCase()]
+
+                    if (i.vpsInfo.imageId !== activeImage) {
+                        i.shouldUpdate = true
+                    }
 
                     finalData.masternodes.push(i)
 

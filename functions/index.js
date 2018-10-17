@@ -38,9 +38,7 @@ const emailUserOnStatusChange = require('./functions').emailUserOnStatusChange
 const emailOnDeploy = require('./functions').emailOnDeploy
 
 // Tasks
-const processOrder = require('./functions/process-order')
-const unlockDeploys = require('./functions/unlock-orders')
-const deleteDeployLogs = require('./functions/deploy-queue-cleaner')
+const expiredMnWatch = require('./functions/expired-mn-watch')
 
 // Middlewares
 const checkIpWhitelist = require('./middlewares').checkIpWhitelist
@@ -131,6 +129,4 @@ exports.app = functions.https.onRequest(app)
 exports.emailUserOnStatusChange = emailUserOnStatusChange
 exports.emailOnDeploy = emailOnDeploy
 
-exports.processOrder = processOrder
-exports.deleteDeployLogs = deleteDeployLogs
-exports.unlockDeploys = unlockDeploys
+exports.expiredMnWatch = expiredMnWatch

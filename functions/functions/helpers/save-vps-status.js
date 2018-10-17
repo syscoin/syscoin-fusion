@@ -9,7 +9,8 @@ module.exports = (obj, cb) => {
 
     const toUpdate = {
         configFile,
-        status
+        status,
+        lock: true
     }
 
     if (imageId) {

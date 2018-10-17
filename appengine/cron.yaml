@@ -1,16 +1,4 @@
 cron:
-- description: Deploy new orders
-  url: /publish/deploy
-  schedule: every 1 minutes
-
-- description: Clean deploy queue
-  url: /publish/deploy-queue-clean
-  schedule: every 60 minutes
-
-- description: Unlock deploy queue
-  url: /publish/deploy-queue-unlock
-  schedule: every 1 minutes
-
 - description: Expired MN watch
   url: /publish/expired-mn-watch
   schedule: every 30 minutes

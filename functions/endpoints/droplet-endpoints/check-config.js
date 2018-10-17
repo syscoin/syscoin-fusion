@@ -56,14 +56,6 @@ module.exports = (req, res, next) => {
                     status: 500
                 }))
         },
-        (data, cb) => {
-            admin.database().ref('/orders/' + data.orderId + '/nodeType')
-                .once('value', snapshot => {
-                    data.nodeType = snapshot.val()
-
-                    return cb(null, data)
-                })
-        },
         (vpsData, cb) => {
             admin.database().ref('/mn-data')
                 .orderByChild('vpsId')
@@ -79,7 +71,7 @@ module.exports = (req, res, next) => {
                         mnTxid: data.mnTxid,
                         ip: clientIp,
                         mnRewardAddress: data.mnRewardAddress || '',
-                        nodeType: vpsData.nodeType,
+                        nodeType: data.nodeType,
                         vpsImageId: vpsData.imageId,
                         vpsid: vpsData.vpsid,
                         vpsKey: vpsData.vpsKey

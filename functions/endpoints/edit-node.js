@@ -9,6 +9,7 @@ const admin = require('firebase-admin')
  * @apiParam {String} mnKey new MN key
  * @apiParam {String} mnName new MN name
  * @apiParam {String} mnTxid new MN txid
+ * @apiParam {String} mnRewardAddress SYS address where user is receiving rewards
  * @apiParam {String} id mn-data DB id
  * 
  * @apiSuccessExample {json} Success
@@ -17,13 +18,16 @@ const admin = require('firebase-admin')
     }
  */
 module.exports = (req, res, next) => {
-    const {
+    let {
         mnIndex,
         mnKey,
         mnName,
         mnTxid,
+        mnRewardAddress,
         id
     } = req.body
+
+    mnRewardAddress = mnRewardAddress ? mnRewardAddress : '';
 
     if (!(mnIndex && mnKey && mnName && mnTxid && id)) {
         return res.status(422).json({
@@ -49,12 +53,12 @@ module.exports = (req, res, next) => {
                     message: 'You are not allowed to do that'
                 })
             }
-
             admin.database().ref('/mn-data/' + id).update({
                 mnIndex,
                 mnKey,
                 mnName,
-                mnTxid
+                mnTxid,
+                mnRewardAddress
             }).then(() => res.json({
                 error: false
             })).catch(() => res.status(500).json({

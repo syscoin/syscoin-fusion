@@ -1,5 +1,5 @@
 const admin = require('firebase-admin')
-const rewardTemplate = require('../../functions/email/templates/pool-reward')
+const rewardTemplate = require('../../functions/email/templates/new-reward')
 const nodemailer = require('../../functions/email')
 
 /**
@@ -20,6 +20,10 @@ module.exports = (req, res, next) => {
         req.connection.socket.remoteAddress).split(",")[0]
 
     try {
+        const amount = req.body.amount;
+        const address = req.body.address;
+        const nodeType = req.body.type.toUpperCase();
+
         admin.database().ref('/vps')
             .orderByChild('ip')
             .equalTo(clientIp)
@@ -34,7 +38,7 @@ module.exports = (req, res, next) => {
                                 from: 'notification@masterminer.tech',
                                 to: userRecord.email,
                                 subject: `New MN reward`,
-                                html: rewardTemplate()
+                                html: rewardTemplate(amount, address, nodeType)
                             }, (err, info) => {
                                 if (err) {
                                     console.log(err)
