@@ -175,7 +175,7 @@ const startUpRoutine = (cb) => {
             updateProgressbar(100, 'Ready to launch')
             // if its up, clear the interval.
             clearInterval(global.checkInterval)
-            // ipcRenderer.send('start-success')
+            ipcRenderer.send('start-success')
           }
         })
       }, 3000)
