@@ -50,28 +50,28 @@ module.exports = (req, res, next) => {
                     })
                 }
                 
-            admin.database().ref('/to-deploy/tasks').push({
-                months,
-                mnKey,
-                mnTxid,
-                mnName,
-                mnIndex,
-                lock: false,
-                lockDate: null,
-                orderDate: Date.now(),
-                paymentId: 'XYZ',
-                deployed: false,
-                userId: req.user.uid,
-                paymentMethod: 'cc',
-                nodeType
-            })
+                admin.database().ref('/to-deploy/tasks').push({
+                    months,
+                    mnKey,
+                    mnTxid,
+                    mnName,
+                    mnIndex,
+                    lock: false,
+                    lockDate: null,
+                    orderDate: Date.now(),
+                    paymentId: 'XYZ',
+                    deployed: false,
+                    userId: req.user.uid,
+                    paymentMethod: 'cc',
+                    nodeType
+                })
 
-            return res.send({
-                message: 'Payment completed',
-                expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
-                purchaseDate: Date.now(),
-                paymentId: 'XYZ'
-            })
+                return res.send({
+                    message: 'Payment completed',
+                    expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
+                    purchaseDate: Date.now(),
+                    paymentId: 'XYZ'
+                })
         })
     } catch (err) {
         return next(err)
