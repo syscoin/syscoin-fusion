@@ -16,6 +16,10 @@ module.exports = (uid, chargeAmount, cb) => {
         let obj = {}
         obj[uid] =currentBalance.toString()
 
+        if (currentBalance < 0) {
+            return cb(Error("Transaction failed: Insufficient balance"))
+        }
+
         admin.database().ref('/balance').set(obj, (error) => {
             if (error) {
                 console.log(error)
@@ -24,7 +28,6 @@ module.exports = (uid, chargeAmount, cb) => {
 
         return cb(null)
     } catch (err) {
-        console.log("err: ", err)
         return cb(err)
     } 
 }

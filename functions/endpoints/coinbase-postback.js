@@ -1,8 +1,8 @@
 var _ = require('lodash');
 
 const updateBalance = require('./helpers/update-balance')
-const nodemailer = require('../../functions/email')
-const cryptoTemplate = require('../../functions/email/templates/unresolved-payment')
+const nodemailer = require('../functions/email')
+const cryptoTemplate = require('../functions/email/templates/unresolved-payment')
 
 /**
  * @api {post} /coinbase-postback Coinbase postback
