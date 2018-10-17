@@ -106,5 +106,17 @@ module.exports = {
     cfg: `
 # Place your assets here separated by a comma (Ex. guid=asset1,asset2,asset3...)\r\n
 guid=none\r\n
+main_white=none\r\n
+full_white=none\r\n
+main_blue=none\r\n
+main_background=none\r\n
+accounts_background=none\r\n
+asset_guid=none\r\n
+main_red=none\r\n
+main_green=none\r\n
+title_color=none\r\n
+splashscreen_url=none\r\n
+progress_bar_color=none\r\n
+background_logo=none\r\n
 `
 }
