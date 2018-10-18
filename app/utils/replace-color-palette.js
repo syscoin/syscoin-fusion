@@ -15,13 +15,13 @@ export default async () => {
     const title_color = loadCustomColor('title_color') || '#ccc'
 
     const cssEl = document.querySelectorAll('link')[document.querySelectorAll('link').length - 1]
-    
+
     let css
 
     if (process.env.HOT === '1') {
         css = await window.fetch(cssEl.href).then(res => res.text())
     } else {
-        css = cssEl.innerHTML
+        css = await window.fetch('./dist/style.css').then(res => res.text())
     }
 
     css = css.replace(/#ddd/g, main_white + ' !important')

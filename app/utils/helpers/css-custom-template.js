@@ -106,6 +106,8 @@ module.exports = {
     cfg: `
 # Place your assets here separated by a comma (Ex. guid=asset1,asset2,asset3...)\r\n
 guid=none\r\n
+\r\n
+# Color palette
 main_white=none\r\n
 full_white=none\r\n
 main_blue=none\r\n
@@ -115,8 +117,13 @@ asset_guid=none\r\n
 main_red=none\r\n
 main_green=none\r\n
 title_color=none\r\n
-splashscreen_url=none\r\n
 progress_bar_color=none\r\n
+\r\n
+\r\n
+# Recommended dimensions for splash image: 350x420\r\n
+splashscreen_url=none\r\n
+\r\n
+# Logo shown in Acounts tab background
 background_logo=none\r\n
 `
 }
