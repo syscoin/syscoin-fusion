@@ -123,7 +123,7 @@ progress_bar_color=none\r\n
 # Recommended dimensions for splash image: 350x420\r\n
 splashscreen_url=none\r\n
 \r\n
-# Logo shown in Acounts tab background
+# Logo shown in Acounts tab background\r\n
 background_logo=none\r\n
 `
 }
