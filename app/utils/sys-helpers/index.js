@@ -30,8 +30,10 @@ type getTransactionsPerAssetType = {
 };
 
 const getInfo = () => new Promise((resolve, reject) => {
-  console.log(generateCmd('cli', 'getinfo'))
-  exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
+  const cmd = generateCmd('cli', 'getinfo')
+  console.time(cmd)
+  exec(cmd, (err, stdout) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
@@ -46,8 +48,11 @@ const getInfo = () => new Promise((resolve, reject) => {
 })
 
 const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
+  const cmd = generateCmd('cli', 'getaccountaddress ""')
+  console.time(cmd)
   // Get current SYS address
-  exec(generateCmd('cli', 'getaccountaddress ""'), (err, stdout, stderror) => {
+  exec(cmd, (err, stdout, stderror) => {
+    console.timeEnd(cmd)
     if (err) {
       return cb(true)
     }
@@ -62,7 +67,10 @@ const currentSysAddress = (cb: (error: boolean, address?: string) => void) => {
 
 // Get current SYS Balance
 const currentBalance = () => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', 'getbalance'), (err, stdout, stderror) => {
+  const cmd = generateCmd('cli', 'getbalance')
+  console.time(cmd)
+  exec(cmd, (err, stdout, stderror) => {
+    console.timeEnd(cmd)
     if (err || stderror) {
       return reject(err || stderror)
     }
@@ -73,7 +81,10 @@ const currentBalance = () => new Promise((resolve, reject) => {
 
 // Get current aliases
 const getAliases = () => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', 'syscoinlistreceivedbyaddress'), (err, stdout, stderror) => {
+  const cmd = generateCmd('cli', 'syscoinlistreceivedbyaddress')
+  console.time(cmd)
+  exec(cmd, (err, stdout, stderror) => {
+    console.timeEnd(cmd)
     if (err || stderror) {
       return reject(err || stderror)
     }
@@ -88,7 +99,10 @@ const getAliases = () => new Promise((resolve, reject) => {
 })
 
 const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', `assetinfo ${assetId} false`), (err, stdout, stderror) => {
+  const cmd = generateCmd('cli', `assetinfo ${assetId} false`)
+  console.time(cmd)
+  exec(cmd, (err, stdout, stderror) => {
+    console.timeEnd(cmd)
     if (err || stderror.toString().length) {
       return reject(err)
     }
@@ -103,7 +117,10 @@ const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
 
 // Get asset allocation info
 const getAssetAllocationInfo = (obj: AllocationInfoType) => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`), (err, stdout, stderror) => {
+  const cmd = generateCmd('cli', `assetallocationinfo ${obj.assetId} ${obj.aliasName} false`)
+  console.time(cmd)
+  exec(cmd, (err, stdout, stderror) => {
+    console.timeEnd(cmd)
     if (err || stderror.toString().length) {
       return reject(err)
     }
@@ -122,7 +139,10 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
 
   waterfall([
     done => {
-      exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`), (err, result) => {
+      const cmd = generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         if (err) {
           if (err.message.indexOf('ERRCODE: 1018') !== -1) {
             return done(null)
@@ -139,7 +159,10 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
     },
     (firstOutput, done) => {
       if (!firstOutput) {
-        return exec(generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"ranges\\": [{\\"start\\": 0, \\"end\\": ${parseFloat(amount)}}]}] "" ""`), (errTwo, resultTwo) => {
+        const cmd = generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"ranges\\": [{\\"start\\": 0, \\"end\\": ${parseFloat(amount)}}]}] "" ""`)
+        console.time(cmd)
+        return exec(cmd, (errTwo, resultTwo) => {
+          console.timeEnd(cmd)
           if (errTwo) {
             return done(errTwo)
           }
@@ -155,7 +178,10 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
       done(null, firstOutput)
     },
     (assetAllocationOutput, done) => {
-      exec(generateCmd('cli', `signrawtransaction ${assetAllocationOutput}`), (errSign, resultSign) => {
+      const cmd = generateCmd('cli', `signrawtransaction ${assetAllocationOutput}`)
+      console.time(cmd)
+      exec(cmd, (errSign, resultSign) => {
+        console.timeEnd(cmd)
         if (errSign) {
           return done(errSign)
         }
@@ -168,7 +194,10 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
       })
     },
     (signOutput, done) => {
-      exec(generateCmd('cli', `syscoinsendrawtransaction ${signOutput}`), (errSend, resultSend) => {
+      const cmd = generateCmd('cli', `syscoinsendrawtransaction ${signOutput}`)
+      console.time(cmd)
+      exec(cmd, (errSend, resultSend) => {
+        console.timeEnd(cmd)
         if (errSend) {
           return done(errSend)
         }
@@ -188,7 +217,10 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
 const sendSysTransaction = (obj: sendSysTransactionType) => new Promise((resolve, reject) => {
   // Send SYS to address
   const { address, amount, comment } = obj
-  exec(generateCmd('cli', `sendtoaddress ${address} ${amount} "${comment || ''}"`), (err, result) => {
+  const cmd = generateCmd('cli', `sendtoaddress ${address} ${amount} "${comment || ''}"`)
+  console.time(cmd)
+  exec(cmd, (err, result) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
@@ -202,7 +234,10 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   const { aliasName, publicValue, acceptTransferFlags, expireTimestamp, address, encryptionPrivKey, encryptionPublicKey, witness } = obj
   waterfall([
     done => {
-      exec(generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`), (err, result) => {
+      const cmd = generateCmd('cli', `aliasnew ${aliasName} "${publicValue || ''}" ${acceptTransferFlags || 3} ${expireTimestamp || 1548184538} "${address || ''}" "${encryptionPrivKey || ''}" "${encryptionPublicKey || ''}" "${witness || ''}"`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         try {
           done(err, JSON.parse(result)[0])
         } catch (e) {
@@ -211,7 +246,10 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
       })
     },
     (firstResult, done) => {
-      exec(generateCmd('cli', `syscointxfund ${firstResult}`), (err, result) => {
+      const cmd = generateCmd('cli', `syscointxfund ${firstResult}`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         try {
           done(err, JSON.parse(result)[0])
         } catch (e) {
@@ -220,7 +258,10 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
       })
     },
     (secondResult, done) => {
-      exec(generateCmd('cli', `signrawtransaction ${secondResult}`), (err, result) => {
+      const cmd = generateCmd('cli', `signrawtransaction ${secondResult}`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         try {
           done(err, JSON.parse(result).hex)
         } catch (e) {
@@ -229,7 +270,10 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
       })
     },
     (thirdResult, done) => {
-      exec(generateCmd('cli', `syscoinsendrawtransaction ${thirdResult}`), (err, result) => {
+      const cmd = generateCmd('cli', `syscoinsendrawtransaction ${thirdResult}`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         done(err, result)
       })
     }
@@ -242,8 +286,11 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   })
 })
 
-const exportWallet = (backupDir: string) => new Promise((resolve, reject) =>{
-  exec(generateCmd('cli', `dumpwallet "${backupDir}"`), (err) => {
+const exportWallet = (backupDir: string) => new Promise((resolve, reject) => {
+  const cmd = generateCmd('cli', `dumpwallet "${backupDir}"`)
+  console.time(cmd)
+  exec(cmd, (err) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
@@ -253,7 +300,10 @@ const exportWallet = (backupDir: string) => new Promise((resolve, reject) =>{
 })
 
 const importWallet = (backupDir: string) => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', `importwallet "${backupDir}"`), (err) => {
+  const cmd = generateCmd('cli', `importwallet "${backupDir}"`)
+  console.time(cmd)
+  exec(cmd, (err) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
@@ -267,7 +317,12 @@ const getPrivateKey = () => new Promise((resolve, reject) => {
     if (err) {
       return reject(err)
     }
-    exec(generateCmd('cli', `dumpprivkey "${address}"`), (errDump, key) => {
+
+    const cmd = generateCmd('cli', `dumpprivkey "${address}"`)
+
+    console.time(cmd)
+    exec(cmd, (errDump, key) => {
+      console.timeEnd(cmd)
       if (errDump) {
         return reject(errDump)
       }
@@ -282,7 +337,10 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
 
   waterfall([
     done => {
-      exec(generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`), (err, result) => {
+      const cmd = generateCmd('cli', `aliasupdate ${aliasName} "${publicValue || ''}" ${address || ''} ${acceptTransfersFlag || 3} ${expireTimestamp || 1548184538} "${encPrivKey || ''}" "${encPubKey || ''}" "${witness || ''}"`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         try {
           done(err, JSON.parse(result)[0])
         } catch (e) {
@@ -291,7 +349,10 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
       })
     },
     (firstResult, done) => {
-      exec(generateCmd('cli', `signrawtransaction ${firstResult}`), (err, result) => {
+      const cmd = generateCmd('cli', `signrawtransaction ${firstResult}`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         try {
           done(err, JSON.parse(result).hex)
         } catch (e) {
@@ -300,7 +361,10 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
       })
     },
     (secondResult, done) => {
-      exec(generateCmd('cli', `syscoinsendrawtransaction ${secondResult}`), (err, result) => {
+      const cmd = generateCmd('cli', `syscoinsendrawtransaction ${secondResult}`)
+      console.time(cmd)
+      exec(cmd, (err, result) => {
+        console.timeEnd(cmd)
         done(err, result)
       })
     }
@@ -314,7 +378,10 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
 })
 
 const aliasInfo = (name: string) => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', `aliasinfo ${name}`), (err, result) => {
+  const cmd = generateCmd('cli', `aliasinfo ${name}`)
+  console.time(cmd)
+  exec(cmd, (err, result) => {
+    console.timeEnd(cmd)
     try {
       return resolve(JSON.parse(result))
     } catch (e) {
@@ -324,9 +391,12 @@ const aliasInfo = (name: string) => new Promise((resolve, reject) => {
 })
 
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
+  const cmd = generateCmd('cli', `listassetallocationtransactions 1999999999`)
+  console.time(cmd)
+  exec(cmd, {
     maxBuffer: 1024 * 20480
   }, (err, result) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
@@ -346,9 +416,12 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
 })
 
 const getAssetAllocationTransactions = () => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
+  const cmd = generateCmd('cli', `listassetallocationtransactions 1999999999`)
+  console.time(cmd)
+  exec(cmd, {
     maxBuffer: 1024 * 20480
   }, (err, result) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
@@ -362,7 +435,10 @@ const getAssetAllocationTransactions = () => new Promise((resolve, reject) => {
 })
 
 const listAssets = () => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', 'listassets'), (err, result) => {
+  const cmd = generateCmd('cli', 'listassets')
+  console.time(cmd)
+  exec(cmd, (err, result) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
@@ -376,7 +452,10 @@ const listAssets = () => new Promise((resolve, reject) => {
 })
 
 const getBlockchainInfo = () => new Promise((resolve, reject) => {
-  exec(generateCmd('cli', 'getblockchaininfo'), (err, result) => {
+  const cmd = generateCmd('cli', 'getblockchaininfo')
+  console.time(cmd)
+  exec(cmd, (err, result) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
