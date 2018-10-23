@@ -325,14 +325,14 @@ const aliasInfo = (name: string) => new Promise((resolve, reject) => {
 
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
-    maxBuffer: 1024 * 500
+    maxBuffer: 1024 * 20480
   }, (err, result) => {
     if (err) {
       return reject(err)
     }
 
     // Parse JSON and filter out transactions that dont include selected alias. Then remove any undesired stuff from response
-    const data = JSON.parse(result)
+    const data = JSON.parse(result.toString())
       .filter(i => i.asset === obj.assetId && (i.sender === obj.alias || i.receiver === obj.alias))
       .map(i => {
         const asset = { ...i }
@@ -347,14 +347,14 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
 
 const getAssetAllocationTransactions = () => new Promise((resolve, reject) => {
   exec(generateCmd('cli', `listassetallocationtransactions 1999999999`), {
-    maxBuffer: 1024 * 500
+    maxBuffer: 1024 * 20480
   }, (err, result) => {
     if (err) {
       return reject(err)
     }
 
     try {
-      return resolve(JSON.parse(result))
+      return resolve(JSON.parse(result.toString()))
     } catch(errParse) {
       return reject(errParse)
     }
