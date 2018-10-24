@@ -128,15 +128,12 @@ class AccountsContainer extends Component<Props, State> {
             return cb(true)
           }
 
-          console.log(data)
-
           cb(null, data)
         }, (err, result) => done(err, result))
       },
       (data, done) => {
         // If alias/address doesnt own any token, fallback to assetinfo.
         if (data.find(i => !i.symbol)) {
-          console.log('mariko ke', i.balance, i.symbol, alias)
           return map(data, async (x, cb) => {
             const xObj = {...x}
             if (xObj.symbol.lenght) {
