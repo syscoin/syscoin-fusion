@@ -78,7 +78,6 @@ export default class Accounts extends Component<Props> {
   }
 
   render() {
-    console.log(this.props.transactions.data)
     return (
       <Row className='accounts-container'>
         <Col xs={9} className='accounts-container-left'>

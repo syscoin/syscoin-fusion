@@ -136,7 +136,7 @@ class AccountsContainer extends Component<Props, State> {
         if (data.find(i => !i.symbol)) {
           return map(data, async (x, cb) => {
             const xObj = {...x}
-            if (xObj.symbol.lenght) {
+            if (xObj.symbol.length) {
               return cb(null, xObj)
             }
 
