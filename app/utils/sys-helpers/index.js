@@ -1,7 +1,7 @@
 // @flow
 const { exec } = require('child_process')
 const generateCmd = require('../cmd-gen')
-const { waterfall } = require('async')
+const { waterfall, parallel } = require('async')
 
 /*
   SYS helpers. All results are returned following the callback pattern.
