@@ -18,7 +18,7 @@ export default (props: Props) => {
       offset={1}
       className={`asset-box ${isSelected ? 'selected' : ''}`}
       key={asset}
-      onClick={() => selectAsset(asset)}
+      onClick={() => selectAsset({asset, symbol})}
     >
       <h3 className='asset-box-name'>{symbol}</h3>
       <h5 className='asset-box-guid'>{asset}</h5>

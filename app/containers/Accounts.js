@@ -24,6 +24,7 @@ type State = {
   selectedAlias: string,
   aliasAssets: {
     selected: string,
+    selectedSymbol: string,
     isLoading: boolean,
     data: Array<any>,
     error: boolean
@@ -33,6 +34,11 @@ type State = {
     data: Array<any>,
     error: boolean
   }
+};
+
+type selectAssetType = {
+  asset: string,
+  symbol: string
 };
 
 class AccountsContainer extends Component<Props, State> {
@@ -45,6 +51,7 @@ class AccountsContainer extends Component<Props, State> {
       selectedAlias: '',
       aliasAssets: {
         selected: '',
+        selectedSymbol: '',
         isLoading: false,
         data: [],
         error: false
@@ -71,6 +78,7 @@ class AccountsContainer extends Component<Props, State> {
       selectedAlias: alias,
       aliasAssets: {
         selected: '',
+        selectedSymbol: '',
         isLoading: true,
         data: [],
         error: false
@@ -96,6 +104,7 @@ class AccountsContainer extends Component<Props, State> {
           this.setState({
             aliasAssets: {
               selected: '',
+              selectedSymbol: '',
               data: [],
               isLoading: false,
               error: true
@@ -172,6 +181,7 @@ class AccountsContainer extends Component<Props, State> {
       this.setState({
         aliasAssets: {
           selected: '',
+          selectedSymbol: '',
           data: result,
           isLoading: false,
           error: false
@@ -180,11 +190,13 @@ class AccountsContainer extends Component<Props, State> {
     })
   }
 
-  selectAsset(asset: string) {
+  selectAsset(obj: selectAssetType) {
+    const { asset, symbol } = obj
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
         selected: asset,
+        selectedSymbol: symbol,
         error: false
       },
       transactions: {

@@ -111,7 +111,7 @@ export default class Accounts extends Component<Props> {
             <Col offset={1} xs={21}>
               {this.props.aliasAssets.selected ? (
                 <div>
-                  <h4 className='transactions-table-title'>Transactions</h4>
+                  <h4 className='transactions-table-title'>Transactions for {this.props.aliasAssets.selectedSymbol}</h4>
                   {this.generateTransactionsTable()}
                 </div>
               ) : null}
