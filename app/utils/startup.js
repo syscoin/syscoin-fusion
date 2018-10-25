@@ -144,7 +144,7 @@ const startUpRoutine = (cb) => {
     },
     (reindex, done) => {
       if (reindex) {
-        return swal('Corruption detected', 'Your files dont not look quite well, reindexing.', 'warning')
+        return swal('Corruption detected', 'Your files do not look quite well, reindexing.', 'warning')
           .then(() => done(null, 'reindex'))
           .catch(() => done(true))
       }
