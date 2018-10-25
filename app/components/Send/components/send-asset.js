@@ -81,10 +81,8 @@ export default class SendAssetForm extends Component<Props, State> {
     return (
       <Col
         xs={columnSize}
+        offset={6}
         className='send-asset-container'
-        style={{
-          padding: '40px 40px 40px 80px'
-        }}
       >
         <div className='send-asset-form-container'>
           <h3 className='send-asset-form-title'>{title}</h3>

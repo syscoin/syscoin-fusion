@@ -1,8 +1,32 @@
 @import "~fw/css/variables.scss";
 
-.send-asset-container {
-    padding: 80px;
-    text-align: center;
+.send-forms-container {
+    overflow: scroll;
+    height: 100%;
+    padding-bottom: 50px;
+}
+
+.send-forms-container .send-sys-form-container,
+.send-forms-container .send-asset-form-container {
+    padding: 20px 80px;
+}
+
+.send-forms-container::-webkit-scrollbar {
+    width: 0.3em;
+}
+ 
+.send-forms-container::-webkit-scrollbar-thumb {
+    background-color: $accounts_background;
+    margin-top: 5px;
+    outline: 1px solid slategrey;
+    border-radius: 30px;
+}
+
+.send-forms-container::-webkit-scrollbar-button:vertical:decrement {
+    height: 4px;
+}
+.send-forms-container::-webkit-scrollbar-button:vertical:increment {
+    height: 4px;
 }
 
 .send-loading {
@@ -39,8 +63,8 @@
     margin-bottom: 10px;
 }
 
+.send-asset-form-container,
 .send-sys-container {
-    padding: 40px 80px;
     text-align: center;
 }
 

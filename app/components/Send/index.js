@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 // import { Link } from 'react-router-dom'
-import { Row } from 'antd'
+import { Row, Col } from 'antd'
 
 import SendAssetForm from './components/send-asset'
 import SendSysForm from './components/send-sys'
@@ -43,23 +43,32 @@ export default class Send extends Component<Props> {
 
   render() {
     return (
-      <Row gutter={24}>
-        <SendAssetForm
-          isLoading={this.props.assetIsLoading}
-          title='Send Asset'
-          columnSize={12}
-          assets={this.props.assets}
-          aliases={this.props.aliases}
-          sendAsset={this.sendAsset.bind(this)}
-        />
-        <SendSysForm
-          isLoading={this.props.sysIsLoading}
-          title='Send SYS'
-          columnSize={12}
-          balance={this.props.balance}
-          sendSys={this.sendSys.bind(this)}
-        />
-      </Row>
+      <div className='send-forms-container'>
+        <Row gutter={24}>
+          <SendAssetForm
+            isLoading={this.props.assetIsLoading}
+            title='Send Asset'
+            columnSize={12}
+            assets={this.props.assets}
+            aliases={this.props.aliases}
+            sendAsset={this.sendAsset.bind(this)}
+          />
+        </Row>
+        <Row>
+          <Col xs={10} offset={7}>
+            <hr />
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <SendSysForm
+            isLoading={this.props.sysIsLoading}
+            title='Send SYS'
+            columnSize={12}
+            balance={this.props.balance}
+            sendSys={this.sendSys.bind(this)}
+          />
+        </Row>
+      </div>
     )
   }
 }
