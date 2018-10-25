@@ -27,7 +27,8 @@ type sendAssetType = {
   from: string,
   asset: string,
   toAddress: string,
-  amount: string
+  amount: string,
+  comment?: string
 };
 type sendSysType = {
   amount: string,
@@ -62,7 +63,7 @@ class SendContainer extends Component<Props, State> {
   }
 
   async sendAsset(obj: sendAssetType, cb: Function) {
-    const { from, asset, toAddress, amount } = obj
+    const { from, asset, toAddress, amount, comment } = obj
 
     let sendResult
 
@@ -87,7 +88,8 @@ class SendContainer extends Component<Props, State> {
         fromAlias: from,
         toAlias: toAddress,
         assetId: asset,
-        amount
+        amount,
+        comment
       })
     } catch (sendErr) {
       this.setState({

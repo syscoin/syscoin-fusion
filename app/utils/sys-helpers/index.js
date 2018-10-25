@@ -16,7 +16,8 @@ type SendAssetType = {
   fromAlias: string,
   toAlias: string,
   assetId: string,
-  amount: string
+  amount: string,
+  comment?: string
 };
 type sendSysTransactionType = {
   address: string,
@@ -135,11 +136,11 @@ const getAssetAllocationInfo = (obj: AllocationInfoType) => new Promise((resolve
 
 const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
   // Sends asset to specific alias
-  const { fromAlias, toAlias, assetId, amount } = obj
+  const { fromAlias, toAlias, assetId, amount, comment } = obj
 
   waterfall([
     done => {
-      const cmd = generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "" ""`)
+      const cmd = generateCmd('cli', `assetallocationsend ${assetId} ${fromAlias} [{\\"ownerto\\":\\"${toAlias}\\",\\"amount\\":${amount}}] "${comment || ''}" ""`)
       console.time(cmd)
       exec(cmd, (err, result) => {
         console.timeEnd(cmd)

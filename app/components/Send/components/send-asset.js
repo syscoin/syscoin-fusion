@@ -20,7 +20,8 @@ type State = {
   from: string,
   asset: string,
   toAddress: string,
-  amount: string
+  amount: string,
+  comment: string
 };
 
 export default class SendAssetForm extends Component<Props, State> {
@@ -33,7 +34,8 @@ export default class SendAssetForm extends Component<Props, State> {
       from: '',
       asset: '',
       toAddress: '',
-      amount: ''
+      amount: '',
+      comment: ''
     }
 
     this.state = {
@@ -72,7 +74,8 @@ export default class SendAssetForm extends Component<Props, State> {
       from,
       asset,
       toAddress,
-      amount
+      amount,
+      comment
     } = this.state
 
     return (
@@ -125,6 +128,14 @@ export default class SendAssetForm extends Component<Props, State> {
             placeholder='Amount'
             onChange={e => this.updateField(e, 'amount', /^\d+(\.)?(\d+)?$/)}
             value={amount}
+            className='send-asset-form control send-asset-form-asset'
+          />
+          <Input
+            disabled={isLoading}
+            name='comment'
+            placeholder='Comment'
+            onChange={e => this.updateField(e, 'comment')}
+            value={comment}
             className='send-asset-form control send-asset-form-asset'
           />
           <div className='send-asset-form-btn-container'>
