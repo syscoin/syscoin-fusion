@@ -390,6 +390,7 @@ const aliasInfo = (name: string) => new Promise((resolve, reject) => {
   })
 })
 
+/*
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   const cmd = generateCmd('cli', `listassetallocationtransactions 1999999999`)
   console.time(cmd)
@@ -413,9 +414,9 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
 
     return resolve(data)
   })
-})
+}) */
 
-/*
+
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   parallel([
     (done) => {
@@ -472,7 +473,6 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
     return resolve(data)
   })
 })
-*/
 
 const getAssetAllocationTransactions = () => new Promise((resolve, reject) => {
   const cmd = generateCmd('cli', `listassetallocationtransactions 1999999999`)
