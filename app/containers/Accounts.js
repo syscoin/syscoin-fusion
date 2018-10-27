@@ -9,8 +9,10 @@ import Accounts from 'fw-components/Accounts/'
 import {
   getAssetInfo,
   getAssetAllocationInfo,
-  getTransactionsPerAsset
+  getTransactionsPerAsset,
+  listAssetAllocation
 } from 'fw-sys'
+import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 
 type Props = {
@@ -93,100 +95,30 @@ class AccountsContainer extends Component<Props, State> {
     })
   }
 
-  getAssetsInfo(alias: string) {
+  async getAssetsInfo(alias: string) {
 
-    waterfall([
-      done => {
-        // Get GUIDs
-        const guids = this.props.assets
+    let results
 
-        if (!guids.length) {
-          this.setState({
-            aliasAssets: {
-              selected: '',
-              selectedSymbol: '',
-              data: [],
-              isLoading: false,
-              error: true
-            }
-          })
-          swal('No asset detected', 'The wallet hasn\'t detected any asset yet. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
-          return
-        }
-
-        done(null, guids)
-      },
-      (guids, done) => {
-        // Get balance and symbol by using assetallocationinfo
-        map(guids, async (i, cb) => {
-          let data
-          try {
-            data = await getAssetAllocationInfo({
-              assetId: i,
-              aliasName: alias
-            })
-          } catch(err) {
-            if (err.message.indexOf('ERRCODE: 1507')) {
-              return cb(null, {
-                balance: '0',
-                alias,
-                asset: i,
-                symbol: ''
-              })
-            }
-            return cb(true)
-          }
-
-          cb(null, data)
-        }, (err, result) => done(err, result))
-      },
-      (data, done) => {
-        // If alias/address doesnt own any token, fallback to assetinfo.
-        if (data.find(i => !i.symbol)) {
-          return map(data, async (x, cb) => {
-            const xObj = {...x}
-            if (xObj.symbol.length) {
-              return cb(null, xObj)
-            }
-
-            let assetInfo
-
-            try {
-              assetInfo = await getAssetInfo(xObj.asset)
-            } catch (assetInfoErr) {
-              return cb(assetInfoErr)
-            }
-  
-            xObj.symbol = assetInfo.symbol
-            xObj.balance = '0'
-            return cb(null, xObj)
-          }, (error, finalResult) => done(null, finalResult.filter(x => x)))
-        }
-
-        return done(null, data)
-      }
-    ], (err, result) => {
-      if (err) {
-        this.setState({
-          aliasAssets: {
-            selected: '',
-            data: [],
-            isLoading: false,
-            error: true
-          }
-        })
-        return swal('Error', 'Something went wrong', 'error')
-      }
-
-      this.setState({
-        aliasAssets: {
-          selected: '',
-          selectedSymbol: '',
-          data: result,
-          isLoading: false,
-          error: false
-        }
+    try {
+      results = await listAssetAllocation({
+        receiver_address: alias
       })
+    } catch(err) {
+      return swal('Error', parseError(err.message), 'error')
+    }
+
+    if (!results.length) {
+      return swal('No asset detected', 'The wallet hasn\'t detected any asset yet. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
+    }
+
+    this.setState({
+      aliasAssets: {
+        selected: '',
+        selectedSymbol: '',
+        data: results,
+        isLoading: false,
+        error: false
+      }
     })
   }
 

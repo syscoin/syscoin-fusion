@@ -36,7 +36,7 @@ type listAssetAllocationType = {
   asset?: string,
   receiver_alias?: string,
   startblock?: number
-}
+};
 
 const getInfo = () => new Promise((resolve, reject) => {
   const cmd = generateCmd('cli', 'getinfo')
@@ -537,7 +537,7 @@ const getBlockchainInfo = () => new Promise((resolve, reject) => {
 })
 
 const listAssetAllocation = (obj: listAssetAllocationType) => new Promise((resolve, reject) => {
-  const cmd = generateCmd('cli', `listassetallocations 999999 0 "${JSON.stringify(obj)}"`)
+  const cmd = generateCmd('cli', `listassetallocations 999999 0 "${JSON.stringify(obj).replace(/"/g, '\\"')}"`)
   console.time(cmd)
   exec(cmd, (err, result) => {
     console.timeEnd(cmd)

@@ -8,7 +8,7 @@ import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo } f
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
-import { getAssetAllocationTransactions, getAssetInfo } from 'fw-sys'
+import { getAssetInfo } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
 import getPaths from 'fw-utils/get-doc-paths'
@@ -16,7 +16,7 @@ import getPaths from 'fw-utils/get-doc-paths'
 type Props = {
   isMaximized: boolean,
   unfinishedAliases: Array<Object>,
-  aliases: Array<Object>,
+  currentBlock: number,
   saveGetInfo: Function,
   saveAliases: Function,
   saveGuids: Function,
@@ -73,31 +73,12 @@ class WalletContainer extends Component<Props> {
   }
 
   async updateAssets() {
-    const { aliases } = this.props
     let guids = window.appStorage.get('guid') || []
 
     guids = guids.filter(i => i !== 'none')
 
-    if (!guids.length) {
-      // Tries to identify owned tokens by looking for asset transactions done by user's addresses/aliases
-      try {
-        // Gets all asset transactions in the chain
-        guids = await getAssetAllocationTransactions()
-
-        guids = guids
-          // If address/alias has made any transaction of asset i, then add it to the list of allowed guids.
-          .filter(i => aliases.find(x => x.alias === i.sender || x.alias === i.receiver || x.alias === i.sender || x.alias === i.receiver))
-          // Only need the guid, discard the rest.
-          .map(i => i.asset) 
-          // Delete duplicates
-        guids = guids.filter((i, ind) => guids.indexOf(i) === ind)
-      } catch(err) {
-        guids = []
-      }
-    } else {
-      guids = guids.map(async (i) => getAssetInfo(i))
-      guids = await Promise.all(guids)
-    }
+    guids = guids.map(i => getAssetInfo(i))
+    guids = await Promise.all(guids)
 
     this.props.saveGuids(guids)
   }
