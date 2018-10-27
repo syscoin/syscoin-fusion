@@ -30,6 +30,14 @@ type getTransactionsPerAssetType = {
   alias: string
 };
 
+type listAssetAllocationType = {
+  receiver_address?: string,
+  txid?: string,
+  asset?: string,
+  receiver_alias?: string,
+  startblock?: number
+}
+
 const getInfo = () => new Promise((resolve, reject) => {
   const cmd = generateCmd('cli', 'getinfo')
   console.time(cmd)
@@ -528,6 +536,23 @@ const getBlockchainInfo = () => new Promise((resolve, reject) => {
   })
 })
 
+const listAssetAllocation = (obj: listAssetAllocationType) => new Promise((resolve, reject) => {
+  const cmd = generateCmd('cli', `listassetallocations 999999 0 "${JSON.stringify(obj)}"`)
+  console.time(cmd)
+  exec(cmd, (err, result) => {
+    console.timeEnd(cmd)
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(JSON.parse(result))
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
 module.exports = {
   aliasInfo,
   currentSysAddress,
@@ -537,6 +562,7 @@ module.exports = {
   getAssetInfo,
   getAssetAllocationInfo,
   getInfo,
+  listAssetAllocation,
   sendAsset,
   sendSysTransaction,
   createNewAlias,

@@ -8,7 +8,7 @@ import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo } f
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
-import { getAssetAllocationTransactions } from 'fw-sys'
+import { getAssetAllocationTransactions, getAssetInfo } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
 import getPaths from 'fw-utils/get-doc-paths'
@@ -78,8 +78,6 @@ class WalletContainer extends Component<Props> {
 
     guids = guids.filter(i => i !== 'none')
 
-    guids = guids.map(i => i._id) // eslint-disable-line no-underscore-dangle
-
     if (!guids.length) {
       // Tries to identify owned tokens by looking for asset transactions done by user's addresses/aliases
       try {
@@ -96,6 +94,9 @@ class WalletContainer extends Component<Props> {
       } catch(err) {
         guids = []
       }
+    } else {
+      guids = guids.map(async (i) => getAssetInfo(i))
+      guids = await Promise.all(guids)
     }
 
     this.props.saveGuids(guids)

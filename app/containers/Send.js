@@ -147,7 +147,7 @@ class SendContainer extends Component<Props, State> {
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
   aliases: state.wallet.aliases,
-  assets: state.options.guids
+  assets: state.options.guids.map(i => i._id)
 })
 
 export default connect(mapStateToProps)(SendContainer)
