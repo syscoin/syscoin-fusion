@@ -512,7 +512,7 @@ const getBlockchainInfo = () => new Promise((resolve, reject) => {
   })
 })
 
-const listAssetAllocation = (obj: listAssetAllocationType) => new Promise((resolve, reject) => {
+const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
   const cmd = generateCmd('cli', `listassetallocations 999999 0 "${JSON.stringify(obj).replace(/"/g, '\\"')}"`)
   console.time(cmd)
   exec(cmd, (err, result) => {
@@ -520,12 +520,19 @@ const listAssetAllocation = (obj: listAssetAllocationType) => new Promise((resol
     if (err) {
       return reject(err)
     }
+    let data
 
     try {
-      return resolve(JSON.parse(result))
+      data = JSON.parse(result)
     } catch(errParse) {
       return reject(errParse)
     }
+
+    if (Array.isArray(filterGuids) && filterGuids.length) {
+      data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
+    }
+
+    return resolve(data)
   })
 })
 

@@ -2,13 +2,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import swal from 'sweetalert'
-import map from 'async/map'
-import waterfall from 'async/waterfall'
 
 import Accounts from 'fw-components/Accounts/'
 import {
-  getAssetInfo,
-  getAssetAllocationInfo,
   getTransactionsPerAsset,
   listAssetAllocation
 } from 'fw-sys'
@@ -18,7 +14,7 @@ import SyscoinLogo from 'fw/syscoin-logo.png'
 type Props = {
   balance: number,
   aliases: Array<Object>,
-  assets: Array<string>,
+  assets: Array<Objects>,
   headBlock: number,
   currentBlock: number
 };
@@ -96,18 +92,35 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAssetsInfo(alias: string) {
+    const { assets } = this.props
     let results
 
     try {
       results = await listAssetAllocation({
         receiver_address: alias
-      })
+      }, assets.map(i => i._id))
     } catch(err) {
       return swal('Error', parseError(err.message), 'error')
     }
 
-    if (!results.length) {
-      return swal('No asset detected', 'The wallet hasn\'t detected any asset yet. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
+    if (!results.length && !assets.length) {
+      this.setState({
+        aliasAssets: {
+          selected: '',
+          selectedSymbol: '',
+          data: [],
+          isLoading: false,
+          error: false
+        },
+        selectedAlias: ''
+      })
+      return swal('No asset detected', 'The wallet hasn\'t detected any asset. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
+    } else if (!results.length && assets.length) {
+      results = assets.map(i => ({
+        asset: i._id,
+        balance: '0.00000000',
+        symbol: i.symbol
+      }))
     }
 
     this.setState({
@@ -208,7 +221,7 @@ class AccountsContainer extends Component<Props, State> {
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
   aliases: state.wallet.aliases,
-  assets: state.options.guids.map(i => i._id),
+  assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,
   currentBlock: state.wallet.getinfo.blocks
 })
