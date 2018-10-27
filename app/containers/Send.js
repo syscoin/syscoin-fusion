@@ -102,6 +102,7 @@ class SendContainer extends Component<Props, State> {
   }
 
   async getAssetsFromAlias(alias: string, cb?: Function) {
+    const { assets } = this.props
     this.setState({
       assetsFromAliasIsLoading: true,
       assetsFromAlias: []
@@ -112,7 +113,7 @@ class SendContainer extends Component<Props, State> {
     try {
       data = await listAssetAllocation({
         receiver_address: alias
-      })
+      }, assets.map(i => i._id))
     } catch(err) {
       this.setState({
         assetsFromAliasIsLoading: false,
@@ -146,7 +147,8 @@ class SendContainer extends Component<Props, State> {
 
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
-  aliases: state.wallet.aliases
+  aliases: state.wallet.aliases,
+  assets: state.options.guids
 })
 
 export default connect(mapStateToProps)(SendContainer)
