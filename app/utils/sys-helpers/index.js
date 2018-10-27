@@ -399,33 +399,6 @@ const aliasInfo = (name: string) => new Promise((resolve, reject) => {
   })
 })
 
-/*
-const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
-  const cmd = generateCmd('cli', `listassetallocationtransactions 1999999999`)
-  console.time(cmd)
-  exec(cmd, {
-    maxBuffer: 1024 * 20480
-  }, (err, result) => {
-    console.timeEnd(cmd)
-    if (err) {
-      return reject(err)
-    }
-
-    // Parse JSON and filter out transactions that dont include selected alias. Then remove any undesired stuff from response
-    const data = JSON.parse(result.toString())
-      .filter(i => i.asset === obj.assetId && (i.sender === obj.alias || i.receiver === obj.alias))
-      .map(i => {
-        const asset = { ...i }
-        asset.amount = asset.amount[0] === '-' ? asset.amount.slice(1) : asset.amount
-        asset.time = (new Date(0)).setUTCSeconds(asset.time)
-        return asset
-      })
-
-    return resolve(data)
-  })
-}) */
-
-
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   parallel([
     (done) => {
