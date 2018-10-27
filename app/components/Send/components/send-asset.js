@@ -11,9 +11,11 @@ type Props = {
   title: string,
   columnSize: number,
   aliases: Array<string>,
-  assets: Array<string>,
+  assets: Array<Object>,
   isLoading: boolean,
-  sendAsset: Function
+  sendAsset: Function,
+  onSelectAlias: Function,
+  assetsFromAliasIsLoading: boolean
 };
 
 type State = {
@@ -68,7 +70,8 @@ export default class SendAssetForm extends Component<Props, State> {
       aliases = [],
       assets = [],
       isLoading = false,
-      sendAsset
+      sendAsset,
+      assetsFromAliasIsLoading
     } = this.props
     const {
       from,
@@ -88,7 +91,11 @@ export default class SendAssetForm extends Component<Props, State> {
           <h3 className='send-asset-form-title'>{title}</h3>
           <Select
             disabled={isLoading}
-            onChange={val => this.updateField(val, 'from')}
+            onChange={val => {
+              this.updateField(val, 'from')
+              this.updateField('', 'asset')
+              this.props.onSelectAlias(val)
+            }}
             placeholder='Select alias'
             className='send-asset-form-control send-asset-form-select-alias'
             value={from.length ? from : undefined}
@@ -100,18 +107,19 @@ export default class SendAssetForm extends Component<Props, State> {
             ))}
           </Select>
           <Select
-            disabled={isLoading}
+            disabled={isLoading || assetsFromAliasIsLoading}
             onChange={val => this.updateField(val, 'asset')}
             placeholder='Select asset'
             className='send-asset-form-control send-asset-form-select-alias'
             value={asset.length ? asset : undefined}
           >
             {assets.map(i => (
-              <Option value={i} key={i}>
-                {i}
+              <Option value={i.asset} key={i.asset}>
+                {i.symbol} - {i.asset}
               </Option>
             ))}
           </Select>
+          {assetsFromAliasIsLoading && <Spin indicator={<Icon type='loading' spin />} className='assets-from-alias-loader' />}
           <Input
             disabled={isLoading}
             name='toAddress'

@@ -14,7 +14,9 @@ type Props = {
   sendAsset: Function,
   sendSys: Function,
   balance: number,
-  assets: Array<string>
+  assets: Array<Object>,
+  getAssetsFromAlias: Function,
+  assetsFromAliasIsLoading: boolean
 };
 
 type sendAssetType = {
@@ -52,6 +54,8 @@ export default class Send extends Component<Props> {
             assets={this.props.assets}
             aliases={this.props.aliases}
             sendAsset={this.sendAsset.bind(this)}
+            onSelectAlias={this.props.getAssetsFromAlias}
+            assetsFromAliasIsLoading={this.props.assetsFromAliasIsLoading}
           />
         </Row>
         <Row>

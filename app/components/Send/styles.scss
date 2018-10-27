@@ -29,9 +29,16 @@
     height: 4px;
 }
 
-.send-loading {
+.send-forms-container .send-loading {
     margin-right: 20px;
     color: $main_blue;
+}
+
+.send-forms-container .assets-from-alias-loader {
+    color: $main_blue;
+    position: absolute;
+    right: 50px;
+    top: 100px;
 }
 
 .send-asset-container .send-asset-form-control.send-asset-form-type-from,

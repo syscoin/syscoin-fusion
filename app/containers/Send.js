@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Send from 'fw-components/Send'
 import {
-  getAssetAllocationInfo,
+  listAssetAllocation,
   sendAsset,
   sendSysTransaction
 } from 'fw-sys'
@@ -11,18 +11,15 @@ import {
 
 type Props = {
   balance: number,
-  aliases: Array<Object>,
-  assets: Array<string>
+  aliases: Array<Object>
 };
 type State = {
+  assetsFromAlias: Array<Object>,
+  assetsFromAliasIsLoading: boolean,
   assetIsLoading: boolean,
   sysIsLoading: boolean
 };
 
-type isUserAssetOwnerType = {
-  alias: string,
-  asset: string
-};
 type sendAssetType = {
   from: string,
   asset: string,
@@ -42,24 +39,11 @@ class SendContainer extends Component<Props, State> {
     super()
 
     this.state = {
+      assetsFromAlias: [],
+      assetsFromAliasIsLoading: false,
       assetIsLoading: false,
-      sysIsLoading: false
+      sysIsLoading: false,
     }
-  }
-
-  async isUserAssetOwner(obj: isUserAssetOwnerType) {
-    let result
-
-    try {
-      result = await getAssetAllocationInfo({
-        assetId: obj.asset,
-        aliasName: obj.alias
-      })
-    } catch (err) {
-      return false
-    }
-
-    return result
   }
 
   async sendAsset(obj: sendAssetType, cb: Function) {
@@ -70,18 +54,6 @@ class SendContainer extends Component<Props, State> {
     this.setState({
       assetIsLoading: true
     })
-
-    try {
-      await this.isUserAssetOwner({
-        alias: from,
-        asset
-      })
-    } catch (err) {
-      this.setState({
-        assetIsLoading: false
-      })
-      return cb(err)
-    }
 
     try {
       sendResult = await sendAsset({
@@ -129,6 +101,32 @@ class SendContainer extends Component<Props, State> {
     return cb(null, result)
   }
 
+  async getAssetsFromAlias(alias: string, cb?: Function) {
+    this.setState({
+      assetsFromAliasIsLoading: true,
+      assetsFromAlias: []
+    })
+
+    let data
+
+    try {
+      data = await listAssetAllocation({
+        receiver_address: alias
+      })
+    } catch(err) {
+      this.setState({
+        assetsFromAliasIsLoading: false,
+        assetsFromAlias: []
+      })
+      return cb(err)
+    }
+
+    this.setState({
+      assetsFromAliasIsLoading: false,
+      assetsFromAlias: data
+    })
+  }
+
   render() {
     return (
       <Send
@@ -138,7 +136,9 @@ class SendContainer extends Component<Props, State> {
         aliases={this.props.aliases.map(i => i.alias || i.address)}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
-        assets={this.props.assets}
+        getAssetsFromAlias={this.getAssetsFromAlias.bind(this)}
+        assets={this.state.assetsFromAlias}
+        assetsFromAliasIsLoading={this.state.assetsFromAliasIsLoading}
       />
     )
   }
@@ -146,8 +146,7 @@ class SendContainer extends Component<Props, State> {
 
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
-  aliases: state.wallet.aliases,
-  assets: state.options.guids.map(i => i._id)
+  aliases: state.wallet.aliases
 })
 
 export default connect(mapStateToProps)(SendContainer)
