@@ -96,7 +96,6 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAssetsInfo(alias: string) {
-
     let results
 
     try {

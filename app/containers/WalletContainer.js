@@ -48,13 +48,10 @@ class WalletContainer extends Component<Props> {
     if (!window.updateWalletHigh) {
       window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 10000)
     }
-    if (!window.updateWalletLow) {
-      window.updateWalletLow = setInterval(() => this.updateWalletLow(), 10000)
-    }
-
+    
     this.updateWalletHigh()
-    // Firing low priority queue a few secs later so aliases can get to the store first.
-    setTimeout(() => this.updateWalletLow(), 5000)
+    // Update guids in store
+    this.updateAssets()
   }
 
   updateWalletHigh() {
@@ -68,17 +65,18 @@ class WalletContainer extends Component<Props> {
     })
   }
 
-  updateWalletLow() {
-    this.updateAssets()
-  }
-
   async updateAssets() {
     let guids = window.appStorage.get('guid') || []
 
     guids = guids.filter(i => i !== 'none')
 
     guids = guids.map(i => getAssetInfo(i))
-    guids = await Promise.all(guids)
+
+    try {
+      guids = await Promise.all(guids)
+    } catch(err) {
+      guids = []
+    }
 
     this.props.saveGuids(guids)
   }

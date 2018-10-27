@@ -429,7 +429,7 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   parallel([
     (done) => {
-      const cmd = generateCmd('cli', `listassetallocationtransactions 1999999999 0 "{\\"sender_address\\": \\"${obj.alias}\\"}"`)
+      const cmd = generateCmd('cli', `listassetallocationtransactions 999999 0 "{\\"sender_address\\": \\"${obj.alias}\\", \\"asset\\": \\"${obj.assetId}\\"}"`)
       console.time(cmd)
       exec(cmd, {
         maxBuffer: 1024 * 20480
@@ -447,7 +447,7 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
       })
     },
     (done) => {
-      const cmd = generateCmd('cli', `listassetallocationtransactions 1999999999 0 "{\\"receiver_address\\": \\"${obj.alias}\\"}"`)
+      const cmd = generateCmd('cli', `listassetallocationtransactions 999999 0 "{\\"receiver_address\\": \\"${obj.alias}\\", \\"asset\\": \\"${obj.assetId}\\"}"`)
       console.time(cmd)
       exec(cmd, {
         maxBuffer: 1024 * 20480
@@ -470,14 +470,17 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
     }
 
     // Parse JSON and filter out transactions that dont include selected alias. Then remove any undesired stuff from response
-    const data = tasks[0].concat(tasks[1])
-      .filter(i => i.asset === obj.assetId)
+    let data = tasks[0].concat(tasks[1])
       .map(i => {
         const asset = { ...i }
         asset.amount = asset.amount[0] === '-' ? asset.amount.slice(1) : asset.amount
         asset.time = (new Date(0)).setUTCSeconds(asset.time)
         return asset
       })
+    
+    const txids = data.map(i => i.txid)
+
+    data = data.filter((i, ind) => txids.indexOf(i.txid) === ind)
 
     return resolve(data)
   })
