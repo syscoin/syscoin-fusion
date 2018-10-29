@@ -15,7 +15,7 @@ import SyscoinLogo from 'fw/syscoin-logo.png'
 type Props = {
   balance: number,
   aliases: Array<Object>,
-  assets: Array<Objects>,
+  assets: Array<Object>,
   headBlock: number,
   currentBlock: number
 };
@@ -83,7 +83,7 @@ class AccountsContainer extends Component<Props, State> {
         error: false
       },
       transactions: {
-        isLoading: true,
+        isLoading: false,
         data: [],
         error: false
       }
@@ -205,6 +205,12 @@ class AccountsContainer extends Component<Props, State> {
     }
   }
 
+  goToHome() {
+    this.setState({
+      ...this.initialState
+    })
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
@@ -223,6 +229,7 @@ class AccountsContainer extends Component<Props, State> {
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
         getPrivateKey={this.getPrivateKey}
+        goToHome={this.goToHome.bind(this)}
       />
     )
   }

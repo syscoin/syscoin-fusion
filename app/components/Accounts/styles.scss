@@ -17,6 +17,25 @@
     margin-bottom: 0;
     box-shadow: inset 0 0 300px rgba(0, 0, 0, 0.1);
     opacity: 0.9;
+
+    .home-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        color: $main_white;
+        cursor: pointer;
+        font-size: 28px;
+        opacity: 0.5;
+        transition: opacity 0.5s;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .home-btn.disabled {
+        pointer-events: none;
+    }
 }
 
 .accounts-container-left .balance-container {

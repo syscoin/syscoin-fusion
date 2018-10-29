@@ -5,6 +5,7 @@ import AssetBox from './components/asset-box'
 import TransactionList from './components/transaction-list'
 import UserBalance from './components/balance'
 import SyncLoader from './components/sync-loader'
+import Home from './components/home'
 
 type Props = {
   backgroundLogo: string,
@@ -18,7 +19,8 @@ type Props = {
   headBlock: number,
   currentBlock: number,
   syncPercentage: number,
-  getPrivateKey: Function
+  getPrivateKey: Function,
+  goToHome: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -80,9 +82,15 @@ export default class Accounts extends Component<Props> {
   }
 
   render() {
+    console.log(this.props.transactions, this.props.aliasAssets)
     return (
       <Row className='accounts-container'>
         <Col xs={9} className='accounts-container-left'>
+          <Home
+            onClick={this.props.goToHome}
+            className='home-btn'
+            disabled={this.props.transactions.isLoading || this.props.aliasAssets.isLoading}
+          />
           <UserBalance
             currentBalance={this.props.balance}
           />
