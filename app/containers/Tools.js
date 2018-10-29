@@ -44,17 +44,6 @@ class ToolsContainer extends Component<Props> {
     cb()
   }
 
-  async getPrivateKey(cb) {
-    let result
-    try {
-      result = await getPrivateKey()
-    } catch (err) {
-      return cb(err)
-    }
-
-    cb(null, result)
-  }
-
   createNewAlias(obj: Object, cb: Function) {
     pushNewAlias(obj)
     cb()
@@ -66,7 +55,6 @@ class ToolsContainer extends Component<Props> {
         currentBlock={this.props.currentBlock}
         unfinishedAliases={this.props.unfinishedAliases}
         createNewAlias={this.createNewAlias}
-        getPrivateKey={this.getPrivateKey}
         importWallet={this.importWallet}
         exportWallet={this.exportWallet}
       />

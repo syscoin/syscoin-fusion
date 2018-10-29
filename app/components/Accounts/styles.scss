@@ -49,10 +49,10 @@
 }
 
 .aliases-container {
-    height: 68.2%;
+    height: 56.2%;
     overflow-y: scroll;
     overflow-x: hidden;
-    background: #444;
+    background: $accounts_alias_background;
 }
 
 .your-aliases-text {
@@ -108,8 +108,9 @@
     background: $main_background;
     padding: 10px 0;
     position: sticky;
-    width: 110%;
+    width: 100%;
     transition: opacity 0.3s;
+    cursor: default;
 }
 
 .alias-box.expanded:hover {
@@ -160,6 +161,15 @@
     overflow: hidden; 
     width: 220px;
     white-space: nowrap;
+}
+
+.alias-box .alias-name .alias-toolbox {
+    float: right;
+
+    i {
+        cursor: pointer;
+        color: $main_white;
+    }
 }
 
 /* Right column */

@@ -4,7 +4,6 @@ import { Row, Col } from 'antd'
 import NewAlias from './components/new-alias'
 import BackupWallet from './components/backup-wallet'
 import ImportWallet from './components/import-wallet'
-import GetPrivateKey from './components/get-priv-key'
 
 type Props = {
   currentBlock: number,
@@ -14,7 +13,6 @@ type Props = {
     round: number
   }>,
   createNewAlias: Function,
-  getPrivateKey: Function,
   importWallet: Function,
   exportWallet: Function
 };
@@ -78,8 +76,6 @@ export default class Tools extends Component<Props, State> {
           <BackupWallet exportWallet={this.props.exportWallet} />
           <hr />
           <ImportWallet importWallet={this.props.importWallet} />
-          <hr />
-          <GetPrivateKey getPrivateKey={this.props.getPrivateKey} />
         </Col>
       </Row>
     )

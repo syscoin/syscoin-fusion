@@ -17,7 +17,8 @@ type Props = {
   selectAsset: Function,
   headBlock: number,
   currentBlock: number,
-  syncPercentage: number
+  syncPercentage: number,
+  getPrivateKey: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -49,6 +50,7 @@ export default class Accounts extends Component<Props> {
         isLoading={this.props.aliasAssets.isLoading}
         isSelected={this.isAliasSelected(i)}
         updateSelectedAlias={this.props.updateSelectedAlias}
+        getPrivateKey={this.props.getPrivateKey}
       />
     ))
   }
@@ -102,7 +104,9 @@ export default class Accounts extends Component<Props> {
           {this.props.aliasAssets.data.length ? (
             <div>
               <Row className='asset-box-container'>
-                <h4 className='asset-box-text'>Available assets</h4>
+                <h4 className='asset-box-text'>
+                  Available assets
+                </h4>
                 {this.generateAliasAssets()}
               </Row>
             </div>

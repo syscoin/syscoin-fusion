@@ -10,6 +10,7 @@ import {
 
 
 type Props = {
+  assets: Array<Object>,
   balance: number,
   aliases: Array<Object>
 };

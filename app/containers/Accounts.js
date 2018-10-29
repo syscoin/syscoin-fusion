@@ -6,7 +6,8 @@ import swal from 'sweetalert'
 import Accounts from 'fw-components/Accounts/'
 import {
   getTransactionsPerAsset,
-  listAssetAllocation
+  listAssetAllocation,
+  getPrivateKey
 } from 'fw-sys'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
@@ -196,6 +197,14 @@ class AccountsContainer extends Component<Props, State> {
     return SyscoinLogo
   }
 
+  async getPrivateKey(address: string, cb: Function) {
+    try {
+      return cb(null, await getPrivateKey(address))
+    } catch (err) {
+      return cb(err)
+    }
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
@@ -213,6 +222,7 @@ class AccountsContainer extends Component<Props, State> {
         aliasAssets={aliasAssets}
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
+        getPrivateKey={this.getPrivateKey}
       />
     )
   }

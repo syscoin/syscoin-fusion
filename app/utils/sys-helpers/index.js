@@ -46,13 +46,13 @@ const getInfo = () => new Promise((resolve, reject) => {
     if (err) {
       return reject(err)
     }
-    
+
     try {
       return resolve(JSON.parse(stdout))
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
-    
+
   })
 })
 
@@ -100,10 +100,10 @@ const getAliases = () => new Promise((resolve, reject) => {
 
     try {
       return resolve(JSON.parse(stdout.toString()))
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
-    
+
   })
 })
 
@@ -118,7 +118,7 @@ const getAssetInfo = (assetId: string) => new Promise((resolve, reject) => {
 
     try {
       return resolve(JSON.parse(stdout.toString()))
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
   })
@@ -136,7 +136,7 @@ const getAssetAllocationInfo = (obj: AllocationInfoType) => new Promise((resolve
 
     try {
       return resolve(JSON.parse(stdout.toString()))
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
   })
@@ -161,7 +161,7 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
 
         try {
           done(null, JSON.parse(result.toString())[0])
-        } catch(errParse) {
+        } catch (errParse) {
           done(errParse)
         }
       })
@@ -178,7 +178,7 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
 
           try {
             done(null, JSON.parse(resultTwo.toString())[0])
-          } catch(errParse) {
+          } catch (errParse) {
             done(errParse)
           }
         })
@@ -197,7 +197,7 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
 
         try {
           done(null, JSON.parse(resultSign.toString()).hex)
-        } catch(errParse) {
+        } catch (errParse) {
           done(errParse)
         }
       })
@@ -321,23 +321,16 @@ const importWallet = (backupDir: string) => new Promise((resolve, reject) => {
   })
 })
 
-const getPrivateKey = () => new Promise((resolve, reject) => {
-  currentSysAddress((err, address) => {
+const getPrivateKey = (address) => new Promise((resolve, reject) => {
+  const cmd = generateCmd('cli', `dumpprivkey "${address}"`)
+  console.time(cmd)
+  exec(cmd, (err, key) => {
+    console.timeEnd(cmd)
     if (err) {
       return reject(err)
     }
 
-    const cmd = generateCmd('cli', `dumpprivkey "${address}"`)
-
-    console.time(cmd)
-    exec(cmd, (errDump, key) => {
-      console.timeEnd(cmd)
-      if (errDump) {
-        return reject(errDump)
-      }
-
-      return resolve(key)
-    })
+    return resolve(key)
   })
 })
 
@@ -411,10 +404,10 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
         if (err) {
           return done(err)
         }
-    
+
         try {
           return done(null, JSON.parse(result.toString()))
-        } catch(errParse) {
+        } catch (errParse) {
           return done(errParse)
         }
       })
@@ -429,10 +422,10 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
         if (err) {
           return done(err)
         }
-    
+
         try {
           return done(null, JSON.parse(result.toString()))
-        } catch(errParse) {
+        } catch (errParse) {
           return done(errParse)
         }
       })
@@ -450,7 +443,7 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
         asset.time = (new Date(0)).setUTCSeconds(asset.time)
         return asset
       })
-    
+
     const txids = data.map(i => i.txid)
 
     data = data.filter((i, ind) => txids.indexOf(i.txid) === ind)
@@ -472,7 +465,7 @@ const getAssetAllocationTransactions = () => new Promise((resolve, reject) => {
 
     try {
       return resolve(JSON.parse(result.toString()))
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
   })
@@ -489,7 +482,7 @@ const listAssets = () => new Promise((resolve, reject) => {
 
     try {
       return resolve(JSON.parse(result))
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
   })
@@ -506,7 +499,7 @@ const getBlockchainInfo = () => new Promise((resolve, reject) => {
 
     try {
       return resolve(JSON.parse(result))
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
   })
@@ -524,7 +517,7 @@ const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<s
 
     try {
       data = JSON.parse(result)
-    } catch(errParse) {
+    } catch (errParse) {
       return reject(errParse)
     }
 
