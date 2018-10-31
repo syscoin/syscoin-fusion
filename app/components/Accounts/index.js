@@ -42,13 +42,28 @@ export default class Accounts extends Component<Props> {
     const addresses = []
     
     this.props.aliases.forEach(i => {
+      const iCopy = {...i}
+
       // Separating aliases and addresses for later ordering
       // Using of sort method would result in unpredictable result and kinda complex ordering logic
-      if (i.alias) {
-        return aliases.push(i)
+      if (iCopy.alias) {
+        
+        try {
+          if (iCopy.publicValue.length && JSON.parse(iCopy.publicValue).avatarUrl) {
+            iCopy.hasAvatar = true
+            iCopy.avatarUrl = JSON.parse(iCopy.publicValue).avatarUrl
+          }
+        } catch(err) {
+          iCopy.hasAvatar = false
+          iCopy.avatarUrl = false
+        }
+        return aliases.push(iCopy)
       }
 
-      return addresses.push(i)
+      iCopy.hasAvatar = false
+      iCopy.avatarUrl = ''
+
+      return addresses.push(iCopy)
     })
     
     return aliases.concat(addresses).map((i) => (
@@ -60,6 +75,8 @@ export default class Accounts extends Component<Props> {
         isSelected={this.isAliasSelected(i)}
         updateSelectedAlias={this.props.updateSelectedAlias}
         getPrivateKey={this.props.getPrivateKey}
+        hasAvatar={i.hasAvatar}
+        avatarUrl={i.avatarUrl}
       />
     ))
   }
