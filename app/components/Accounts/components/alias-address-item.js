@@ -11,7 +11,6 @@ type Props = {
   isSelected: boolean,
   updateSelectedAlias: Function,
   getPrivateKey: Function,
-  hasAvatar: boolean,
   avatarUrl: string
 };
 
@@ -42,7 +41,7 @@ class AliasAddressItem extends Component<Props, State> {
   }
 
   render() {
-    const { alias, address, isLoading, isSelected, updateSelectedAlias, hasAvatar, avatarUrl } = this.props
+    const { alias, address, isLoading, isSelected, updateSelectedAlias, avatarUrl } = this.props
     return (
       <Row
         className={`alias-box ${isSelected ? 'expanded' : 'non-expanded'} ${isLoading ? 'loading' : ''}`}
@@ -55,7 +54,7 @@ class AliasAddressItem extends Component<Props, State> {
       >
         {alias && (
           <Col xs={isSelected ? 6 : 4} lg={isSelected ? 4 : 3} offset={isSelected ? 1 : 0} className='alias-img-container'>
-            <img className='alias-img' src={hasAvatar ? avatarUrl : `https://ui-avatars.com/api/?name=${alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`} alt='Alias' />
+            <img className='alias-img' src={avatarUrl.length ? avatarUrl : `https://ui-avatars.com/api/?name=${alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`} alt='Alias' />
           </Col>
         )}
         <Col xs={alias ? 18 : 23} className={`alias-text-container ${!alias ? 'address' : ''}`}>

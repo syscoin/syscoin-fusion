@@ -40,7 +40,7 @@ export default class Accounts extends Component<Props> {
   generateAliasesBoxes() {
     const aliases = []
     const addresses = []
-    
+
     this.props.aliases.forEach(i => {
       const iCopy = {...i}
 
@@ -50,17 +50,14 @@ export default class Accounts extends Component<Props> {
         
         try {
           if (iCopy.publicValue.length && JSON.parse(iCopy.publicValue).avatarUrl) {
-            iCopy.hasAvatar = true
             iCopy.avatarUrl = JSON.parse(iCopy.publicValue).avatarUrl
           }
         } catch(err) {
-          iCopy.hasAvatar = false
           iCopy.avatarUrl = false
         }
         return aliases.push(iCopy)
       }
 
-      iCopy.hasAvatar = false
       iCopy.avatarUrl = ''
 
       return addresses.push(iCopy)
