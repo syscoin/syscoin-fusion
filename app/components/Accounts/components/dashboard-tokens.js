@@ -40,21 +40,17 @@ export default class DashboardBalance extends Component<Props> {
 
   render() {
     return (
-      <Row>
-        <Col xs={24}>
-          <div className='wallet-summary-balance-container'>
-            <h3 className='wallet-summary-balance-title'>Total Tokens</h3>
-            <Table
-              data={this.props.assets}
-              columns={this.generateTableColumns()}
-              rowKey='asset'
-              pageSize={10}
-              isLoading={this.props.isLoading}
-              error={this.props.error}
-            />
-          </div>
-        </Col>
-      </Row>
+      <div className='wallet-summary-balance-container'>
+        <h3 className='wallet-summary-balance-title'>Total Tokens</h3>
+        <Table
+          data={this.props.assets}
+          columns={this.generateTableColumns()}
+          rowKey='asset'
+          pageSize={10}
+          isLoading={this.props.isLoading}
+          error={this.props.error}
+        />
+      </div>
     )
   }
 }
