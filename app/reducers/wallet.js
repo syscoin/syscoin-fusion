@@ -4,7 +4,9 @@ import {
   WALLET_ALIASES,
   WALLET_UNFINISHED_ALIASES,
   WALLET_BLOCKCHAIN_INFO,
-  WALLET_DASHBOARD_ASSETS,
+  WALLET_DASHBOARD_ASSETS_IS_LOADING,
+  WALLET_DASHBOARD_ASSETS_ERROR,
+  WALLET_DASHBOARD_ASSETS_RECEIVE,
   WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING,
   WALLET_DASHBOARD_TRANSACTIONS_ERROR,
   WALLET_DASHBOARD_TRANSACTIONS_RECEIVE
@@ -54,6 +56,7 @@ export const initialState = {
     assets: {
       isLoading: false,
       error: false,
+      errorMessage: '',
       data: []
     },
     transactions: {
@@ -87,14 +90,6 @@ export default function wallet(state: StateType = initialState, action: actionTy
         ...state,
         blockchaininfo: action.payload
       }
-    case WALLET_DASHBOARD_ASSETS:
-      return {
-        ...state,
-        dashboard: {
-          ...state.dashboard,
-          assets: action.payload
-        }
-      }
     case WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING:
       return {
         ...state,
@@ -127,6 +122,45 @@ export default function wallet(state: StateType = initialState, action: actionTy
         dashboard: {
           ...state.dashboard,
           transactions: {
+            isLoading: false,
+            error: false,
+            errorMessage: '',
+            data: action.payload
+          }
+        }
+      }
+    case WALLET_DASHBOARD_ASSETS_IS_LOADING:
+      return {
+        ...state,
+        dashboard: {
+          ...state.dashboard,
+          assets: {
+            isLoading: true,
+            error: false,
+            errorMessage: '',
+            data: []
+          }
+        }
+      }
+    case WALLET_DASHBOARD_ASSETS_ERROR:
+      return {
+        ...state,
+        dashboard: {
+          ...state.dashboard,
+          assets: {
+            isLoading: false,
+            error: true,
+            errorMessage: action.payload,
+            data: []
+          }
+        }
+      }
+    case WALLET_DASHBOARD_ASSETS_RECEIVE:
+      return {
+        ...state,
+        dashboard: {
+          ...state.dashboard,
+          assets: {
             isLoading: false,
             error: false,
             errorMessage: '',

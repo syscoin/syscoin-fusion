@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import swal from 'sweetalert'
 
 import Accounts from 'fw-components/Accounts/'
@@ -9,6 +10,7 @@ import {
   listAssetAllocation,
   getPrivateKey
 } from 'fw-sys'
+import { dashboardAssets } from 'fw-actions/wallet'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 
@@ -18,7 +20,13 @@ type Props = {
   assets: Array<Object>,
   headBlock: number,
   currentBlock: number,
-  sysTransactions: {
+  dashboardSysTransactions: {
+    isLoading: boolean,
+    error: boolean,
+    errorMessage: string,
+    data: Array<Object>
+  },
+  dashboardAssetsBalances: {
     isLoading: boolean,
     error: boolean,
     errorMessage: string,
@@ -71,6 +79,12 @@ class AccountsContainer extends Component<Props, State> {
 
     this.state = {
       ...this.initialState
+    }
+  }
+
+  getSnapshotBeforeUpdate(prevProps) {
+    if (!prevProps.aliases.length && this.props.aliases.length) {
+      this.props.dashboardAssets()
     }
   }
 
@@ -236,7 +250,8 @@ class AccountsContainer extends Component<Props, State> {
         selectAsset={this.selectAsset.bind(this)}
         getPrivateKey={this.getPrivateKey}
         goToHome={this.goToHome.bind(this)}
-        sysTransactions={this.props.sysTransactions}
+        dashboardSysTransactions={this.props.dashboardSysTransactions}
+        dashboardAssets={this.props.dashboardAssetsBalances}
       />
     )
   }
@@ -248,7 +263,12 @@ const mapStateToProps = state => ({
   assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,
   currentBlock: state.wallet.getinfo.blocks,
-  sysTransactions: state.wallet.dashboard.transactions
+  dashboardSysTransactions: state.wallet.dashboard.transactions,
+  dashboardAssetsBalances: state.wallet.dashboard.assets
 })
 
-export default connect(mapStateToProps)(AccountsContainer)
+const mapDispatchToProps = dispatch => bindActionCreators({
+  dashboardAssets
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)

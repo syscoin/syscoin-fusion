@@ -1,9 +1,10 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo, listSysTransactions } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
+import _ from 'lodash'
 
 type getInfoActionType = {
   type: string,
@@ -70,6 +71,11 @@ type saveDashboardTransactionsActionType = {
   payload: Array<Object>
 };
 
+type saveDashboardAssetsActionType = {
+  type: string,
+  payload: Array<Object>
+};
+
 const saveGetInfoAction = createAction(types.WALLET_GETINFO)
 const saveAliasesAction = createAction(types.WALLET_ALIASES)
 const saveUnfinishedAliasesAction = createAction(types.WALLET_UNFINISHED_ALIASES)
@@ -115,6 +121,8 @@ export const saveBlockchainInfo = () => async (dispatch: (action: saveBlockchain
   }
 }
 
+window._ = _
+
 export const dashboardTransactions = () => async (dispatch: (action: saveDashboardTransactionsActionType) => void) => {
   dispatch(dashboardTransactionsIsLoadingAction())
 
@@ -123,4 +131,40 @@ export const dashboardTransactions = () => async (dispatch: (action: saveDashboa
   } catch(err) {
     return dashboardTransactionsErrorAction(err)
   }
+}
+
+export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void, getState) => {
+  dispatch(dashboardAssetsIsLoadingAction())
+
+  const { aliases } = getState().wallet
+  let assets = {}
+  let allocations
+
+  try {
+    allocations = await Promise.all(
+      aliases.map(i => listAssetAllocation({
+        receiver_address: i.alias || i.address
+      }))
+    )
+  } catch(err) {
+    return dispatch(dashboardAssetsErrorAction(err.message))
+  }
+
+  // Generating balances per asset
+  _.flatten(allocations).forEach(i => {
+    if (!assets[i.asset]) {
+      assets[i.asset] = {
+        balance: 0,
+        asset: i.asset,
+        symbol: i.symbol
+      }
+    }
+
+    assets[i.asset].balance += Number(i.balance)
+  })
+
+  // Turning the object into an array
+  assets = Object.keys(assets).map(i => assets[i])
+
+  dispatch(dashboardAssetsReceiveAction(assets))
 }

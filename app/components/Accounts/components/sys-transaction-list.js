@@ -1,13 +1,13 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Table } from 'antd'
+import { Icon } from 'antd'
 import moment from 'moment'
+import Table from './table'
 
 type Props = {
   data: Array<Object>,
   error: boolean,
-  isLoading: boolean,
-  columns?: Array<Object>
+  isLoading: boolean
 };
 
 export default class SysTransactionList extends Component<Props> {
@@ -17,7 +17,7 @@ export default class SysTransactionList extends Component<Props> {
   }
 
   generateColumns() {
-    return this.props.columns ? this.props.columns : [
+    return [
       {
         title: ' ',
         key: 'txid',
@@ -87,19 +87,17 @@ export default class SysTransactionList extends Component<Props> {
 
   render() {
     return (
-      <Table
-        dataSource={this.prepareData()}
-        columns={this.generateColumns()}
-        className='transactions-table'
-        rowClassName='transactions-table-row'
-        rowKey='txid'
-        pagination={{
-          defaultPageSize: 10
-        }}
-        locale={{
-          emptyText: this.defineLocales()
-        }}
-      />
+      <div className='wallet-summary-balance-container'>
+        <h3 className='wallet-summary-balance-title'>SYS Transactions</h3>
+        <Table
+          data={this.prepareData()}
+          columns={this.generateColumns()}
+          rowKey='txid'
+          pageSize={10}
+          isLoading={this.props.isLoading}
+          error={this.props.error}
+        />
+      </div>
     )
   }
 }

@@ -22,7 +22,13 @@ type Props = {
   syncPercentage: number,
   getPrivateKey: Function,
   goToHome: Function,
-  sysTransactions: {
+  dashboardSysTransactions: {
+    isLoading: boolean,
+    error: boolean,
+    errorMessage: string,
+    data: Array<Object>
+  },
+  dashboardAssets: {
     isLoading: boolean,
     error: boolean,
     errorMessage: string,
@@ -53,7 +59,7 @@ export default class Accounts extends Component<Props> {
             iCopy.avatarUrl = JSON.parse(iCopy.publicValue).avatarUrl
           }
         } catch(err) {
-          iCopy.avatarUrl = false
+          iCopy.avatarUrl = ''
         }
         return aliases.push(iCopy)
       }
@@ -130,9 +136,10 @@ export default class Accounts extends Component<Props> {
         <Col xs={15} className='accounts-container-right'>
           {(!this.props.selectedAlias || this.props.aliasAssets.error) ? (
             <Dashboard
+              balance={this.props.balance}
               backgroundLogo={this.props.backgroundLogo}
-              assets={[]}
-              transactions={this.props.sysTransactions}
+              transactions={this.props.dashboardSysTransactions}
+              assets={this.props.dashboardAssets}
             />
           ) : null}
           {this.props.aliasAssets.data.length ? (
