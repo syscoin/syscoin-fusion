@@ -6,6 +6,7 @@ import TransactionList from './components/transaction-list'
 import UserBalance from './components/balance'
 import SyncLoader from './components/sync-loader'
 import Home from './components/home'
+import Dashboard from './components/dashboard'
 
 type Props = {
   backgroundLogo: string,
@@ -20,7 +21,13 @@ type Props = {
   currentBlock: number,
   syncPercentage: number,
   getPrivateKey: Function,
-  goToHome: Function
+  goToHome: Function,
+  sysTransactions: {
+    isLoading: boolean,
+    error: boolean,
+    errorMessage: string,
+    data: Array<Object>
+  }
 };
 
 export default class Accounts extends Component<Props> {
@@ -82,7 +89,6 @@ export default class Accounts extends Component<Props> {
   }
 
   render() {
-    console.log(this.props.transactions, this.props.aliasAssets)
     return (
       <Row className='accounts-container'>
         <Col xs={9} className='accounts-container-left'>
@@ -108,7 +114,13 @@ export default class Accounts extends Component<Props> {
           </div>
         </Col>
         <Col xs={15} className='accounts-container-right'>
-          {(!this.props.selectedAlias || this.props.aliasAssets.error) ? <img src={this.props.backgroundLogo} alt='sys-logo' className='sys-logo-bg' /> : null}
+          {(!this.props.selectedAlias || this.props.aliasAssets.error) ? (
+            <Dashboard
+              backgroundLogo={this.props.backgroundLogo}
+              assets={[]}
+              transactions={this.props.sysTransactions}
+            />
+          ) : null}
           {this.props.aliasAssets.data.length ? (
             <div>
               <Row className='asset-box-container'>

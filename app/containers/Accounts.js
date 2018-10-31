@@ -17,7 +17,13 @@ type Props = {
   aliases: Array<Object>,
   assets: Array<Object>,
   headBlock: number,
-  currentBlock: number
+  currentBlock: number,
+  sysTransactions: {
+    isLoading: boolean,
+    error: boolean,
+    errorMessage: string,
+    data: Array<Object>
+  }
 };
 type State = {
   selectedAlias: string,
@@ -230,6 +236,7 @@ class AccountsContainer extends Component<Props, State> {
         selectAsset={this.selectAsset.bind(this)}
         getPrivateKey={this.getPrivateKey}
         goToHome={this.goToHome.bind(this)}
+        sysTransactions={this.props.sysTransactions}
       />
     )
   }
@@ -240,7 +247,8 @@ const mapStateToProps = state => ({
   aliases: state.wallet.aliases,
   assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,
-  currentBlock: state.wallet.getinfo.blocks
+  currentBlock: state.wallet.getinfo.blocks,
+  sysTransactions: state.wallet.dashboard.transactions
 })
 
 export default connect(mapStateToProps)(AccountsContainer)

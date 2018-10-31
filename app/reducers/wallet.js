@@ -3,12 +3,16 @@ import {
   WALLET_GETINFO,
   WALLET_ALIASES,
   WALLET_UNFINISHED_ALIASES,
-  WALLET_BLOCKCHAIN_INFO
+  WALLET_BLOCKCHAIN_INFO,
+  WALLET_DASHBOARD_ASSETS,
+  WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING,
+  WALLET_DASHBOARD_TRANSACTIONS_ERROR,
+  WALLET_DASHBOARD_TRANSACTIONS_RECEIVE
 } from 'fw-types/wallet'
 
 type actionType = {
   +type: string,
-  payload?: any
+  payload ?: any
 };
 
 export const initialState = {
@@ -45,6 +49,19 @@ export const initialState = {
     pruned: false,
     softforks: [],
     bip9_softforks: {}
+  },
+  dashboard: {
+    assets: {
+      isLoading: false,
+      error: false,
+      data: []
+    },
+    transactions: {
+      isLoading: false,
+      error: false,
+      errorMessage: '',
+      data: []
+    }
   }
 }
 
@@ -69,6 +86,53 @@ export default function wallet(state: StateType = initialState, action: actionTy
       return {
         ...state,
         blockchaininfo: action.payload
+      }
+    case WALLET_DASHBOARD_ASSETS:
+      return {
+        ...state,
+        dashboard: {
+          ...state.dashboard,
+          assets: action.payload
+        }
+      }
+    case WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING:
+      return {
+        ...state,
+        dashboard: {
+          ...state.dashboard,
+          transactions: {
+            isLoading: true,
+            error: false,
+            errorMessage: '',
+            data: []
+          }
+        }
+      }
+    case WALLET_DASHBOARD_TRANSACTIONS_ERROR:
+      return {
+        ...state,
+        dashboard: {
+          ...state.dashboard,
+          transactions: {
+            isLoading: false,
+            error: true,
+            errorMessage: action.payload,
+            data: []
+          }
+        }
+      }
+    case WALLET_DASHBOARD_TRANSACTIONS_RECEIVE:
+      return {
+        ...state,
+        dashboard: {
+          ...state.dashboard,
+          transactions: {
+            isLoading: false,
+            error: false,
+            errorMessage: '',
+            data: action.payload
+          }
+        }
       }
     default:
       return state

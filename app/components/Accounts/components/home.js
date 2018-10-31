@@ -9,6 +9,5 @@ type Props = {
 
 export default (props: Props) => {
   const { onClick, disabled, ...otherProps } = props
-  console.log(disabled)
   return <Icon type='home' onClick={onClick} {...otherProps} className={`home-icon ${disabled ? 'disabled' : ''} ${otherProps.className}`} />
 }

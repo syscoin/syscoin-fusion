@@ -529,6 +529,29 @@ const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<s
   })
 })
 
+const listSysTransactions = () => new Promise((resolve, reject) => {
+  const cmd = generateCmd('cli', `listtransactions "*" 99999999 0`)
+  console.time(cmd)
+  exec(cmd, (err, result) => {
+    console.timeEnd(cmd)
+    if (err) {
+      return reject(err)
+    }
+
+    try {
+      return resolve(
+        JSON.parse(result).map(i => {
+          const obj = {...i}
+          obj.time = (new Date(0)).setUTCSeconds(i.time)
+          return obj
+        })
+      )
+    } catch(errParse) {
+      return reject(errParse)
+    }
+  })
+})
+
 module.exports = {
   aliasInfo,
   currentSysAddress,
@@ -548,5 +571,6 @@ module.exports = {
   getTransactionsPerAsset,
   listAssets,
   getBlockchainInfo,
-  getAssetAllocationTransactions
+  getAssetAllocationTransactions,
+  listSysTransactions
 }

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ipcRenderer, remote } from 'electron'
 import Wallet from 'fw-components/Wallet'
-import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo } from 'fw-actions/wallet'
+import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo, dashboardTransactions } from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
@@ -22,7 +22,8 @@ type Props = {
   saveGuids: Function,
   saveUnfinishedAliases: Function,
   saveBlockchainInfo: Function,
-  toggleMaximize: Function
+  toggleMaximize: Function,
+  dashboardTransactions: Function
 };
 
 class WalletContainer extends Component<Props> {
@@ -52,6 +53,9 @@ class WalletContainer extends Component<Props> {
     this.updateWalletHigh()
     // Update guids in store
     this.updateAssets()
+
+    // Get Dashboard data
+    this.props.dashboardTransactions()
   }
 
   updateWalletHigh() {
@@ -124,7 +128,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   saveGuids,
   saveUnfinishedAliases,
   saveBlockchainInfo,
-  toggleMaximize
+  toggleMaximize,
+  dashboardTransactions
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletContainer)

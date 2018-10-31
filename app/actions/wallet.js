@@ -1,7 +1,7 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo, listSysTransactions } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
 
@@ -65,10 +65,23 @@ type saveBlockchainInfoActionType = {
   }
 };
 
+type saveDashboardTransactionsActionType = {
+  type: string,
+  payload: Array<Object>
+};
+
 const saveGetInfoAction = createAction(types.WALLET_GETINFO)
 const saveAliasesAction = createAction(types.WALLET_ALIASES)
 const saveUnfinishedAliasesAction = createAction(types.WALLET_UNFINISHED_ALIASES)
 const saveBlockchainInfoAction = createAction(types.WALLET_BLOCKCHAIN_INFO)
+
+const dashboardAssetsIsLoadingAction = createAction(types.WALLET_DASHBOARD_ASSETS_IS_LOADING)
+const dashboardAssetsErrorAction = createAction(types.WALLET_DASHBOARD_ASSETS_ERROR)
+const dashboardAssetsReceiveAction = createAction(types.WALLET_DASHBOARD_ASSETS_RECEIVE)
+
+const dashboardTransactionsIsLoadingAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING)
+const dashboardTransactionsErrorAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_ERROR)
+const dashboardTransactionsReceiveAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_RECEIVE)
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
   try {
@@ -99,5 +112,15 @@ export const saveBlockchainInfo = () => async (dispatch: (action: saveBlockchain
     dispatch(saveBlockchainInfoAction(await getBlockchainInfo()))
   } catch(err) {
     dispatch(saveBlockchainInfoAction(initialState.blockchaininfo))
+  }
+}
+
+export const dashboardTransactions = () => async (dispatch: (action: saveDashboardTransactionsActionType) => void) => {
+  dispatch(dashboardTransactionsIsLoadingAction())
+
+  try {
+    return dispatch(dashboardTransactionsReceiveAction(await listSysTransactions()))
+  } catch(err) {
+    return dashboardTransactionsErrorAction(err)
   }
 }
