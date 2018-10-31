@@ -35,7 +35,7 @@
     "eslint-plugin-promise": "^3.6.0"
   },
   "private": true,
-  "engines": {
+  "engine": {
     "node": "8"
   }
 }

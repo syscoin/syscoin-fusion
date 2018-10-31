@@ -43,7 +43,6 @@ module.exports = (req, res, next) => {
             amount,
             (err) => {
                 if (err) {
-                    console.log("Error in update balance")
                     return res.status(400).send({
                         error: true,
                         message: err
