@@ -82,7 +82,6 @@ export default class SysTransactionList extends Component<Props> {
   }
 
   changePage(type) {
-    console.log('ME TOY EEXCE')
     this.setState({
       currentPage: type === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
     }, () => {
