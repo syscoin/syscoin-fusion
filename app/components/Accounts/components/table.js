@@ -8,10 +8,10 @@ type Props = {
   isLoading: boolean,
   columns: Array<Object>,
   rowKey: string,
-  pageSize: number
+  pageSize?: number
 };
 
-export default class SysTransactionList extends Component<Props> {
+class SysTransactionList extends Component<Props> {
 
   generateColumns() {
     return this.props.columns
@@ -51,3 +51,9 @@ export default class SysTransactionList extends Component<Props> {
     )
   }
 }
+
+SysTransactionList.defaultProps = {
+  pageSize: 10
+}
+
+export default SysTransactionList

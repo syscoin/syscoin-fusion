@@ -82,10 +82,11 @@ export default class SysTransactionList extends Component<Props> {
   }
 
   changePage(type) {
+    console.log('ME TOY EEXCE')
     this.setState({
       currentPage: type === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
     }, () => {
-      this.props.refresh(this.state.currentPage - 1, 10)
+      this.props.refresh(this.state.currentPage, 10)
     })
   }
 
@@ -103,7 +104,6 @@ export default class SysTransactionList extends Component<Props> {
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
-          page={this.state.currentPage}
         />
         {!this.props.isLoading && (
           <Pagination
