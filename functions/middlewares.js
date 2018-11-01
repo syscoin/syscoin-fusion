@@ -48,4 +48,21 @@ module.exports.checkIpForUpdate = (req, res, next) => {
 }
 
 module.exports.getOrderData = (req, res, next) => {
+    admin.database().ref('/mndata')
+    .orderByChild('orderId')
+    .equalTo(req.orderId)
+    .once('value', snapshot => {
+    if (snapshot.hasChildren()) {
+        const key = Object.keys(snapshot.val())[0]
+        const data = snapshot.val()[key]
+               
+        return next()
+    } else {
+        return res.status(403).send({
+            error: true,
+            message: 'Forbidden'
+        })
+    }
+
+}).catch(() => res.sendStatus(500))
 }
