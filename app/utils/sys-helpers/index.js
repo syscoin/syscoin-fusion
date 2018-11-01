@@ -529,8 +529,8 @@ const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<s
   })
 })
 
-const listSysTransactions = () => new Promise((resolve, reject) => {
-  const cmd = generateCmd('cli', `listtransactions "*" 99999999 0`)
+const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise((resolve, reject) => {
+  const cmd = generateCmd('cli', `listtransactions "*" ${pageSize} ${page * pageSize}`)
   console.time(cmd)
   exec(cmd, (err, result) => {
     console.timeEnd(cmd)

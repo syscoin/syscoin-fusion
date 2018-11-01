@@ -32,19 +32,21 @@ export default class SysTransactionList extends Component<Props> {
   }
 
   render() {
+    const { data, columns, rowKey, pageSize, ...props} = this.props
     return (
       <Table
-        dataSource={this.props.data || []}
-        columns={this.props.columns || []}
+        dataSource={data || []}
+        columns={columns || []}
         className='transactions-table'
         rowClassName='transactions-table-row'
-        rowKey={this.props.rowKey || 'txid'}
+        rowKey={rowKey || 'txid'}
         pagination={{
-          defaultPageSize: this.props.pageSize || 10
+          defaultPageSize: pageSize || 10
         }}
         locale={{
           emptyText: this.defineLocales()
         }}
+        {...props}
       />
     )
   }

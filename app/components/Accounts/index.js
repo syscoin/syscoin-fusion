@@ -114,8 +114,8 @@ export default class Accounts extends Component<Props> {
     this.props.getDashboardAssets()
   }
 
-  refreshDashboardTransactions() {
-    this.props.getDashboardTransactions()
+  refreshDashboardTransactions(page: number = 0, pageSize: number = 10) {
+    this.props.getDashboardTransactions(page, pageSize)
   }
 
   render() {

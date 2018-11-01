@@ -55,9 +55,9 @@ export default class DashboardBalance extends Component<Props> {
           data={this.props.assets}
           columns={this.generateTableColumns()}
           rowKey='asset'
-          pageSize={10}
           isLoading={this.props.isLoading}
           error={this.props.error}
+          pagination={false}
         />
       </div>
     )

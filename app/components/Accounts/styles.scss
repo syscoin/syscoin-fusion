@@ -200,11 +200,18 @@
 }
 
 .wallet-summary-container {
+    padding-bottom: 100px;
+    
     .wallet-summary-title {
         margin-top: 20px;
         color: $main_white;
         text-transform: uppercase;
         letter-spacing: 2px;
+    }
+
+    .fw-table-pagination-page {
+        color: $main_white;
+        margin-right: 10px;
     }
 
     .wallet-summary-balance-container {
@@ -235,6 +242,36 @@
 
     & > hr {
         margin: 20px 0;
+    }
+
+    .ant-table-pagination {
+        display: none;
+    }
+
+    .fw-table-pagination-container {
+        float: right;
+
+        button {
+            background: transparent;
+            border-color: $main_white;
+            margin-left: 5px;
+
+            i {
+                color: $main_white;
+            }
+
+            &:hover {
+                background: transparent;
+                
+                i {
+                    color: #fff;
+                }
+            }
+        }
+
+        button.disabled {
+            opacity: 0.5;
+        }
     }
 }
 

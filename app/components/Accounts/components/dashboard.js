@@ -1,8 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col, Icon, Spin, Tooltip } from 'antd'
-import swal from 'sweetalert'
-import parseError from 'fw-utils/error-parser'
+import { Row, Col } from 'antd'
 import SysTransactionList from './sys-transaction-list'
 import DashboardBalance from './dashboard-balance'
 import DashboardTokens from './dashboard-tokens'
@@ -27,18 +25,7 @@ type Props = {
   refreshDashboardTransactions: Function
 };
 
-type State = {
-};
-
 class Dashboard extends Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-    }
-  }
-
   render() {
     return (
       <div>

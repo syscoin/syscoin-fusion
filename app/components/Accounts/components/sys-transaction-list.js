@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Icon } from 'antd'
 import moment from 'moment'
 import Table from './table'
+import Pagination from './pagination'
 
 type Props = {
   data: Array<Object>,
@@ -12,6 +13,14 @@ type Props = {
 };
 
 export default class SysTransactionList extends Component<Props> {
+
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      currentPage: 0
+    }
+  }
 
   cutTextIfNeeded(text: string) {
     return text.length > 13 ? `${text.slice(0, 12)}...` : text
@@ -64,39 +73,27 @@ export default class SysTransactionList extends Component<Props> {
     return false
   }
 
-  defineLocales() {
-    let emptyText
-
-    if (this.props.error) {
-      emptyText = 'Something went wrong. Try again later'
-    } else if (this.props.isLoading) {
-      emptyText = 'Loading...'
-    } else {
-      emptyText = 'No data'
-    }
-
-    return emptyText
-  }
 
   prepareData() {
     // Sort time by date - more recent first
     const data = this.props.data.sort((a, b) => b.time - a.time)
-      .filter(i => i.address)
 
     return data
+  }
+
+  changePage(type) {
+    this.setState({
+      currentPage: type === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
+    }, () => {
+      this.props.refresh(this.state.currentPage - 1, 10)
+    })
   }
 
   render() {
     return (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
-          SYS Transactions {!this.props.isLoading && (
-            <Icon
-              type='reload'
-              className='dashboard-refresh'
-              onClick={this.props.refresh}
-            />
-          )}
+          SYS Transactions
         </h3>
         <Table
           data={this.prepareData()}
@@ -105,7 +102,18 @@ export default class SysTransactionList extends Component<Props> {
           pageSize={10}
           isLoading={this.props.isLoading}
           error={this.props.error}
+          onChange={this.changePage}
+          page={this.state.currentPage}
         />
+        {!this.props.isLoading && (
+          <Pagination
+            onChange={this.changePage.bind(this)}
+            nextDisabled={this.prepareData().length < 10}
+            prevDisabled={this.state.currentPage === 0}
+            currentPage={this.state.currentPage}
+            showPage
+          />
+        )}
       </div>
     )
   }

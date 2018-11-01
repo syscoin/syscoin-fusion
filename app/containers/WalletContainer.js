@@ -55,7 +55,7 @@ class WalletContainer extends Component<Props> {
     this.updateAssets()
 
     // Get Dashboard data
-    this.props.dashboardTransactions()
+    this.props.dashboardTransactions(0, 10)
   }
 
   updateWalletHigh() {
