@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col } from 'antd'
+import { Icon } from 'antd'
 import Table from './table'
 
 type Props = {
@@ -10,7 +10,8 @@ type Props = {
     asset: string
   }>,
   isLoading: boolean,
-  error: boolean
+  error: boolean,
+  refresh: Function
 };
 
 export default class DashboardBalance extends Component<Props> {
@@ -41,7 +42,15 @@ export default class DashboardBalance extends Component<Props> {
   render() {
     return (
       <div className='wallet-summary-balance-container'>
-        <h3 className='wallet-summary-balance-title'>Total Tokens</h3>
+        <h3 className='wallet-summary-balance-title'>
+          Total Tokens {!this.props.isLoading && (
+            <Icon
+              type='reload'
+              className='dashboard-refresh'
+              onClick={this.props.refresh}
+            />
+          )}
+        </h3>
         <Table
           data={this.props.assets}
           columns={this.generateTableColumns()}

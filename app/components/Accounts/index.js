@@ -33,7 +33,9 @@ type Props = {
     error: boolean,
     errorMessage: string,
     data: Array<Object>
-  }
+  },
+  getDashboardAssets: Function,
+  getDashboardTransactions: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -108,6 +110,14 @@ export default class Accounts extends Component<Props> {
     )
   }
 
+  refreshDashboardAssets() {
+    this.props.getDashboardAssets()
+  }
+
+  refreshDashboardTransactions() {
+    this.props.getDashboardTransactions()
+  }
+
   render() {
     return (
       <Row className='accounts-container'>
@@ -140,6 +150,8 @@ export default class Accounts extends Component<Props> {
               backgroundLogo={this.props.backgroundLogo}
               transactions={this.props.dashboardSysTransactions}
               assets={this.props.dashboardAssets}
+              refreshDashboardAssets={this.refreshDashboardAssets.bind(this)}
+              refreshDashboardTransactions={this.refreshDashboardTransactions.bind(this)}
             />
           ) : null}
           {this.props.aliasAssets.data.length ? (

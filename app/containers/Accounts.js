@@ -10,7 +10,7 @@ import {
   listAssetAllocation,
   getPrivateKey
 } from 'fw-sys'
-import { dashboardAssets } from 'fw-actions/wallet'
+import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 
@@ -31,7 +31,9 @@ type Props = {
     error: boolean,
     errorMessage: string,
     data: Array<Object>
-  }
+  },
+  dashboardAssets: Function,
+  dashboardTransactions: Function
 };
 type State = {
   selectedAlias: string,
@@ -86,6 +88,7 @@ class AccountsContainer extends Component<Props, State> {
     if (!prevProps.aliases.length && this.props.aliases.length) {
       this.props.dashboardAssets()
     }
+    return null
   }
 
   updateSelectedAlias(alias: string) {
@@ -252,6 +255,8 @@ class AccountsContainer extends Component<Props, State> {
         goToHome={this.goToHome.bind(this)}
         dashboardSysTransactions={this.props.dashboardSysTransactions}
         dashboardAssets={this.props.dashboardAssetsBalances}
+        getDashboardAssets={this.props.dashboardAssets}
+        getDashboardTransactions={this.props.dashboardTransactions}
       />
     )
   }
@@ -268,7 +273,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  dashboardAssets
+  dashboardAssets,
+  dashboardTransactions
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)

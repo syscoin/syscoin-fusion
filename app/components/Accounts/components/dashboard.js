@@ -22,7 +22,9 @@ type Props = {
     error: boolean,
     errorMessage: string,
     data: Array<Object>
-  }
+  },
+  refreshDashboardAssets: Function,
+  refreshDashboardTransactions: Function
 };
 
 type State = {
@@ -51,12 +53,14 @@ class Dashboard extends Component<Props, State> {
                 isLoading={this.props.assets.isLoading}
                 error={this.props.assets.error}
                 assets={this.props.assets.data}
+                refresh={this.props.refreshDashboardAssets}
               />
               <hr />
               <SysTransactionList
                 data={this.props.transactions.data}
                 error={this.props.transactions.error}
                 isLoading={this.props.transactions.isLoading}
+                refresh={this.props.refreshDashboardTransactions}
               />
             </div>
           </Col>

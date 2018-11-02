@@ -7,7 +7,8 @@ import Table from './table'
 type Props = {
   data: Array<Object>,
   error: boolean,
-  isLoading: boolean
+  isLoading: boolean,
+  refresh: Function
 };
 
 export default class SysTransactionList extends Component<Props> {
@@ -88,7 +89,15 @@ export default class SysTransactionList extends Component<Props> {
   render() {
     return (
       <div className='wallet-summary-balance-container'>
-        <h3 className='wallet-summary-balance-title'>SYS Transactions</h3>
+        <h3 className='wallet-summary-balance-title'>
+          SYS Transactions {!this.props.isLoading && (
+            <Icon
+              type='reload'
+              className='dashboard-refresh'
+              onClick={this.props.refresh}
+            />
+          )}
+        </h3>
         <Table
           data={this.prepareData()}
           columns={this.generateColumns()}

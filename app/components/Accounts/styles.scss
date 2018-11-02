@@ -215,6 +215,14 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 0;
+
+            .dashboard-refresh {
+                font-size: 15px;
+                cursor: pointer;
+                position: relative;
+                bottom: 3px;
+                color: $main_blue;
+            }
         }
 
         .wallet-summary-balance-number {
@@ -223,6 +231,10 @@
             font-size: 20px;
             letter-spacing: 2px;
         }
+    }
+
+    & > hr {
+        margin: 20px 0;
     }
 }
 
