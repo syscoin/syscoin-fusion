@@ -4,10 +4,11 @@ import { Icon } from 'antd'
 
 type Props = {
   onClick: Function,
-  disabled: boolean
+  disabled: boolean,
+  className: string
 };
 
 export default (props: Props) => {
-  const { onClick, disabled, ...otherProps } = props
-  return <Icon type='home' onClick={onClick} {...otherProps} className={`home-icon ${disabled ? 'disabled' : ''} ${otherProps.className}`} />
+  const { onClick, disabled, className = '',  ...otherProps } = props
+  return <Icon type='home' onClick={onClick} {...otherProps} className={`home-icon ${disabled ? 'disabled' : ''} ${className}`} />
 }

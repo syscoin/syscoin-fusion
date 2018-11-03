@@ -25,7 +25,7 @@ type Props = {
   refreshDashboardTransactions: Function
 };
 
-class Dashboard extends Component<Props, State> {
+class Dashboard extends Component<Props> {
   render() {
     return (
       <div>

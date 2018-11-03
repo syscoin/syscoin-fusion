@@ -12,7 +12,11 @@ type Props = {
   refresh: Function
 };
 
-export default class SysTransactionList extends Component<Props> {
+type State = {
+  currentPage: number
+};
+
+export default class SysTransactionList extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
@@ -81,7 +85,7 @@ export default class SysTransactionList extends Component<Props> {
     return data
   }
 
-  changePage(type) {
+  changePage(type: string) {
     this.setState({
       currentPage: type === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
     }, () => {

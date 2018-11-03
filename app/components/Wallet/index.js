@@ -19,8 +19,26 @@ type Props = {
   onUnmaximize: Function
 };
 
-class Wallet extends Component<Props> {
+type State = {
+  activeTab: string
+};
+
+class Wallet extends Component<Props, State> {
   props: Props
+
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      activeTab: '1'
+    }
+  }
+
+  onChangeTab(tab: string) {
+    this.setState({
+      activeTab: tab
+    })
+  }
 
   render() {
     return (
@@ -33,9 +51,9 @@ class Wallet extends Component<Props> {
           onUnmaximize={this.props.onUnmaximize}
         />
         <Col xs={24}>
-          <Tabs className='tabs-app'>
+          <Tabs className='tabs-app' activeKey={this.state.activeTab} onChange={this.onChangeTab.bind(this)}>
             <Tab className='tab tab-accounts' tab='Accounts' key='1'>
-              <AccountsContainer />
+              <AccountsContainer changeTab={this.onChangeTab.bind(this)} />
             </Tab>
             <Tab className='tab tab-send' tab='Send' key='2'>
               <SendContainer />

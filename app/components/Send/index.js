@@ -8,15 +8,23 @@ import SendSysForm from './components/send-sys'
 
 
 type Props = {
-  assetIsLoading: boolean,
-  sysIsLoading: boolean,
   aliases: Array<string>,
   sendAsset: Function,
   sendSys: Function,
   balance: number,
   assets: Array<Object>,
   getAssetsFromAlias: Function,
-  assetsFromAliasIsLoading: boolean
+  assetsFromAliasIsLoading: boolean,
+  assetsForm: {
+    data: sendAssetType,
+    isLoading: boolean,
+    error: boolean
+  },
+  sysForm: {
+    data: sendSysType,
+    isLoading: boolean,
+    error: boolean
+  }
 };
 
 type sendAssetType = {
@@ -48,7 +56,7 @@ export default class Send extends Component<Props> {
       <div className='send-forms-container'>
         <Row gutter={24}>
           <SendAssetForm
-            isLoading={this.props.assetIsLoading}
+            isLoading={this.props.assetsForm.isLoading}
             title='Send Asset'
             columnSize={12}
             assets={this.props.assets}
@@ -56,6 +64,7 @@ export default class Send extends Component<Props> {
             sendAsset={this.sendAsset.bind(this)}
             onSelectAlias={this.props.getAssetsFromAlias}
             assetsFromAliasIsLoading={this.props.assetsFromAliasIsLoading}
+            form={this.props.assetsForm.data}
           />
         </Row>
         <Row>
@@ -65,11 +74,12 @@ export default class Send extends Component<Props> {
         </Row>
         <Row gutter={24}>
           <SendSysForm
-            isLoading={this.props.sysIsLoading}
+            isLoading={this.props.sysForm.isLoading}
             title='Send SYS'
             columnSize={12}
             balance={this.props.balance}
             sendSys={this.sendSys.bind(this)}
+            form={this.props.sysForm.data}
           />
         </Row>
       </div>

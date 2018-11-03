@@ -33,8 +33,10 @@ type Props = {
     data: Array<Object>
   },
   dashboardAssets: Function,
-  dashboardTransactions: Function
+  dashboardTransactions: Function,
+  changeTab: Function
 };
+
 type State = {
   selectedAlias: string,
   aliasAssets: {
