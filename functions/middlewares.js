@@ -24,10 +24,10 @@ module.exports.checkIpWhitelist = (req, res, next) => {
 }
 
 module.exports.checkIpForUpdate = (req, res, next) => {
-     const clientIp = '165.227.12.112' // (req.headers['x-forwarded-for'] ||
-    //     req.connection.remoteAddress ||
-    //     req.socket.remoteAddress ||
-    //     req.connection.socket.remoteAddress).split(",")[0]
+     const clientIp = (req.headers['x-forwarded-for'] || 
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress).split(",")[0]
         admin.database().ref('/vps')
             .orderByChild('ip')
             .equalTo(clientIp)
@@ -59,8 +59,8 @@ module.exports.getOrderData = (req, res, next) => {
         updateBalance(req.body.mnUserId, parseFloat(amount)*-1,
             (err) => {
             if (err) {
-                console.log("Error in update balance")
-                return res.sendStatus(500)
+                console.log("Error in update balance: ", err.Error())
+                // res.sendStatus(500)
             }
         })
 
