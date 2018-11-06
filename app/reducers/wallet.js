@@ -68,7 +68,7 @@ export const initialState = {
   }
 }
 
-export default function wallet(state: StateType = initialState, action: actionType) {
+export default function wallet(state: Object = initialState, action: actionType) {
   switch (action.type) {
     case WALLET_GETINFO:
       return {

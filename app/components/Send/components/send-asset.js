@@ -1,9 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { Col, Input, Button, Select, Spin, Icon } from 'antd'
-import swal from 'sweetalert'
 import formChangeFormat from 'fw-utils/form-change-format'
-import parseError from 'fw-utils/error-parser'
 
 const { Option } = Select
 
@@ -15,10 +13,16 @@ type Props = {
   isLoading: boolean,
   sendAsset: Function,
   onSelectAlias: Function,
-  assetsFromAliasIsLoading: boolean
+  assetsFromAliasIsLoading: boolean,
+  form: {
+    isLoading: boolean,
+    error: boolean,
+    data: FormDataType
+  },
+  onChangeForm: Function
 };
 
-type State = {
+type FormDataType = {
   from: string,
   asset: string,
   toAddress: string,
@@ -26,8 +30,8 @@ type State = {
   comment: string
 };
 
-export default class SendAssetForm extends Component<Props, State> {
-  initialState: State;
+export default class SendAssetForm extends Component<Props> {
+  initialState: FormDataType;
 
   constructor(props: Props) {
     super(props)
@@ -38,10 +42,6 @@ export default class SendAssetForm extends Component<Props, State> {
       toAddress: '',
       amount: '',
       comment: ''
-    }
-
-    this.state = {
-      ...this.initialState
     }
   }
 
@@ -54,11 +54,14 @@ export default class SendAssetForm extends Component<Props, State> {
       }
     }
 
-    this.setState(toUpdate)
+    this.props.onChangeForm({
+      ...this.props.form.data,
+      ...toUpdate
+    }, 'asset')
   }
   
   resetForm() {
-    this.setState({
+    this.props.onChangeForm({
       ...this.initialState
     })
   }
@@ -71,7 +74,8 @@ export default class SendAssetForm extends Component<Props, State> {
       assets = [],
       isLoading = false,
       sendAsset,
-      assetsFromAliasIsLoading
+      assetsFromAliasIsLoading,
+      form
     } = this.props
     const {
       from,
@@ -79,7 +83,7 @@ export default class SendAssetForm extends Component<Props, State> {
       toAddress,
       amount,
       comment
-    } = this.state
+    } = form.data
 
     return (
       <Col
@@ -93,8 +97,10 @@ export default class SendAssetForm extends Component<Props, State> {
             disabled={isLoading}
             onChange={val => {
               this.updateField(val, 'from')
-              this.updateField('', 'asset')
               this.props.onSelectAlias(val)
+
+              // Give some time to updateField to update "from" so it wont be empty when firing this
+              setTimeout(() => this.updateField('', 'asset'), 200)
             }}
             placeholder='Select alias'
             className='send-asset-form-control send-asset-form-select-alias'
@@ -149,14 +155,7 @@ export default class SendAssetForm extends Component<Props, State> {
             <Button
               className='send-asset-form-btn-send'
               disabled={isLoading || !from || !asset || !toAddress || !amount}
-              onClick={() => sendAsset(this.state, err => {
-                if (err) {
-                  return swal('Error', parseError(err.message), 'error')
-                }
-
-                this.resetForm()
-                return swal('Success', 'Asset successfully sent', 'success')
-              })}
+              onClick={() => sendAsset(this.props.form.data)}
             >
               Send
             </Button>

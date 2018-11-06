@@ -121,8 +121,6 @@ export const saveBlockchainInfo = () => async (dispatch: (action: saveBlockchain
   }
 }
 
-window._ = _
-
 export const dashboardTransactions = (page: number, pageSize: number) => async (dispatch: (action: saveDashboardTransactionsActionType) => void) => {
   dispatch(dashboardTransactionsIsLoadingAction())
 

@@ -1,26 +1,34 @@
 // @flow
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
 import Send from 'fw-components/Send'
 import {
-  listAssetAllocation,
-  sendAsset,
-  sendSysTransaction
+  listAssetAllocation
 } from 'fw-sys'
+import {
+  editSendAsset,
+  editSendSys,
+  sendAssetForm,
+  sendSysForm
+} from 'fw-actions/forms'
 
 
 type Props = {
   assets: Array<Object>,
   balance: number,
   aliases: Array<Object>,
-  sendAssetForm: Object,
-  sendSysForm: Object
+  sendAssetForm: Function,
+  sendSysForm: Function,
+  editSendAsset: Function,
+  editSendSys: Function,
+  sysForm: Object,
+  assetForm: Object
 };
 type State = {
   assetsFromAlias: Array<Object>,
-  assetsFromAliasIsLoading: boolean,
-  assetIsLoading: boolean,
-  sysIsLoading: boolean
+  assetsFromAliasIsLoading: boolean
 };
 
 type sendAssetType = {
@@ -38,74 +46,50 @@ type sendSysType = {
 
 class SendContainer extends Component<Props, State> {
 
-  constructor() {
-    super()
+  constructor(props: Props) {
+    super(props)
 
     this.state = {
       assetsFromAlias: [],
-      assetsFromAliasIsLoading: false,
-      assetIsLoading: false,
-      sysIsLoading: false,
+      assetsFromAliasIsLoading: false
     }
   }
 
-  async sendAsset(obj: sendAssetType, cb: Function) {
+  sendAsset(obj: sendAssetType) {
     const { from, asset, toAddress, amount, comment } = obj
 
-    let sendResult
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.props.sendAssetForm({
+          fromAlias: from,
+          toAlias: toAddress,
+          assetId: asset,
+          amount,
+          comment
+        })
+      } catch (err) {
+        return reject(err)
+      }
 
-    this.setState({
-      assetIsLoading: true
+      resolve()
     })
-
-    try {
-      sendResult = await sendAsset({
-        fromAlias: from,
-        toAlias: toAddress,
-        assetId: asset,
-        amount,
-        comment
-      })
-    } catch (sendErr) {
-      this.setState({
-        assetIsLoading: false
-      })
-      return cb(sendErr)
-    }
-
-    this.setState({
-      assetIsLoading: false
-    })
-
-    return cb(null, sendResult)
   }
 
-  async sendSys(obj: sendSysType, cb: Function) {
+  sendSys(obj: sendSysType) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.props.sendSysForm(obj)
+      } catch (err) {
+        return reject(err)
+      }
 
-    this.setState({
-      sysIsLoading: true
+      resolve()
     })
-
-    let result
-
-    try {
-      result = await sendSysTransaction(obj)
-    } catch (err) {
-      this.setState({
-        sysIsLoading: false
-      })
-      return cb(err)
-    }
-
-    this.setState({
-      sysIsLoading: false
-    })
-
-    return cb(null, result)
   }
 
   async getAssetsFromAlias(alias: string, cb?: Function) {
     const { assets } = this.props
+
     this.setState({
       assetsFromAliasIsLoading: true,
       assetsFromAlias: []
@@ -117,7 +101,7 @@ class SendContainer extends Component<Props, State> {
       data = await listAssetAllocation({
         receiver_address: alias
       }, assets.map(i => i._id))
-    } catch(err) {
+    } catch (err) {
       this.setState({
         assetsFromAliasIsLoading: false,
         assetsFromAlias: []
@@ -131,20 +115,27 @@ class SendContainer extends Component<Props, State> {
     })
   }
 
+  onChangeForm(obj: Object, type: string) {
+    if (type === 'asset') {
+      this.props.editSendAsset(obj)
+    } else if (type === 'sys') {
+      this.props.editSendSys(obj)
+    }
+  }
+
   render() {
     return (
       <Send
         balance={this.props.balance}
-        assetIsLoading={this.state.assetIsLoading}
         assetsFromAliasIsLoading={this.state.assetsFromAliasIsLoading}
-        sysIsLoading={this.state.sysIsLoading}
         aliases={this.props.aliases.map(i => i.alias || i.address)}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
         getAssetsFromAlias={this.getAssetsFromAlias.bind(this)}
         assets={this.state.assetsFromAlias}
-        assetsForm={this.props.sendAssetForm}
-        sysForm={this.props.sendSysForm}
+        assetsForm={this.props.assetForm}
+        sysForm={this.props.sysForm}
+        onChangeForm={this.onChangeForm.bind(this)}
       />
     )
   }
@@ -154,8 +145,15 @@ const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
   aliases: state.wallet.aliases,
   assets: state.options.guids,
-  sendAssetForm: state.forms.sendAsset,
-  sendSysForm: state.forms.sendSys
+  assetForm: state.forms.sendAsset,
+  sysForm: state.forms.sendSys
 })
 
-export default connect(mapStateToProps)(SendContainer)
+const mapDispatchToProps = dispatch => bindActionCreators({
+  editSendAsset,
+  editSendSys,
+  sendAssetForm,
+  sendSysForm
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(SendContainer)
