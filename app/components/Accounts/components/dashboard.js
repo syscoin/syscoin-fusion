@@ -12,13 +12,11 @@ type Props = {
   transactions: {
     isLoading: boolean,
     error: boolean,
-    errorMessage: string,
     data: Array<Object>
   },
   assets: {
     isLoading: boolean,
     error: boolean,
-    errorMessage: string,
     data: Array<Object>
   },
   refreshDashboardAssets: Function,

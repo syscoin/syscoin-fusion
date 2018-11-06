@@ -23,13 +23,11 @@ type Props = {
   dashboardSysTransactions: {
     isLoading: boolean,
     error: boolean,
-    errorMessage: string,
     data: Array<Object>
   },
   dashboardAssetsBalances: {
     isLoading: boolean,
     error: boolean,
-    errorMessage: string,
     data: Array<Object>
   },
   dashboardAssets: Function,

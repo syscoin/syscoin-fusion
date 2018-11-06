@@ -56,13 +56,11 @@ export const initialState = {
     assets: {
       isLoading: false,
       error: false,
-      errorMessage: '',
       data: []
     },
     transactions: {
       isLoading: false,
       error: false,
-      errorMessage: '',
       data: []
     }
   }
@@ -98,7 +96,6 @@ export default function wallet(state: Object = initialState, action: actionType)
           transactions: {
             isLoading: true,
             error: false,
-            errorMessage: '',
             data: []
           }
         }
@@ -111,7 +108,6 @@ export default function wallet(state: Object = initialState, action: actionType)
           transactions: {
             isLoading: false,
             error: true,
-            errorMessage: action.payload,
             data: []
           }
         }
@@ -124,7 +120,6 @@ export default function wallet(state: Object = initialState, action: actionType)
           transactions: {
             isLoading: false,
             error: false,
-            errorMessage: '',
             data: action.payload
           }
         }
@@ -137,7 +132,6 @@ export default function wallet(state: Object = initialState, action: actionType)
           assets: {
             isLoading: true,
             error: false,
-            errorMessage: '',
             data: []
           }
         }
@@ -150,7 +144,6 @@ export default function wallet(state: Object = initialState, action: actionType)
           assets: {
             isLoading: false,
             error: true,
-            errorMessage: action.payload,
             data: []
           }
         }
@@ -163,7 +156,6 @@ export default function wallet(state: Object = initialState, action: actionType)
           assets: {
             isLoading: false,
             error: false,
-            errorMessage: '',
             data: action.payload
           }
         }

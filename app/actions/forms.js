@@ -8,7 +8,7 @@ import {
 
 type editSendAssetActionType = {
   type: string,
-  payload: editSendAssetType
+  payload?: editSendAssetType
 };
 
 type editSendAssetType = {
@@ -16,16 +16,16 @@ type editSendAssetType = {
   asset: string,
   toAddress: string,
   amount: string,
-  comment: string
+  comment?: string
 };
 
 type editSendSysActionType = {
   type: string,
-  payload: editSendSysType
+  payload?: editSendSysType
 };
 
 type editSendSysType = {
-  comment: string,
+  comment?: string,
   address: string,
   amount: string
 };
@@ -75,7 +75,7 @@ export const sendSysForm = (obj: editSendSysType) => async (dispatch: (action: e
     dispatch(sendSysReceiveAction(await sendSysTransaction(obj)))
   } catch (err) {
     dispatch(sendSysErrorAction(err))
-    return Promise.reject(err.message)
+    return Promise.reject(err)
   }
 
   return Promise.resolve()

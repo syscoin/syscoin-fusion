@@ -94,8 +94,7 @@ describe('Forms reducer', () => {
             sendAsset: {
                 ...initialState.sendAsset,
                 isLoading: false,
-                error: true,
-                errorMessage: action.payload
+                error: true
             }
         }
 
@@ -144,8 +143,7 @@ describe('Forms reducer', () => {
             sendSys: {
                 ...initialState.sendSys,
                 isLoading: false,
-                error: true,
-                errorMessage: action.payload
+                error: true
             }
         }
 

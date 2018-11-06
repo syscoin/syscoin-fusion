@@ -19,14 +19,12 @@ type Props = {
   assetsForm: {
     data: sendAssetType,
     isLoading: boolean,
-    error: boolean,
-    errorMessage: string
+    error: boolean
   },
   sysForm: {
     data: sendSysType,
     isLoading: boolean,
-    error: boolean,
-    errorMessage: string
+    error: boolean
   },
   onChangeForm: Function
 };

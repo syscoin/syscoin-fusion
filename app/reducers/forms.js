@@ -25,8 +25,7 @@ type StateType = {
       comment: string
     },
     isLoading: boolean,
-    error: boolean,
-    errorMessage: string
+    error: boolean
   },
   sendSys: {
     data: {
@@ -35,8 +34,7 @@ type StateType = {
       amount: string
     },
     isLoading: boolean,
-    error: boolean,
-    errorMessage: string
+    error: boolean
   }
 };
 
@@ -50,8 +48,7 @@ export const initialState = {
       comment: ''
     },
     isLoading: false,
-    error: false,
-    errorMessage: ''
+    error: false
   },
   sendSys: {
     data: {
@@ -60,8 +57,7 @@ export const initialState = {
       amount: ''
     },
     isLoading: false,
-    error: false,
-    errorMessage: ''
+    error: false
   }
 }
 
@@ -113,8 +109,7 @@ export default function forms(state: StateType = initialState, action: actionTyp
         sendAsset: {
           ...state.sendAsset,
           isLoading: false,
-          error: true,
-          errorMessage: action.payload
+          error: true
         }
       }
     case SEND_SYS_IS_LOADING:
@@ -143,8 +138,7 @@ export default function forms(state: StateType = initialState, action: actionTyp
         sendSys: {
           ...state.sendSys,
           isLoading: false,
-          error: true,
-          errorMessage: action.payload
+          error: true
         }
       }
     default:
