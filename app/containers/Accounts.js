@@ -5,12 +5,14 @@ import { bindActionCreators } from 'redux'
 import swal from 'sweetalert'
 
 import Accounts from 'fw-components/Accounts/'
+
 import {
   getTransactionsPerAsset,
   listAssetAllocation,
   getPrivateKey
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
+import { editSendAsset } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 
@@ -32,7 +34,8 @@ type Props = {
   },
   dashboardAssets: Function,
   dashboardTransactions: Function,
-  changeTab: Function
+  changeTab: Function,
+  editSendAsset: Function
 };
 
 type State = {
@@ -234,6 +237,21 @@ class AccountsContainer extends Component<Props, State> {
     })
   }
 
+  goToAssetForm(asset: string, alias: string) {
+    this.props.editSendAsset({
+      from: alias,
+      asset,
+      toAddress: '',
+      amount: '',
+      comment: ''
+    })
+    this.props.changeTab('2')
+  }
+
+  goToSysForm() {
+    this.props.changeTab('2')
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
@@ -257,6 +275,8 @@ class AccountsContainer extends Component<Props, State> {
         dashboardAssets={this.props.dashboardAssetsBalances}
         getDashboardAssets={this.props.dashboardAssets}
         getDashboardTransactions={this.props.dashboardTransactions}
+        goToAssetForm={this.goToAssetForm.bind(this)}
+        goToSysForm={this.goToSysForm.bind(this)}
       />
     )
   }
@@ -274,7 +294,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   dashboardAssets,
-  dashboardTransactions
+  dashboardTransactions,
+  editSendAsset
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)

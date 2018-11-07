@@ -3,9 +3,9 @@ import React, { Component } from 'react'
 import { Row, Col } from 'antd'
 import swal from 'sweetalert'
 
+import parseError from 'fw-utils/error-parser'
 import SendAssetForm from './components/send-asset'
 import SendSysForm from './components/send-sys'
-import parseError from 'fw-utils/error-parser'
 
 
 type Props = {

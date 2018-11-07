@@ -197,6 +197,23 @@
     position: relative;
     overflow-y: scroll;
     height: 93%;
+
+    .send-button {
+        span {
+            color: $main_white;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        background: $asset_box_background;
+        border-color: $main_white;
+        text-transform: uppercase;
+        height: auto;
+        padding: 0px 10px;
+
+        &:hover {
+            border-color: $full_white;
+        }
+    }
 }
 
 .wallet-summary-container {
@@ -322,10 +339,18 @@
     line-height: 13px;
     transition: opacity 0.5s;
     margin-bottom:10px;
+
+    .asset-box-send {
+        position: absolute;
+        bottom: 13px;
+        right: 10px;
+        pointer-events: all;
+    }
 }
 
 .asset-box.selected {
     opacity: 1;
+    pointer-events: none;
 }
 
 .asset-box-container {

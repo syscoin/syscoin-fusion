@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin } from 'antd'
 import AliasAddressItem from './components/alias-address-item'
@@ -33,7 +34,9 @@ type Props = {
     data: Array<Object>
   },
   getDashboardAssets: Function,
-  getDashboardTransactions: Function
+  getDashboardTransactions: Function,
+  goToAssetForm: Function,
+  goToSysForm: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -93,6 +96,7 @@ export default class Accounts extends Component<Props> {
         balance={i.balance}
         symbol={i.symbol}
         key={i.asset}
+        goToSendAssetForm={this.goToSendAssetForm.bind(this)}
       />
     ))
   }
@@ -114,6 +118,10 @@ export default class Accounts extends Component<Props> {
 
   refreshDashboardTransactions(page: number = 0, pageSize: number = 10) {
     this.props.getDashboardTransactions(page, pageSize)
+  }
+
+  goToSendAssetForm(asset: string) {
+    this.props.goToAssetForm(asset, this.props.selectedAlias)
   }
 
   render() {
@@ -172,7 +180,7 @@ export default class Accounts extends Component<Props> {
               ) : null}
             </Col>
           </Row>
-          {this.props.aliasAssets.isLoading && 
+          {this.props.aliasAssets.isLoading &&
             <div className='loading-container'>
               <Spin indicator={<Icon type='loading' spin />} />
             </div>
