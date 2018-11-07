@@ -20,7 +20,8 @@ type Props = {
     data: Array<Object>
   },
   refreshDashboardAssets: Function,
-  refreshDashboardTransactions: Function
+  refreshDashboardTransactions: Function,
+  goToSysForm: Function
 };
 
 class Dashboard extends Component<Props> {
@@ -32,7 +33,10 @@ class Dashboard extends Component<Props> {
           <Col xs={18} offset={3}>
             <div className='wallet-summary-container'>
               <h3 className='wallet-summary-title'>Wallet summary</h3>
-              <DashboardBalance balance={this.props.balance} />
+              <DashboardBalance
+                balance={this.props.balance}
+                goToSysForm={this.props.goToSysForm}
+              />
               <hr />
               <DashboardTokens
                 isLoading={this.props.assets.isLoading}

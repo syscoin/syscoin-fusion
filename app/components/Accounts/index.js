@@ -158,6 +158,7 @@ export default class Accounts extends Component<Props> {
               assets={this.props.dashboardAssets}
               refreshDashboardAssets={this.refreshDashboardAssets.bind(this)}
               refreshDashboardTransactions={this.refreshDashboardTransactions.bind(this)}
+              goToSysForm={this.props.goToSysForm}
             />
           ) : null}
           {this.props.aliasAssets.data.length ? (
