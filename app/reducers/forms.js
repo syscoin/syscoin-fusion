@@ -97,7 +97,7 @@ export default function forms(state: StateType = initialState, action: actionTyp
         ...state,
         sendAsset: {
           data: {
-            ...initialState.sendSys.data
+            ...initialState.sendAsset.data
           },
           isLoading: false,
           error: false
