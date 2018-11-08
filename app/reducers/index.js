@@ -3,11 +3,13 @@ import { combineReducers } from 'redux'
 import { routerReducer as router } from 'react-router-redux'
 import wallet from './wallet'
 import options from './options'
+import forms from './forms'
 
 const rootReducer = combineReducers({
   router,
   wallet,
-  options
+  options,
+  forms
 })
 
 export default rootReducer

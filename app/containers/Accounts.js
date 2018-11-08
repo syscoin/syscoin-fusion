@@ -1,29 +1,48 @@
 // @flow
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import swal from 'sweetalert'
-import map from 'async/map'
-import waterfall from 'async/waterfall'
 
 import Accounts from 'fw-components/Accounts/'
+
 import {
-  getAssetInfo,
-  getAssetAllocationInfo,
-  getTransactionsPerAsset
+  getTransactionsPerAsset,
+  listAssetAllocation,
+  getPrivateKey
 } from 'fw-sys'
+import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
+import { editSendAsset } from 'fw-actions/forms'
+import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 
 type Props = {
   balance: number,
   aliases: Array<Object>,
-  assets: Array<string>,
+  assets: Array<Object>,
   headBlock: number,
-  currentBlock: number
+  currentBlock: number,
+  dashboardSysTransactions: {
+    isLoading: boolean,
+    error: boolean,
+    data: Array<Object>
+  },
+  dashboardAssetsBalances: {
+    isLoading: boolean,
+    error: boolean,
+    data: Array<Object>
+  },
+  dashboardAssets: Function,
+  dashboardTransactions: Function,
+  changeTab: Function,
+  editSendAsset: Function
 };
+
 type State = {
   selectedAlias: string,
   aliasAssets: {
-    selected: '',
+    selected: string,
+    selectedSymbol: string,
     isLoading: boolean,
     data: Array<any>,
     error: boolean
@@ -33,6 +52,11 @@ type State = {
     data: Array<any>,
     error: boolean
   }
+};
+
+type selectAssetType = {
+  asset: string,
+  symbol: string
 };
 
 class AccountsContainer extends Component<Props, State> {
@@ -45,6 +69,7 @@ class AccountsContainer extends Component<Props, State> {
       selectedAlias: '',
       aliasAssets: {
         selected: '',
+        selectedSymbol: '',
         isLoading: false,
         data: [],
         error: false
@@ -62,6 +87,13 @@ class AccountsContainer extends Component<Props, State> {
     }
   }
 
+  getSnapshotBeforeUpdate(prevProps) {
+    if (!prevProps.aliases.length && this.props.aliases.length) {
+      this.props.dashboardAssets()
+    }
+    return null
+  }
+
   updateSelectedAlias(alias: string) {
     if (this.state.aliasAssets.isLoading) {
       return false
@@ -71,12 +103,13 @@ class AccountsContainer extends Component<Props, State> {
       selectedAlias: alias,
       aliasAssets: {
         selected: '',
+        selectedSymbol: '',
         isLoading: true,
         data: [],
         error: false
       },
       transactions: {
-        isLoading: true,
+        isLoading: false,
         data: [],
         error: false
       }
@@ -85,106 +118,56 @@ class AccountsContainer extends Component<Props, State> {
     })
   }
 
-  getAssetsInfo(alias: string) {
+  async getAssetsInfo(alias: string) {
+    const { assets } = this.props
+    let results
 
-    waterfall([
-      done => {
-        // Get GUIDs
-        const guids = this.props.assets
+    try {
+      results = await listAssetAllocation({
+        receiver_address: alias
+      }, assets.map(i => i._id))
+    } catch(err) {
+      return swal('Error', parseError(err.message), 'error')
+    }
 
-        if (!guids.length) {
-          this.setState({
-            aliasAssets: {
-              selected: '',
-              data: [],
-              isLoading: false,
-              error: true
-            }
-          })
-          swal('No asset detected', 'The wallet hasn\'t detected any asset yet. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
-          return
-        }
-
-        done(null, guids)
-      },
-      (guids, done) => {
-        // Get balance and symbol by using assetallocationinfo
-        map(guids, async (i, cb) => {
-          let data
-          try {
-            data = await getAssetAllocationInfo({
-              assetId: i,
-              aliasName: alias
-            })
-          } catch(err) {
-            if (err.message.indexOf('ERRCODE: 1507')) {
-              return cb(null, {
-                balance: '0',
-                alias,
-                asset: i,
-                symbol: ''
-              })
-            }
-            return cb(true)
-          }
-
-          cb(null, data)
-        }, (err, result) => done(err, result))
-      },
-      (data, done) => {
-        // If alias/address doesnt own any token, fallback to assetinfo.
-        if (data.find(i => !i.symbol)) {
-          return map(data, async (x, cb) => {
-            const xObj = {...x}
-            if (xObj.symbol.lenght) {
-              return cb(null, xObj)
-            }
-
-            let assetInfo
-
-            try {
-              assetInfo = await getAssetInfo(xObj.asset)
-            } catch (assetInfoErr) {
-              return cb(assetInfoErr)
-            }
-  
-            xObj.symbol = assetInfo.symbol
-            xObj.balance = '0'
-            return cb(null, xObj)
-          }, (error, finalResult) => done(null, finalResult.filter(x => x)))
-        }
-
-        return done(null, data)
-      }
-    ], (err, result) => {
-      if (err) {
-        this.setState({
-          aliasAssets: {
-            selected: '',
-            data: [],
-            isLoading: false,
-            error: true
-          }
-        })
-        return swal('Error', 'Something went wrong', 'error')
-      }
-
+    if (!results.length && !assets.length) {
       this.setState({
         aliasAssets: {
           selected: '',
-          data: result,
+          selectedSymbol: '',
+          data: [],
           isLoading: false,
           error: false
-        }
+        },
+        selectedAlias: ''
       })
+      return swal('No asset detected', 'The wallet hasn\'t detected any asset. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
+    } else if (!results.length && assets.length) {
+      results = assets.map(i => ({
+        asset: i._id,
+        balance: '0.00000000',
+        symbol: i.symbol
+      }))
+    }
+
+    this.setState({
+      aliasAssets: {
+        selected: '',
+        selectedSymbol: '',
+        data: results,
+        isLoading: false,
+        error: false
+      }
     })
   }
 
-  selectAsset(asset: string) {
+  selectAsset(obj: selectAssetType) {
+    const { asset, symbol } = obj
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
         selected: asset,
+        selectedSymbol: symbol,
         error: false
       },
       transactions: {
@@ -240,6 +223,35 @@ class AccountsContainer extends Component<Props, State> {
     return SyscoinLogo
   }
 
+  async getPrivateKey(address: string, cb: Function) {
+    try {
+      return cb(null, await getPrivateKey(address))
+    } catch (err) {
+      return cb(err)
+    }
+  }
+
+  goToHome() {
+    this.setState({
+      ...this.initialState
+    })
+  }
+
+  goToAssetForm(asset: string, alias: string) {
+    this.props.editSendAsset({
+      from: alias,
+      asset,
+      toAddress: '',
+      amount: '',
+      comment: ''
+    })
+    this.props.changeTab('2')
+  }
+
+  goToSysForm() {
+    this.props.changeTab('2')
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
@@ -257,6 +269,14 @@ class AccountsContainer extends Component<Props, State> {
         aliasAssets={aliasAssets}
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
+        getPrivateKey={this.getPrivateKey}
+        goToHome={this.goToHome.bind(this)}
+        dashboardSysTransactions={this.props.dashboardSysTransactions}
+        dashboardAssets={this.props.dashboardAssetsBalances}
+        getDashboardAssets={this.props.dashboardAssets}
+        getDashboardTransactions={this.props.dashboardTransactions}
+        goToAssetForm={this.goToAssetForm.bind(this)}
+        goToSysForm={this.goToSysForm.bind(this)}
       />
     )
   }
@@ -267,7 +287,15 @@ const mapStateToProps = state => ({
   aliases: state.wallet.aliases,
   assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,
-  currentBlock: state.wallet.getinfo.blocks
+  currentBlock: state.wallet.getinfo.blocks,
+  dashboardSysTransactions: state.wallet.dashboard.transactions,
+  dashboardAssetsBalances: state.wallet.dashboard.assets
 })
 
-export default connect(mapStateToProps)(AccountsContainer)
+const mapDispatchToProps = dispatch => bindActionCreators({
+  dashboardAssets,
+  dashboardTransactions,
+  editSendAsset
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)

@@ -5,7 +5,7 @@ import { Row, Col, Tabs } from 'antd'
 import AccountsContainer from 'fw-containers/Accounts'
 import SendContainer from 'fw-containers/Send'
 import ToolsContainer from 'fw-containers/Tools'
-import Personalize from 'fw-containers/Personalize'
+import PersonalizeContainer from 'fw-containers/Personalize'
 
 import WindowControls from './components/window-control'
 
@@ -19,8 +19,26 @@ type Props = {
   onUnmaximize: Function
 };
 
-class Wallet extends Component<Props> {
+type State = {
+  activeTab: string
+};
+
+class Wallet extends Component<Props, State> {
   props: Props
+
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      activeTab: '1'
+    }
+  }
+
+  onChangeTab(tab: string) {
+    this.setState({
+      activeTab: tab
+    })
+  }
 
   render() {
     return (
@@ -33,9 +51,9 @@ class Wallet extends Component<Props> {
           onUnmaximize={this.props.onUnmaximize}
         />
         <Col xs={24}>
-          <Tabs className='tabs-app'>
+          <Tabs className='tabs-app' activeKey={this.state.activeTab} onChange={this.onChangeTab.bind(this)}>
             <Tab className='tab tab-accounts' tab='Accounts' key='1'>
-              <AccountsContainer />
+              <AccountsContainer changeTab={this.onChangeTab.bind(this)} />
             </Tab>
             <Tab className='tab tab-send' tab='Send' key='2'>
               <SendContainer />
@@ -44,7 +62,7 @@ class Wallet extends Component<Props> {
               <ToolsContainer />
             </Tab>
             <Tab className='tab tab-personalize' tab='Personalize' key='4'>
-              <Personalize />
+              <PersonalizeContainer />
             </Tab>
           </Tabs>
         </Col>

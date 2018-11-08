@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin } from 'antd'
 import AliasAddressItem from './components/alias-address-item'
@@ -5,6 +6,8 @@ import AssetBox from './components/asset-box'
 import TransactionList from './components/transaction-list'
 import UserBalance from './components/balance'
 import SyncLoader from './components/sync-loader'
+import Home from './components/home'
+import Dashboard from './components/dashboard'
 
 type Props = {
   backgroundLogo: string,
@@ -17,7 +20,23 @@ type Props = {
   selectAsset: Function,
   headBlock: number,
   currentBlock: number,
-  syncPercentage: number
+  syncPercentage: number,
+  getPrivateKey: Function,
+  goToHome: Function,
+  dashboardSysTransactions: {
+    isLoading: boolean,
+    error: boolean,
+    data: Array<Object>
+  },
+  dashboardAssets: {
+    isLoading: boolean,
+    error: boolean,
+    data: Array<Object>
+  },
+  getDashboardAssets: Function,
+  getDashboardTransactions: Function,
+  goToAssetForm: Function,
+  goToSysForm: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -30,15 +49,27 @@ export default class Accounts extends Component<Props> {
   generateAliasesBoxes() {
     const aliases = []
     const addresses = []
-    
+
     this.props.aliases.forEach(i => {
+      const iCopy = {...i}
+
       // Separating aliases and addresses for later ordering
       // Using of sort method would result in unpredictable result and kinda complex ordering logic
-      if (i.alias) {
-        return aliases.push(i)
+      if (iCopy.alias) {
+        
+        try {
+          if (iCopy.publicValue.length && JSON.parse(iCopy.publicValue).avatarUrl) {
+            iCopy.avatarUrl = JSON.parse(iCopy.publicValue).avatarUrl
+          }
+        } catch(err) {
+          iCopy.avatarUrl = ''
+        }
+        return aliases.push(iCopy)
       }
 
-      return addresses.push(i)
+      iCopy.avatarUrl = ''
+
+      return addresses.push(iCopy)
     })
     
     return aliases.concat(addresses).map((i) => (
@@ -49,6 +80,9 @@ export default class Accounts extends Component<Props> {
         isLoading={this.props.aliasAssets.isLoading}
         isSelected={this.isAliasSelected(i)}
         updateSelectedAlias={this.props.updateSelectedAlias}
+        getPrivateKey={this.props.getPrivateKey}
+        hasAvatar={i.hasAvatar}
+        avatarUrl={i.avatarUrl}
       />
     ))
   }
@@ -62,6 +96,7 @@ export default class Accounts extends Component<Props> {
         balance={i.balance}
         symbol={i.symbol}
         key={i.asset}
+        goToSendAssetForm={this.goToSendAssetForm.bind(this)}
       />
     ))
   }
@@ -77,10 +112,27 @@ export default class Accounts extends Component<Props> {
     )
   }
 
+  refreshDashboardAssets() {
+    this.props.getDashboardAssets()
+  }
+
+  refreshDashboardTransactions(page: number = 0, pageSize: number = 10) {
+    this.props.getDashboardTransactions(page, pageSize)
+  }
+
+  goToSendAssetForm(asset: string) {
+    this.props.goToAssetForm(asset, this.props.selectedAlias)
+  }
+
   render() {
     return (
       <Row className='accounts-container'>
         <Col xs={9} className='accounts-container-left'>
+          <Home
+            onClick={this.props.goToHome}
+            className='home-btn'
+            disabled={this.props.transactions.isLoading || this.props.aliasAssets.isLoading}
+          />
           <UserBalance
             currentBalance={this.props.balance}
           />
@@ -98,11 +150,23 @@ export default class Accounts extends Component<Props> {
           </div>
         </Col>
         <Col xs={15} className='accounts-container-right'>
-          {(!this.props.selectedAlias || this.props.aliasAssets.error) ? <img src={this.props.backgroundLogo} alt='sys-logo' className='sys-logo-bg' /> : null}
+          {(!this.props.selectedAlias || this.props.aliasAssets.error) ? (
+            <Dashboard
+              balance={this.props.balance}
+              backgroundLogo={this.props.backgroundLogo}
+              transactions={this.props.dashboardSysTransactions}
+              assets={this.props.dashboardAssets}
+              refreshDashboardAssets={this.refreshDashboardAssets.bind(this)}
+              refreshDashboardTransactions={this.refreshDashboardTransactions.bind(this)}
+              goToSysForm={this.props.goToSysForm}
+            />
+          ) : null}
           {this.props.aliasAssets.data.length ? (
             <div>
               <Row className='asset-box-container'>
-                <h4 className='asset-box-text'>Available assets</h4>
+                <h4 className='asset-box-text'>
+                  Available assets
+                </h4>
                 {this.generateAliasAssets()}
               </Row>
             </div>
@@ -111,13 +175,13 @@ export default class Accounts extends Component<Props> {
             <Col offset={1} xs={21}>
               {this.props.aliasAssets.selected ? (
                 <div>
-                  <h4 className='transactions-table-title'>Transactions</h4>
+                  <h4 className='transactions-table-title'>Transactions for {this.props.aliasAssets.selectedSymbol}</h4>
                   {this.generateTransactionsTable()}
                 </div>
               ) : null}
             </Col>
           </Row>
-          {this.props.aliasAssets.isLoading && 
+          {this.props.aliasAssets.isLoading &&
             <div className='loading-container'>
               <Spin indicator={<Icon type='loading' spin />} />
             </div>

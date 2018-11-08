@@ -1,9 +1,10 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
+import _ from 'lodash'
 
 type getInfoActionType = {
   type: string,
@@ -65,10 +66,28 @@ type saveBlockchainInfoActionType = {
   }
 };
 
+type saveDashboardTransactionsActionType = {
+  type: string,
+  payload?: Array<Object>
+};
+
+type saveDashboardAssetsActionType = {
+  type: string,
+  payload?: Array<Object>
+};
+
 const saveGetInfoAction = createAction(types.WALLET_GETINFO)
 const saveAliasesAction = createAction(types.WALLET_ALIASES)
 const saveUnfinishedAliasesAction = createAction(types.WALLET_UNFINISHED_ALIASES)
 const saveBlockchainInfoAction = createAction(types.WALLET_BLOCKCHAIN_INFO)
+
+const dashboardAssetsIsLoadingAction = createAction(types.WALLET_DASHBOARD_ASSETS_IS_LOADING)
+const dashboardAssetsErrorAction = createAction(types.WALLET_DASHBOARD_ASSETS_ERROR)
+const dashboardAssetsReceiveAction = createAction(types.WALLET_DASHBOARD_ASSETS_RECEIVE)
+
+const dashboardTransactionsIsLoadingAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING)
+const dashboardTransactionsErrorAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_ERROR)
+const dashboardTransactionsReceiveAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_RECEIVE)
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
   try {
@@ -100,4 +119,50 @@ export const saveBlockchainInfo = () => async (dispatch: (action: saveBlockchain
   } catch(err) {
     dispatch(saveBlockchainInfoAction(initialState.blockchaininfo))
   }
+}
+
+export const dashboardTransactions = (page: number, pageSize: number) => async (dispatch: (action: saveDashboardTransactionsActionType) => void) => {
+  dispatch(dashboardTransactionsIsLoadingAction())
+
+  try {
+    return dispatch(dashboardTransactionsReceiveAction(await listSysTransactions(page, pageSize)))
+  } catch(err) {
+    return dashboardTransactionsErrorAction(err)
+  }
+}
+
+export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void, getState: Function) => {
+  dispatch(dashboardAssetsIsLoadingAction())
+
+  const { aliases } = getState().wallet
+  let assets = {}
+  let allocations
+
+  try {
+    allocations = await Promise.all(
+      aliases.map(i => listAssetAllocation({
+        receiver_address: i.alias || i.address
+      }))
+    )
+  } catch(err) {
+    return dispatch(dashboardAssetsErrorAction(err.message))
+  }
+
+  // Generating balances per asset
+  _.flatten(allocations).forEach(i => {
+    if (!assets[i.asset]) {
+      assets[i.asset] = {
+        balance: 0,
+        asset: i.asset,
+        symbol: i.symbol
+      }
+    }
+
+    assets[i.asset].balance += Number(i.balance)
+  })
+
+  // Turning the object into an array
+  assets = Object.keys(assets).map(i => assets[i])
+
+  dispatch(dashboardAssetsReceiveAction(assets))
 }

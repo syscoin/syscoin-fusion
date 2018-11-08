@@ -4,7 +4,7 @@ import * as types from 'fw-types/options'
 
 type saveAllowedGuidsType = {
     type: string,
-    payload: Array<string>
+    payload: Array<Object>
 };
 
 type toggleMaximizeActionType = {
@@ -14,7 +14,7 @@ type toggleMaximizeActionType = {
 const saveAllowedGuids = createAction(types.ALLOWED_GUIDS)
 const toggleMaximizeAction = createAction(types.TOGGLE_MAXIMIZE)
 
-export const saveGuids = (arr: Array<string>) => (dispatch: (action: saveAllowedGuidsType) => void) => {
+export const saveGuids = (arr: Array<Object>) => (dispatch: (action: saveAllowedGuidsType) => void) => {
   dispatch(saveAllowedGuids(arr))
 }
 

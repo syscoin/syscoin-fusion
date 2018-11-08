@@ -4,11 +4,11 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ipcRenderer, remote } from 'electron'
 import Wallet from 'fw-components/Wallet'
-import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo } from 'fw-actions/wallet'
+import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo, dashboardTransactions } from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
-import { getAssetAllocationTransactions } from 'fw-sys'
+import { getAssetInfo } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
 import getPaths from 'fw-utils/get-doc-paths'
@@ -16,13 +16,14 @@ import getPaths from 'fw-utils/get-doc-paths'
 type Props = {
   isMaximized: boolean,
   unfinishedAliases: Array<Object>,
-  aliases: Array<Object>,
+  currentBlock: number,
   saveGetInfo: Function,
   saveAliases: Function,
   saveGuids: Function,
   saveUnfinishedAliases: Function,
   saveBlockchainInfo: Function,
-  toggleMaximize: Function
+  toggleMaximize: Function,
+  dashboardTransactions: Function
 };
 
 class WalletContainer extends Component<Props> {
@@ -48,13 +49,13 @@ class WalletContainer extends Component<Props> {
     if (!window.updateWalletHigh) {
       window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 10000)
     }
-    if (!window.updateWalletLow) {
-      window.updateWalletLow = setInterval(() => this.updateWalletLow(), 10000)
-    }
-
+    
     this.updateWalletHigh()
-    // Firing low priority queue a few secs later so aliases can get to the store first.
-    setTimeout(() => this.updateWalletLow(), 5000)
+    // Update guids in store
+    this.updateAssets()
+
+    // Get Dashboard data
+    this.props.dashboardTransactions(0, 10)
   }
 
   updateWalletHigh() {
@@ -68,34 +69,17 @@ class WalletContainer extends Component<Props> {
     })
   }
 
-  updateWalletLow() {
-    this.updateAssets()
-  }
-
   async updateAssets() {
-    const { aliases } = this.props
     let guids = window.appStorage.get('guid') || []
 
     guids = guids.filter(i => i !== 'none')
 
-    guids = guids.map(i => i._id) // eslint-disable-line no-underscore-dangle
+    guids = guids.map(i => getAssetInfo(i))
 
-    if (!guids.length) {
-      // Tries to identify owned tokens by looking for asset transactions done by user's addresses/aliases
-      try {
-        // Gets all asset transactions in the chain
-        guids = await getAssetAllocationTransactions()
-
-        guids = guids
-          // If address/alias has made any transaction of asset i, then add it to the list of allowed guids.
-          .filter(i => aliases.find(x => x.alias === i.sender || x.alias === i.receiver || x.alias === i.sender || x.alias === i.receiver))
-          // Only need the guid, discard the rest.
-          .map(i => i.asset) 
-          // Delete duplicates
-        guids = guids.filter((i, ind) => guids.indexOf(i) === ind)
-      } catch(err) {
-        guids = []
-      }
+    try {
+      guids = await Promise.all(guids)
+    } catch(err) {
+      guids = []
     }
 
     this.props.saveGuids(guids)
@@ -144,7 +128,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   saveGuids,
   saveUnfinishedAliases,
   saveBlockchainInfo,
-  toggleMaximize
+  toggleMaximize,
+  dashboardTransactions
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletContainer)

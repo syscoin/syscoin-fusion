@@ -11,6 +11,11 @@ const initialState = {
   isMaximized: false
 }
 
+type StateType = {
+  guids: Array<Object>,
+  isMaximized: boolean
+};
+
 export default function wallet(state: StateType = initialState, action: actionType) {
   switch (action.type) {
     case ALLOWED_GUIDS:

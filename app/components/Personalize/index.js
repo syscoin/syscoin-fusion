@@ -14,14 +14,13 @@ export default class Personalize extends Component<Props> {
 
   render() {
     return (
-      <Row>
+      <Row className='personalize-container'>
         <Col
           xs={8}
           offset={8}
           style={{
             textAlign: 'center'
           }}
-          className='personalize-container'
         >
           <EditAlias
             aliasInfo={this.props.aliasInfo}

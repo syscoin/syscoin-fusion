@@ -12,11 +12,30 @@
 
 .accounts-container-left {
     height: 100%;
-    background: #525252;
+    background: $accounts_background;
     z-index: 999;
     margin-bottom: 0;
     box-shadow: inset 0 0 300px rgba(0, 0, 0, 0.1);
     opacity: 0.9;
+
+    .home-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        color: $main_white;
+        cursor: pointer;
+        font-size: 23px;
+        opacity: 0.5;
+        transition: opacity 0.5s;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .home-btn.disabled {
+        pointer-events: none;
+    }
 }
 
 .accounts-container-left .balance-container {
@@ -49,10 +68,10 @@
 }
 
 .aliases-container {
-    height: 68.2%;
+    height: 56.2%;
     overflow-y: scroll;
     overflow-x: hidden;
-    background: #444;
+    background: $accounts_alias_background;
 }
 
 .your-aliases-text {
@@ -108,8 +127,9 @@
     background: $main_background;
     padding: 10px 0;
     position: sticky;
-    width: 110%;
+    width: 100%;
     transition: opacity 0.3s;
+    cursor: default;
 }
 
 .alias-box.expanded:hover {
@@ -117,7 +137,7 @@
 }
 
 .alias-box.expanded .alias-text-container {
-    padding-top: 15px;
+    padding-top: 3.2%;
 }
 
 .alias-box.expanded .alias-text-container.address {
@@ -125,7 +145,8 @@
 }
 
 .alias-box .alias-img-container {
-    padding-right: 20px;
+    padding-right: 2%;
+    margin-top: 2px;
 }
 
 .alias-box .alias-img {
@@ -161,12 +182,120 @@
     white-space: nowrap;
 }
 
+.alias-box .alias-name .alias-toolbox {
+    float: right;
+
+    i {
+        cursor: pointer;
+        color: $main_white;
+    }
+}
+
 /* Right column */
 
 .accounts-container-right {
     position: relative;
     overflow-y: scroll;
     height: 93%;
+
+    .send-button {
+        span {
+            color: $main_white;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        background: $asset_box_background;
+        border-color: $main_white;
+        text-transform: uppercase;
+        height: auto;
+        padding: 0px 10px;
+
+        &:hover {
+            border-color: $full_white;
+        }
+    }
+}
+
+.wallet-summary-container {
+    padding-bottom: 100px;
+    
+    .wallet-summary-title {
+        margin-top: 20px;
+        color: $main_white;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .fw-table-pagination-page {
+        color: $main_white;
+        margin-right: 10px;
+    }
+
+    .wallet-summary-balance-container {
+        .wallet-summary-balance-title {
+            color: $main_white;
+            font-size: 25px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0;
+
+            .dashboard-refresh {
+                font-size: 15px;
+                cursor: pointer;
+                position: relative;
+                bottom: 3px;
+                color: $main_blue;
+            }
+        }
+
+        .wallet-summary-balance-number {
+            color: $main_white;
+            font-weight: 300;
+            font-size: 20px;
+            letter-spacing: 2px;
+
+            .wallet-summary-balance-send-btn {
+                transform: scale(0.8);
+                position: relative;
+                bottom: 2px;
+            }
+        }
+    }
+
+    & > hr {
+        margin: 20px 0;
+    }
+
+    .ant-table-pagination {
+        display: none;
+    }
+
+    .fw-table-pagination-container {
+        float: right;
+
+        button {
+            background: transparent;
+            border-color: $main_white;
+            margin-left: 5px;
+
+            i {
+                color: $main_white;
+            }
+
+            &:hover {
+                background: transparent;
+                
+                i {
+                    color: #fff;
+                }
+            }
+        }
+
+        button.disabled {
+            opacity: 0.5;
+        }
+    }
 }
 
 .accounts-container-right .loading-container {
@@ -189,7 +318,7 @@
 }
 
 .accounts-container-right::-webkit-scrollbar {
-    width: 0.3em;
+    width: 0.5em;
 }
  
 .accounts-container-right::-webkit-scrollbar-thumb {
@@ -209,18 +338,25 @@
 .asset-box {
     cursor: pointer;
     padding: 10px;
-    border: 0.5px solid #777;
+    border: 0.5px solid $asset_box_border;
     border-radius: 2px;
-    background: #666;
+    background: $asset_box_background;
     opacity: 0.6;
     line-height: 13px;
     transition: opacity 0.5s;
     margin-bottom:10px;
+
+    .asset-box-send {
+        position: absolute;
+        bottom: 13px;
+        right: 10px;
+        pointer-events: all;
+    }
 }
 
 .asset-box.selected {
     opacity: 1;
-
+    pointer-events: none;
 }
 
 .asset-box-container {
@@ -246,7 +382,7 @@
 }
 
 .asset-box .asset-box-guid {
-    color: $asset_guid;
+    color: $asset_box_guid;
     font-style: italic;
     font-size: 12px;
 }
@@ -337,6 +473,18 @@
 .sys-logo-bg {
     opacity: 0.7;
     margin: auto;
-    position: absolute;
-    top: -40px; left: 0; bottom: 0; right: 0;
+    position: fixed;
+    top: 40px; left: 37%; bottom: 0; right: 0;
+}
+
+.ant-pagination-jump-next,
+.ant-pagination-jump-prev {
+    &::after,
+    &::before {
+        color: $main_white;
+    }
+
+    &:hover {
+        color: $main_white;
+    }
 }

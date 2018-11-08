@@ -67,7 +67,9 @@ app.on('ready', async () => {
     height: 600,
     frame: false,
     transparent: true,
-    resizable: true
+    resizable: true,
+    minWidth: 824,
+    minHeight: 429
   })
 
   splashWindow = new BrowserWindow({

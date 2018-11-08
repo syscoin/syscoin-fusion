@@ -26,7 +26,7 @@ class Store {
     this.set('main_blue', '')
     this.set('main_background', '')
     this.set('accounts_background', '')
-    this.set('asset_guid', '')
+    this.set('asset_box_guid', '')
     this.set('main_red', '')
     this.set('main_green', '')
     this.set('title_color', '')
