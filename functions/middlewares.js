@@ -37,9 +37,28 @@ module.exports.checkIpForUpdate = (req, res, next) => {
                 const data = snapshot.val()[key]
                 
                 req.body.mnUserId = data.userId;
-                // Need to replace with actual mntype
-                //  req.body.mnType = data.mnType
-                req.body.mnType = "sys";
+                req.body.orderId = data.orderId;
+
+                return next()
+            } else {
+                return res.status(403).send({
+                    error: true,
+                    message: 'Forbidden'
+                })
+            }
+        }).catch(() => res.sendStatus(500))
+}
+
+module.exports.getMNType = (req, res, next) => {
+    admin.database().ref('/mn-data')
+            .orderByChild('orderId')
+            .equalTo(req.body.orderId)
+            .once('value', snapshot => {
+            if (snapshot.hasChildren()) {
+                const key = Object.keys(snapshot.val())[0]
+                const data = snapshot.val()[key]
+                
+                req.body.mnType = data.nodeType;
 
                 return next()
             } else {
@@ -59,7 +78,7 @@ module.exports.getOrderData = (req, res, next) => {
         updateBalance(req.body.mnUserId, parseFloat(amount)*-1,
             (err) => {
             if (err) {
-                console.log("Error in update balance: ", err.Error())
+                console.log("Error in update balance: ", err)
                 // res.sendStatus(500)
             }
         })
