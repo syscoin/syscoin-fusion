@@ -36,8 +36,8 @@ module.exports.checkIpForUpdate = (req, res, next) => {
                 const key = Object.keys(snapshot.val())[0]
                 const data = snapshot.val()[key]
                 
-                req.body.mnUserId = data.userId;
-                req.body.orderId = data.orderId;
+                req.mnUserId = data.userId;
+                req.orderId = data.orderId;
 
                 return next()
             } else {
@@ -52,13 +52,13 @@ module.exports.checkIpForUpdate = (req, res, next) => {
 module.exports.getMNType = (req, res, next) => {
     admin.database().ref('/mn-data')
             .orderByChild('orderId')
-            .equalTo(req.body.orderId)
+            .equalTo(req.orderId)
             .once('value', snapshot => {
             if (snapshot.hasChildren()) {
                 const key = Object.keys(snapshot.val())[0]
                 const data = snapshot.val()[key]
                 
-                req.body.mnType = data.nodeType;
+                req.mnType = data.nodeType;
 
                 return next()
             } else {
@@ -71,11 +71,11 @@ module.exports.getMNType = (req, res, next) => {
 }
 
 module.exports.getOrderData = (req, res, next) => {
-    admin.database().ref('/prices/'+req.body.mnType)
+    admin.database().ref('/prices/'+req.mnType)
     .once('value', snapshot => {
         const amount = snapshot.val()
         
-        updateBalance(req.body.mnUserId, parseFloat(amount)*-1,
+        updateBalance(req.mnUserId, parseFloat(amount)*-1,
             (err) => {
             if (err) {
                 console.log("Error in update balance: ", err)

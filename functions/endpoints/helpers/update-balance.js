@@ -14,7 +14,7 @@ module.exports = (uid, chargeAmount, cb) => {
             let obj = {}
             obj[uid] =currentBalance.toString()
 
-            admin.database().ref('/balance').set(obj, (error) => {
+            admin.database().ref(`/balance/${uid}`).set(obj, (error) => {
                 if (error) {
                     return cb("Error updating balance: "+ error)
                 }

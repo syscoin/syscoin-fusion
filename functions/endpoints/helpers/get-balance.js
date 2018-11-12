@@ -4,10 +4,10 @@ module.exports = (uid, cb) => {
     var readBalance = admin.database().ref('balance/' + uid);
 
     readBalance.once('value', (snapshot) => {
-           collectionObj = snapshot.val();
-            if (collectionObj) {
-                return cb(collectionObj); 
-            }
+        if (snapshot.hasChildren()) {
+            return cb(snapshot.val()); 
+        } else {
             return cb(0);
+        }
     });
 }
