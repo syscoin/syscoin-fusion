@@ -44,14 +44,16 @@ if (module.hot) {
 // Closes syscoind on exit
 window.onbeforeunload = async () => {
 
-  if (isProd) {
-    global.appStorage.eraseAll()
+  global.appStorage.eraseAll()
 
+  if (isProd) {
     try {
       await closeSysd()
-    } catch(err) {
+    } catch (err) {
       window.onbeforeunload = null
       remote.app.quit()
     }
+  } else {
+    remote.app.quit()
   }
 }
