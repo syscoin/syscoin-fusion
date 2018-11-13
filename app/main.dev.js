@@ -16,7 +16,7 @@ import MenuBuilder from './menu'
 let mainWindow = null
 let splashWindow = null
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test') {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
 }

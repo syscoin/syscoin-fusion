@@ -7,19 +7,19 @@ import { AppContainer } from 'react-hot-loader'
 import { remote } from 'electron'
 import Root from './containers/Root'
 import { configureStore, history } from './store/configureStore'
-import detectSysdRunning from './utils/detect-sysd-running'
 import Storage from './utils/storage'
 import storageSchema from './utils/helpers/storage-schema'
+import getEnv from 'fw-utils/get-env'
 import closeSysd from './utils/close-sysd'
-import isProd from './utils/is-production'
 import './app.global.scss'
 
 const store = configureStore()
+const isProd = getEnv() === 'production'
 
 // App storage setup
 global.appStorage = new Storage({
   configName: 'app-storage',
-  defaults: {...storageSchema}
+  defaults: { ...storageSchema }
 })
 
 render(
@@ -42,14 +42,16 @@ if (module.hot) {
 }
 
 // Closes syscoind on exit
-window.onbeforeunload = () => {
-  // Clean intervals
-  clearInterval(global.checkInterval)
-  clearInterval(global.AccountsUpdate)
-  if (detectSysdRunning() && isProd) {
+window.onbeforeunload = async () => {
+
+  if (isProd) {
     global.appStorage.eraseAll()
-    closeSysd(() => {
+
+    try {
+      await closeSysd()
+    } catch(err) {
+      window.onbeforeunload = null
       remote.app.quit()
-    })
+    }
   }
 }

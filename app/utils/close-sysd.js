@@ -1,4 +1,4 @@
-const { exec } = require('child_process')
-const generateCmd = require('./cmd-gen')
+const Syscoin = require('fw/syscoin-js')
+const syscoin = new Syscoin()
 
-module.exports = (cb) => exec(generateCmd('cli', 'stop'), (err, stdout) => cb(err, stdout))
+module.exports = () => syscoin.callRpc('stop')

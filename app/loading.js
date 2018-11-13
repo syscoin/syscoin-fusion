@@ -10,6 +10,10 @@ global.appStorage = new Storage({
 
 const startUpRoutine = require('./utils/startup')
 
+if (process.env.NODE_ENV === 'development') {
+    document.querySelector('.dev-mode').innerHTML = 'DEV MODE'
+}
+
 startUpRoutine(() => {
     const splashScreenUrl = global.appStorage.get('splashscreen_url')
     const progressBarColor = global.appStorage.get('progress_bar_color')
