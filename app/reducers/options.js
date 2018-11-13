@@ -6,7 +6,7 @@ type actionType = {
   payload?: any
 };
 
-const initialState = {
+export const initialState = {
   guids: [],
   isMaximized: false
 }
