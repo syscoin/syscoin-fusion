@@ -2,6 +2,7 @@ import React from 'react'
 import Accounts from 'fw-components/Accounts'
 import SyncLoader from 'fw-components/Accounts/components/sync-loader'
 import Dashboard from 'fw-components/Accounts/components/dashboard'
+import TransactionList from 'fw-components/Accounts/components/transaction-list'
 import Enzyme, { shallow, render } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { spy } from 'sinon'
@@ -82,8 +83,60 @@ describe('Accounts component tests', () => {
   it('should not render loader if syncPercentage is 100%', () => {
     props.currentBlock = 9999
     props.syncPercentage = parseInt((props.currentBlock / props.headBlock) * 100, 10)
-    wrapper = render(<Accounts {...props} />)
+    wrapper = shallow(<Accounts {...props} />)
 
     expect(wrapper.find(SyncLoader).length).toEqual(0)
+  })
+
+  it('should display available assets if valid alias is selected and it owns any token', () => {
+    props.selectedAlias = 'test'
+    props.aliasAssets.data = [{
+      "_id": "0c9df9a04d306e02-argvil19",
+      "asset": "0c9df9a04d306e02",
+      "symbol": "PEPITA",
+      "interest_rate": 0,
+      "txid": "8a5d701e9cb7190e73cb737afba410d6f21036d8b85858109e945554bd173361",
+      "height": 216,
+      "alias": "argvil19",
+      "balance": "100.00000000",
+      "interest_claim_height": 216,
+      "memo": "memo",
+      "inputs": [],
+      "accumulated_interest": "0.00000000"
+    }]
+    wrapper = shallow(<Accounts {...props} />)
+
+    expect(wrapper.find('.asset-box-container').length).toBe(1)
+  })
+
+  it('should display asset transactions table when an asset is selected', () => {
+    props.selectedAlias = 'test'
+    props.aliasAssets.data = [{
+      "_id": "0c9df9a04d306e02-argvil19",
+      "asset": "0c9df9a04d306e02",
+      "symbol": "PEPITA",
+      "interest_rate": 0,
+      "txid": "8a5d701e9cb7190e73cb737afba410d6f21036d8b85858109e945554bd173361",
+      "height": 216,
+      "alias": "argvil19",
+      "balance": "100.00000000",
+      "interest_claim_height": 216,
+      "memo": "memo",
+      "inputs": [],
+      "accumulated_interest": "0.00000000"
+    }]
+    props.aliasAssets.selected = '0c9df9a04d306e02'
+    props.aliasAssets.selectedSymbol = 'PEPITA'
+    wrapper = shallow(<Accounts {...props} />)
+
+    expect(wrapper.find('.transactions-table-title').text()).toBe('Transactions for PEPITA')
+    expect(wrapper.find(TransactionList).length).toBe(1)
+  })
+
+  it('should show spinning loader if assets are loading', () => {
+    props.aliasAssets.isLoading = true
+    wrapper = shallow(<Accounts {...props} />)
+
+    expect(wrapper.find('.loading-container').length).toBe(1)
   })
 })
