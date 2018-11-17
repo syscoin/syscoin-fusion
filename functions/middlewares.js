@@ -1,5 +1,6 @@
 const admin = require('firebase-admin')
 const updateBalance = require('./endpoints/helpers/update-balance')
+const updateLastUpdated = require('./endpoints/helpers/edit-mn-data')
 
 module.exports.checkIpWhitelist = (req, res, next) => {
     const clientIp = (req.headers['x-forwarded-for'] ||
@@ -24,10 +25,11 @@ module.exports.checkIpWhitelist = (req, res, next) => {
 }
 
 module.exports.checkIpForUpdate = (req, res, next) => {
-     const clientIp = (req.headers['x-forwarded-for'] || 
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress).split(",")[0]
+     const clientIp = "206.189.69.240"
+    //  (req.headers['x-forwarded-for'] || 
+    //     req.connection.remoteAddress ||
+    //     req.socket.remoteAddress ||
+    //     req.connection.socket.remoteAddress).split(",")[0]
         admin.database().ref('/vps')
             .orderByChild('ip')
             .equalTo(clientIp)
@@ -59,6 +61,7 @@ module.exports.getMNType = (req, res, next) => {
                 const data = snapshot.val()[key]
                 
                 req.mnType = data.nodeType;
+                req.chargeLastMadeAt = data.chargeLastMadeAt
 
                 return next()
             } else {
@@ -71,18 +74,35 @@ module.exports.getMNType = (req, res, next) => {
 }
 
 module.exports.getOrderData = (req, res, next) => {
-    admin.database().ref('/prices/'+req.mnType)
-    .once('value', snapshot => {
-        const amount = snapshot.val()
-        
-        updateBalance(req.mnUserId, parseFloat(amount)*-1,
-            (err) => {
-            if (err) {
-                console.log("Error in update balance: ", err)
-                // res.sendStatus(500)
-            }
-        })
+    var now = new Date();
+    var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var timestamp = startOfDay / 1000;
+    
+    console.log("charge data: ", parseInt(req.chargeLastMadeAt) > timestamp &&  parseInt(req.chargeLastMadeAt) < (timestamp + 24*60*60))
+    // Check if update was done in the last day
+    if (parseInt(req.chargeLastMadeAt) > timestamp &&  parseInt(req.chargeLastMadeAt) < (timestamp + 24*60*60)) {
+        admin.database().ref('/prices/'+req.mnType)
+        .once('value', snapshot => {
+            const amount = snapshot.val()
+            
+            updateBalance(req.mnUserId, parseFloat(amount)*-1,
+                (err) => {
+                if (err) {
+                    console.log("Error in update balance: ", err)
+                    // res.sendStatus(500)
+                }
+            })
 
-        return next() 
-    }).catch(() => res.sendStatus(500))
+            updateLastUpdated(req.orderId, (err) => {
+                if (err) {
+                    console.log("Error in update mn charge last updated: ", err)
+                    // res.sendStatus(500)
+                }
+            })
+
+            return next() 
+        }).catch(() => res.sendStatus(500))
+    } 
+    
+    return next()
 }
