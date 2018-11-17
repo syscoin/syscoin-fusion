@@ -52,11 +52,98 @@ describe('Send component tests', () => {
     const mockChange = spy()
     wrapper = shallow(<SendAssetForm {...props} onSelectAlias={mockChange} />)
 
-    wrapper.find('#asset-form-select-alias').simulate('change', {
-      target: { value: 'change' }
-    })
+    wrapper.find('#asset-form-select-alias').simulate('change', 'change')
 
     expect(mockChange.calledOnce).toBe(true)
+  })
+
+  it('should not update form if amount change doesnt meet criteria', () => {
+    const mockChange = spy()
+    wrapper = shallow(<SendAssetForm {...props} onChangeForm={mockChange} />)
+
+    wrapper.find('#asset-form-amount').simulate('change', 'should_not_pass')
+
+    expect(mockChange.called).toBe(false)
+
+    wrapper.find('#asset-form-amount').simulate('change', '123123')
+
+    expect(mockChange.called).toBe(true)
+  })
+
+  it('should not allow to submit the form if all required fields are not filled', () => {
+    let mockProps = {
+      ...props,
+      form: {
+        ...props.form,
+        data: {
+          ...props.form.data,
+          from: ''
+        }
+      }
+    }
+    wrapper = shallow(<SendAssetForm {...mockProps} />)
+    expect(wrapper.find('.send-asset-form-btn-send').prop('disabled')).toBe(true)
+
+    mockProps = {
+      ...props,
+      form: {
+        ...props.form,
+        data: {
+          ...props.form.data,
+          asset: ''
+        }
+      }
+    }
+    wrapper = shallow(<SendAssetForm {...mockProps} />)
+    expect(wrapper.find('.send-asset-form-btn-send').prop('disabled')).toBe(true)
+
+    mockProps = {
+      ...props,
+      form: {
+        ...props.form,
+        data: {
+          ...props.form.data,
+          toAddress: ''
+        }
+      }
+    }
+    wrapper = shallow(<SendAssetForm {...mockProps} />)
+    expect(wrapper.find('.send-asset-form-btn-send').prop('disabled')).toBe(true)
+
+    mockProps = {
+      ...props,
+      form: {
+        ...props.form,
+        data: {
+          ...props.form.data,
+          amount: ''
+        }
+      }
+    }
+    wrapper = shallow(<SendAssetForm {...mockProps} />)
+    expect(wrapper.find('.send-asset-form-btn-send').prop('disabled')).toBe(true)
+
+    wrapper = shallow(<SendAssetForm {...props} />)
+    expect(wrapper.find('.send-asset-form-btn-send').prop('disabled')).toBe(false)
+  })
+
+  it('should allow to submit if optional fields are not filled', () => {
+    let mockProps = {
+      ...props,
+      form: {
+        isLoading: false,
+        error: false,
+        data: {
+          from: 'from_test',
+          asset: 'asset_test',
+          toAddress: 'address',
+          amount: '1000',
+          comment: ''
+        }
+      }
+    }
+    wrapper = shallow(<SendAssetForm {...mockProps} />)
+    expect(wrapper.find('.send-asset-form-btn-send').prop('disabled')).toBe(false)
   })
 
 })
