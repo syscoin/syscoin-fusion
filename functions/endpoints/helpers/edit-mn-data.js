@@ -23,12 +23,12 @@ module.exports = (orderId, cb) => {
         .equalTo(orderId)
         .once('value', snapshot => {
             const data = snapshot.val()
-
+            const key = Object.keys(data)[0]
             if (!snapshot.hasChildren()) {
                 return cb('You are not allowed to do that')
             }
-            admin.database().ref('/mn-data/' + orderId +'/chargeLastMadeAt')
-            .set(Date.now())
+            admin.database().ref('/mn-data/' + key +'/chargeLastMadeAt')
+            .set(Date.now().toString())
             .then(() => cb())
             .catch(() => cb('Internal server error'))
     }).catch(() => cb('Internal server error'))

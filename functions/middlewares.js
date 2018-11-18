@@ -78,31 +78,30 @@ module.exports.getOrderData = (req, res, next) => {
     var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     var timestamp = startOfDay / 1000;
     
-    console.log("charge data: ", parseInt(req.chargeLastMadeAt) > timestamp &&  parseInt(req.chargeLastMadeAt) < (timestamp + 24*60*60))
     // Check if update was done in the last day
-    if (parseInt(req.chargeLastMadeAt) > timestamp &&  parseInt(req.chargeLastMadeAt) < (timestamp + 24*60*60)) {
+    if(parseInt(req.chargeLastMadeAt) > timestamp &&  parseInt(req.chargeLastMadeAt) < (timestamp + 24*60*60)) {
+        return next()
+    } else {
         admin.database().ref('/prices/'+req.mnType)
         .once('value', snapshot => {
             const amount = snapshot.val()
-            
+
             updateBalance(req.mnUserId, parseFloat(amount)*-1,
                 (err) => {
                 if (err) {
                     console.log("Error in update balance: ", err)
                     // res.sendStatus(500)
                 }
-            })
 
-            updateLastUpdated(req.orderId, (err) => {
-                if (err) {
-                    console.log("Error in update mn charge last updated: ", err)
-                    // res.sendStatus(500)
-                }
+                updateLastUpdated(req.orderId, (err) => {
+                    if (err) {
+                        console.log("Error in update mn charge last updated: ", err)
+                        // res.sendStatus(500)
+                    }
+                })
             })
 
             return next() 
         }).catch(() => res.sendStatus(500))
     } 
-    
-    return next()
 }

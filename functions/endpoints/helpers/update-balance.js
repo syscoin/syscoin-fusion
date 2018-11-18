@@ -14,8 +14,6 @@ module.exports = (uid, chargeAmount, cb) => {
                 return cb(Error("Transaction failed: Insufficient balance"))
             }
 
-            console.log(chargeAmount, currentBalance)
-
             let obj = currentBalance.toString()
 
         

@@ -115,7 +115,7 @@ app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
 app.post('/info', dataTracking)
 
-app.post('/droplets/edit-status', checkIpForUpdate, getMNType, getOrderData)//, editStatus)
+app.post('/droplets/edit-status', checkIpForUpdate, getMNType, getOrderData, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)
 app.post('/droplets/reward-notification', checkIpWhitelist, notificationReward)
 
