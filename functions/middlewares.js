@@ -25,11 +25,10 @@ module.exports.checkIpWhitelist = (req, res, next) => {
 }
 
 module.exports.checkIpForUpdate = (req, res, next) => {
-     const clientIp = "206.189.69.240"
-    //  (req.headers['x-forwarded-for'] || 
-    //     req.connection.remoteAddress ||
-    //     req.socket.remoteAddress ||
-    //     req.connection.socket.remoteAddress).split(",")[0]
+     const clientIp = (req.headers['x-forwarded-for'] || 
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress).split(",")[0]
         admin.database().ref('/vps')
             .orderByChild('ip')
             .equalTo(clientIp)
