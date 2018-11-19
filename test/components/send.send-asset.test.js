@@ -6,7 +6,7 @@ import { spy } from 'sinon'
 
 Enzyme.configure({ adapter: new Adapter() })
 
-describe('Send component tests', () => {
+describe('Send - Send Asset Form component', () => {
   let wrapper
   let props
 
