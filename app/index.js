@@ -54,6 +54,7 @@ window.onbeforeunload = async () => {
       remote.app.quit()
     }
   } else {
+    window.onbeforeunload = null
     remote.app.quit()
   }
 }
