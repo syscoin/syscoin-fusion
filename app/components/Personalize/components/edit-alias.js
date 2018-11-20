@@ -18,7 +18,7 @@ type State = {
   editValues: Object
 };
 
-export default class NewAlias extends Component<Props, State> {
+export default class EditAlias extends Component<Props, State> {
   props: Props;
 
   constructor(props: Object) {
@@ -133,6 +133,7 @@ export default class NewAlias extends Component<Props, State> {
             onChange={this.selectAlias.bind(this)}
             value={this.state.aliasToEdit}
             className='edit-alias-form-control edit-alias-form-alias'
+            id='edit-alias-form-alias'
           >
             {this.props.currentAliases.filter(i => i.alias).map(i => <Option value={i.alias} key={i.alias}>{i.alias}</Option>)}
           </Select>

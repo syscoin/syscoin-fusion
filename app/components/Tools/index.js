@@ -16,47 +16,8 @@ type Props = {
   importWallet: Function,
   exportWallet: Function
 };
-type State = {
-  newAlias: {
-    aliasName: string,
-    publicValue: string,
-    acceptTransferFlags: number,
-    expireTimestamp: string,
-    address: string,
-    encryptionPrivKey: string,
-    encryptionPublicKey: string,
-    witness: string
-  }
-};
 
-export default class Tools extends Component<Props, State> {
-  props: Props;
-
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      newAlias: {
-        aliasName: '',
-        publicValue: '',
-        acceptTransferFlags: 3,
-        expireTimestamp: '1548184538',
-        address: '',
-        encryptionPrivKey: '',
-        encryptionPublicKey: '',
-        witness: ''
-      }
-    }
-  }
-
-  updateFields(e: Object, mode: string) {
-    const { name, value } = e.target
-    const newState = { ...this.state }
-
-    newState[mode][name] = value
-
-    this.setState(newState)
-  }
+export default class Tools extends Component<Props> {
 
   render() {
     return (
@@ -80,4 +41,5 @@ export default class Tools extends Component<Props, State> {
       </Row>
     )
   }
+
 }
