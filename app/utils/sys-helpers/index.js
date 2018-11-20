@@ -4,11 +4,9 @@ const { waterfall, parallel } = require('async')
 const Syscoin = require('fw/syscoin-js')
 
 const syscoin = new Syscoin()
-window.sys = syscoin
 
 /*
-  SYS helpers. All results are returned following the callback pattern.
-  All functions accepts a callback, where the first argument is always an error and the second one is the results.
+  SYS Helpers. All calls returns a Promise.
 */
 
 type AllocationInfoType = {
