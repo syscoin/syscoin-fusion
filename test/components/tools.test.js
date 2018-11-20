@@ -29,7 +29,7 @@ describe('Tools component tests', () => {
   })
 
   it('should render an instance of NewAlias', () => {
-    expect(wrapper.find(NewAlias).length).toBe(1)
+    expect(wrapper.find(NewAlias).length).toBe(0)
   })
 
   it('should render an instance of BackupWallet', () => {

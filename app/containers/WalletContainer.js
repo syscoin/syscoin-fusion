@@ -47,7 +47,7 @@ class WalletContainer extends Component<Props> {
     window.max = this.onMaximize
 
     if (!window.updateWalletHigh) {
-      window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 10000)
+      window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 5000)
     }
     
     this.updateWalletHigh()

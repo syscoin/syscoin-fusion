@@ -61,9 +61,9 @@ class Wallet extends Component<Props, State> {
             <Tab className='tab tab-tools' tab='Tools' key='3'>
               <ToolsContainer />
             </Tab>
-            <Tab className='tab tab-personalize' tab='Personalize' key='4'>
+            {/*<Tab className='tab tab-personalize' tab='Personalize' key='4'>
               <PersonalizeContainer />
-            </Tab>
+            </Tab>*/}
           </Tabs>
         </Col>
       </Row>

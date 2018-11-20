@@ -27,13 +27,13 @@ export default class Tools extends Component<Props> {
           offset={8}
           className='tools-form-container'
         >
-          <NewAlias
+          {/*<NewAlias
             unfinishedAliases={this.props.unfinishedAliases}
             createNewAlias={this.props.createNewAlias}
             title='Create new alias'
             currentBlock={this.props.currentBlock}
           />
-          <hr />
+          <hr />*/}
           <BackupWallet exportWallet={this.props.exportWallet} />
           <hr />
           <ImportWallet importWallet={this.props.importWallet} />
