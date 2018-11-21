@@ -21,4 +21,8 @@ describe('Tools - LockWallet component', () => {
     wrapper = shallow(<LockWallet {...props} />)
   })
 
+  it('should render correctly', () => {
+    expect(wrapper.instance()).toBeInstanceOf(LockWallet)
+  })
+
 })

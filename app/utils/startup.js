@@ -4,6 +4,7 @@ const { ipcRenderer } = require('electron')
 const fs = require('fs')
 const swal = require('sweetalert')
 const waterfall = require('async/waterfall')
+const { getInfo } = require('fw-sys')
 
 const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
@@ -12,29 +13,15 @@ const getSysPath = require('./syspath')
 
 const checkSyscoind = (cb) => {
   // Just a test to check if syscoind is ready
-  exec(generateCmd('cli', 'getinfo'), (err, stdout) => {
-    if (err) {
+  getInfo()
+    .then(result => cb(false, 'up', result))
+    .catch(err => {
       if (err.message.indexOf('code: -28') !== -1) {
         // Verifying wallet... Let the user know.
         return cb(null, 'verify', err.message)
       }
       cb(err)
-      return
-    }
-
-    let output
-
-    // Tries to parse the output of getinfo. If it's successful, it means that syscoind is working.
-    try {
-      output = JSON.parse(stdout)
-    } catch (error) {
-      cb(error)
-      return
-    }
-
-    // isUp, getinfo output
-    cb(false, 'up', output)
-  })
+    })
 }
 
 const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
@@ -123,7 +110,7 @@ const startUpRoutine = (cb) => {
   waterfall([
     done => {
       let isDone = false
-      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server`), (err) => {
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server -rpcallowip=127.0.0.1 -rpcport=8336 -rpcuser=u -rpcpassword=p`), (err) => {
         if (isDone) {
           return
         }

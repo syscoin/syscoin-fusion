@@ -269,6 +269,13 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
 
 const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
 
+
+const isEncrypted = () => new Promise((resolve, reject) => {
+  syscoin.callRpc('walletpassphrase')
+    .then(() => resolve())
+    .catch(() => reject())
+})
+
 module.exports = {
   aliasInfo,
   currentSysAddress,
@@ -288,5 +295,6 @@ module.exports = {
   getTransactionsPerAsset,
   getBlockchainInfo,
   listSysTransactions,
-  encryptWallet
+  encryptWallet,
+  isEncrypted
 }

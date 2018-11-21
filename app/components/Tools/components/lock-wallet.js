@@ -64,12 +64,7 @@ export default class LockWallet extends Component<Props> {
       return
     }
 
-    try {
-      result = await this.props.lockWallet(pwd.value)
-    } catch(err) {
-      console.log('kayamba')
-    }
-
+    // result = await this.props.lockWallet(pwd.value)
 
   }
 
