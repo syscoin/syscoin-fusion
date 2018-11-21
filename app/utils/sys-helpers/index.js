@@ -23,7 +23,7 @@ type SendAssetType = {
 };
 type sendSysTransactionType = {
   address: string,
-  amount: string,
+  amount: number,
   comment?: string
 };
 

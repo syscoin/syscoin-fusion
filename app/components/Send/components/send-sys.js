@@ -103,7 +103,9 @@ export default class SendAssetForm extends Component<Props, State> {
             <Button
               disabled={!amount || !address || isLoading}
               onClick={() => {
-                sendSys(this.state, err => {
+                const toSend = {...this.state}
+                toSend.amount = parseFloat(toSend.amount)
+                sendSys(toSend, err => {
                   if (err) {
                     return swal('Error', parseError(err.message), 'error')
                   }
