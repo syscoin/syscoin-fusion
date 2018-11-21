@@ -55,7 +55,6 @@ module.exports.getMNType = (req, res, next) => {
 }
 
 module.exports.chargeIfNeeded = (req, res, next) => {
-    console.log(req.mnData, req.vpsData, req.orderData)
     const nextChargeDate = req.orderData.chargeLastMadeAt + (24 * 60 * 60 * 1000)
 
     // Check if should charge based on last charge date
