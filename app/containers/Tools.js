@@ -5,8 +5,8 @@ import Tools from 'fw-components/Tools'
 
 import {
   exportWallet,
-  getPrivateKey,
-  importWallet
+  importWallet,
+  encryptWallet
 } from 'fw-sys'
 import {
   pushNewAlias
@@ -49,6 +49,17 @@ class ToolsContainer extends Component<Props> {
     cb()
   }
 
+  async encryptWallet(pass: string) {
+    try {
+      await encryptWallet(pass)
+    } catch(err) {
+      console.log(err)
+      return false
+    }
+
+    return true
+  }
+
   render() {
     return (
       <Tools
@@ -57,6 +68,7 @@ class ToolsContainer extends Component<Props> {
         createNewAlias={this.createNewAlias}
         importWallet={this.importWallet}
         exportWallet={this.exportWallet}
+        encryptWallet={this.encryptWallet}
       />
     )
   }

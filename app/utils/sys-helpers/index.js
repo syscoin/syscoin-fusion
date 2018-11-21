@@ -4,6 +4,7 @@ const { waterfall, parallel } = require('async')
 const Syscoin = require('fw/syscoin-js')
 
 const syscoin = new Syscoin()
+window.sys = syscoin
 
 /*
   SYS Helpers. All calls returns a Promise.
@@ -266,6 +267,8 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
     .catch(err => reject(err))
 })
 
+const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
+
 module.exports = {
   aliasInfo,
   currentSysAddress,
@@ -284,5 +287,6 @@ module.exports = {
   getPrivateKey,
   getTransactionsPerAsset,
   getBlockchainInfo,
-  listSysTransactions
+  listSysTransactions,
+  encryptWallet
 }

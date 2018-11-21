@@ -216,6 +216,7 @@
     "history": "^4.7.2",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
+    "ow": "^0.8.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
@@ -228,7 +229,8 @@
     "redux-actions": "^2.4.0",
     "redux-thunk": "^2.2.0",
     "source-map-support": "^0.5.6",
-    "sweetalert": "^2.1.0"
+    "sweetalert": "^2.1.0",
+    "sweetalert2": "^7.29.1"
   },
   "devEngines": {
     "node": ">=7.x",
