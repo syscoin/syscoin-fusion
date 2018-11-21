@@ -1,5 +1,7 @@
 const admin = require('firebase-admin')
 const updateBalance = require('./helpers/update-balance')
+const getNodePrice = require('./helpers/get-node-price')
+const getBalance = require('./helpers/get-balance')
 
 /**
  * @api {post} /payment Node payment and creation
@@ -24,56 +26,76 @@ const updateBalance = require('./helpers/update-balance')
 	"paymentId": "ch_1Crw48JiaRVP2JosFEAzwu82"
 }
  */
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
     // Handles new Masternode orders
-    try {
-        let token = req.body.token,
-            months = req.body.months,
-            amount = parseFloat(req.body.chargeAmount) * -100,
-            email = req.body.email
-            mnKey = req.body.mnKey,
-            mnTxid = req.body.mnTxid,
-            mnName = req.body.mnName,
-            mnIndex = req.body.mnIndex,
-            uid = req.user.uid,
-            nodeType = req.body.nodeType || 'sys'
+    let token = req.body.token,
+        months = req.body.months,
+        mnKey = req.body.mnKey,
+        mnTxid = req.body.mnTxid,
+        mnName = req.body.mnName,
+        mnIndex = req.body.mnIndex,
+        uid = req.user.uid,
+        nodeType = req.body.nodeType || 'sys'
 
-        return updateBalance(
-            uid,
-            amount,
-            (err) => {
-                if (err) {
-                    return res.status(400).send({
-                        error: true,
-                        message: err
-                    })
-                }
-                
-                admin.database().ref('/to-deploy/tasks').push({
-                    months,
-                    mnKey,
-                    mnTxid,
-                    mnName,
-                    mnIndex,
-                    lock: false,
-                    lockDate: null,
-                    orderDate: Date.now(),
-                    paymentId: 'XYZ',
-                    deployed: false,
-                    userId: req.user.uid,
-                    paymentMethod: 'cc',
-                    nodeType
-                })
+    let nodePrice
 
-                return res.send({
-                    message: 'Payment completed',
-                    expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
-                    purchaseDate: Date.now(),
-                    paymentId: 'XYZ'
-                })
+    if (months <= 0) {
+        return res.status(400).send({
+            error: true,
+            message: 'Invalid number of months'
         })
-    } catch (err) {
-        return next(err)
     }
+
+    try {
+        nodePrice = await getNodePrice(nodeType)
+    } catch (err) {
+        return res.status(400).send({
+            error: true,
+            message: 'Invalid node type.'
+        })
+    }
+
+    // Getting final price
+    nodePrice = nodePrice * parseInt(months)
+
+    return getBalance(uid, (err, balance) => {
+        if (err) {
+            return res.status(400).send({
+                error: true,
+                message: err
+            })
+        }
+
+        if (balance < nodePrice) {
+            return res.status(403).send({
+                error: true,
+                message: 'Not enough balance.'
+            })
+        }
+
+        const paymentId = Date.now()
+
+        admin.database().ref('/to-deploy/tasks').push({
+            months,
+            mnKey,
+            mnTxid,
+            mnName,
+            mnIndex,
+            lock: false,
+            lockDate: null,
+            orderDate: Date.now(),
+            paymentId: paymentId,
+            deployed: false,
+            userId: req.user.uid,
+            paymentMethod: 'cc',
+            nodeType
+        })
+
+        return res.send({
+            message: 'Payment completed',
+            expiresOn: new Date().setMonth(new Date().getMonth() + parseInt(months)),
+            purchaseDate: paymentId
+        })
+    })
 
 }

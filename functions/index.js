@@ -42,9 +42,8 @@ const expiredMnWatch = require('./functions/expired-mn-watch')
 
 // Middlewares
 const checkIpWhitelist = require('./middlewares').checkIpWhitelist
-const checkIpForUpdate = require('./middlewares').checkIpForUpdate
-const getOrderData = require('./middlewares').getOrderData
-const getMNType = require('./middlewares').getMNType
+const chargeIfNeeded = require('./middlewares').chargeIfNeeded
+const gatherData = require('./middlewares').gatherData
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -115,8 +114,8 @@ app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
 app.post('/info', dataTracking)
 
-app.post('/droplets/edit-status', checkIpForUpdate, getMNType, getOrderData, editStatus)
-app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)
+app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, editStatus)
+app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)
 app.post('/droplets/reward-notification', checkIpWhitelist, notificationReward)
 
 app.use((err, req, res, next) => {
@@ -132,4 +131,4 @@ exports.app = functions.https.onRequest(app)
 exports.emailUserOnStatusChange = emailUserOnStatusChange
 exports.emailOnDeploy = emailOnDeploy
 
-exports.expiredMnWatch = expiredMnWatch
+// exports.expiredMnWatch = expiredMnWatch

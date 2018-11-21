@@ -6,8 +6,8 @@ const statusTemplate = require('./email/templates/status_change')
 const newDeployTemplate = require('./email/templates/new_deploy')
 
 exports.emailUserOnStatusChange = functions.database.ref('/vps/{id}').onUpdate(ev => {
-    const oldData = ev.data.previous.val()
-    const nextData = ev.data.val()
+    const oldData = ev.before.val()
+    const nextData = ev.after.val()
 
     if (oldData.status !== nextData.status) {
         return firebase.database().ref('/mn-data')
