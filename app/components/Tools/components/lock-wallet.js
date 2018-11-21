@@ -64,7 +64,7 @@ export default class LockWallet extends Component<Props> {
       return
     }
 
-    // result = await this.props.lockWallet(pwd.value)
+    await this.props.lockWallet(pwd.value)
 
   }
 

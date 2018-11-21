@@ -1,7 +1,7 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation, isEncrypted } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
 import _ from 'lodash'
@@ -76,6 +76,11 @@ type saveDashboardAssetsActionType = {
   payload?: Array<Object>
 };
 
+type checkWalletEncryptionActionType = {
+  type: string,
+  payload: boolean
+};
+
 const saveGetInfoAction = createAction(types.WALLET_GETINFO)
 const saveAliasesAction = createAction(types.WALLET_ALIASES)
 const saveUnfinishedAliasesAction = createAction(types.WALLET_UNFINISHED_ALIASES)
@@ -88,6 +93,8 @@ const dashboardAssetsReceiveAction = createAction(types.WALLET_DASHBOARD_ASSETS_
 const dashboardTransactionsIsLoadingAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING)
 const dashboardTransactionsErrorAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_ERROR)
 const dashboardTransactionsReceiveAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_RECEIVE)
+
+const walletIsEncrypted = createAction(types.WALLET_IS_ENCRYPTED)
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
   try {
@@ -166,3 +173,5 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
 
   dispatch(dashboardAssetsReceiveAction(assets))
 }
+
+export const checkWalletEncryption = () => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsEncrypted(await isEncrypted()))

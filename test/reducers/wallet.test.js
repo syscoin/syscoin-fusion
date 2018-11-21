@@ -285,4 +285,17 @@ describe('Wallet reducer', () => {
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
+
+  it('should handle WALLET_IS_ENCRYPTED', () => {
+    const action = {
+      type: types.WALLET_IS_ENCRYPTED,
+      payload: true
+    }
+    const expectedState = {
+      ...initialState,
+      isEncrypted: true
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
 })

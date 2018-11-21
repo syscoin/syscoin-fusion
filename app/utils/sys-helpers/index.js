@@ -270,10 +270,10 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
 const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
 
 
-const isEncrypted = () => new Promise((resolve, reject) => {
+const isEncrypted = () => new Promise((resolve) => {
   syscoin.callRpc('walletpassphrase')
-    .then(() => resolve())
-    .catch(() => reject())
+    .then(() => resolve(true))
+    .catch(err => resolve(err.code === -1))
 })
 
 module.exports = {
