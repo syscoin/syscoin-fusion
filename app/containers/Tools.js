@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react'
+import { remote } from 'electron'
 import { connect } from 'react-redux'
 import Tools from 'fw-components/Tools'
 
@@ -53,9 +54,11 @@ class ToolsContainer extends Component<Props> {
     try {
       await encryptWallet(pass)
     } catch(err) {
-      console.log(err)
       return false
     }
+
+    remote.app.relaunch()
+    remote.app.exit()
 
     return true
   }
