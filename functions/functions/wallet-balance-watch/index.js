@@ -30,11 +30,13 @@ module.exports = (req, res, next) => {
     listUsersResult.users.forEach((userRecord) => {
       let user =  userRecord.toJSON()
 
-      let emailList = getOrderData(user.uid)
+      getOrderData(user.uid, (emailList) => {
+        console.log("back here: ",emailList)
+        if (emailList) {
+          sendEmail(emailList)
+        }
+      })
 
-      if (emailList) {
-        sendEmail(emailList)
-      }
     });
     // return done()
       if (listUsersResult.pageToken) {

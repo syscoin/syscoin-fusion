@@ -1,19 +1,18 @@
 const admin = require('firebase-admin')
 
-module.exports = (mnId) => {
+module.exports = (mnId, cb) => {
     admin.database().ref(`/mn-data/${mnId}`)
     .once('value', snapshot => {
   
       if (snapshot.hasChildren()) {
-        const key = Object.keys(snapshot.val())[0]
-        const data = snapshot.val()[key]
+        const data = snapshot.val()
   
         let info = {
           'name': data.mnName,
           'type': data.nodeType
         }
-        console.log("Got data:", info)
-        return info
+        console.log(info)
+        return cb(info)
       }
     })
 }

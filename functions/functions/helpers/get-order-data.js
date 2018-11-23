@@ -2,8 +2,8 @@ const admin = require('firebase-admin')
 
 const getMNData = require('../helpers/get-mn-data')
 
-module.exports = (uid) => {
-    let list = {}
+module.exports = (uid,cb) => {
+    let list = []
   
     admin.database().ref('/orders')
     .orderByChild('userId')
@@ -16,9 +16,10 @@ module.exports = (uid) => {
           const key = Object.keys(snapshot.val())[index]
           const data = snapshot.val()[key]
   
-          // console.log(data)
-          if (!data)
-            break
+          console.log(data, list)
+          if (!data) {
+            return cb(list)
+          }
   
           let daysLeft
   
@@ -34,12 +35,8 @@ module.exports = (uid) => {
             daysLeft = 0
           }
   
-          console.log(daysLeft)
-          if(daysLeft) {
-            console.log("Getting data for: ", data.mnDataId)
-            let listData = getMNData(data.mnDataId)
-            // console.log(listData)
-            list.push(listData)
+          if(!daysLeft) {
+            getMNData(data.mnDataId, (listData) => list.push({listData}))
           } else {
             continue
           }
@@ -50,6 +47,5 @@ module.exports = (uid) => {
       }
     })
   
-    console.log("List data: ", list)
-    return list
+    // console.log("List data: ", list)
 }
