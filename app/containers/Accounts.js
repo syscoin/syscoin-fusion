@@ -15,6 +15,7 @@ import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import { editSendAsset } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
+import unlockWallet from 'fw-utils/unlock-wallet'
 
 type Props = {
   balance: number,
@@ -224,11 +225,24 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getPrivateKey(address: string, cb: Function) {
+    let lock
+    let key
+
     try {
-      return cb(null, await getPrivateKey(address))
-    } catch (err) {
+      lock = await unlockWallet()
+    } catch(err) {
       return cb(err)
     }
+  
+    try {
+      key = await getPrivateKey(address)
+    } catch (err) {
+      lock()
+      return cb(err)
+    }
+
+    lock()
+    cb(null, key)
   }
 
   goToHome() {

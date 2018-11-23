@@ -268,7 +268,8 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
 })
 
 const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
-
+const unlockWallet = (pass: string) => syscoin.callRpc('walletpassphrase', [pass, 60])
+const lockWallet = () => syscoin.callRpc('walletlock')
 
 const isEncrypted = () => new Promise((resolve) => {
   syscoin.callRpc('walletpassphrase')
@@ -296,5 +297,7 @@ module.exports = {
   getBlockchainInfo,
   listSysTransactions,
   encryptWallet,
+  unlockWallet,
+  lockWallet,
   isEncrypted
 }
