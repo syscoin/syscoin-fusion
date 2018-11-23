@@ -36,7 +36,8 @@ type Props = {
   dashboardAssets: Function,
   dashboardTransactions: Function,
   changeTab: Function,
-  editSendAsset: Function
+  editSendAsset: Function,
+  isEncrypted: boolean
 };
 
 type State = {
@@ -225,13 +226,15 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getPrivateKey(address: string, cb: Function) {
-    let lock
+    let lock = () => {}
     let key
 
-    try {
-      lock = await unlockWallet()
-    } catch(err) {
-      return cb(err)
+    if (this.props.isEncrypted) {
+      try {
+        lock = await unlockWallet()
+      } catch(err) {
+        return cb(err)
+      }
     }
   
     try {
@@ -303,7 +306,8 @@ const mapStateToProps = state => ({
   headBlock: state.wallet.blockchaininfo.headers,
   currentBlock: state.wallet.getinfo.blocks,
   dashboardSysTransactions: state.wallet.dashboard.transactions,
-  dashboardAssetsBalances: state.wallet.dashboard.assets
+  dashboardAssetsBalances: state.wallet.dashboard.assets,
+  isEncrypted: state.wallet.isEncrypted
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -13,6 +13,7 @@ import {
   sendAssetForm,
   sendSysForm
 } from 'fw-actions/forms'
+import unlockWallet from 'fw-utils/unlock-wallet'
 
 
 type Props = {
@@ -24,7 +25,8 @@ type Props = {
   editSendAsset: Function,
   editSendSys: Function,
   sysForm: Object,
-  assetForm: Object
+  assetForm: Object,
+  isEncrypted: boolean
 };
 type State = {
   assetsFromAlias: Array<Object>,
@@ -59,6 +61,16 @@ class SendContainer extends Component<Props, State> {
     const { from, asset, toAddress, amount, comment } = obj
 
     return new Promise(async (resolve, reject) => {
+      let lock = () => {}
+
+      if (this.props.isEncrypted) {
+        try {
+          lock = await unlockWallet()
+        } catch(err) {
+          return reject(err)
+        }
+      }
+
       try {
         await this.props.sendAssetForm({
           fromAlias: from,
@@ -68,21 +80,34 @@ class SendContainer extends Component<Props, State> {
           comment
         })
       } catch (err) {
+        lock()
         return reject(err)
       }
 
+      lock()
       resolve()
     })
   }
 
   sendSys(obj: sendSysType) {
     return new Promise(async (resolve, reject) => {
+      let lock = () => {}
+
+      if (this.props.isEncrypted) {
+        try {
+          lock = await unlockWallet()
+        } catch(err) {
+          return reject(err)
+        }
+      }
+      
       try {
         await this.props.sendSysForm(obj)
       } catch (err) {
         return reject(err)
       }
 
+      lock()
       resolve()
     })
   }
@@ -146,7 +171,8 @@ const mapStateToProps = state => ({
   aliases: state.wallet.aliases,
   assets: state.options.guids,
   assetForm: state.forms.sendAsset,
-  sysForm: state.forms.sendSys
+  sysForm: state.forms.sendSys,
+  isEncrypted: state.wallet.isEncrypted
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
