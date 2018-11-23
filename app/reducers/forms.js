@@ -31,7 +31,7 @@ type StateType = {
     data: {
       comment: string,
       address: string,
-      amount: number
+      amount: string
     },
     isLoading: boolean,
     error: boolean
@@ -54,7 +54,7 @@ export const initialState = {
     data: {
       comment: '',
       address: '',
-      amount: 0
+      amount: ''
     },
     isLoading: false,
     error: false

@@ -41,7 +41,7 @@ type sendAssetType = {
   comment?: string
 };
 type sendSysType = {
-  amount: number,
+  amount: string,
   address: string,
   comment: string
 };

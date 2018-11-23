@@ -17,7 +17,15 @@ describe('Send - Send SYS Form component', () => {
       columnSize: 12,
       balance: 100,
       isLoading: false,
-      sendSys: spy()
+      sendSys: spy(),
+      form: {
+        data: {
+          comment: '',
+          address: '',
+          amount: ''
+        }
+      },
+      onChangeForm: spy()
     }
     wrapper = shallow(<SendSysForm {...props} />)
   })
@@ -27,61 +35,96 @@ describe('Send - Send SYS Form component', () => {
   })
 
   it('should render correct values', () => {
-    const newState = {
-      comment: 'test',
-      address: 'test_address',
-      amount: '123'
+    const newValues = {
+      data: {
+        comment: 'test',
+        address: 'test_address',
+        amount: '123'
+      }
     }
-    wrapper.setState(newState)
+    wrapper = shallow(<SendSysForm {...props} form={newValues} />)
 
-    expect(wrapper.find('.send-sys-form-to-address').prop('value')).toBe(newState.address)
-    expect(wrapper.find('.send-sys-form-amount').prop('value')).toBe(newState.amount)
-    expect(wrapper.find('.send-sys-form-comment').prop('value')).toBe(newState.comment)
+    expect(wrapper.find('.send-sys-form-to-address').prop('value')).toBe(newValues.data.address)
+    expect(wrapper.find('.send-sys-form-amount').prop('value')).toBe(newValues.data.amount)
+    expect(wrapper.find('.send-sys-form-comment').prop('value')).toBe(newValues.data.comment)
   })
 
   it('should not allow you to send if required fields are empty', () => {
-    const newState = {
-      comment: 'test',
-      address: 'test_address',
-      amount: ''
+    let newValues = {
+      data: {
+        comment: 'test',
+        address: 'test_address',
+        amount: ''
+      }
     }
-    wrapper.setState(newState)
+    wrapper = shallow(<SendSysForm {...props} form={newValues} />)
     expect(wrapper.find('.send-sys-form-btn-send').prop('disabled')).toBe(true)
 
-    wrapper.setState({
-      address: '',
-      amount: '123'
-    })
+    newValues = {
+      data: {
+        comment: '',
+        address: '',
+        amount: '123'
+      }
+    }
+    wrapper = shallow(<SendSysForm {...props} form={newValues} />)
     expect(wrapper.find('.send-sys-form-btn-send').prop('disabled')).toBe(true)
 
-    wrapper.setState({
-      address: 'test',
-      amount: '123'
-    })
+    newValues = {
+      data: {
+        comment: '',
+        address: 'test',
+        amount: '123'
+      }
+    }
+    wrapper = shallow(<SendSysForm {...props} form={newValues} />)
     expect(wrapper.find('.send-sys-form-btn-send').prop('disabled')).toBe(false)
   })
 
-  it('should write changes to state', () => {
+  it('should write changes to store', () => {
+    const onChangeMock = spy()
+    wrapper = shallow(<SendSysForm {...props} onChangeForm={onChangeMock} />)
+
     wrapper.find('.send-sys-form-amount').simulate('change', '123')
     wrapper.find('.send-sys-form-to-address').simulate('change', 'test')
     wrapper.find('.send-sys-form-comment').simulate('change', 'comment')
 
-    expect(wrapper.state()).toEqual({
+    expect(onChangeMock.calledThrice).toBe(true)
+    expect(onChangeMock.getCall(0).args[0]).toEqual({
       amount: '123',
+      address: '',
+      comment: ''
+    })
+    expect(onChangeMock.getCall(1).args[0]).toEqual({
+      amount: '',
       address: 'test',
+      comment: ''
+    })
+    expect(onChangeMock.getCall(2).args[0]).toEqual({
+      amount: '',
+      address: '',
       comment: 'comment'
     })
   })
 
+  it('should filter amount field by only numbers', () => {
+    const onChangeMock = spy()
+    wrapper = shallow(<SendSysForm {...props} onChangeForm={onChangeMock} />)
+
+    wrapper.find('.send-sys-form-amount').simulate('change', 'tr2')
+
+    expect(onChangeMock.called).toBe(false)
+  })
+
   it('should fire sendSys when clicking on send', () => {
     const sendMock = spy()
-    wrapper = shallow(<SendSysForm {...props} sendSys={sendMock} />)
-
-    wrapper.setState({
-      amount: '100',
-      address: 'test_address'
-    })
-
+    const form = {
+      data: {
+        address: 'test',
+        amount: '123'
+      }
+    }
+    wrapper = shallow(<SendSysForm {...props} sendSys={sendMock} form={form} />)
     wrapper.find('.send-sys-form-btn-send').simulate('click')
 
     expect(sendMock.calledOnce).toBe(true)

@@ -23,7 +23,7 @@ type SendAssetType = {
 };
 type sendSysTransactionType = {
   address: string,
-  amount: number,
+  amount: string,
   comment?: string
 };
 
@@ -105,7 +105,7 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
 const sendSysTransaction = (obj: sendSysTransactionType) => {
   // Send SYS to address
   const { address, amount, comment = '' } = obj
-  return syscoin.walletServices.sendToAddress(address, amount, comment)
+  return syscoin.walletServices.sendToAddress(address, Number(amount), comment)
 }
 
 const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {

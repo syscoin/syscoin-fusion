@@ -10,42 +10,42 @@ type Props = {
   columnSize: number,
   balance: number,
   isLoading: boolean,
-  sendSys: Function
-};
-
-type State = {
-  comment: string,
-  address: string,
-  amount: string
-};
-
-export default class SendAssetForm extends Component<Props, State> {
-  initialState: State;
-
-  constructor(props: Props) {
-    super(props)
-
-    this.initialState = {
-      comment: '',
-      address: '',
-      amount: ''
-    }
-
-    this.state = {
-      ...this.initialState
+  sendSys: Function,
+  onChangeForm: Function,
+  form: {
+    data: {
+      comment: string,
+      address: string,
+      amount: string
     }
   }
+};
 
-  updateField(value: string | Object, name: string) {
-    const toUpdate = formChangeFormat(value, name)
+export default class SendAssetForm extends Component<Props> {
 
-    this.setState(toUpdate)
+  updateField(value: string | Object, name: string, filter?: RegExp) {
+    let toUpdate = formChangeFormat(value, name)
+
+    if (filter && !filter.test(toUpdate[name])) {
+      if (toUpdate[name]) {
+        return
+      }
+    }
+
+    toUpdate = {
+      ...this.props.form.data,
+      ...toUpdate
+    }
+
+    this.props.onChangeForm(toUpdate, 'sys')
   }
 
   resetForm() {
-    this.setState({
-      ...this.initialState
-    })
+    this.props.onChangeForm({
+      amount: 0,
+      address: '',
+      comment: ''
+    }, 'sys')
   }
 
   render() {
@@ -54,13 +54,14 @@ export default class SendAssetForm extends Component<Props, State> {
       columnSize = 12,
       balance = '0.00',
       isLoading = false,
-      sendSys
+      sendSys,
+      form
     } = this.props
     const {
       amount,
       comment,
       address
-    } = this.state
+    } = form.data
 
     return (
       <Col
@@ -84,7 +85,7 @@ export default class SendAssetForm extends Component<Props, State> {
             name='amount'
             placeholder='Amount'
             pattern='\d+'
-            onChange={e => this.updateField(e, 'amount')}
+            onChange={e => this.updateField(e, 'amount', /^\d+(\.)?(\d+)?$/)}
             value={amount}
             className='send-sys-form-control send-sys-form-amount'
           />
@@ -103,9 +104,7 @@ export default class SendAssetForm extends Component<Props, State> {
             <Button
               disabled={!amount || !address || isLoading}
               onClick={() => {
-                const toSend = {...this.state}
-                toSend.amount = parseFloat(toSend.amount)
-                sendSys(toSend, err => {
+                sendSys(this.props.form.data, err => {
                   if (err) {
                     return swal('Error', parseError(err.message), 'error')
                   }

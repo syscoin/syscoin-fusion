@@ -27,7 +27,7 @@ type editSendSysActionType = {
 type editSendSysType = {
   comment?: string,
   address: string,
-  amount: number
+  amount: string
 };
 
 export const editSendAssetAction = createAction(types.EDIT_SEND_ASSET_FORM)
