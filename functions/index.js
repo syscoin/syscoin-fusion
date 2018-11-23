@@ -2,10 +2,10 @@
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-admin.initializeApp({
-	credential: admin.credential.applicationDefault(),
-	databaseURL: functions.config().projectconfig.databaseurl
-})
+// admin.initializeApp({
+// 	credential: admin.credential.applicationDefault(),
+// 	databaseURL: functions.config().projectconfig.databaseurl
+//})
 const express = require('express')
 const cookieParser = require('cookie-parser')()
 const cors = require('cors')
@@ -23,6 +23,8 @@ const getPoolingData = require('./endpoints/pooling-data')
 const requestPooling = require('./endpoints/request-pooling')
 const editNode = require('./endpoints/edit-node')
 const dataTracking = require('./endpoints/data-tracking')
+
+const balCheck = require('./functions/wallet-balance-watch/index')
 
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
@@ -109,6 +111,8 @@ app.post('/info', dataTracking)
 app.post('/droplets/edit-status', checkIpWhitelist, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)
 app.post('/droplets/reward-notification', checkIpWhitelist, notificationReward)
+
+app.get('/balanceCheck', balCheck)
 
 app.use((err, req, res, next) => {
 	console.log(err)
