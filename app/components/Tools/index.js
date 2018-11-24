@@ -46,7 +46,7 @@ export default class Tools extends Component<Props> {
           <ImportWallet importWallet={this.props.importWallet} />
           <hr />
           <LockWallet
-            lockWallet={this.props.encryptWallet}
+            encryptWallet={this.props.encryptWallet}
             isEncrypted={this.props.isEncrypted}
             changePwd={this.props.changePwd}
             unlockWallet={this.props.unlockWallet}

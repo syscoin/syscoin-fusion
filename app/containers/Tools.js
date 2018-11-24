@@ -71,8 +71,8 @@ class ToolsContainer extends Component<Props> {
     return true
   }
 
-  lockWallet() {
-    lockWallet()
+  async lockWallet() {
+    await lockWallet()
     this.props.walletUnlocked(false)
   }
 

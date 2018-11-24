@@ -5,11 +5,12 @@ import swal from 'sweetalert2'
 import parseError from 'fw-utils/error-parser'
 
 type Props = {
-  lockWallet: Function,
+  encryptWallet: Function,
   isEncrypted: boolean,
   changePwd: Function,
   unlockWallet: Function,
-  isUnlocked: boolean
+  isUnlocked: boolean,
+  lockWallet: Function
 };
 
 export default class LockWallet extends Component<Props> {
@@ -59,7 +60,7 @@ export default class LockWallet extends Component<Props> {
     }
 
     try {
-      await this.props.lockWallet(pwd.value)
+      await this.props.encryptWallet(pwd.value)
     } catch(err) {
       swal('Error', parseError(err.message), 'error')
     }
@@ -110,10 +111,6 @@ export default class LockWallet extends Component<Props> {
     }
 
     swal('Success', 'Wallet will remain unlocked until you close Fusion.', 'success')
-  }
-
-  async handleWalletLock() {
-
   }
 
   render() {
