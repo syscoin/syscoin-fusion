@@ -7,11 +7,13 @@ import Tools from 'fw-components/Tools'
 import {
   exportWallet,
   importWallet,
-  encryptWallet
+  encryptWallet,
+  changePwd
 } from 'fw-sys'
 import {
   pushNewAlias
 } from 'fw-utils/new-alias-manager'
+import unlockWallet from 'fw-utils/unlock-wallet'
 
 type Props = {
   currentBlock: number,
@@ -74,6 +76,8 @@ class ToolsContainer extends Component<Props> {
         exportWallet={this.exportWallet}
         encryptWallet={this.encryptWallet}
         isEncrypted={this.props.isEncrypted}
+        changePwd={changePwd}
+        unlockWallet={unlockWallet}
       />
     )
   }

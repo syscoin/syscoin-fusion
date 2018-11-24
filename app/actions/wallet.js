@@ -95,6 +95,7 @@ const dashboardTransactionsErrorAction = createAction(types.WALLET_DASHBOARD_TRA
 const dashboardTransactionsReceiveAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_RECEIVE)
 
 const walletIsEncrypted = createAction(types.WALLET_IS_ENCRYPTED)
+const walletIsUnlocked = createAction(types.WALLET_IS_UNLOCKED)
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
   try {
@@ -175,3 +176,4 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
 }
 
 export const checkWalletEncryption = () => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsEncrypted(await isEncrypted()))
+export const walletUnlocked = (unlocked: boolean) => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsUnlocked(unlocked))

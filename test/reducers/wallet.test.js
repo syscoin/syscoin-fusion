@@ -298,4 +298,17 @@ describe('Wallet reducer', () => {
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
+
+  it('should handle WALLET_IS_UNLOCKED', () => {
+    const action = {
+      type: types.WALLET_IS_UNLOCKED,
+      payload: true
+    }
+    const expectedState = {
+      ...initialState,
+      isUnlocked: true
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
 })

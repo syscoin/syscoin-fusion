@@ -6,22 +6,13 @@ import parseError from 'fw-utils/error-parser'
 
 type Props = {
   lockWallet: Function,
-  isEncrypted: boolean
-};
-type State = {
-  isLoading: boolean
+  isEncrypted: boolean,
+  changePwd: Function,
+  unlockWallet: Function
 };
 
-export default class LockWallet extends Component<Props, State> {
+export default class LockWallet extends Component<Props> {
   props: Props;
-
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      isLoading: false
-    }
-  }
 
   async handleEncrypt() {
     const pwd = await swal({
@@ -66,7 +57,58 @@ export default class LockWallet extends Component<Props, State> {
       return
     }
 
-    await this.props.lockWallet(pwd.value)
+    try {
+      await this.props.lockWallet(pwd.value)
+    } catch(err) {
+      swal('Error', parseError(err.message), 'error')
+    }
+  }
+
+  async handleChangePwd() {
+    const oldPwd = await swal({
+      title: 'Enter old password',
+      input: 'password',
+      inputPlaceholder: 'Password',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: true
+    })
+
+    if (oldPwd.dismiss) {
+      return
+    }
+
+    const newPwd = await swal({
+      title: 'Enter new password',
+      input: 'password',
+      inputPlaceholder: 'Password',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: true
+    })
+
+    if (newPwd.dismiss) {
+      return
+    }
+
+    try {
+      await this.props.changePwd(oldPwd.value, newPwd.value)
+    } catch(err) {
+      swal('Error', parseError(err.message), 'error')
+      return
+    }
+
+    swal('Success', 'Password changed successfully', 'success')
+  }
+
+  async handleUnlockForSession() {
+    try {
+      await this.props.unlockWallet(9999999)
+    } catch(err) {
+      return
+    }
+
+    swal('Success', 'Wallet will remain unlocked until you close Fusion.', 'success')
   }
 
   render() {
@@ -77,13 +119,13 @@ export default class LockWallet extends Component<Props, State> {
           <div className='lock-utilities'>
             <Button
               className='tools-change-pwd'
-              disabled={this.state.isLoading}
+              onClick={this.handleChangePwd.bind(this)}
             >
               <Icon type='key' /> Change password
             </Button>
             <Button
               className='tools-unlock'
-              disabled={this.state.isLoading}
+              onClick={this.handleUnlockForSession.bind(this)}
             >
               <Icon type='unlock' /> Unlock for the session
             </Button>
@@ -91,7 +133,6 @@ export default class LockWallet extends Component<Props, State> {
         ) : (
           <Button
             className='tools-lock'
-            disabled={this.state.isLoading}
             onClick={this.handleEncrypt.bind(this)}
           >
             <Icon type='lock' /> Lock Wallet
