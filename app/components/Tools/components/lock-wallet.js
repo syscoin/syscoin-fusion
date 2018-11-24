@@ -90,7 +90,7 @@ export default class LockWallet extends Component<Props, State> {
           </div>
         ) : (
           <Button
-            className=''
+            className='tools-lock'
             disabled={this.state.isLoading}
             onClick={this.handleEncrypt.bind(this)}
           >
