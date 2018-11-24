@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Button, Icon, Tooltip } from 'antd'
+import { Button, Icon } from 'antd'
 import swal from 'sweetalert2'
 import parseError from 'fw-utils/error-parser'
 
@@ -8,7 +8,8 @@ type Props = {
   lockWallet: Function,
   isEncrypted: boolean,
   changePwd: Function,
-  unlockWallet: Function
+  unlockWallet: Function,
+  isUnlocked: boolean
 };
 
 export default class LockWallet extends Component<Props> {
@@ -111,6 +112,10 @@ export default class LockWallet extends Component<Props> {
     swal('Success', 'Wallet will remain unlocked until you close Fusion.', 'success')
   }
 
+  async handleWalletLock() {
+
+  }
+
   render() {
     return (
       <div className='get-priv-key-container'>
@@ -125,9 +130,9 @@ export default class LockWallet extends Component<Props> {
             </Button>
             <Button
               className='tools-unlock'
-              onClick={this.handleUnlockForSession.bind(this)}
+              onClick={this.props.isUnlocked ? this.props.lockWallet : this.handleUnlockForSession.bind(this)}
             >
-              <Icon type='unlock' /> Unlock for the session
+              <Icon type='unlock' /> {this.props.isUnlocked ? 'Lock wallet' : 'Unlock for the session'}
             </Button>
           </div>
         ) : (

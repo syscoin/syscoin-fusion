@@ -19,7 +19,9 @@ type Props = {
   encryptWallet: Function,
   isEncrypted: boolean,
   changePwd: Function,
-  unlockWallet: Function
+  unlockWallet: Function,
+  isUnlocked: boolean,
+  lockWallet: Function
 };
 
 export default class Tools extends Component<Props> {
@@ -48,6 +50,8 @@ export default class Tools extends Component<Props> {
             isEncrypted={this.props.isEncrypted}
             changePwd={this.props.changePwd}
             unlockWallet={this.props.unlockWallet}
+            isUnlocked={this.props.isUnlocked}
+            lockWallet={this.props.lockWallet}
           />
         </Col>
       </Row>

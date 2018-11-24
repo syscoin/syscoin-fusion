@@ -21,7 +21,7 @@ const lock = async () => {
 // The wallet will lock itself if 60 has passed without manually locking it
 // If password is incorrect, will show a modal notifying it and rejecting the promise.
 export default (time?: number = 10) => new Promise(async (resolve, reject) => {
-  if (store.getState().wallet.isUnlocked) {
+  if (store.getState().wallet.isUnlocked && store.getState().wallet.isEncrypted) {
     return resolve(() => {})
   }
 

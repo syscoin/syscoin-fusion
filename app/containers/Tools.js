@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { remote } from 'electron'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Tools from 'fw-components/Tools'
 
@@ -8,12 +9,14 @@ import {
   exportWallet,
   importWallet,
   encryptWallet,
-  changePwd
+  changePwd,
+  lockWallet
 } from 'fw-sys'
 import {
   pushNewAlias
 } from 'fw-utils/new-alias-manager'
 import unlockWallet from 'fw-utils/unlock-wallet'
+import { walletUnlocked } from 'fw-actions/wallet'
 
 type Props = {
   currentBlock: number,
@@ -22,7 +25,9 @@ type Props = {
     round: number,
     block: number
   }>,
-  isEncrypted: boolean
+  isEncrypted: boolean,
+  isUnlocked: boolean,
+  walletUnlocked: Function
 };
 
 class ToolsContainer extends Component<Props> {
@@ -66,6 +71,11 @@ class ToolsContainer extends Component<Props> {
     return true
   }
 
+  lockWallet() {
+    lockWallet()
+    this.props.walletUnlocked(false)
+  }
+
   render() {
     return (
       <Tools
@@ -78,6 +88,8 @@ class ToolsContainer extends Component<Props> {
         isEncrypted={this.props.isEncrypted}
         changePwd={changePwd}
         unlockWallet={unlockWallet}
+        isUnlocked={this.props.isUnlocked}
+        lockWallet={this.lockWallet.bind(this)}
       />
     )
   }
@@ -86,7 +98,12 @@ class ToolsContainer extends Component<Props> {
 const mapStateToProps = state => ({
   currentBlock: state.wallet.getinfo.blocks,
   unfinishedAliases: state.wallet.unfinishedAliases,
-  isEncrypted: state.wallet.isEncrypted
+  isEncrypted: state.wallet.isEncrypted,
+  isUnlocked: state.wallet.isUnlocked
 })
 
-export default connect(mapStateToProps)(ToolsContainer)
+const mapDispatchToProps = dispatch => bindActionCreators({
+  walletUnlocked
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ToolsContainer)
