@@ -4,6 +4,13 @@
     padding: 40px 0;
     overflow-y: scroll;
     height: 93%;
+
+    .lock-utilities {
+        button {
+            margin-bottom: 10px;
+            width: 200px;
+        }
+    }
 }
 
 .tools-container hr {

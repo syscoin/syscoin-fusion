@@ -241,6 +241,7 @@ class AccountsContainer extends Component<Props, State> {
       key = await getPrivateKey(address)
     } catch (err) {
       lock()
+      console.log(err)
       return cb(err)
     }
 
@@ -286,7 +287,7 @@ class AccountsContainer extends Component<Props, State> {
         aliasAssets={aliasAssets}
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
-        getPrivateKey={this.getPrivateKey}
+        getPrivateKey={this.getPrivateKey.bind(this)}
         goToHome={this.goToHome.bind(this)}
         dashboardSysTransactions={this.props.dashboardSysTransactions}
         dashboardAssets={this.props.dashboardAssetsBalances}

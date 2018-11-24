@@ -16,7 +16,8 @@ type Props = {
   createNewAlias: Function, */
   importWallet: Function,
   exportWallet: Function,
-  encryptWallet: Function
+  encryptWallet: Function,
+  isEncrypted: boolean
 };
 
 export default class Tools extends Component<Props> {
@@ -40,7 +41,7 @@ export default class Tools extends Component<Props> {
           <hr />
           <ImportWallet importWallet={this.props.importWallet} />
           <hr />
-          <LockWallet lockWallet={this.props.encryptWallet} />
+          <LockWallet lockWallet={this.props.encryptWallet} isEncrypted={this.props.isEncrypted} />
         </Col>
       </Row>
     )

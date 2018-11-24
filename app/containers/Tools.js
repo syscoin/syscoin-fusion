@@ -19,7 +19,8 @@ type Props = {
     aliasName: string,
     round: number,
     block: number
-  }>
+  }>,
+  isEncrypted: boolean
 };
 
 class ToolsContainer extends Component<Props> {
@@ -72,6 +73,7 @@ class ToolsContainer extends Component<Props> {
         importWallet={this.importWallet}
         exportWallet={this.exportWallet}
         encryptWallet={this.encryptWallet}
+        isEncrypted={this.props.isEncrypted}
       />
     )
   }
@@ -79,7 +81,8 @@ class ToolsContainer extends Component<Props> {
 
 const mapStateToProps = state => ({
   currentBlock: state.wallet.getinfo.blocks,
-  unfinishedAliases: state.wallet.unfinishedAliases
+  unfinishedAliases: state.wallet.unfinishedAliases,
+  isEncrypted: state.wallet.isEncrypted
 })
 
 export default connect(mapStateToProps)(ToolsContainer)

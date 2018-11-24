@@ -16,7 +16,7 @@ const checkSyscoind = (cb) => {
   getInfo()
     .then(result => cb(false, 'up', result))
     .catch(err => {
-      if (err.message.indexOf('code: -28') !== -1) {
+      if (err.code === -28) {
         // Verifying wallet... Let the user know.
         return cb(null, 'verify', err.message)
       }
