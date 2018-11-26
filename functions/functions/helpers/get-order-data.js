@@ -35,7 +35,7 @@ module.exports = (uid,cb) => {
             daysLeft = 0
           }
   
-          if(!daysLeft) {
+          if(daysLeft) {
             getMNData(data.mnDataId, (listData) => 
             {
               list.push(listData)
