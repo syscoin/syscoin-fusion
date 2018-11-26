@@ -13,13 +13,18 @@ type Props = {
   sendAsset: Function,
   sendSys: Function,
   balance: number,
-  assets: Array<Object>,
   getAssetsFromAlias: Function,
-  assetsFromAliasIsLoading: boolean,
   assetsForm: {
     data: sendAssetType,
     isLoading: boolean,
-    error: boolean
+    error: boolean,
+    states: {
+      assetsFromAlias: {
+        isLoading: boolean,
+        error: boolean,
+        data: Array<Object>
+      }
+    }
   },
   sysForm: {
     data: sendSysType,
@@ -73,11 +78,10 @@ export default class Send extends Component<Props> {
             isLoading={this.props.assetsForm.isLoading}
             title='Send Asset'
             columnSize={12}
-            assets={this.props.assets}
             aliases={this.props.aliases}
             sendAsset={this.sendAsset.bind(this)}
             onSelectAlias={this.props.getAssetsFromAlias}
-            assetsFromAliasIsLoading={this.props.assetsFromAliasIsLoading}
+            assetsFromAlias={this.props.assetsForm.states.assetsFromAlias}
             form={this.props.assetsForm}
             onChangeForm={this.props.onChangeForm}
           />

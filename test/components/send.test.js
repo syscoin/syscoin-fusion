@@ -18,9 +18,7 @@ describe('Send component tests', () => {
       sendAsset: spy(),
       sendSys: spy(),
       balance: 100,
-      assets: [],
       getAssetsFromAlias: spy(),
-      assetsFromAliasIsLoading: false,
       assetsForm: {
         data: {
           from: '',
@@ -30,7 +28,14 @@ describe('Send component tests', () => {
           comment: ''
         },
         isLoading: false,
-        error: false
+        error: false,
+        states: {
+          assetsFromAlias: {
+            isLoading: false,
+            error: false,
+            data: []
+          }
+        }
       },
       sysForm: {
         data: {

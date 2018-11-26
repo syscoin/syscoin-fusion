@@ -15,11 +15,9 @@ describe('Send - Send Asset Form component', () => {
       title: 'Send asset',
       columnSize: 12,
       aliases: ['test_alias'],
-      assets: [{ symbol: 'test_asset', asset: 'asset_test' }],
       isLoading: false,
       sendAsset: spy(),
       onSelectAlias: spy(),
-      assetsFromAliasIsLoading: false,
       form: {
         isLoading: false,
         error: false,
@@ -30,6 +28,11 @@ describe('Send - Send Asset Form component', () => {
           amount: '1000',
           comment: 'comment_test'
         }
+      },
+      assetsFromAlias: {
+        isLoading: false,
+        error: false,
+        data: []
       },
       onChangeForm: spy()
     }

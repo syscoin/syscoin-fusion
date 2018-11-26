@@ -31,8 +31,8 @@ type StateType = {
     error: boolean,
     states: {
       assetsFromAlias: {
-        isLoading: false,
-        error: false,
+        isLoading: boolean,
+        error: boolean,
         data: Array<Object>
       }
     }

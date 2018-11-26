@@ -12,7 +12,7 @@ import {
   getPrivateKey
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
-import { editSendAsset } from 'fw-actions/forms'
+import { editSendAsset, getAssetsFromAlias } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 import unlockWallet from 'fw-utils/unlock-wallet'
@@ -37,7 +37,8 @@ type Props = {
   dashboardTransactions: Function,
   changeTab: Function,
   editSendAsset: Function,
-  isEncrypted: boolean
+  isEncrypted: boolean,
+  getAssetsFromAlias: Function
 };
 
 type State = {
@@ -241,7 +242,6 @@ class AccountsContainer extends Component<Props, State> {
       key = await getPrivateKey(address)
     } catch (err) {
       lock()
-      console.log(err)
       return cb(err)
     }
 
@@ -263,6 +263,7 @@ class AccountsContainer extends Component<Props, State> {
       amount: '',
       comment: ''
     })
+    this.props.getAssetsFromAlias({ receiver_address: alias }, this.props.assets)
     this.props.changeTab('2')
   }
 
@@ -314,7 +315,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   dashboardAssets,
   dashboardTransactions,
-  editSendAsset
+  editSendAsset,
+  getAssetsFromAlias
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)
