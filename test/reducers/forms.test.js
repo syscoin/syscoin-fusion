@@ -149,4 +149,72 @@ describe('Forms reducer', () => {
 
     expect(reducer(initialState, action)).toEqual(expectedState)
   })
+
+  it('should handle GET_ASSETS_FROM_ALIAS_IS_LOADING', () => {
+    const action = {
+      type: types.GET_ASSETS_FROM_ALIAS_IS_LOADING
+    }
+    const expectedState = {
+      ...initialState,
+      sendAsset: {
+        ...initialState.sendAsset,
+        states: {
+          ...initialState.sendAsset.states,
+          assetsFromAlias: {
+            isLoading: true,
+            error: false,
+            data: []
+          }
+        }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle GET_ASSETS_FROM_ALIAS_RECEIVE', () => {
+    const action = {
+      type: types.GET_ASSETS_FROM_ALIAS_RECEIVE,
+      payload: [{ asset: 'test_asset', symbol: 'TEST_ASSET'}]
+    }
+    const expectedState = {
+      ...initialState,
+      sendAsset: {
+        ...initialState.sendAsset,
+        states: {
+          ...initialState.sendAsset.states,
+          assetsFromAlias: {
+            isLoading: false,
+            error: false,
+            data: action.payload
+          }
+        }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle GET_ASSETS_FROM_ALIAS_ERROR', () => {
+    const action = {
+      type: types.GET_ASSETS_FROM_ALIAS_ERROR,
+      payload: new Error()
+    }
+    const expectedState = {
+      ...initialState,
+      sendAsset: {
+        ...initialState.sendAsset,
+        states: {
+          ...initialState.sendAsset.states,
+          assetsFromAlias: {
+            isLoading: false,
+            error: true,
+            data: []
+          }
+        }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
 })

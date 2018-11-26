@@ -3,7 +3,8 @@ import { createAction } from 'redux-actions'
 import * as types from 'fw-types/forms'
 import {
   sendAsset,
-  sendSysTransaction
+  sendSysTransaction,
+  listAssetAllocation
 } from 'fw-sys'
 
 type editSendAssetActionType = {
@@ -36,6 +37,10 @@ export const editSendSysAction = createAction(types.EDIT_SEND_SYS_FORM)
 export const sendAssetIsLoadingAction = createAction(types.SEND_ASSET_IS_LOADING)
 export const sendAssetErrorAction = createAction(types.SEND_ASSET_ERROR)
 export const sendAssetReceiveAction = createAction(types.SEND_ASSET_RECEIVE)
+
+export const getAssetsFromAliasIsLoadingAction = createAction(types.GET_ASSETS_FROM_ALIAS_IS_LOADING)
+export const getAssetsFromAliasErrorAction = createAction(types.GET_ASSETS_FROM_ALIAS_ERROR)
+export const getAssetsFromAliasReceivedAction = createAction(types.GET_ASSETS_FROM_ALIAS_RECEIVE)
 
 export const sendSysIsLoadingAction = createAction(types.SEND_SYS_IS_LOADING)
 export const sendSysErrorAction = createAction(types.SEND_SYS_ERROR)
@@ -79,4 +84,14 @@ export const sendSysForm = (obj: editSendSysType) => async (dispatch: (action: e
   }
 
   return Promise.resolve()
+}
+
+export const getAssetsFromAlias = (filters: Object, filterGuids: Array<string>) => async (dispatch: (action: Array<Object>) => void) => {
+  dispatch(getAssetsFromAliasIsLoadingAction())
+
+  try {
+    dispatch(getAssetsFromAliasReceivedAction(await listAssetAllocation(filters, filterGuids)))
+  } catch(err) {
+    dispatch(getAssetsFromAliasErrorAction(err))
+  }
 }

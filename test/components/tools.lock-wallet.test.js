@@ -2,7 +2,7 @@ import React from 'react'
 import LockWallet from 'fw-components/Tools/components/lock-wallet'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { spy, spyOn } from 'sinon'
+import { spy } from 'sinon'
 
 Enzyme.configure({ adapter: new Adapter() })
 
@@ -12,8 +12,12 @@ describe('Tools - LockWallet component', () => {
 
   beforeEach(() => {
     props = {
-      lockWallet: spy(),
-      isEncrypted: false
+      encryptWallet: spy(),
+      isEncrypted: false,
+      changePwd: spy(),
+      unlockWallet: spy(),
+      isUnlocked: false,
+      lockWallet: spy()
     }
     wrapper = shallow(<LockWallet {...props} />)
   })
