@@ -4,21 +4,21 @@ const getMNData = require('../helpers/get-mn-data')
 
 module.exports = (uid,cb) => {
     let list = []
+    let index = 0, length
   
     admin.database().ref('/orders')
     .orderByChild('userId')
     .equalTo(uid)
     .once('value', snapshot => {
-  
+      
+      length = snapshot.numChildren() 
       if (snapshot.hasChildren()) {
-        let index = 0
         while(true) {
           const key = Object.keys(snapshot.val())[index]
           const data = snapshot.val()[key]
   
-          console.log(data, list)
           if (!data) {
-            return cb(list)
+            break
           }
   
           let daysLeft
@@ -36,7 +36,12 @@ module.exports = (uid,cb) => {
           }
   
           if(!daysLeft) {
-            getMNData(data.mnDataId, (listData) => list.push({listData}))
+            getMNData(data.mnDataId, (listData) => 
+            {
+              list.push(listData)
+              if (list.length === length) 
+                return cb(list)
+            })
           } else {
             continue
           }
@@ -46,6 +51,4 @@ module.exports = (uid,cb) => {
         
       }
     })
-  
-    // console.log("List data: ", list)
 }

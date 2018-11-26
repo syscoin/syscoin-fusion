@@ -11,7 +11,6 @@ module.exports = (mnId, cb) => {
           'name': data.mnName,
           'type': data.nodeType
         }
-        console.log(info)
         return cb(info)
       }
     })

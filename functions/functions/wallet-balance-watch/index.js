@@ -1,61 +1,47 @@
-require('dotenv').config({path: process.cwd() + '/scripts/.env'})
-
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const nodemailer = require('../email')
 
 const getOrderData = require('../helpers/get-order-data')
 
-let serviceAccount
+const expiryEmail = require('../email/templates/expiry_notification')
 
-try {
-    serviceAccount = require('../../../scripts/serviceKey.json')
-} catch (err) {
-    throw new Error('ERROR: Cant find serviceKey.json (it should be located in the scripts folder)')
-} 
+module.exports = functions.pubsub.topic('wallet-balance-watch').onPublish(event => {
+  return new Promise((resolve, reject) => {
+  // Todo: Paginate results to scale
+    admin.auth().listUsers()
+    .then((listUsersResult) => {
+      listUsersResult.users.forEach((userRecord) => {
+        let user =  userRecord.toJSON()
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.SCRIPT_DB_URL
-})
+        getOrderData(user.uid, (emailList) => {
+          if (emailList) {
+            sendEmail(user.email, emailList)
+          }
+        })
 
-// module.exports = functions.pubsub.topic('wallet-balance-watch').onPublish(event => {
+      });
 
-module.exports = (req, res, next) => {
-    // return new Promise((resolve, reject) => {
-        // Todo: Paginate results to scale
-
-
-  admin.auth().listUsers()
-  .then((listUsersResult) => {
-    listUsersResult.users.forEach((userRecord) => {
-      let user =  userRecord.toJSON()
-
-      getOrderData(user.uid, (emailList) => {
-        console.log("back here: ",emailList)
-        if (emailList) {
-          sendEmail(emailList)
-        }
-      })
-
-    });
-    // return done()
       if (listUsersResult.pageToken) {
         // List next batch of users.
         console.log("Page token: ",listUsersResult.pageToken)
       }
-      return res.status(200).send()
+
+      return done()
+    })
+    .catch((error) => {
+      console.log("Error listing users:", error);
+
+      return resolve()
+    });
   })
-  .catch((error) => {
-    console.log("Error listing users:", error);
+})
 
-    // return resolve()
-
-      return res.status(500).send()
-  });
-
-// })
-}
-
-function sendEmail(list) {
-  // console.log("List: ",list)
+function sendEmail(email, list) {
+  return nodemailer.sendMail({
+    from: 'notification@masterminer.tech',
+    to: email,
+    subject: `Your masternodes need your attention!`,
+    html: expiryEmail(list)
+})
 }
