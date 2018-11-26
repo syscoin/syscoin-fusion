@@ -1,5 +1,4 @@
 const admin = require('firebase-admin')
-const updateBalance = require('./helpers/update-balance')
 const getNodePrice = require('./helpers/get-node-price')
 const getBalance = require('./helpers/get-balance')
 

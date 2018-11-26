@@ -4,9 +4,8 @@ const updateBalance = require('./helpers/update-balance')
 module.exports = (req, res, next) => {
     try {
         let tokenId = req.body.token,
-            chargeAmount = req.body.amount * 1000,
+            chargeAmount = req.body.amount * 100,
             email = req.body.email
-
 
         return makeCharge({
             email,
@@ -14,7 +13,6 @@ module.exports = (req, res, next) => {
             tokenId
         }, (err, charge) => {
             if (err) {
-                console.log(err)
                 return res.status(400).send({
                     error: true,
                     message: 'Credit Something went wrong during the payment. Try again later.'
@@ -29,7 +27,7 @@ module.exports = (req, res, next) => {
                 }
             });
 
-            return res.status(200).send({
+            return res.send({
                 message: 'Payment completed',
                 expiresOn: new Date().setMonth(new Date().getMonth()),
                 purchaseDate: Date.now(),
