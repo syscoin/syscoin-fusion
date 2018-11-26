@@ -140,7 +140,7 @@ const startUpRoutine = (cb) => {
     },
     (reindex, done) => {
       if (reindex) {
-        exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex -server'))
+        exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex -server -rpcallowip=127.0.0.1 -rpcport=8336 -rpcuser=u -rpcpassword=p'))
       }
       done()
     },

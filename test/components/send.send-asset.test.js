@@ -1,6 +1,6 @@
 import React from 'react'
 import SendAssetForm from 'fw-components/Send/components/send-asset'
-import Enzyme, { shallow, mount } from 'enzyme'
+import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { spy } from 'sinon'
 
