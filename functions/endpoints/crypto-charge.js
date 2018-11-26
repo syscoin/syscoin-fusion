@@ -1,20 +1,12 @@
 const coinbaseCharge = require('./helpers/coinbase-charge')
 
 /**
- * @api {post} /payment Node payment and creation
+ * @api {post} /crypto-charge Add funds to wallet - Crypto
  * @apiDescription Needs firebase authentication
  * @apiGroup Endpoints
  * 
- * @apiParam {String} [token] Payment token received from Stripe - Required only if the payment method is 'cc'
- * @apiParam {Number} months Number of paid months
- * @apiParam {String} email User email
- * @apiParam {String} mnKey Masternode key provided by the user
- * @apiParam {String} mnTxid Masternode txid provided by the user
- * @apiParam {String} mnName Masternode name provided by the user
- * @apiParam {String} mnIndex Masternode index provided by the user
- * @apiParam {String} method Payment method
- * @apiParam {String} [code] Coupon code - required only if method is 'code'
- * @apiParam {String} nodeType Coin selected
+ * @apiParam {Number} chargeAmount Number of paid months
+ * @apiParam {String} method Crypto payment method
  * @apiSuccessExample {json} Success
  * {
 	"message": "Payment completed",

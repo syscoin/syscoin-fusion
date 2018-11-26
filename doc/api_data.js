@@ -9,7 +9,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success",
-          "content": "{\n       mnIndex: String,\n       mnKey: String,\n       mnName: String,\n       mnTxid: String,\n       ip: String\n   }",
+          "content": "{\n       mnIndex: String,\n       mnKey: String,\n       mnName: String,\n       mnTxid: String,\n       ip: String,\n       mnRewardAddress: String,\n       nodeType: String\n   }",
           "type": "json"
         }
       ]
@@ -124,6 +124,93 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/credit-charge",
+    "title": "Add funds to wallet - CC",
+    "description": "<p>Needs firebase authentication</p>",
+    "group": "Endpoints",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "token",
+            "description": "<p>Payment token received from Stripe - Required only if the payment method is 'cc'</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "amount",
+            "description": "<p>Amount added to wallet</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User email</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\n\t\"message\": \"Payment completed\",\n\t\"expiresOn\": 1535238405885,\n\t\"purchaseDate\": 1532560005885,\n\t\"paymentId\": \"ch_1Crw48JiaRVP2JosFEAzwu82\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/credit-charge.js",
+    "groupTitle": "Endpoints",
+    "name": "PostCreditCharge"
+  },
+  {
+    "type": "post",
+    "url": "/crypto-charge",
+    "title": "Add funds to wallet - Crypto",
+    "description": "<p>Needs firebase authentication</p>",
+    "group": "Endpoints",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "chargeAmount",
+            "description": "<p>Number of paid months</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "method",
+            "description": "<p>Crypto payment method</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\n\t\"message\": \"Payment completed\",\n\t\"expiresOn\": 1535238405885,\n\t\"purchaseDate\": 1532560005885,\n\t\"paymentId\": \"ch_1Crw48JiaRVP2JosFEAzwu82\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/crypto-charge.js",
+    "groupTitle": "Endpoints",
+    "name": "PostCryptoCharge"
+  },
+  {
+    "type": "post",
     "url": "/edit-node",
     "title": "Edit node",
     "description": "<p>Needs firebase authentication - You need to send ALL these fields, even if you want to edit only one</p>",
@@ -158,6 +245,13 @@ define({ "api": [
             "optional": false,
             "field": "mnTxid",
             "description": "<p>new MN txid</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mnRewardAddress",
+            "description": "<p>SYS address where user is receiving rewards</p>"
           },
           {
             "group": "Parameter",
@@ -420,6 +514,13 @@ define({ "api": [
             "optional": false,
             "field": "dropletId",
             "description": "<p>Droplet ID (which can be found in vps collection as &quot;vpsid&quot; property)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "nodeType",
+            "description": "<p>Node Type (which can be found in orders collection as &quot;nodeType&quot; property)</p>"
           }
         ]
       }
