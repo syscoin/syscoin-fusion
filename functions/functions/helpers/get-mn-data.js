@@ -13,6 +13,8 @@ module.exports = (mnId, cb) => {
         }
         return cb(info)
       }
+
+      return cb('NOT_FOUND')
     })
 }
   
