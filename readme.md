@@ -1,3 +1,18 @@
+## Run firebase cloud functions locally
+
+* In project directory (main dir): Copy config over using 
+```
+firebase functions:config:get > ./functions/.runtimeconfig.json
+
+* Serve using
+```
+firebase serve --only functions
+
+## Notes:
+- Use Node version 6.11.5
+- Install dependencies within functions folder
+- Set firebase project - eg.  firebase use mm-dev-v2ß
+
 # App Engine Cron with Google Cloud Functions for Firebase
 Google App Engine provides a Cron service. Using this service for scheduling and
 Google Cloud Pub/Sub for distributed messaging, you can build an application to
@@ -122,3 +137,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+

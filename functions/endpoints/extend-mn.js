@@ -1,10 +1,6 @@
-const firebase = require('firebase-functions')
 const admin = require('firebase-admin')
 
-const makeCharge = require('./helpers/make-charge')
-const coinbaseCharge = require('./helpers/coinbase-charge')
-const updateExpiry = require('./helpers/update-expiry')
-const redeemCode = require('./helpers/redeem-code')
+const updateBalance = require('./helpers/update-balance')
 
 /**
  * @api {post} /extend-subscription Extend subscription
@@ -24,88 +20,29 @@ const redeemCode = require('./helpers/redeem-code')
     }
  */
 module.exports = (req, res, next) => {
-    const { orderId, tokenId, months, email, coinbase, type, paymentMethod, code } = req.body
-    const obj = {
-        email,
-        months,
-        tokenId
-    }
+    const { orderId, tokenId, months, email, type, chargeAmount } = req.body
 
     return admin.database().ref('/orders/' + orderId)
         .once('value', snapshot => {
             const snaps = snapshot.val()
 
-            const payload = {
-                orderId : orderId,
-                expiry : snaps.expiresOn,
-                months : months,
-                numberOfMonths : snaps.numberOfMonths,
-                renew: coinbase,
-                method: paymentMethod,
-            }
-
             if (snaps.userId === req.user.uid) {
-                if (coinbase) {
-                    return coinbaseCharge(payload, (err, data) => {
+                return updateBalance(
+                    req.user.uid,
+                    parseFloat(chargeAmount) * -100,
+                    (err) => {
                         if (err) {
-                            console.log(err)
-                            return res.status(400).send({data: 'Something went wrong creating the payment. Try again later.'})
-                        }
-
-                        return res.send(data)
-                    })
-                } else if (paymentMethod === 'code') {
-                    redeemCode({
-                        code,
-                        email: req.user.email
-                    }, (err, codeMonths) => {
-                        if (err) {
-                            return res.status(401).json({
+                            console.log("Error in update balance")
+                            return res.status(400).send({
                                 error: true,
-                                message: 'Unauthorized'
+                                message: err
                             })
                         }
-
-                        payload.months = codeMonths.months
-
-                        updateExpiry(payload, (err, data) => {
-                            if (err) {
-                                return res.status(500).send({
-                                    error: true,
-                                    message: 'Internal server error.'
-                                })
-                            }
-
-                            return res.status(200).send({
-                                error: false,
-                                message: 'Success'
-                            })
+        
+                        return res.send({
+                            message: 'Success'
                         })
-                    })
-                } else {
-                    makeCharge(obj, (err, data) => {
-                        if (err) {
-                            return res.status(500).send({
-                                error: true,
-                                message: 'Internal server error.'
-                            })
-                        }
-
-                        updateExpiry(payload, (err, data) => {
-                            if (err) {
-                                console.log(err)
-                                return res.status(500).send({
-                                    error: true,
-                                    message: 'Success'
-                                })    
-                            }
-
-                            return res.status(200).send({
-                                message: 'Success'
-                            })
-                        })
-                    })
-                }
+                })
             } else {
                 return res.status(403).send({
                     error: true,

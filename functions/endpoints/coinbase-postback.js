@@ -1,8 +1,8 @@
-const firebase = require('firebase-functions')
-const admin = require('firebase-admin')
 var _ = require('lodash');
 
-const updateExpiry = require('./helpers/update-expiry')
+const updateBalance = require('./helpers/update-balance')
+const nodemailer = require('../functions/email')
+const cryptoTemplate = require('../functions/email/templates/unresolved-payment')
 
 /**
  * @api {post} /coinbase-postback Coinbase postback
@@ -13,54 +13,53 @@ module.exports = (req, res) => {
 
     // Parse webhook payload and perform some actions based on success!
     let data = req.body.event.data;
+    console.log('Crypto Charge event: ', data)
 
     if (typeof  _.findKey(data.timeline, {status: 'COMPLETED'}) !== 'undefined') {
-    	console.log('Charge confirmed: ', data.code)
+    	console.log('Crypto Charge confirmed: ', data.code)
 
-        if (data.metadata.renew) {
-            const payload = data.metadata
-            payload.paymentMethod = payload.method
-
-            updateExpiry(payload, (err, data) => {
-                if (err) {
-                    return res.status(500).send({
-                        error: true,
-                        message: 'Error'
-                    })    
-                }
-
-                return res.status(200).send({
-                    message: 'Success'
+        
+        updateBalance(data.metadata.uid, parseFloat(data.metadata.chargeAmount) * 100, (err) => {
+            if (err) {
+                return res.status(400).send({
+                    error: true,
+                    message: 'Error updating balance. Contact support'
                 })
-            })
-        } else {
-        	const months = data.metadata.months,
-                email = data.metadata.email,
-                mnKey = data.metadata.mnKey,
-                mnTxid = data.metadata.mnTxid,
-                mnName = data.metadata.mnName,
-                mnIndex = data.metadata.mnIndex,
-                userId =  data.metadata.userId,
-                paymentMethod = data.metadata.method,
-                nodeType = req.body.nodeType || 'sys'
+            }
+        });  
 
-            admin.database().ref('/to-deploy/tasks').push({
-                months,
-                mnKey,
-                mnTxid,
-                mnName,
-                mnIndex,
-                paymentMethod,
-                lock: false,
-                lockDate: null,
-                orderDate: data.created_at,
-                paymentId: data.code,
-                deployed: false,
-                userId,
-                nodeType
+        return res.send().status(200);
+    } else if (typeof  _.findKey(data.timeline, {status: 'UNRESOLVED'}) !== 'undefined') {
+    	
+        // Check payments blob for these cases
+        if (typeof  _.findKey(data.timeline, {context: 'UNDERPAID'}) !== 'undefined' || typeof  _.findKey(data.timeline, {context: 'OVERPAID'}) !== 'undefined') {
+            // Charge amount will be converted to cents before updating balance
+            updateBalance(data.metadata.userId, parseFloat(data.payments[0].value.local.amount) * 100, (err) => {
+                if (err) {
+                    return res.status(400).send({
+                        error: true,
+                        message: 'Error updating balance. Contact support'
+                    })
+                }
+            });  
+
+            return res.send().status(200);
+        } else {
+            // send email
+            nodemailer.sendMail({
+                from: 'notification@masterminer.tech',
+                to: 'max@masterminer.tech',
+                subject: `Unresolved Coinbase Payment`,
+                html: cryptoTemplate(data)
+            }, (err, info) => {
+                if (err) {
+                    console.log(err)
+                }
             })
             return res.send().status(200);
+
         }
-        
-    } 
+    }   else {
+        return res.send().status(200);
+    }
 }

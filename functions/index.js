@@ -23,6 +23,9 @@ const getPoolingData = require('./endpoints/pooling-data')
 const requestPooling = require('./endpoints/request-pooling')
 const editNode = require('./endpoints/edit-node')
 const dataTracking = require('./endpoints/data-tracking')
+const creditCharge = require('./endpoints/credit-charge')
+const cryptoCharge = require('./endpoints/crypto-charge')
+const codeRedeem = require('./endpoints/code-redeem')
 
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
@@ -39,6 +42,8 @@ const expiredMnWatch = require('./functions/expired-mn-watch')
 
 // Middlewares
 const checkIpWhitelist = require('./middlewares').checkIpWhitelist
+const chargeIfNeeded = require('./middlewares').chargeIfNeeded
+const gatherData = require('./middlewares').gatherData
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -98,6 +103,9 @@ app.use(bodyParser.json())
 app.post('/payment', validateFirebaseIdToken, createNode)
 app.post('/signup', hostingSignup)
 app.post('/coinbase-postback', coinbasePostback)
+app.post('/credit-charge', validateFirebaseIdToken, creditCharge)
+app.post('/crypto-charge', validateFirebaseIdToken, cryptoCharge)
+app.post('/code-redeem', validateFirebaseIdToken, codeRedeem)
 app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
 app.post('/request-pooling', validateFirebaseIdToken, requestPooling)
 app.post('/upgrade-mn', validateFirebaseIdToken, upgradeMn)
@@ -106,8 +114,8 @@ app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
 app.post('/info', dataTracking)
 
-app.post('/droplets/edit-status', checkIpWhitelist, editStatus)
-app.get('/droplets/get-mn-data', checkIpWhitelist, getMnData)
+app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, editStatus)
+app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)
 app.post('/droplets/reward-notification', checkIpWhitelist, notificationReward)
 
 app.use((err, req, res, next) => {
@@ -123,4 +131,4 @@ exports.app = functions.https.onRequest(app)
 exports.emailUserOnStatusChange = emailUserOnStatusChange
 exports.emailOnDeploy = emailOnDeploy
 
-exports.expiredMnWatch = expiredMnWatch
+// exports.expiredMnWatch = expiredMnWatch

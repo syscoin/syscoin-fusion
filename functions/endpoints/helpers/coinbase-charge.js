@@ -6,28 +6,7 @@ const coinbase_key = functions.config().coinbase.key
 const coinbase_ver = functions.config().coinbase.ver
 
 module.exports = (data, cb) => {
-    let chargeAmount = parseInt(data.months)
     const meta = data
-
-    switch(chargeAmount) {
-        case 1:
-            chargeAmount = 15
-            break
-        case 3:
-            chargeAmount = 45
-            break
-        case 6:
-            chargeAmount = 90
-            break
-        case 9:
-            chargeAmount = 135
-            break
-        case 12:
-            chargeAmount = 180
-            break
-        default:
-            return cb('Invalid amount')
-    }
 
 	axios({url: coinbase_url,
         method: 'POST',
@@ -40,7 +19,7 @@ module.exports = (data, cb) => {
 			name: 'Masterminer subscription',
 			description: 'Masternode hosting service',
 			local_price: {
-            	amount: chargeAmount,
+            	amount: data.chargeAmount,
              	currency: "USD"
             },
 	        pricing_type: "fixed_price",
@@ -86,6 +65,8 @@ module.exports = (data, cb) => {
                 break;
             default:
         }
+
+        console.log("Charge creation data: ", data)
 
 		return cb(null, data)
 	})
