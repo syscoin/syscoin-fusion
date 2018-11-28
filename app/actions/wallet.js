@@ -143,6 +143,7 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   dispatch(dashboardAssetsIsLoadingAction())
 
   const { aliases } = getState().wallet
+  const fixedGuids = getState().options.guids.map(i => i._id)
   let assets = {}
   let allocations
 
@@ -171,6 +172,11 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
 
   // Turning the object into an array
   assets = Object.keys(assets).map(i => assets[i])
+
+  if (fixedGuids.length) {
+    // Filtering out guids not present in fusion.cfg
+    assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
+  }
 
   dispatch(dashboardAssetsReceiveAction(assets))
 }

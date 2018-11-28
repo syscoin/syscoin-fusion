@@ -49,11 +49,11 @@ window.onbeforeunload = async () => {
     try {
       await closeSysd()
     } catch (err) {
-      window.onbeforeunload = null
       remote.app.quit()
+      window.onbeforeunload = null
     }
   } else {
-    window.onbeforeunload = null
     remote.app.quit()
+    window.onbeforeunload = null
   }
 }

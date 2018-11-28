@@ -20,7 +20,7 @@ class Store {
   }
 
   eraseAll() {
-    this.set('guid', '')
+    // this.set('guid', '')
     this.set('main_white', '')
     this.set('full_white', '')
     this.set('main_blue', '')

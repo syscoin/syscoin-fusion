@@ -99,7 +99,7 @@ class SendContainer extends Component<Props> {
   }
 
   async getAssetsFromAlias(alias: string) {
-    this.props.getAssetsFromAlias({ receiver_address: alias }, this.props.assets)
+    this.props.getAssetsFromAlias({ receiver_address: alias })
   }
 
   onChangeForm(obj: Object, type: string) {

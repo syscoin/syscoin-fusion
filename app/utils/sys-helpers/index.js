@@ -53,7 +53,10 @@ const currentBalance = () => syscoin.callRpc('getbalance')
 const getAliases = () => syscoin.walletServices.syscoinListReceivedByAddress()
 
 // Get asset info
-const getAssetInfo = (assetId: string) => syscoin.walletServices.asset.info(assetId, false)
+const getAssetInfo = (asset: string) => syscoin.walletServices.asset.info({
+  asset,
+  getInputs: false
+})
 
 // Get asset allocation info
 const getAssetAllocationInfo = (obj: AllocationInfoType) => syscoin.walletServices.assetAllocation.info(obj.assetId, obj.aliasName, false)

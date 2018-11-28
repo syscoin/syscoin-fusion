@@ -86,8 +86,9 @@ export const sendSysForm = (obj: editSendSysType) => async (dispatch: (action: e
   return Promise.resolve()
 }
 
-export const getAssetsFromAlias = (filters: Object, filterGuids: Array<string>) => async (dispatch: (action: Array<Object>) => void) => {
+export const getAssetsFromAlias = (filters: Object) => async (dispatch: (action: Array<Object>) => void, getState: Function) => {
   dispatch(getAssetsFromAliasIsLoadingAction())
+  const filterGuids = getState().options.guids.map(i => i._id)
 
   try {
     dispatch(getAssetsFromAliasReceivedAction(await listAssetAllocation(filters, filterGuids)))
