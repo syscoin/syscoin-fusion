@@ -22,23 +22,28 @@ module.exports = (uid,cb) => {
           }
   
           let daysLeft
-  
-          if (data.expiresOn < Date.now() + (24 * 60 * 60)) {
+          const unixTime = 24 * 60 * 60 * 1000
+          if (data.expiresOn < Date.now() + unixTime) {
             daysLeft = 1
-          } else if ((data.expiresOn > Date.now() + (24 * 60 * 60* 1)) && (data.expiresOn < Date.now() + (24 * 60 * 60* 3))) {
+          } else if ((data.expiresOn > Date.now() + (unixTime * 1)) && (data.expiresOn < Date.now() + (unixTime * 3))) {
             daysLeft = 3
-          } else if ((data.expiresOn > Date.now() + (24 * 60 * 60* 3)) && (data.expiresOn < Date.now() + (24 * 60 * 60* 5))) {
+          } else if ((data.expiresOn > Date.now() + (unixTime * 3)) && (data.expiresOn < Date.now() + (unixTime * 5))) {
             daysLeft = 5
-          } else if ((data.expiresOn > Date.now() + (24 * 60 * 60* 5)) && (data.expiresOn < Date.now() + (24 * 60 * 60* 7))) {
+          } else if ((data.expiresOn > Date.now() + (unixTime * 5)) && (data.expiresOn < Date.now() + (unixTime * 7))) {
             daysLeft = 7
           } else {
             daysLeft = 0
           }
   
           if(daysLeft) {
-            getMNData(data.mnDataId, (listData) => 
+            getMNData(data.mnDataId, (err, listData) => 
             {
-              list.push(listData)
+              if(err) {
+                console.log(err)
+              } else {
+                list.push(listData)
+              }
+
               if (list.length === length) 
                 return cb(list)
             })
