@@ -2,25 +2,25 @@ const admin = require('firebase-admin')
 
 const getMNData = require('../helpers/get-mn-data')
 
-module.exports = (uid,cb) => {
-    let list = []
-    let index = 0, length
-  
-    admin.database().ref('/orders')
+module.exports = (uid, cb) => {
+  let list = []
+  let index = 0, length
+
+  admin.database().ref('/orders')
     .orderByChild('userId')
     .equalTo(uid)
     .once('value', snapshot => {
-      
-      length = snapshot.numChildren() 
+
+      length = snapshot.numChildren()
       if (snapshot.hasChildren()) {
-        while(true) {
+        while (true) {
           const key = Object.keys(snapshot.val())[index]
           const data = snapshot.val()[key]
-  
+
           if (!data) {
             break
           }
-  
+
           let daysLeft
           const unixTime = 24 * 60 * 60 * 1000
           if (data.expiresOn < Date.now() + unixTime) {
@@ -50,10 +50,10 @@ module.exports = (uid,cb) => {
           } else {
             continue
           }
-  
+
           index++
         }
-        
+
       }
     })
 }
