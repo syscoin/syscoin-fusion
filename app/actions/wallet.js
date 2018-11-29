@@ -148,11 +148,9 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   let allocations
 
   try {
-    allocations = await Promise.all(
-      aliases.map(i => listAssetAllocation({
-        receiver_address: i.alias || i.address
-      }))
-    )
+    allocations = await listAssetAllocation({
+      receiver_address: aliases.map(i => i.alias || i.address)
+    })
   } catch(err) {
     return dispatch(dashboardAssetsErrorAction(err.message))
   }

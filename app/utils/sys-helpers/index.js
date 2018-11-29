@@ -33,10 +33,10 @@ type getTransactionsPerAssetType = {
 };
 
 type listAssetAllocationType = {
-  receiver_address?: string,
+  receiver_address?: Array<string> | string,
   txid?: string,
   asset?: string,
-  receiver_alias?: string,
+  receiver_alias?: Array<string> | string,
   startblock?: number
 };
 
@@ -242,10 +242,10 @@ const getBlockchainInfo = () => syscoin.blockchainServices.getBlockchainInfo()
 
 // Get filtered asset allocation
 const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
-  syscoin.walletServices.assetAllocation.list({ count: 999999, from: 0, options: obj })
+  syscoin.callRpc('listassetallocations', [999999, 0, obj])
     .then(result => {
       let data = result
-
+      
       if (Array.isArray(filterGuids) && filterGuids.length) {
         data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
       }
