@@ -15,6 +15,7 @@ import MenuBuilder from './menu'
 
 let mainWindow = null
 let splashWindow = null
+let consoleWindow = null
 
 if (process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test') {
   const sourceMapSupport = require('source-map-support')
@@ -81,7 +82,17 @@ app.on('ready', async () => {
     resizable: false
   })
 
+  consoleWindow = new BrowserWindow({
+    show: false,
+    width: 1024,
+    height: 600,
+    frame: true,
+    transparent: true,
+    resizable: true
+  })
+
   splashWindow.loadURL(`file://${__dirname}/splash.html`)
+  consoleWindow.loadURL(`file://${__dirname}/console.html`)
 
   splashWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
@@ -127,6 +138,11 @@ app.on('ready', async () => {
     splashWindow = null
   })
 
+  consoleWindow.on('close', ev => {
+    ev.preventDefault()
+    consoleWindow.hide()
+  })
+
   // IPC Events
 
   ipcMain.on('start-success', () => {
@@ -164,6 +180,13 @@ app.on('ready', async () => {
       mainWindow.unmaximize()
     }
     e.sender.send('unmaximize')
+  })
+
+  ipcMain.on('toggle-console', () => {
+    if (consoleWindow.isVisible()) {
+      return consoleWindow.hide()
+    }
+    consoleWindow.show()
   })
 
   const menuBuilder = new MenuBuilder(mainWindow)

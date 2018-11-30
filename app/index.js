@@ -4,16 +4,12 @@ require('dotenv').config()
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
-import { remote } from 'electron'
 import Root from './containers/Root'
 import { store, history } from './store/configureStore'
 import Storage from './utils/storage'
 import storageSchema from './utils/helpers/storage-schema'
-import getEnv from 'fw-utils/get-env'
-import closeSysd from './utils/close-sysd'
+import attachWindowListeners from 'fw-utils/listeners'
 import './app.global.scss'
-
-const isProd = getEnv() === 'production'
 
 // App storage setup
 global.appStorage = new Storage({
@@ -40,20 +36,4 @@ if (module.hot) {
   })
 }
 
-// Closes syscoind on exit
-window.onbeforeunload = async () => {
-
-  global.appStorage.eraseAll()
-
-  if (isProd) {
-    try {
-      await closeSysd()
-    } catch (err) {
-      remote.app.quit()
-      window.onbeforeunload = null
-    }
-  } else {
-    remote.app.quit()
-    window.onbeforeunload = null
-  }
-}
+attachWindowListeners()
