@@ -51,7 +51,7 @@ export default class Console extends Component<Props, State> {
         <Col xs={22} offset={1}>
           <div className='console-container'>
             <div className='console-results'>
-              {this.props.data.map(i => <ConsoleLine {...i} />)}
+              {this.props.data.map(i => <ConsoleLine {...i} key={i.time} />)}
             </div>
             <div className='console-input-container'>
               <Input
