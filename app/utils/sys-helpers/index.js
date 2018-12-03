@@ -160,7 +160,7 @@ const exportWallet = (backupDir: string) => syscoin.walletServices.dumpWallet(ba
 const importWallet = (backupDir: string) => syscoin.walletServices.importWallet(backupDir)
 
 // Returns priv key of desired address.
-const getPrivateKey = (address) => syscoin.walletServices.dumpPrivKey(address)
+const getPrivateKey = (address: string) => syscoin.walletServices.dumpPrivKey(address)
 
 // Edit existing alias
 const editAlias = (obj: Object) => new Promise((resolve, reject) => {
@@ -272,7 +272,7 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
 
 const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
 const unlockWallet = (pass: string, time: number) => syscoin.callRpc('walletpassphrase', [pass, time])
-const changePwd = (oldPwd, newPwd) => syscoin.callRpc('walletpassphrasechange', [oldPwd, newPwd])
+const changePwd = (oldPwd: string, newPwd: string) => syscoin.callRpc('walletpassphrasechange', [oldPwd, newPwd])
 const lockWallet = () => syscoin.callRpc('walletlock')
 
 const isEncrypted = () => new Promise((resolve) => {
@@ -282,6 +282,7 @@ const isEncrypted = () => new Promise((resolve) => {
 })
 
 module.exports = {
+  callRpc: sys.callRpc,
   aliasInfo,
   currentSysAddress,
   currentBalance,

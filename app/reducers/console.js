@@ -12,13 +12,14 @@ type actionType = {
 type LogItem = {
   cmd: string,
   result: any,
-  time: number
+  time: number,
+  error: boolean
 };
 
 type StateType = {
   show: boolean,
   data: Array<LogItem>,
-  history: Array<LogItem>
+  history: Array<string>
 };
 
 export const initialState = {
@@ -38,7 +39,7 @@ export default function console(state: StateType = initialState, action: actionT
       return {
         ...state,
         data: state.data.concat([action.payload]),
-        history: state.history.concat([action.payload])
+        history: state.history.concat([action.payload.cmd])
       }
     default:
       return state

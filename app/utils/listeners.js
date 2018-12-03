@@ -7,14 +7,13 @@ const isProd = getEnv() === 'production'
 export default () => {
   // Attaches listeners to window object
 
-  window.onbeforeunload = async () => {
+  window.onbeforeunload = () => {
     global.appStorage.eraseAll()
   
     if (isProd) {
       closeSysd()
+      remote.app.quit()
     }
-
-    remote.app.exit()
   }
 
   window.onkeydown = e => {
