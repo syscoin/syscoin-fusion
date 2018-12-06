@@ -18,6 +18,8 @@ import {
 import unlockWallet from 'fw-utils/unlock-wallet'
 import { walletUnlocked } from 'fw-actions/wallet'
 
+const { dialog } = remote.require('electron')
+
 type Props = {
   currentBlock: number,
   unfinishedAliases: Array<{
@@ -76,6 +78,14 @@ class ToolsContainer extends Component<Props> {
     this.props.walletUnlocked(false)
   }
 
+  getFolder(cb: Function) {
+    return dialog.showOpenDialog({
+      properties: ['openDirectory']
+    }, path => {
+      cb(path)
+    })
+  }
+
   render() {
     return (
       <Tools
@@ -90,6 +100,7 @@ class ToolsContainer extends Component<Props> {
         unlockWallet={unlockWallet}
         isUnlocked={this.props.isUnlocked}
         lockWallet={this.lockWallet.bind(this)}
+        getFolder={this.getFolder}
       />
     )
   }

@@ -12,7 +12,8 @@ describe('Tools - BackupWallet component', () => {
 
   beforeEach(() => {
     props = {
-      exportWallet: spy()
+      exportWallet: spy(),
+      getFolder: cb => cb(['/path/to/somewhere'])
     }
     wrapper = shallow(<BackupWallet {...props} />)
   })
@@ -21,14 +22,14 @@ describe('Tools - BackupWallet component', () => {
     expect(wrapper.instance()).toBeInstanceOf(BackupWallet)
   })
 
-  it('should fire exportWallet when beforeUpload is fired', () => {
+  it('should fire exportWallet when backupWallet is executed', () => {
     const exportMock = spy()
     wrapper = shallow(<BackupWallet {...props} exportWallet={exportMock} />)
 
-    expect(wrapper.instance().beforeUpload({
-      path: '/test/path/here'
-    })).toBeInstanceOf(Promise)
+    wrapper.find('.backup-wallet-btn').simulate('click')
+
     expect(exportMock.calledOnce).toBe(true)
+    expect(typeof exportMock.getCall(0).args[0]).toBe('string')
   })
 
   it('should render loading icon while isLoading is true', () => {

@@ -1,11 +1,12 @@
 // @flow
 import React, { Component } from 'react'
-import { Upload, Button, Icon, Spin } from 'antd'
+import { Button, Icon, Spin } from 'antd'
 import swal from 'sweetalert'
 import { join } from 'path'
 
 type Props = {
-  exportWallet: Function
+  exportWallet: Function,
+  getFolder: Function
 };
 
 type State = {
@@ -23,26 +24,26 @@ export default class ExportWallet extends Component<Props, State> {
     }
   }
 
-  beforeUpload(dir: Object) {
+  backupWallet() {
     this.setState({
       isLoading: true
     })
-    return new Promise((resolve, reject) => {
+    this.props.getFolder(path => {
+      if (!path) {
+        return
+      }
       // Adds filename to selected path
-      const fullPath = join(dir.path, `backup_${Date.now()}.dat`)
+      const fullPath = join(path[0], `backup_${Date.now()}.dat`)
 
       this.props.exportWallet(fullPath, err => {
         this.setState({
           isLoading: false
         })
         if (err) {
-          swal('Error', 'Error while saving the backup', 'error')
-          return reject()
+          return swal('Error', 'Error while saving the backup', 'error')
         }
 
         swal('Success', 'Backup saved successfully', 'success')
-
-        return reject() // Rejecting anyway because of Upload component limitations. Check antd Upload documentation.
       })
     })
   }
@@ -54,11 +55,9 @@ export default class ExportWallet extends Component<Props, State> {
         {this.state.isLoading ? (
           <Spin indicator={<Icon type='loading' className='loading-tools' spin />} />
         ) : (
-          <Upload action='' beforeUpload={this.beforeUpload.bind(this)} showUploadList={false} directory>
-            <Button className='backup-wallet-btn' disabled={this.state.isLoading}>
-              <Icon type='download' /> Backup wallet
-            </Button>
-          </Upload>
+          <Button className='backup-wallet-btn' disabled={this.state.isLoading} onClick={this.backupWallet.bind(this)}>
+            <Icon type='download' /> Backup wallet
+          </Button>
         )}
       </div>
     )

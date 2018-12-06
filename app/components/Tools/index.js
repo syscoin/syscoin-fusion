@@ -21,7 +21,8 @@ type Props = {
   changePwd: Function,
   unlockWallet: Function,
   isUnlocked: boolean,
-  lockWallet: Function
+  lockWallet: Function,
+  getFolder: Function
 };
 
 export default class Tools extends Component<Props> {
@@ -41,7 +42,7 @@ export default class Tools extends Component<Props> {
             currentBlock={this.props.currentBlock}
           />
           <hr /> */}
-          <BackupWallet exportWallet={this.props.exportWallet} />
+          <BackupWallet exportWallet={this.props.exportWallet} getFolder={this.props.getFolder} />
           <hr />
           <ImportWallet importWallet={this.props.importWallet} />
           <hr />
