@@ -15,7 +15,6 @@ import unlockWallet from 'fw-utils/unlock-wallet'
 
 
 type Props = {
-  assets: Array<Object>,
   balance: number,
   aliases: Array<Object>,
   sendAssetForm: Function,
@@ -129,7 +128,6 @@ class SendContainer extends Component<Props> {
 const mapStateToProps = state => ({
   balance: state.wallet.getinfo.balance,
   aliases: state.wallet.aliases,
-  assets: state.options.guids,
   assetForm: state.forms.sendAsset,
   sysForm: state.forms.sendSys,
   isEncrypted: state.wallet.isEncrypted
