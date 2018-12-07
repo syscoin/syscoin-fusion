@@ -26,6 +26,7 @@ const dataTracking = require('./endpoints/data-tracking')
 const creditCharge = require('./endpoints/credit-charge')
 const cryptoCharge = require('./endpoints/crypto-charge')
 const codeRedeem = require('./endpoints/code-redeem')
+const supportEmail = require('./endpoints/support-email')
 
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
@@ -113,6 +114,7 @@ app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
 app.post('/info', dataTracking)
+app.post('/support-email', validateFirebaseIdToken, supportEmail)
 
 app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)
