@@ -23,7 +23,7 @@ export default class ConsoleLine extends Component<Props> {
       <Row className={`console-line-container ${error ? 'error-line' : ''}`}>
         <Col xs={22}>
           <div>
-            {typeof result === 'string' ? <span title={cmd}>{result}</span> : <pre title={cmd}>{this.formatResult(result)}</pre>}
+            {typeof result === 'string' ? <pre title={cmd}>{result}</pre> : <pre title={cmd}>{this.formatResult(result)}</pre>}
           </div>
         </Col>
         <Col xs={2}>

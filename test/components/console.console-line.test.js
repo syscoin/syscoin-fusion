@@ -28,13 +28,9 @@ describe('Console - ConsoleLine component tests', () => {
     expect(wrapper.find('.console-line-date-container span').text()).toBe(moment(props.time).format('HH:mm:ss'))
   })
 
-  it('should render JSON result in pre tags', () => {
+  it('should render results in pre tags with title set to command executed', () => {
     expect(wrapper.find('pre').length).toBe(1)
-  })
-
-  it('should render non JSON result in span tags', () => {
-    wrapper = shallow(<ConsoleLine {...props} result='test' />)
-    expect(wrapper.find('span').length).toBe(2)
+    expect(wrapper.find('pre').prop('title')).toBe(props.cmd)
   })
 
   it('should add error line class if returned value is an error', () => {
