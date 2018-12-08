@@ -71,7 +71,7 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
         .then(result => done(null, result[0]))
         .catch(err => {
           if (err.message.indexOf('ERRCODE: 1018') !== -1) {
-            return done(null)
+            return done(null, null)
           }
 
           return done(err)
@@ -79,7 +79,7 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
     },
     (firstOutput, done) => {
       if (!firstOutput) {
-        return syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, ranges: { start: 0, end: parseFloat(amount) } }], comment, ''])
+        return syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, ranges: [{ start: 0, end: parseFloat(amount) }] }], comment, ''])
           .then(stringTwo => done(null, stringTwo[0]))
           .catch(err => done(err))
       }
