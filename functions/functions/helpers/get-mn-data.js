@@ -15,8 +15,6 @@ module.exports = (mnId, cb) => {
       } else {
         return cb(`Masternode data not found for ${mnId}`)
       }
-
-      return cb('NOT_FOUND')
     })
 }
   

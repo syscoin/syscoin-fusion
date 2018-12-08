@@ -2,10 +2,10 @@
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-// admin.initializeApp({
-// 	credential: admin.credential.applicationDefault(),
-// 	databaseURL: functions.config().projectconfig.databaseurl
-//})
+admin.initializeApp({
+ 	credential: admin.credential.applicationDefault(),
+ 	databaseURL: functions.config().projectconfig.databaseurl
+})
 const express = require('express')
 const cookieParser = require('cookie-parser')()
 const cors = require('cors')
@@ -38,6 +38,7 @@ const emailOnDeploy = require('./functions').emailOnDeploy
 
 // Tasks
 const expiredMnWatch = require('./functions/expired-mn-watch')
+const walletBalanceWatch = require('./functions/wallet-balance-watch')
 
 // Middlewares
 const checkIpWhitelist = require('./middlewares').checkIpWhitelist
@@ -128,3 +129,4 @@ exports.emailUserOnStatusChange = emailUserOnStatusChange
 exports.emailOnDeploy = emailOnDeploy
 
 exports.expiredMnWatch = expiredMnWatch
+exports.walletBalanceWatch = walletBalanceWatch
