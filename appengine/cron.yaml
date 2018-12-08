@@ -2,3 +2,6 @@ cron:
 - description: Expired MN watch
   url: /publish/expired-mn-watch
   schedule: every 30 minutes
+- description: Wallet Balance Watch
+  url: /publish/wallet-balance-watch
+  schedule: every 12 hours

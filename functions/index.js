@@ -3,8 +3,8 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp({
-	credential: admin.credential.applicationDefault(),
-	databaseURL: functions.config().projectconfig.databaseurl
+ 	credential: admin.credential.applicationDefault(),
+ 	databaseURL: functions.config().projectconfig.databaseurl
 })
 const express = require('express')
 const cookieParser = require('cookie-parser')()
@@ -28,6 +28,8 @@ const cryptoCharge = require('./endpoints/crypto-charge')
 const codeRedeem = require('./endpoints/code-redeem')
 const supportEmail = require('./endpoints/support-email')
 
+const balCheck = require('./functions/wallet-balance-watch/index')
+
 // ---- Droplet only endpoints
 const editStatus = require('./endpoints/droplet-endpoints/edit-status')
 const getMnData = require('./endpoints/droplet-endpoints/check-config')
@@ -40,6 +42,7 @@ const emailOnDeploy = require('./functions').emailOnDeploy
 
 // Tasks
 const expiredMnWatch = require('./functions/expired-mn-watch')
+const walletBalanceWatch = require('./functions/wallet-balance-watch')
 
 // Middlewares
 const checkIpWhitelist = require('./middlewares').checkIpWhitelist
@@ -120,6 +123,8 @@ app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, 
 app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)
 app.post('/droplets/reward-notification', checkIpWhitelist, notificationReward)
 
+app.get('/balanceCheck', balCheck)
+
 app.use((err, req, res, next) => {
 	console.log(err)
 	return res.status(500).send('Something went wrong')
@@ -133,4 +138,5 @@ exports.app = functions.https.onRequest(app)
 exports.emailUserOnStatusChange = emailUserOnStatusChange
 exports.emailOnDeploy = emailOnDeploy
 
-// exports.expiredMnWatch = expiredMnWatch
+exports.expiredMnWatch = expiredMnWatch
+exports.walletBalanceWatch = walletBalanceWatch
