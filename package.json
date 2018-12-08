@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://gitlab.com/ramyyahari/eye-of-sauron/issues"
   },
-  "homepage": "https://gitlab.com/ramyyahari/eye-of-sauron#README"
+  "homepage": "https://gitlab.com/ramyyahari/eye-of-sauron#README",
+  "engine": {
+    "node": "8"
+  }
 }

@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
 
     admin.database().ref('/data-tracking')
         .once('value', snapshot => {
-            let collectionObj = snapshot.val()
+            let collectionObj = snapshot.val() || {}
             if (!collectionObj[tag]) {
                 collectionObj[tag] = 1;
                 writeToDataTracking(collectionObj)
