@@ -113,7 +113,8 @@
       "^fw-components(.*)$": "<rootDir>/app/components$1",
       "^fw-utils(.*)$": "<rootDir>/app/utils$1",
       "^fw-reducers(.*)$": "<rootDir>/app/reducers$1",
-      "^fw-types(.*)$": "<rootDir>/app/types$1"
+      "^fw-types(.*)$": "<rootDir>/app/types$1",
+      "^fw(.*)$": "<rootDir>/app$1"
     },
     "moduleFileExtensions": [
       "js"
@@ -204,6 +205,7 @@
     "antd": "^3.6.5",
     "async": "^2.6.1",
     "axios": "^0.18.0",
+    "bunyan": "^1.8.12",
     "copy": "^0.3.2",
     "devtron": "^1.4.0",
     "dotenv": "^6.0.0",
@@ -214,6 +216,7 @@
     "font-awesome": "^4.7.0",
     "global": "^4.3.2",
     "history": "^4.7.2",
+    "jest": "^23.6.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "ow": "^0.8.0",

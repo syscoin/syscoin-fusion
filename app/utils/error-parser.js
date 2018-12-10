@@ -4,7 +4,7 @@ export default (message: string) => {
     if (message.indexOf('ERRCODE') !== -1) {
         index = message.indexOf('ERRCODE')
     } else if (message.indexOf('error message:') !== -1) {
-        index = message.indexOf('error message:') + 16
+        index = message.indexOf('error message:') + 15
     } else {
         index = 0
     }
