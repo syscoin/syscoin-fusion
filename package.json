@@ -128,7 +128,9 @@
     },
     "setupFiles": [
       "./internals/scripts/CheckBuiltsExist.js"
-    ]
+    ],
+    "runner": "@jest-runner/electron",
+    "testEnvironment": "@jest-runner/electron/environment"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -202,6 +204,7 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "@jest-runner/electron": "^0.1.0",
     "antd": "^3.6.5",
     "async": "^2.6.1",
     "axios": "^0.18.0",
