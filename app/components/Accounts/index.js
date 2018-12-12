@@ -15,7 +15,13 @@ type Props = {
   aliases: Array<Object>,
   transactions: Object,
   selectedAlias: string,
-  aliasAssets: Object,
+  aliasAssets: {
+    selected: string,
+    selectedSymbol: string,
+    isLoading: boolean,
+    data: Array<any>,
+    error: boolean
+  },
   updateSelectedAlias: Function,
   selectAsset: Function,
   headBlock: number,

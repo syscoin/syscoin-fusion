@@ -1,7 +1,7 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation, isEncrypted } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
 import _ from 'lodash'
@@ -76,6 +76,11 @@ type saveDashboardAssetsActionType = {
   payload?: Array<Object>
 };
 
+type checkWalletEncryptionActionType = {
+  type: string,
+  payload: boolean
+};
+
 const saveGetInfoAction = createAction(types.WALLET_GETINFO)
 const saveAliasesAction = createAction(types.WALLET_ALIASES)
 const saveUnfinishedAliasesAction = createAction(types.WALLET_UNFINISHED_ALIASES)
@@ -88,6 +93,9 @@ const dashboardAssetsReceiveAction = createAction(types.WALLET_DASHBOARD_ASSETS_
 const dashboardTransactionsIsLoadingAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING)
 const dashboardTransactionsErrorAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_ERROR)
 const dashboardTransactionsReceiveAction = createAction(types.WALLET_DASHBOARD_TRANSACTIONS_RECEIVE)
+
+const walletIsEncrypted = createAction(types.WALLET_IS_ENCRYPTED)
+const walletIsUnlocked = createAction(types.WALLET_IS_UNLOCKED)
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
   try {
@@ -135,15 +143,14 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   dispatch(dashboardAssetsIsLoadingAction())
 
   const { aliases } = getState().wallet
+  const fixedGuids = getState().options.guids.map(i => i._id)
   let assets = {}
   let allocations
 
   try {
-    allocations = await Promise.all(
-      aliases.map(i => listAssetAllocation({
-        receiver_address: i.alias || i.address
-      }))
-    )
+    allocations = await listAssetAllocation({
+      receiver_address: aliases.map(i => i.alias || i.address)
+    })
   } catch(err) {
     return dispatch(dashboardAssetsErrorAction(err.message))
   }
@@ -164,5 +171,13 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   // Turning the object into an array
   assets = Object.keys(assets).map(i => assets[i])
 
+  if (fixedGuids.length) {
+    // Filtering out guids not present in fusion.cfg
+    assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
+  }
+
   dispatch(dashboardAssetsReceiveAction(assets))
 }
+
+export const checkWalletEncryption = () => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsEncrypted(await isEncrypted()))
+export const walletUnlocked = (unlocked: boolean) => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsUnlocked(unlocked))

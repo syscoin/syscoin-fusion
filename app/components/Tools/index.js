@@ -1,62 +1,31 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col } from 'antd'
-import NewAlias from './components/new-alias'
+// import NewAlias from './components/new-alias'
 import BackupWallet from './components/backup-wallet'
 import ImportWallet from './components/import-wallet'
+import LockWallet from './components/lock-wallet'
 
 type Props = {
-  currentBlock: number,
+  /* currentBlock: number,
   unfinishedAliases: Array<{
     aliasName: string,
     block: number,
     round: number
   }>,
-  createNewAlias: Function,
+  createNewAlias: Function, */
   importWallet: Function,
-  exportWallet: Function
-};
-type State = {
-  newAlias: {
-    aliasName: string,
-    publicValue: string,
-    acceptTransferFlags: number,
-    expireTimestamp: string,
-    address: string,
-    encryptionPrivKey: string,
-    encryptionPublicKey: string,
-    witness: string
-  }
+  exportWallet: Function,
+  encryptWallet: Function,
+  isEncrypted: boolean,
+  changePwd: Function,
+  unlockWallet: Function,
+  isUnlocked: boolean,
+  lockWallet: Function,
+  getFolder: Function
 };
 
-export default class Tools extends Component<Props, State> {
-  props: Props;
-
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      newAlias: {
-        aliasName: '',
-        publicValue: '',
-        acceptTransferFlags: 3,
-        expireTimestamp: '1548184538',
-        address: '',
-        encryptionPrivKey: '',
-        encryptionPublicKey: '',
-        witness: ''
-      }
-    }
-  }
-
-  updateFields(e: Object, mode: string) {
-    const { name, value } = e.target
-    const newState = { ...this.state }
-
-    newState[mode][name] = value
-
-    this.setState(newState)
-  }
+export default class Tools extends Component<Props> {
 
   render() {
     return (
@@ -66,18 +35,28 @@ export default class Tools extends Component<Props, State> {
           offset={8}
           className='tools-form-container'
         >
-          <NewAlias
+          {/* <NewAlias
             unfinishedAliases={this.props.unfinishedAliases}
             createNewAlias={this.props.createNewAlias}
             title='Create new alias'
             currentBlock={this.props.currentBlock}
           />
-          <hr />
-          <BackupWallet exportWallet={this.props.exportWallet} />
+          <hr /> */}
+          <BackupWallet exportWallet={this.props.exportWallet} getFolder={this.props.getFolder} />
           <hr />
           <ImportWallet importWallet={this.props.importWallet} />
+          <hr />
+          <LockWallet
+            encryptWallet={this.props.encryptWallet}
+            isEncrypted={this.props.isEncrypted}
+            changePwd={this.props.changePwd}
+            unlockWallet={this.props.unlockWallet}
+            isUnlocked={this.props.isUnlocked}
+            lockWallet={this.props.lockWallet}
+          />
         </Col>
       </Row>
     )
   }
+
 }

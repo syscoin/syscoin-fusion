@@ -4,7 +4,14 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ipcRenderer, remote } from 'electron'
 import Wallet from 'fw-components/Wallet'
-import { saveGetInfo, saveAliases, saveUnfinishedAliases, saveBlockchainInfo, dashboardTransactions } from 'fw-actions/wallet'
+import {
+  saveGetInfo,
+  saveAliases,
+  saveUnfinishedAliases,
+  saveBlockchainInfo,
+  dashboardTransactions,
+  checkWalletEncryption
+} from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
@@ -23,7 +30,8 @@ type Props = {
   saveUnfinishedAliases: Function,
   saveBlockchainInfo: Function,
   toggleMaximize: Function,
-  dashboardTransactions: Function
+  dashboardTransactions: Function,
+  checkWalletEncryption: Function
 };
 
 class WalletContainer extends Component<Props> {
@@ -47,7 +55,7 @@ class WalletContainer extends Component<Props> {
     window.max = this.onMaximize
 
     if (!window.updateWalletHigh) {
-      window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 10000)
+      window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 5000)
     }
     
     this.updateWalletHigh()
@@ -63,6 +71,7 @@ class WalletContainer extends Component<Props> {
     this.props.saveAliases()
     this.props.saveUnfinishedAliases()
     this.props.saveBlockchainInfo()
+    this.props.checkWalletEncryption()
     processIncompleteAliases({
       unfinishedAliases: this.props.unfinishedAliases,
       actualBlock: this.props.currentBlock
@@ -129,7 +138,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   saveUnfinishedAliases,
   saveBlockchainInfo,
   toggleMaximize,
-  dashboardTransactions
+  dashboardTransactions,
+  checkWalletEncryption
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletContainer)

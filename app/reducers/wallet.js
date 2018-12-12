@@ -9,7 +9,9 @@ import {
   WALLET_DASHBOARD_ASSETS_RECEIVE,
   WALLET_DASHBOARD_TRANSACTIONS_IS_LOADING,
   WALLET_DASHBOARD_TRANSACTIONS_ERROR,
-  WALLET_DASHBOARD_TRANSACTIONS_RECEIVE
+  WALLET_DASHBOARD_TRANSACTIONS_RECEIVE,
+  WALLET_IS_ENCRYPTED,
+  WALLET_IS_UNLOCKED
 } from 'fw-types/wallet'
 
 type actionType = {
@@ -63,7 +65,9 @@ export const initialState = {
       error: false,
       data: []
     }
-  }
+  },
+  isEncrypted: false,
+  isUnlocked: false
 }
 
 export default function wallet(state: Object = initialState, action: actionType) {
@@ -159,6 +163,16 @@ export default function wallet(state: Object = initialState, action: actionType)
             data: action.payload
           }
         }
+      }
+    case WALLET_IS_ENCRYPTED:
+      return {
+        ...state,
+        isEncrypted: action.payload
+      }
+    case WALLET_IS_UNLOCKED:
+      return {
+        ...state,
+        isUnlocked: action.payload
       }
     default:
       return state

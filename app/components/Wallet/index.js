@@ -5,7 +5,7 @@ import { Row, Col, Tabs } from 'antd'
 import AccountsContainer from 'fw-containers/Accounts'
 import SendContainer from 'fw-containers/Send'
 import ToolsContainer from 'fw-containers/Tools'
-import PersonalizeContainer from 'fw-containers/Personalize'
+// import PersonalizeContainer from 'fw-containers/Personalize'
 
 import WindowControls from './components/window-control'
 
@@ -61,9 +61,9 @@ class Wallet extends Component<Props, State> {
             <Tab className='tab tab-tools' tab='Tools' key='3'>
               <ToolsContainer />
             </Tab>
-            <Tab className='tab tab-personalize' tab='Personalize' key='4'>
+            {/* <Tab className='tab tab-personalize' tab='Personalize' key='4'>
               <PersonalizeContainer />
-            </Tab>
+            </Tab> */}
           </Tabs>
         </Col>
       </Row>

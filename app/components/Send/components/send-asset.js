@@ -9,11 +9,14 @@ type Props = {
   title: string,
   columnSize: number,
   aliases: Array<string>,
-  assets: Array<Object>,
   isLoading: boolean,
   sendAsset: Function,
   onSelectAlias: Function,
-  assetsFromAliasIsLoading: boolean,
+  assetsFromAlias: {
+    isLoading: boolean,
+    error: boolean,
+    data: Array<Object>
+  },
   form: {
     isLoading: boolean,
     error: boolean,
@@ -31,19 +34,6 @@ type FormDataType = {
 };
 
 export default class SendAssetForm extends Component<Props> {
-  initialState: FormDataType;
-
-  constructor(props: Props) {
-    super(props)
-
-    this.initialState = {
-      from: '',
-      asset: '',
-      toAddress: '',
-      amount: '',
-      comment: ''
-    }
-  }
 
   updateField(value: string | Object, name: string, filter?: RegExp) {
     const toUpdate = formChangeFormat(value, name, filter)
@@ -71,10 +61,9 @@ export default class SendAssetForm extends Component<Props> {
       title = 'Send Address',
       columnSize = 12,
       aliases = [],
-      assets = [],
       isLoading = false,
       sendAsset,
-      assetsFromAliasIsLoading,
+      assetsFromAlias,
       form
     } = this.props
     const {
@@ -104,6 +93,7 @@ export default class SendAssetForm extends Component<Props> {
             }}
             placeholder='Select alias'
             className='send-asset-form-control send-asset-form-select-alias'
+            id='asset-form-select-alias'
             value={from.length ? from : undefined}
           >
             {aliases.map(i => (
@@ -113,19 +103,20 @@ export default class SendAssetForm extends Component<Props> {
             ))}
           </Select>
           <Select
-            disabled={isLoading || assetsFromAliasIsLoading}
+            disabled={isLoading || assetsFromAlias.isLoading}
             onChange={val => this.updateField(val, 'asset')}
             placeholder='Select asset'
-            className='send-asset-form-control send-asset-form-select-alias'
+            className='send-asset-form-control send-asset-form-select-asset'
+            id='asset-form-select-asset'
             value={asset.length ? asset : undefined}
           >
-            {assets.map(i => (
+            {assetsFromAlias.data.map(i => (
               <Option value={i.asset} key={i.asset}>
                 {i.symbol} - {i.asset}
               </Option>
             ))}
           </Select>
-          {assetsFromAliasIsLoading && <Spin indicator={<Icon type='loading' spin />} className='assets-from-alias-loader' />}
+          {assetsFromAlias.isLoading && <Spin indicator={<Icon type='loading' spin />} className='assets-from-alias-loader' />}
           <Input
             disabled={isLoading}
             name='toAddress'
@@ -133,6 +124,7 @@ export default class SendAssetForm extends Component<Props> {
             onChange={e => this.updateField(e, 'toAddress')}
             value={toAddress}
             className='send-asset-form-control send-asset-form-to-address'
+            id='asset-form-to-address'
           />
           <Input
             disabled={isLoading}
@@ -140,7 +132,8 @@ export default class SendAssetForm extends Component<Props> {
             placeholder='Amount'
             onChange={e => this.updateField(e, 'amount', /^\d+(\.)?(\d+)?$/)}
             value={amount}
-            className='send-asset-form control send-asset-form-asset'
+            className='send-asset-form control send-asset-form-amount'
+            id='asset-form-amount'
           />
           <Input
             disabled={isLoading}
@@ -148,7 +141,8 @@ export default class SendAssetForm extends Component<Props> {
             placeholder='Comment'
             onChange={e => this.updateField(e, 'comment')}
             value={comment}
-            className='send-asset-form control send-asset-form-asset'
+            className='send-asset-form control send-asset-form-comment'
+            id='asset-form-comment'
           />
           <div className='send-asset-form-btn-container'>
             {isLoading && <Spin indicator={<Icon type='loading' spin />} className='send-loading' />}

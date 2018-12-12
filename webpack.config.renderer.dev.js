@@ -53,7 +53,8 @@ export default merge.smart(baseConfig, {
       'webpack/hot/only-dev-server',
       path.join(__dirname, 'app/index.js')
     ],
-    'loading.dev': path.join(__dirname, 'app/loading.js')
+    'loading.dev': path.join(__dirname, 'app/loading.js'),
+    'console.dev': path.join(__dirname, 'app/console.js')
   },
 
   output: {

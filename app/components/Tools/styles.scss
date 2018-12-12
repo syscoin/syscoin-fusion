@@ -4,6 +4,13 @@
     padding: 40px 0;
     overflow-y: scroll;
     height: 93%;
+
+    .lock-utilities {
+        button {
+            margin-bottom: 10px;
+            width: 200px;
+        }
+    }
 }
 
 .tools-container hr {
@@ -22,7 +29,7 @@
 }
 
 .tools-container::-webkit-scrollbar {
-    width: 0.5em;
+    width: 0.8em;
 }
  
 .tools-container::-webkit-scrollbar-thumb {

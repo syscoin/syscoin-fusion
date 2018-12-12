@@ -23,6 +23,7 @@
     "package-mac": "npm run build && build --mac",
     "postinstall": "node -r babel-register internals/scripts/CheckNativeDep.js && npm run flow-typed && npm run build-dll && electron-builder install-app-deps && node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.js'",
+    "precommit": "npm run test",
     "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev.js",
@@ -43,7 +44,8 @@
       "splash.html",
       "main.prod.js",
       "main.prod.js.map",
-      "package.json"
+      "package.json",
+      "console.html"
     ],
     "extraFiles": [
       "**/extra/**/*"
@@ -111,7 +113,9 @@
       "^fw-components(.*)$": "<rootDir>/app/components$1",
       "^fw-utils(.*)$": "<rootDir>/app/utils$1",
       "^fw-reducers(.*)$": "<rootDir>/app/reducers$1",
-      "^fw-types(.*)$": "<rootDir>/app/types$1"
+      "^fw-types(.*)$": "<rootDir>/app/types$1",
+      "^fw-sys(.*)$": "<rootDir>/app/utils/sys-helpers$1",
+      "^fw(.*)$": "<rootDir>/app$1"
     },
     "moduleFileExtensions": [
       "js"
@@ -125,9 +129,12 @@
     },
     "setupFiles": [
       "./internals/scripts/CheckBuiltsExist.js"
-    ]
+    ],
+    "runner": "@jest-runner/electron",
+    "testEnvironment": "@jest-runner/electron/environment"
   },
   "devDependencies": {
+    "@jest-runner/electron": "^0.1.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
     "babel-jest": "^23.0.0",
@@ -176,8 +183,7 @@
     "flow-typed": "^2.4.0",
     "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^23.0.0",
-    "lint-staged": "^7.1.2",
+    "jest": "^23.6.0",
     "minimist": "^1.2.0",
     "node-sass": "^4.9.0",
     "npm-logical-tree": "^1.2.1",
@@ -201,9 +207,10 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
-    "antd": "3.6.5",
+    "antd": "^3.6.5",
     "async": "^2.6.1",
     "axios": "^0.18.0",
+    "bunyan": "^1.8.12",
     "copy": "^0.3.2",
     "devtron": "^1.4.0",
     "dotenv": "^6.0.0",
@@ -216,6 +223,7 @@
     "history": "^4.7.2",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
+    "ow": "^0.8.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
@@ -228,7 +236,8 @@
     "redux-actions": "^2.4.0",
     "redux-thunk": "^2.2.0",
     "source-map-support": "^0.5.6",
-    "sweetalert": "^2.1.0"
+    "sweetalert": "^2.1.0",
+    "sweetalert2": "^7.29.1"
   },
   "devEngines": {
     "node": ">=7.x",

@@ -12,9 +12,10 @@ import {
   getPrivateKey
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
-import { editSendAsset } from 'fw-actions/forms'
+import { editSendAsset, getAssetsFromAlias } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
+import unlockWallet from 'fw-utils/unlock-wallet'
 
 type Props = {
   balance: number,
@@ -35,7 +36,9 @@ type Props = {
   dashboardAssets: Function,
   dashboardTransactions: Function,
   changeTab: Function,
-  editSendAsset: Function
+  editSendAsset: Function,
+  isEncrypted: boolean,
+  getAssetsFromAlias: Function
 };
 
 type State = {
@@ -224,11 +227,26 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getPrivateKey(address: string, cb: Function) {
+    let lock = () => {}
+    let key
+
+    if (this.props.isEncrypted) {
+      try {
+        lock = await unlockWallet()
+      } catch(err) {
+        return cb(err)
+      }
+    }
+  
     try {
-      return cb(null, await getPrivateKey(address))
+      key = await getPrivateKey(address)
     } catch (err) {
+      lock()
       return cb(err)
     }
+
+    lock()
+    cb(null, key)
   }
 
   goToHome() {
@@ -245,6 +263,7 @@ class AccountsContainer extends Component<Props, State> {
       amount: '',
       comment: ''
     })
+    this.props.getAssetsFromAlias({ receiver_address: alias })
     this.props.changeTab('2')
   }
 
@@ -269,7 +288,7 @@ class AccountsContainer extends Component<Props, State> {
         aliasAssets={aliasAssets}
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
-        getPrivateKey={this.getPrivateKey}
+        getPrivateKey={this.getPrivateKey.bind(this)}
         goToHome={this.goToHome.bind(this)}
         dashboardSysTransactions={this.props.dashboardSysTransactions}
         dashboardAssets={this.props.dashboardAssetsBalances}
@@ -289,13 +308,15 @@ const mapStateToProps = state => ({
   headBlock: state.wallet.blockchaininfo.headers,
   currentBlock: state.wallet.getinfo.blocks,
   dashboardSysTransactions: state.wallet.dashboard.transactions,
-  dashboardAssetsBalances: state.wallet.dashboard.assets
+  dashboardAssetsBalances: state.wallet.dashboard.assets,
+  isEncrypted: state.wallet.isEncrypted
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   dashboardAssets,
   dashboardTransactions,
-  editSendAsset
+  editSendAsset,
+  getAssetsFromAlias
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)

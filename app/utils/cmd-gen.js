@@ -1,6 +1,6 @@
 const path = require('path')
 const getSysPath = require('./syspath')
-const isProd = require('./is-production')
+const isProd = require('./get-env')() === 'production' // eslint-disable-line global-require
 const OS = require('./detect-os')(true)
 
 const extraDir = isProd ? path.join(process.resourcesPath, '..', 'extra') : path.join(process.cwd(), 'extra')

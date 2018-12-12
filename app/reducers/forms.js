@@ -7,7 +7,10 @@ import {
   SEND_ASSET_ERROR,
   SEND_SYS_IS_LOADING,
   SEND_SYS_RECEIVE,
-  SEND_SYS_ERROR
+  SEND_SYS_ERROR,
+  GET_ASSETS_FROM_ALIAS_IS_LOADING,
+  GET_ASSETS_FROM_ALIAS_RECEIVE,
+  GET_ASSETS_FROM_ALIAS_ERROR
 } from 'fw-types/forms'
 
 type actionType = {
@@ -25,7 +28,14 @@ type StateType = {
       comment: string
     },
     isLoading: boolean,
-    error: boolean
+    error: boolean,
+    states: {
+      assetsFromAlias: {
+        isLoading: boolean,
+        error: boolean,
+        data: Array<Object>
+      }
+    }
   },
   sendSys: {
     data: {
@@ -48,7 +58,14 @@ export const initialState = {
       comment: ''
     },
     isLoading: false,
-    error: false
+    error: false,
+    states: {
+      assetsFromAlias: {
+        isLoading: false,
+        error: false,
+        data: []
+      }
+    }
   },
   sendSys: {
     data: {
@@ -96,6 +113,7 @@ export default function forms(state: StateType = initialState, action: actionTyp
       return {
         ...state,
         sendAsset: {
+          ...state.sendAsset,
           data: {
             ...initialState.sendAsset.data
           },
@@ -141,6 +159,51 @@ export default function forms(state: StateType = initialState, action: actionTyp
           error: true
         }
       }
+    case GET_ASSETS_FROM_ALIAS_IS_LOADING:
+      return {
+        ...state,
+        sendAsset: {
+          ...state.sendAsset,
+          states: {
+            ...state.sendAsset.states,
+            assetsFromAlias: {
+              isLoading: true,
+              error: false,
+              data: []
+            }
+          }
+        }
+      }
+      case GET_ASSETS_FROM_ALIAS_RECEIVE:
+        return {
+          ...state,
+          sendAsset: {
+            ...state.sendAsset,
+            states: {
+              ...state.sendAsset.states,
+              assetsFromAlias: {
+                isLoading: false,
+                error: false,
+                data: action.payload
+              }
+            }
+          }
+        }
+        case GET_ASSETS_FROM_ALIAS_ERROR:
+          return {
+            ...state,
+            sendAsset: {
+              ...state.sendAsset,
+              states: {
+                ...state.sendAsset.states,
+                assetsFromAlias: {
+                  isLoading: false,
+                  error: true,
+                  data: []
+                }
+              }
+            }
+          }
     default:
       return state
   }

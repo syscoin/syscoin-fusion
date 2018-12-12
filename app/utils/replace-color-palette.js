@@ -3,7 +3,7 @@
 
 const loadCustomColor = (color: string) => global.appStorage.get(color)
 
-export default async () => {
+export default async (baseCss?: string) => {
     const main_white = loadCustomColor('main_white') || '#ddd'
     const full_white = loadCustomColor('full_white') || '#fff'
     const main_blue = loadCustomColor('main_blue') || '#7fb2ec'
@@ -20,6 +20,8 @@ export default async () => {
 
     if (process.env.HOT === '1') {
         css = await window.fetch(cssEl.href).then(res => res.text())
+    } else if (baseCss) {
+        css = baseCss
     } else {
         css = await window.fetch('./dist/style.css').then(res => res.text())
     }

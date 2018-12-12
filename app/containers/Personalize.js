@@ -34,7 +34,7 @@ class PersonalizeContainer extends Component<Props> {
     try {
       return await editAlias(obj)
     } catch (err) {
-      return err
+      return Promise.reject(err)
     }
   }
 
