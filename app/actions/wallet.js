@@ -165,17 +165,21 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
     return dispatch(dashboardAssetsErrorAction(err.message))
   }
 
+  console.log(allocations)
+
   // Generating balances per asset
   _.flatten(allocations).forEach(i => {
     if (!assets[i.asset]) {
       assets[i.asset] = {
         balance: 0,
+        interest_claim_height: 0,
         asset: i.asset,
         symbol: i.symbol
       }
     }
 
     assets[i.asset].balance += Number(i.balance)
+    assets[i.asset].interest_claim_height += Number(i.interest_claim_height)
   })
 
   // Turning the object into an array

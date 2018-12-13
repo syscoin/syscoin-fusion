@@ -9,7 +9,8 @@ import Accounts from 'fw-components/Accounts/'
 import {
   getTransactionsPerAsset,
   listAssetAllocation,
-  getPrivateKey
+  getPrivateKey,
+  claimAssetInterest
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import { editSendAsset, getAssetsFromAlias } from 'fw-actions/forms'
@@ -271,6 +272,20 @@ class AccountsContainer extends Component<Props, State> {
     this.props.changeTab('2')
   }
 
+  async claimAssetInterest(asset) {
+    const aliases = this.props.aliases
+    const claimPromises = aliases.map(i => claimAssetInterest(asset, i.alias || i.address))
+    let results
+
+    try {
+      results = await Promise.all(claimPromises)
+    } catch(err) {
+      console.log(err)
+    }
+
+    this.props.dashboardAssets()
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
@@ -296,6 +311,7 @@ class AccountsContainer extends Component<Props, State> {
         getDashboardTransactions={this.props.dashboardTransactions}
         goToAssetForm={this.goToAssetForm.bind(this)}
         goToSysForm={this.goToSysForm.bind(this)}
+        claimAssetInterest={this.claimAssetInterest.bind(this)}
       />
     )
   }

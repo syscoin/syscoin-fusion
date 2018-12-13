@@ -296,6 +296,8 @@ const isEncrypted = () => new Promise((resolve) => {
     .catch(err => resolve(err.code === -1))
 })
 
+const claimAssetInterest = (asset: string, alias: string) => syscoin.callRpc('assetallocationcollectinterest', [asset, alias, ''])
+
 module.exports = {
   callRpc: sys.callRpc,
   aliasInfo,
@@ -321,5 +323,6 @@ module.exports = {
   unlockWallet,
   changePwd,
   lockWallet,
-  isEncrypted
+  isEncrypted,
+  claimAssetInterest
 }
