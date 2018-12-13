@@ -145,15 +145,27 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   const { aliases } = getState().wallet
   const fixedGuids = getState().options.guids.map(i => i._id)
   let assets = {}
-  let allocations
+  let allocations = []
 
   try {
-    allocations = await listAssetAllocation({
-      receiver_address: aliases.map(i => i.alias || i.address)
+    const promises = aliases.map(
+      alias => listAssetAllocation(
+        {
+          receiver_address: alias.alias || alias.address
+        },
+        fixedGuids)
+    )
+
+    const allocs = await Promise.all(promises)
+
+    allocs.forEach(i => {
+      allocations = allocations.concat(i)
     })
   } catch(err) {
     return dispatch(dashboardAssetsErrorAction(err.message))
   }
+
+  console.log(allocations)
 
   // Generating balances per asset
   _.flatten(allocations).forEach(i => {
@@ -177,6 +189,7 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   }
 
   dispatch(dashboardAssetsReceiveAction(assets))
+
 }
 
 export const checkWalletEncryption = () => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsEncrypted(await isEncrypted()))

@@ -57,7 +57,6 @@ export default class DashboardBalance extends Component<Props> {
           rowKey='asset'
           isLoading={this.props.isLoading}
           error={this.props.error}
-          pagination={false}
         />
       </div>
     )

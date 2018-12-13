@@ -33,6 +33,7 @@ type getTransactionsPerAssetType = {
 };
 
 type listAssetAllocationType = {
+  alias?: string,
   receiver_address?: Array<string> | string,
   txid?: string,
   asset?: string,
@@ -255,6 +256,20 @@ const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<s
     .catch(err => reject(err))
 })
 
+const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
+  syscoin.callRpc('listassetallocationtransactions', [999999, 0, obj])
+    .then(result => {
+      let data = result
+      
+      if (Array.isArray(filterGuids) && filterGuids.length) {
+        data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
+      }
+
+      return resolve(data)
+    })
+    .catch(err => reject(err))
+})
+
 // Get list of SYS transactions in the wallet
 const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise((resolve, reject) => {
   syscoin.walletServices.listTransactions(pageSize, page * pageSize)
@@ -292,6 +307,7 @@ module.exports = {
   getAssetAllocationInfo,
   getInfo,
   listAssetAllocation,
+  listAssetAllocationTransactions,
   sendAsset,
   sendSysTransaction,
   createNewAlias,

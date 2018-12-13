@@ -107,6 +107,7 @@ export default class SysTransactionList extends Component<Props, State> {
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
+          pagination={false}
         />
         {!this.props.isLoading && (
           <Pagination
