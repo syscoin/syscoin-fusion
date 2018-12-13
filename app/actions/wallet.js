@@ -165,8 +165,6 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
     return dispatch(dashboardAssetsErrorAction(err.message))
   }
 
-  console.log(allocations)
-
   // Generating balances per asset
   _.flatten(allocations).forEach(i => {
     if (!assets[i.asset]) {
