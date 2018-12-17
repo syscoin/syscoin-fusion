@@ -350,6 +350,16 @@
         right: 10px;
         pointer-events: all;
     }
+
+    .asset-box-settings {
+        color: $main_white;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        pointer-events: all;
+    }
 }
 
 .asset-box.selected {
@@ -420,19 +430,15 @@
     font-weight: 500;
 }
 
-.transactions-table .transactions-table-row td {
+.transactions-table .transactions-table-row td .amount.incoming {
     color: $main_green;
 }
 
-.transactions-table .transactions-table-row td span.amount.incoming {
-    color: $main_green;
-}
-
-.transactions-table .transactions-table-row td span.amount.outgoing {
+.transactions-table .transactions-table-row td .amount.outgoing {
     color: $main_red;
 }
 
-.transactions-table .transactions-table-row td span.arrow.incoming {
+.transactions-table .transactions-table-row td .arrow.incoming {
     color: $main_green;
 }
 
@@ -485,4 +491,10 @@
     &:hover {
         color: $main_white;
     }
+}
+
+.token-table-info {
+    color: $main_blue;
+    position: relative;
+    font-size: 19px;
 }

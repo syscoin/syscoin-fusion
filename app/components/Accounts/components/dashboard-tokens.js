@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Button } from 'antd'
+import { Icon, Tooltip } from 'antd'
 import Table from './table'
 
 type Props = {
@@ -11,8 +11,7 @@ type Props = {
   }>,
   isLoading: boolean,
   error: boolean,
-  refresh: Function,
-  claimAssetInterest: Function
+  refresh: Function
 };
 
 export default class DashboardBalance extends Component<Props> {
@@ -38,17 +37,14 @@ export default class DashboardBalance extends Component<Props> {
         render: (text: number) => <span>{text}</span>
       },
       {
-        title: 'Interest claim height',
-        key: 'interest_claim_height',
-        dataIndex: 'interest_claim_height',
-        width: '20%',
-        render: (text: number) => <span>{text}</span>
-      },
-      {
         title: '',
-        key: 'interest_clain_height',
-        dataIndex: 'interest_claim_height',
-        render: (text: number, row: object) => <Icon onClick={() => this.props.claimAssetInterest(row.asset)} type='wallet' />
+        key: 'accumulated_interest',
+        dataIndex: 'accumulated_interest',
+        render: (text: number, row: object) => (
+          <Tooltip title={`You have ${row.accumulated_interest} of accumulated interest on this asset.`}>
+            <Icon type='info-circle' className='token-table-info' />
+          </Tooltip>
+        )
       }
     ]
   }

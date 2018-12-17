@@ -272,18 +272,16 @@ class AccountsContainer extends Component<Props, State> {
     this.props.changeTab('2')
   }
 
-  async claimAssetInterest(asset) {
-    const aliases = this.props.aliases
-    const claimPromises = aliases.map(i => claimAssetInterest(asset, i.alias || i.address))
-    let results
+  claimAssetInterest(asset, alias) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await claimAssetInterest(asset, alias)
+      } catch(err) {
+        return reject(err)
+      }
 
-    try {
-      results = await Promise.all(claimPromises)
-    } catch(err) {
-      console.log(err)
-    }
-
-    this.props.dashboardAssets()
+      resolve()
+    })
   }
 
   render() {
@@ -311,7 +309,7 @@ class AccountsContainer extends Component<Props, State> {
         getDashboardTransactions={this.props.dashboardTransactions}
         goToAssetForm={this.goToAssetForm.bind(this)}
         goToSysForm={this.goToSysForm.bind(this)}
-        claimAssetInterest={this.claimAssetInterest.bind(this)}
+        claimInterest={this.claimAssetInterest}
       />
     )
   }

@@ -21,8 +21,7 @@ type Props = {
   },
   refreshDashboardAssets: Function,
   refreshDashboardTransactions: Function,
-  goToSysForm: Function,
-  claimAssetInterest: Function
+  goToSysForm: Function
 };
 
 class Dashboard extends Component<Props> {
@@ -44,7 +43,6 @@ class Dashboard extends Component<Props> {
                 error={this.props.assets.error}
                 assets={this.props.assets.data}
                 refresh={this.props.refreshDashboardAssets}
-                claimAssetInterest={this.props.claimAssetInterest}
               />
               <hr />
               <SysTransactionList

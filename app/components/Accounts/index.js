@@ -43,7 +43,7 @@ type Props = {
   getDashboardTransactions: Function,
   goToAssetForm: Function,
   goToSysForm: Function,
-  claimAssetInterest: Function
+  claimInterest: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -79,7 +79,7 @@ export default class Accounts extends Component<Props> {
       return addresses.push(iCopy)
     })
     
-    return aliases.concat(addresses).map((i) => (
+    return aliases.concat(addresses).map((i: Object) => (
       <AliasAddressItem
         key={i.address}
         alias={i.alias}
@@ -90,12 +90,13 @@ export default class Accounts extends Component<Props> {
         getPrivateKey={this.props.getPrivateKey}
         hasAvatar={i.hasAvatar}
         avatarUrl={i.avatarUrl}
+        claimInterest={this.props.claimInterest}
       />
     ))
   }
 
   generateAliasAssets() {
-    return this.props.aliasAssets.data.map(i => (
+    return this.props.aliasAssets.data.map((i: Object) => (
       <AssetBox
         isSelected={this.props.aliasAssets.selected === i.asset}
         selectAsset={this.props.selectAsset}
@@ -104,6 +105,8 @@ export default class Accounts extends Component<Props> {
         symbol={i.symbol}
         key={i.asset}
         goToSendAssetForm={this.goToSendAssetForm.bind(this)}
+        selectedAlias={this.props.selectedAlias}
+        claimInterest={this.props.claimInterest}
       />
     ))
   }
@@ -166,7 +169,6 @@ export default class Accounts extends Component<Props> {
               refreshDashboardAssets={this.refreshDashboardAssets.bind(this)}
               refreshDashboardTransactions={this.refreshDashboardTransactions.bind(this)}
               goToSysForm={this.props.goToSysForm}
-              claimAssetInterest={this.props.claimAssetInterest}
             />
           ) : null}
           {this.props.aliasAssets.data.length ? (
