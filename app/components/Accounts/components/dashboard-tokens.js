@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Tooltip, Button } from 'antd'
+import { Icon, Tooltip, Button, Dropdown, Menu } from 'antd'
 import swal from 'sweetalert'
 import Table from './table'
 
@@ -15,6 +15,8 @@ type Props = {
   refresh: Function,
   claimAllInterestFromAsset: Function
 };
+
+const { Item } = Menu
 
 export default class DashboardBalance extends Component<Props> {
 
@@ -41,15 +43,21 @@ export default class DashboardBalance extends Component<Props> {
       {
         title: '',
         render: (row: object) => (
-          <Tooltip title={`You have ${row.accumulated_interest} of accumulated interest on this asset.`}>
-            <Icon type='info-circle' className='token-table-info' />
-          </Tooltip>
-        )
-      },
-      {
-        title: '',
-        render: (row: object) => (
-          <Button onClick={() => this.claimAll(row.asset)}>Claim</Button>
+          <div>
+            <Dropdown
+              overlay={(
+                <Menu>
+                  <Item onClick={() => this.claimAll(row.asset)}>Claim interest</Item>
+                </Menu>
+              )}
+              trigger={['click']}
+            >
+              <Icon type='setting' className='token-table-actions' />
+            </Dropdown>
+            <Tooltip title={`You have ${row.accumulated_interest} of accumulated interest on this asset.`}>
+              <Icon type='info-circle' className='token-table-info' />
+            </Tooltip>
+          </div>
         )
       }
     ]

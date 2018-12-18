@@ -493,8 +493,13 @@
     }
 }
 
-.token-table-info {
+.token-table-info, .token-table-actions {
     color: $main_blue;
     position: relative;
     font-size: 19px;
+}
+
+.token-table-actions {
+    margin-right: 10px;
+    cursor: pointer;
 }
