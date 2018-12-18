@@ -43,7 +43,8 @@ type Props = {
   getDashboardTransactions: Function,
   goToAssetForm: Function,
   goToSysForm: Function,
-  claimInterest: Function
+  claimInterest: Function,
+  claimAllInterestFromAsset: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -169,6 +170,7 @@ export default class Accounts extends Component<Props> {
               refreshDashboardAssets={this.refreshDashboardAssets.bind(this)}
               refreshDashboardTransactions={this.refreshDashboardTransactions.bind(this)}
               goToSysForm={this.props.goToSysForm}
+              claimAllInterestFromAsset={this.props.claimAllInterestFromAsset}
             />
           ) : null}
           {this.props.aliasAssets.data.length ? (

@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Tooltip } from 'antd'
+import { Icon, Tooltip, Button } from 'antd'
+import swal from 'sweetalert'
 import Table from './table'
 
 type Props = {
@@ -11,7 +12,8 @@ type Props = {
   }>,
   isLoading: boolean,
   error: boolean,
-  refresh: Function
+  refresh: Function,
+  claimAllInterestFromAsset: Function
 };
 
 export default class DashboardBalance extends Component<Props> {
@@ -38,15 +40,29 @@ export default class DashboardBalance extends Component<Props> {
       },
       {
         title: '',
-        key: 'accumulated_interest',
-        dataIndex: 'accumulated_interest',
-        render: (text: number, row: object) => (
+        render: (row: object) => (
           <Tooltip title={`You have ${row.accumulated_interest} of accumulated interest on this asset.`}>
             <Icon type='info-circle' className='token-table-info' />
           </Tooltip>
         )
+      },
+      {
+        title: '',
+        render: (row: object) => (
+          <Button onClick={() => this.claimAll(row.asset)}>Claim</Button>
+        )
       }
     ]
+  }
+
+  async claimAll(asset) {
+    try {
+      await this.props.claimAllInterestFromAsset(asset)
+    } catch(err) {
+      return swal('Error', 'Error while claiming interest', 'error')
+    }
+
+    return swal('Success', 'Successfully claimed interest', 'success')
   }
 
   render() {

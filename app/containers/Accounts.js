@@ -280,7 +280,28 @@ class AccountsContainer extends Component<Props, State> {
         return reject(err)
       }
 
-      resolve()
+      resolve(true)
+    })
+  }
+
+  claimAllFromAsset(asset) {
+    return new Promise(async (resolve, reject) => {
+      const aliases = this.props.aliases
+      let results = aliases.map(i => this.claimAssetInterest(asset, i.alias || i.address))
+
+      try {
+        results = await Promise.all(results)
+      } catch(err) {
+        return reject(err)
+      }
+
+      const wasSuccess = results.find(i => typeof i === 'boolean')
+
+      if (wasSuccess) {
+        return resolve()
+      }
+
+      return reject()
     })
   }
 
@@ -310,6 +331,7 @@ class AccountsContainer extends Component<Props, State> {
         goToAssetForm={this.goToAssetForm.bind(this)}
         goToSysForm={this.goToSysForm.bind(this)}
         claimInterest={this.claimAssetInterest}
+        claimAllInterestFromAsset={this.claimAllFromAsset.bind(this)}
       />
     )
   }
