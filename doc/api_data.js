@@ -113,6 +113,26 @@ define({ "api": [
     "name": "GetPoolingData"
   },
   {
+    "type": "get",
+    "url": "/wallet/balance",
+    "title": "Get user balance",
+    "description": "<p>Needs firebase authentication - no params taken. Balance returned in cents.</p>",
+    "group": "Endpoints",
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\n    error: false,\n\tbalance: 12345\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/get-wallet-balance.js",
+    "groupTitle": "Endpoints",
+    "name": "GetWalletBalance"
+  },
+  {
     "type": "post",
     "url": "/coinbase-postback Coinbase postback",
     "title": "Will need someone else to describe this endpoint.",
@@ -498,6 +518,39 @@ define({ "api": [
     "filename": "functions/endpoints/request-pooling.js",
     "groupTitle": "Endpoints",
     "name": "PostRequestPooling"
+  },
+  {
+    "type": "post",
+    "url": "/support-email",
+    "title": "Support email",
+    "description": "<p>Needs firebase authentication</p>",
+    "group": "Endpoints",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "body",
+            "description": "<p>Email body text.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\"message\": \"Success\", error: false}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/support-email.js",
+    "groupTitle": "Endpoints",
+    "name": "PostSupportEmail"
   },
   {
     "type": "post",
