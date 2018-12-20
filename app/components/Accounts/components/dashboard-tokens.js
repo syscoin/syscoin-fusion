@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon } from 'antd'
+import { Icon, Tooltip, Dropdown, Menu } from 'antd'
+import swal from 'sweetalert'
 import Table from './table'
+import moment from 'moment'
 
 type Props = {
   assets: Array<{
@@ -11,8 +13,11 @@ type Props = {
   }>,
   isLoading: boolean,
   error: boolean,
-  refresh: Function
+  refresh: Function,
+  claimAllInterestFromAsset: Function
 };
+
+const { Item } = Menu
 
 export default class DashboardBalance extends Component<Props> {
 
@@ -35,8 +40,40 @@ export default class DashboardBalance extends Component<Props> {
         key: 'balance',
         dataIndex: 'balance',
         render: (text: number) => <span>{text}</span>
+      },
+      {
+        title: '',
+        render: (row: object) => {
+          const claimable = row.interestData.filter(i => moment().subtract(1, 'month') > moment(i.lastClaimedInterest))
+
+          return (
+            <div>
+              <Dropdown
+                overlay={(
+                  <Menu>
+                    <Item onClick={() => this.claimAll(row.asset, claimable.map(i => i.alias))} disabled={!(claimable.length)}>Claim interest</Item>
+                  </Menu>
+                )}
+                trigger={['click']}
+              >
+                <Icon type='setting' className='token-table-actions' />
+              </Dropdown>
+              {claimable.length ? (
+                <Tooltip title={`You have ${claimable.reduce((prev, curr) => prev + curr.accumulatedInterest, 0)} of accumulated interest on this asset from aliases: ${claimable.map(i => i.alias).join(', ')}`}>
+                  <Icon type='info-circle' className='token-table-info' />
+                </Tooltip>
+              ) : null}
+            </div>
+          )
+        }
       }
     ]
+  }
+
+  claimAll(asset, aliases) {
+    this.props.claimAllInterestFromAsset(asset, aliases)
+      .then(() => swal('Success', 'Successfully claimed interest', 'success'))
+      .catch(() => swal('Error', 'Error while claiming interest', 'error'))
   }
 
   render() {
@@ -57,7 +94,6 @@ export default class DashboardBalance extends Component<Props> {
           rowKey='asset'
           isLoading={this.props.isLoading}
           error={this.props.error}
-          pagination={false}
         />
       </div>
     )

@@ -9,7 +9,8 @@ import Accounts from 'fw-components/Accounts/'
 import {
   getTransactionsPerAsset,
   listAssetAllocation,
-  getPrivateKey
+  getPrivateKey,
+  claimAssetInterest
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import { editSendAsset, getAssetsFromAlias } from 'fw-actions/forms'
@@ -271,6 +272,39 @@ class AccountsContainer extends Component<Props, State> {
     this.props.changeTab('2')
   }
 
+  claimAssetInterest(asset, alias) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await claimAssetInterest(asset, alias)
+      } catch(err) {
+        return reject(err)
+      }
+
+      resolve(true)
+    })
+  }
+
+  claimAllFromAsset(asset, fromAliases) {
+    return new Promise(async (resolve, reject) => {
+      const aliases = fromAliases || this.props.aliases.map(i => i.alias || i.address)
+      let results = aliases.map(i => this.claimAssetInterest(asset, i))
+
+      try {
+        results = await Promise.all(results)
+      } catch(err) {
+        return reject(err)
+      }
+
+      const wasSuccess = results.find(i => typeof i === 'boolean')
+
+      if (wasSuccess) {
+        return resolve()
+      }
+
+      return reject()
+    })
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
@@ -296,6 +330,8 @@ class AccountsContainer extends Component<Props, State> {
         getDashboardTransactions={this.props.dashboardTransactions}
         goToAssetForm={this.goToAssetForm.bind(this)}
         goToSysForm={this.goToSysForm.bind(this)}
+        claimInterest={this.claimAssetInterest}
+        claimAllInterestFromAsset={this.claimAllFromAsset.bind(this)}
       />
     )
   }

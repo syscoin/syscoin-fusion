@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { remote } from 'electron'
+import { remote, ipcRenderer } from 'electron'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Tools from 'fw-components/Tools'
@@ -86,6 +86,10 @@ class ToolsContainer extends Component<Props> {
     })
   }
 
+  toggleConsole() {
+    ipcRenderer.send('toggle-console')
+  }
+
   render() {
     return (
       <Tools
@@ -101,6 +105,7 @@ class ToolsContainer extends Component<Props> {
         isUnlocked={this.props.isUnlocked}
         lockWallet={this.lockWallet.bind(this)}
         getFolder={this.getFolder}
+        toggleConsole={this.toggleConsole}
       />
     )
   }

@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { Icon } from 'antd'
 import moment from 'moment'
+import { uniqBy } from 'lodash'
 import Table from './table'
 import Pagination from './pagination'
 
@@ -82,7 +83,7 @@ export default class SysTransactionList extends Component<Props, State> {
     // Sort time by date - more recent first
     const data = this.props.data.sort((a, b) => b.time - a.time)
 
-    return data
+    return uniqBy(data, 'txid') 
   }
 
   changePage(type: string) {
@@ -107,11 +108,12 @@ export default class SysTransactionList extends Component<Props, State> {
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
+          pagination={false}
         />
         {!this.props.isLoading && (
           <Pagination
             onChange={this.changePage.bind(this)}
-            nextDisabled={this.prepareData().length < 10}
+            nextDisabled={this.props.data.length < 10}
             prevDisabled={this.state.currentPage === 0}
             currentPage={this.state.currentPage}
             showPage

@@ -5,6 +5,7 @@ import { Row, Col } from 'antd'
 import BackupWallet from './components/backup-wallet'
 import ImportWallet from './components/import-wallet'
 import LockWallet from './components/lock-wallet'
+import Console from './components/console'
 
 type Props = {
   /* currentBlock: number,
@@ -22,7 +23,8 @@ type Props = {
   unlockWallet: Function,
   isUnlocked: boolean,
   lockWallet: Function,
-  getFolder: Function
+  getFolder: Function,
+  toggleConsole: Function
 };
 
 export default class Tools extends Component<Props> {
@@ -54,6 +56,8 @@ export default class Tools extends Component<Props> {
             isUnlocked={this.props.isUnlocked}
             lockWallet={this.props.lockWallet}
           />
+          <hr />
+          <Console toggleConsole={this.props.toggleConsole} />
         </Col>
       </Row>
     )

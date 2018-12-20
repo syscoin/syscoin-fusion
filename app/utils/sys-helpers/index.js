@@ -33,6 +33,7 @@ type getTransactionsPerAssetType = {
 };
 
 type listAssetAllocationType = {
+  alias?: string,
   receiver_address?: Array<string> | string,
   txid?: string,
   asset?: string,
@@ -245,7 +246,21 @@ const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<s
   syscoin.callRpc('listassetallocations', [999999, 0, obj])
     .then(result => {
       let data = result
-      
+
+      if (Array.isArray(filterGuids) && filterGuids.length) {
+        data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
+      }
+
+      return resolve(data)
+    })
+    .catch(err => reject(err))
+})
+
+const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
+  syscoin.callRpc('listassetallocationtransactions', [999999, 0, obj])
+    .then(result => {
+      let data = result
+
       if (Array.isArray(filterGuids) && filterGuids.length) {
         data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
       }
@@ -281,8 +296,44 @@ const isEncrypted = () => new Promise((resolve) => {
     .catch(err => resolve(err.code === -1))
 })
 
+const claimAssetInterest = (asset: string, alias: string) => new Promise((resolve, reject) => {
+  waterfall([
+    done => syscoin.callRpc('assetallocationcollectinterest', [asset, alias, '']).then(hex => done(null, hex[0])).catch(err => done(err)),
+    (interestOutput, done) => syscoin.transactionServices.signRawTransaction({ hexString: interestOutput }).then(res => done(null, res.hex)).catch(err => done(err)),
+    (signOutput, done) => syscoin.walletServices.syscoinSendRawTransaction(signOutput).then(() => done()).catch(err => done(err))
+  ], err => {
+    if (err) {
+      return reject(err)
+    }
+
+    return resolve()
+  })
+})
+
+const getBlockHash = (blockNumber: number) => syscoin.callRpc('getblockhash', [blockNumber])
+const getBlock = (hash: string) => syscoin.callRpc('getblock', [hash])
+
+const getBlockByNumber = (blockNumber: number) => new Promise(async (resolve, reject) => {
+  let blockHash
+  let block
+
+  try {
+    blockHash = await getBlockHash(blockNumber)
+  } catch (err) {
+    return reject(err)
+  }
+
+  try {
+    block = await getBlock(blockHash)
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve(block)
+})
+
 module.exports = {
-  callRpc: sys.callRpc,
+  callRpc: syscoin.callRpc,
   aliasInfo,
   currentSysAddress,
   currentBalance,
@@ -292,6 +343,7 @@ module.exports = {
   getAssetAllocationInfo,
   getInfo,
   listAssetAllocation,
+  listAssetAllocationTransactions,
   sendAsset,
   sendSysTransaction,
   createNewAlias,
@@ -305,5 +357,7 @@ module.exports = {
   unlockWallet,
   changePwd,
   lockWallet,
-  isEncrypted
+  isEncrypted,
+  claimAssetInterest,
+  getBlockByNumber
 }

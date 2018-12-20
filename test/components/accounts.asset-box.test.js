@@ -17,7 +17,9 @@ describe('Accounts - Asset box component', () => {
       asset: 'some_random_asset',
       symbol: 'ASSET',
       balance: '12.00',
-      goToSendAssetForm: spy()
+      goToSendAssetForm: spy(),
+      selectedAlias: 'testAlias',
+      claimInterest: spy()
     }
     wrapper = shallow(<AssetBox {...props} />)
   })
@@ -51,5 +53,15 @@ describe('Accounts - Asset box component', () => {
     wrapper.find('.asset-box-send').simulate('click')
 
     expect(mockClick.calledOnce).toBe(true)
+  })
+
+  it('should fire claimInterest when click on menu item', () => {
+    const interestMock = spy()
+    wrapper = shallow(<AssetBox {...props} claimInterest={interestMock} />)
+
+    wrapper.instance().claimInterest()
+
+    expect(interestMock.called).toBeTruthy()
+    expect(interestMock.getCall(0).args).toEqual(['some_random_asset', 'testAlias'])
   })
 })

@@ -93,13 +93,15 @@
 
 .backup-wallet-container,
 .get-priv-key-container,
-.import-wallet-container {
+.import-wallet-container,
+.toggle-console-container {
     text-align: center;
 }
 
 .backup-wallet-container h3,
 .get-priv-key-container h3,
-.import-wallet-container h3 {
+.import-wallet-container h3,
+.toggle-console-container h3    {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: $main_white;

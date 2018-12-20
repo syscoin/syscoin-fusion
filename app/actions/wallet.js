@@ -1,10 +1,12 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation, isEncrypted } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation, isEncrypted, getBlockByNumber } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
 import _ from 'lodash'
+import each from 'async/each'
+import moment from 'moment'
 
 type getInfoActionType = {
   type: string,
@@ -145,38 +147,61 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   const { aliases } = getState().wallet
   const fixedGuids = getState().options.guids.map(i => i._id)
   let assets = {}
-  let allocations
+  let allocations = []
 
   try {
-    allocations = await listAssetAllocation({
-      receiver_address: aliases.map(i => i.alias || i.address)
+    const promises = aliases.map(
+      alias => listAssetAllocation(
+        {
+          receiver_address: alias.alias || alias.address
+        },
+        fixedGuids)
+    )
+
+    const allocs = await Promise.all(promises)
+
+    allocs.forEach(i => {
+      allocations = allocations.concat(i)
     })
   } catch(err) {
     return dispatch(dashboardAssetsErrorAction(err.message))
   }
 
   // Generating balances per asset
-  _.flatten(allocations).forEach(i => {
+  each(_.flatten(allocations), async (i, done) => {
     if (!assets[i.asset]) {
       assets[i.asset] = {
         balance: 0,
+        accumulated_interest: 0,
         asset: i.asset,
-        symbol: i.symbol
+        symbol: i.symbol,
+        interestData: []
       }
     }
 
+    const lastInterestClaimBlock = await getBlockByNumber(i.interest_claim_height)
+
     assets[i.asset].balance += Number(i.balance)
+
+    assets[i.asset].interestData.push({
+      lastClaimedInterest: i.interest_rate > 0 ? (new Date(0)).setUTCSeconds(lastInterestClaimBlock.time) : moment.now(),
+      accumulatedInterest: Number(i.accumulated_interest),
+      alias: i.alias
+    })
+
+    done()
+  }, () => {
+    // Turning the object into an array
+    assets = Object.keys(assets).map(i => assets[i])
+
+    if (fixedGuids.length) {
+      // Filtering out guids not present in fusion.cfg
+      assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
+    }
+
+    dispatch(dashboardAssetsReceiveAction(assets))
   })
 
-  // Turning the object into an array
-  assets = Object.keys(assets).map(i => assets[i])
-
-  if (fixedGuids.length) {
-    // Filtering out guids not present in fusion.cfg
-    assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
-  }
-
-  dispatch(dashboardAssetsReceiveAction(assets))
 }
 
 export const checkWalletEncryption = () => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsEncrypted(await isEncrypted()))

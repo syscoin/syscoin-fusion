@@ -4,6 +4,7 @@ import NewAlias from 'fw-components/Tools/components/new-alias'
 import BackupWallet from 'fw-components/Tools/components/backup-wallet'
 import ImportWallet from 'fw-components/Tools/components/import-wallet'
 import LockWallet from 'fw-components/Tools/components/lock-wallet'
+import Console from 'fw-components/Tools/components/console'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { spy } from 'sinon'
@@ -43,6 +44,10 @@ describe('Tools component tests', () => {
 
   it('should render an instance of LockWallet', () => {
     expect(wrapper.find(LockWallet).length).toBe(1)
+  })
+
+  it('should render an instance of Console', () => {
+    expect(wrapper.find(Console).length).toBe(1)
   })
 
 })
