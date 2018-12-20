@@ -13,7 +13,8 @@ type Props = {
   balance: string,
   goToSendAssetForm: Function,
   claimInterest: Function,
-  selectedAlias: string
+  selectedAlias: string,
+  canClaimInterest: boolean
 };
 
 const { Item } = Menu
@@ -31,11 +32,11 @@ export default class AssetBox extends Component<Props> {
   }
 
   render() {
-    const { isSelected, selectAsset, asset, symbol, balance, goToSendAssetForm } = this.props
+    const { isSelected, selectAsset, asset, symbol, balance, goToSendAssetForm, canClaimInterest } = this.props
 
     const menu = (
       <Menu>
-        <Item key='0' onClick={this.claimInterest.bind(this)}>Claim interest</Item>
+        <Item key='0' onClick={this.claimInterest.bind(this)} disabled={!canClaimInterest}>Claim interest</Item>
       </Menu>
     )
     return (

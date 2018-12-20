@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Tooltip, Button, Dropdown, Menu } from 'antd'
+import { Icon, Tooltip, Dropdown, Menu } from 'antd'
 import swal from 'sweetalert'
 import Table from './table'
+import moment from 'moment'
 
 type Props = {
   assets: Array<{
@@ -42,23 +43,29 @@ export default class DashboardBalance extends Component<Props> {
       },
       {
         title: '',
-        render: (row: object) => (
-          <div>
-            <Dropdown
-              overlay={(
-                <Menu>
-                  <Item onClick={() => this.claimAll(row.asset)}>Claim interest</Item>
-                </Menu>
-              )}
-              trigger={['click']}
-            >
-              <Icon type='setting' className='token-table-actions' />
-            </Dropdown>
-            <Tooltip title={`You have ${row.accumulated_interest} of accumulated interest on this asset.`}>
-              <Icon type='info-circle' className='token-table-info' />
-            </Tooltip>
-          </div>
-        )
+        render: (row: object) => {
+          const claimable = row.interestData.filter(i => moment().subtract(1, 'month') > moment(i.lastClaimedInterest))
+
+          return (
+            <div>
+              <Dropdown
+                overlay={(
+                  <Menu>
+                    <Item onClick={() => this.claimAll(row.asset)} disabled={!(claimable.length)}>Claim interest</Item>
+                  </Menu>
+                )}
+                trigger={['click']}
+              >
+                <Icon type='setting' className='token-table-actions' />
+              </Dropdown>
+              {claimable.length ? (
+                <Tooltip title={`You have ${claimable.reduce((prev, curr) => prev.accumulated_interest + curr.accumulated_interest)} of accumulated interest on this asset from aliases: ${claimable.map(i => i.alias).join(', ')}`}>
+                  <Icon type='info-circle' className='token-table-info' />
+                </Tooltip>
+              ) : null}
+            </div>
+          )
+        }
       }
     ]
   }

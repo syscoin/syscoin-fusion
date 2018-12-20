@@ -108,6 +108,7 @@ export default class Accounts extends Component<Props> {
         goToSendAssetForm={this.goToSendAssetForm.bind(this)}
         selectedAlias={this.props.selectedAlias}
         claimInterest={this.props.claimInterest}
+        canClaimInterest={i.interest_rate > 0}
       />
     ))
   }

@@ -246,7 +246,7 @@ const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<s
   syscoin.callRpc('listassetallocations', [999999, 0, obj])
     .then(result => {
       let data = result
-      
+
       if (Array.isArray(filterGuids) && filterGuids.length) {
         data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
       }
@@ -260,7 +260,7 @@ const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGui
   syscoin.callRpc('listassetallocationtransactions', [999999, 0, obj])
     .then(result => {
       let data = result
-      
+
       if (Array.isArray(filterGuids) && filterGuids.length) {
         data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
       }
@@ -298,8 +298,30 @@ const isEncrypted = () => new Promise((resolve) => {
 
 const claimAssetInterest = (asset: string, alias: string) => syscoin.callRpc('assetallocationcollectinterest', [asset, alias, ''])
 
+const getBlockHash = (blockNumber: number) => syscoin.callRpc('getblockhash', [blockNumber])
+const getBlock = (hash: string) => syscoin.callRpc('getblock', [hash])
+
+const getBlockByNumber = (blockNumber: number) => new Promise(async (resolve, reject) => {
+  let blockHash
+  let block
+
+  try {
+    blockHash = await getBlockHash(blockNumber)
+  } catch (err) {
+    return reject(err)
+  }
+
+  try {
+    block = await getBlock(blockHash)
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve(block)
+})
+
 module.exports = {
-  callRpc: sys.callRpc,
+  callRpc: syscoin.callRpc,
   aliasInfo,
   currentSysAddress,
   currentBalance,
@@ -324,5 +346,6 @@ module.exports = {
   changePwd,
   lockWallet,
   isEncrypted,
-  claimAssetInterest
+  claimAssetInterest,
+  getBlockByNumber
 }
