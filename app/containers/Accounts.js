@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withNamespaces } from 'react-i18next'
 import swal from 'sweetalert'
 
 import Accounts from 'fw-components/Accounts/'
@@ -355,4 +356,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   getAssetsFromAlias
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(AccountsContainer))

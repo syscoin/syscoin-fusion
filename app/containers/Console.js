@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withNamespaces } from 'react-i18next'
 
 import Console from 'fw-components/Console'
 import { pushToConsole } from 'fw-actions/console'
@@ -98,4 +99,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   pushToConsole
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConsoleContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ConsoleContainer))

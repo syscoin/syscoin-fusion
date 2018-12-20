@@ -4,6 +4,7 @@ import { remote, ipcRenderer } from 'electron'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Tools from 'fw-components/Tools'
+import { withNamespaces } from 'react-i18next'
 
 import {
   exportWallet,
@@ -122,4 +123,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   walletUnlocked
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToolsContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ToolsContainer))

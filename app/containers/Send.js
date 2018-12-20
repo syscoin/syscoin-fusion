@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withNamespaces } from 'react-i18next'
 
 import Send from 'fw-components/Send'
 import {
@@ -141,4 +142,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   getAssetsFromAlias
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(SendContainer))

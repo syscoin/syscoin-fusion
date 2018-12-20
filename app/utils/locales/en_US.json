@@ -1,0 +1,68 @@
+{
+  "general": {
+    "window_name": "Fusion Wallet",
+    "app_name": "Fusion Wallet"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "summary": {
+      "title": "Wallet Summary",
+      "total_sys": "Total SYS",
+      "total_tokens": "Total Tokens",
+      "total_tokens_notification": "You have {{amount}} of accumulated interest on this asset from aliases: {{aliases}}",
+      "sys_transactions": "SYS Transactions"
+    },
+    "panel": {
+      "your_balance": "Your balance",
+      "your_aliases": "Your aliases/addresses",
+      "get_private_key": "Get private key",
+      "get_private_key_success": "Here is your key"
+    },
+    "asset": {
+      "available_assets": "Available assets",
+      "transactions_for": "Transactions for {{asset}}"
+    }
+  },
+  "send": {
+    "title": "Send",
+    "send_asset": {
+      "select_alias": "Select alias",
+      "select_asset": "Select asset",
+      "send_to": "Send to",
+      "amount": "Amount",
+      "comment": "Comment"
+    },
+    "send_sys": {
+      "current_balance": "Current balance: ",
+      "send_to": "Send to",
+      "amount": "Amount",
+      "comment": "Comment"
+    }
+  },
+  "tools": {
+    "title": "Tools",
+    "backup_wallet": "Backup wallet",
+    "import_wallet": "Import wallet",
+    "lock_wallet": "Lock wallet",
+    "console_title": "Console",
+    "console_button": "Open console"
+  },
+  "console": {
+    "title": "{{appName}} - Console",
+    "welcome": "Welcome to {{appName}} console!"
+  },
+  "misc": {
+    "balance": "Balance",
+    "send": "Send",
+    "symbol": "Symbol",
+    "asset": "Asset",
+    "showing_page": "Showing page {{number}}",
+    "claim_interest": "Claim interest",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "details": "Details",
+    "alias": "Alias",
+    "address": "Address"
+  }
+}

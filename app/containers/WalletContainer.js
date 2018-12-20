@@ -2,6 +2,7 @@
 import React, { Component  } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { withNamespaces } from 'react-i18next'
 import { ipcRenderer, remote } from 'electron'
 import Wallet from 'fw-components/Wallet'
 import {
@@ -142,4 +143,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   checkWalletEncryption
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(WalletContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(WalletContainer))
