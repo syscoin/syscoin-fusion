@@ -280,13 +280,13 @@ class AccountsContainer extends Component<Props, State> {
         return reject(err)
       }
 
-      resolve(true)
+      resolve()
     })
   }
 
-  claimAllFromAsset(asset) {
+  claimAllFromAsset(asset, fromAliases) {
     return new Promise(async (resolve, reject) => {
-      const aliases = this.props.aliases
+      const aliases = fromAliases || this.props.aliases
       let results = aliases.map(i => this.claimAssetInterest(asset, i.alias || i.address))
 
       try {

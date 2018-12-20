@@ -51,7 +51,7 @@ export default class DashboardBalance extends Component<Props> {
               <Dropdown
                 overlay={(
                   <Menu>
-                    <Item onClick={() => this.claimAll(row.asset)} disabled={!(claimable.length)}>Claim interest</Item>
+                    <Item onClick={() => this.claimAll(row.asset, claimable.map(i => i.alias))} disabled={!(claimable.length)}>Claim interest</Item>
                   </Menu>
                 )}
                 trigger={['click']}
@@ -59,7 +59,7 @@ export default class DashboardBalance extends Component<Props> {
                 <Icon type='setting' className='token-table-actions' />
               </Dropdown>
               {claimable.length ? (
-                <Tooltip title={`You have ${claimable.reduce((prev, curr) => prev.accumulated_interest + curr.accumulated_interest)} of accumulated interest on this asset from aliases: ${claimable.map(i => i.alias).join(', ')}`}>
+                <Tooltip title={`You have ${claimable.reduce((prev, curr) => prev + curr.accumulatedInterest, 0)} of accumulated interest on this asset from aliases: ${claimable.map(i => i.alias).join(', ')}`}>
                   <Icon type='info-circle' className='token-table-info' />
                 </Tooltip>
               ) : null}
@@ -70,14 +70,10 @@ export default class DashboardBalance extends Component<Props> {
     ]
   }
 
-  async claimAll(asset) {
-    try {
-      await this.props.claimAllInterestFromAsset(asset)
-    } catch(err) {
-      return swal('Error', 'Error while claiming interest', 'error')
-    }
-
-    return swal('Success', 'Successfully claimed interest', 'success')
+  claimAll(asset, aliases) {
+    this.props.claimAllInterestFromAsset(asset, aliases)
+      .then(() => swal('Success', 'Successfully claimed interest', 'success'))
+      .catch(() => swal('Error', 'Error while claiming interest', 'error'))
   }
 
   render() {

@@ -296,7 +296,19 @@ const isEncrypted = () => new Promise((resolve) => {
     .catch(err => resolve(err.code === -1))
 })
 
-const claimAssetInterest = (asset: string, alias: string) => syscoin.callRpc('assetallocationcollectinterest', [asset, alias, ''])
+const claimAssetInterest = (asset: string, alias: string) => new Promise((resolve, reject) => {
+  waterfall([
+    done => syscoin.callRpc('assetallocationcollectinterest', [asset, alias, '']).then(hex => done(null, hex[0])).catch(err => done(err)),
+    (interestOutput, done) => syscoin.transactionServices.signRawTransaction({ hexString: interestOutput }).then(res => done(null, res.hex)).catch(err => done(err)),
+    (signOutput, done) => syscoin.walletServices.syscoinSendRawTransaction(signOutput).then(() => done()).catch(err => done(err))
+  ], err => {
+    if (err) {
+      return reject(err)
+    }
+
+    return resolve()
+  })
+})
 
 const getBlockHash = (blockNumber: number) => syscoin.callRpc('getblockhash', [blockNumber])
 const getBlock = (hash: string) => syscoin.callRpc('getblock', [hash])
