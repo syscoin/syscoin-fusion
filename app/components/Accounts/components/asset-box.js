@@ -55,7 +55,7 @@ export default class AssetBox extends Component<Props> {
         <Dropdown overlay={menu} trigger={['click']}>
           <Icon type='setting' className='asset-box-settings' />
         </Dropdown>
-        <SendButton className='asset-box-send' onClick={() => goToSendAssetForm(asset)} />
+        <SendButton className='asset-box-send' onClick={() => goToSendAssetForm(asset)} t={t} />
       </Col>
     )
   }

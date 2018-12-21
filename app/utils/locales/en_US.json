@@ -62,6 +62,8 @@
     "lock_unlock_session": "Unlock for the session",
     "lock_session_success": "Wallet will remain unlocked until you close Fusion",
     "lock_change_password": "Change password",
+    "unlock_input_password": "Input your wallet password",
+    "unlock_wrong_password": "Wrong password",
     "console_title": "Console",
     "console_button": "Open console"
   },

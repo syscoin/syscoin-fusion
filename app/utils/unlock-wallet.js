@@ -5,6 +5,8 @@ import {
 import swal from 'sweetalert2'
 import { store } from 'fw/store/configureStore'
 import { walletUnlocked } from 'fw-actions/wallet'
+import i18n from './i18n'
+
 
 const lock = async () => {
   try {
@@ -26,9 +28,9 @@ export default (time?: number = 10) => new Promise(async (resolve, reject) => {
   }
 
   const pwd = await swal({
-    title: 'Input wallet password',
+    title: i18n.t('tools.unlock_input_password'),
     input: 'password',
-    inputPlaceholder: 'Password',
+    inputPlaceholder: i18n.t('misc.password'),
     allowOutsideClick: false,
     allowEscapeKey: false,
     showCancelButton: true
@@ -41,7 +43,7 @@ export default (time?: number = 10) => new Promise(async (resolve, reject) => {
   try {
     await unlockWallet(pwd.value, time)
   } catch(err) {
-    await swal('Error', 'Wrong password', 'error')
+    await swal(i18n.t('misc.error'), i18n.t('tools.unlock_wrong_password'), 'error')
     return reject()
   }
 
