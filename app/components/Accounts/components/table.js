@@ -8,7 +8,8 @@ type Props = {
   isLoading: boolean,
   columns: Array<Object>,
   rowKey: string,
-  pageSize?: number
+  pageSize?: number,
+  t: Function
 };
 
 class SysTransactionList extends Component<Props> {
@@ -18,14 +19,15 @@ class SysTransactionList extends Component<Props> {
   }
 
   defineLocales() {
+    const { t } = this.props
     let emptyText
 
     if (this.props.error) {
-      emptyText = 'Something went wrong. Try again later'
+      emptyText = t('misc.try_again_later')
     } else if (this.props.isLoading) {
-      emptyText = 'Loading...'
+      emptyText = t('misc.loading') + '...'
     } else {
-      emptyText = 'No data'
+      emptyText = t('misc.no_data')
     }
 
     return emptyText

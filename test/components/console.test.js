@@ -15,7 +15,8 @@ describe('Console component tests', () => {
     props = {
       handleConsoleSubmit: spy(),
       data: [],
-      history: []
+      history: [],
+      t: string => string
     }
     wrapper = shallow(<Console {...props} />)
   })

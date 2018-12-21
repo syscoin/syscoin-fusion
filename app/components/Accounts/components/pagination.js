@@ -6,13 +6,14 @@ type Props = {
   nextDisabled: boolean,
   onChange: Function,
   showPage?: boolean,
-  currentPage?: number
+  currentPage?: number,
+  t: Function
 };
 
 const Pagination = (props: Props) => (
   <div className='fw-table-pagination-container'>
     {props.showPage && (
-      <span className='fw-table-pagination-page'>Showing page {props.currentPage + 1}</span>
+      <span className='fw-table-pagination-page'>{props.t('misc.showing_page', { number: props.currentPage + 1 })}</span>
     )}
     <Button
       className={`fw-table-pagination-prev ${props.prevDisabled ? 'disabled' : ''}`}

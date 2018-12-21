@@ -22,21 +22,24 @@ type Props = {
   refreshDashboardAssets: Function,
   refreshDashboardTransactions: Function,
   goToSysForm: Function,
-  claimAllInterestFromAsset: Function
+  claimAllInterestFromAsset: Function,
+  t: Function
 };
 
 class Dashboard extends Component<Props> {
   render() {
+    const { t } = this.props
     return (
       <div>
         <img src={this.props.backgroundLogo} alt='sys-logo' className='sys-logo-bg' />
         <Row>
           <Col xs={18} offset={3}>
             <div className='wallet-summary-container'>
-              <h3 className='wallet-summary-title'>Wallet summary</h3>
+              <h3 className='wallet-summary-title'>{t('accounts.summary.title')}</h3>
               <DashboardBalance
                 balance={this.props.balance}
                 goToSysForm={this.props.goToSysForm}
+                t={t}
               />
               <hr />
               <DashboardTokens
@@ -45,6 +48,7 @@ class Dashboard extends Component<Props> {
                 assets={this.props.assets.data}
                 refresh={this.props.refreshDashboardAssets}
                 claimAllInterestFromAsset={this.props.claimAllInterestFromAsset}
+                t={t}
               />
               <hr />
               <SysTransactionList
@@ -52,6 +56,7 @@ class Dashboard extends Component<Props> {
                 error={this.props.transactions.error}
                 isLoading={this.props.transactions.isLoading}
                 refresh={this.props.refreshDashboardTransactions}
+                t={t}
               />
             </div>
           </Col>

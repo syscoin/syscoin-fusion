@@ -12,7 +12,8 @@ describe('Tools - Console component', () => {
 
   beforeEach(() => {
     props = {
-      toggleConsole: spy()
+      toggleConsole: spy(),
+      t: string => string
     }
     wrapper = shallow(<Console {...props} />)
   })

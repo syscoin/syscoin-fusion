@@ -34,7 +34,8 @@ describe('Send - Send Asset Form component', () => {
         error: false,
         data: []
       },
-      onChangeForm: spy()
+      onChangeForm: spy(),
+      t: string => string
     }
     wrapper = shallow(<SendAssetForm {...props} />)
   })

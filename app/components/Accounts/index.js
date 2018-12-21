@@ -44,7 +44,8 @@ type Props = {
   goToAssetForm: Function,
   goToSysForm: Function,
   claimInterest: Function,
-  claimAllInterestFromAsset: Function
+  claimAllInterestFromAsset: Function,
+  t: Function
 };
 
 export default class Accounts extends Component<Props> {
@@ -92,6 +93,7 @@ export default class Accounts extends Component<Props> {
         hasAvatar={i.hasAvatar}
         avatarUrl={i.avatarUrl}
         claimInterest={this.props.claimInterest}
+        t={this.props.t}
       />
     ))
   }
@@ -109,6 +111,7 @@ export default class Accounts extends Component<Props> {
         selectedAlias={this.props.selectedAlias}
         claimInterest={this.props.claimInterest}
         canClaimInterest={i.interest_rate > 0}
+        t={this.props.t}
       />
     ))
   }
@@ -120,6 +123,7 @@ export default class Accounts extends Component<Props> {
         error={this.props.transactions.error}
         isLoading={this.props.transactions.isLoading}
         selectedAlias={this.props.selectedAlias}
+        t={this.props.t}
       />
     )
   }
@@ -137,6 +141,7 @@ export default class Accounts extends Component<Props> {
   }
 
   render() {
+    const { t } = this.props
     return (
       <Row className='accounts-container'>
         <Col xs={9} className='accounts-container-left'>
@@ -147,14 +152,16 @@ export default class Accounts extends Component<Props> {
           />
           <UserBalance
             currentBalance={this.props.balance}
+            t={t}
           />
           <hr className='alias-separator' />
-          <h4 className='your-aliases-text'>Your aliases/addresses</h4>
+          <h4 className='your-aliases-text'>{t('accounts.panel.your_aliases')}</h4>
           {this.props.syncPercentage !== 100 ? (
             <SyncLoader
               syncPercentage={this.props.syncPercentage}
               headBlock={this.props.headBlock}
               currentBlock={this.props.currentBlock}
+              t={t}
             />
           ) : null}
           <div className='aliases-container'>
@@ -172,13 +179,14 @@ export default class Accounts extends Component<Props> {
               refreshDashboardTransactions={this.refreshDashboardTransactions.bind(this)}
               goToSysForm={this.props.goToSysForm}
               claimAllInterestFromAsset={this.props.claimAllInterestFromAsset}
+              t={t}
             />
           ) : null}
           {this.props.aliasAssets.data.length ? (
             <div>
               <Row className='asset-box-container'>
                 <h4 className='asset-box-text'>
-                  Available assets
+                  {t('accounts.asset.available_assets')}
                 </h4>
                 {this.generateAliasAssets()}
               </Row>
@@ -188,7 +196,7 @@ export default class Accounts extends Component<Props> {
             <Col offset={1} xs={21}>
               {this.props.aliasAssets.selected ? (
                 <div>
-                  <h4 className='transactions-table-title'>Transactions for {this.props.aliasAssets.selectedSymbol}</h4>
+                  <h4 className='transactions-table-title'>{t('accounts.asset.transactions_for', { asset: this.props.aliasAssets.selectedSymbol })}</h4>
                   {this.generateTransactionsTable()}
                 </div>
               ) : null}

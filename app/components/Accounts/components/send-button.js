@@ -3,17 +3,18 @@ import React from 'react'
 import { Button } from 'antd'
 
 type Props = {
-  className?: string
+  className?: string,
+  t: Function
 };
 
-const SendButton = (props: Props) => {
+const SendButton = ({t, ...props}: Props) => {
   const { className, ...btnProps} = props
   return (
     <Button
       className={`send-button ${className || ''}`}
       {...btnProps}
     >
-      Send
+      {t('misc.send')}
     </Button>
   )
 }

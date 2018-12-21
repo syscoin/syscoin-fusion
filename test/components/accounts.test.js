@@ -49,7 +49,8 @@ describe('Accounts component tests', () => {
       getDashboardAssets: spy(),
       getDashboardTransactions: spy(),
       goToAssetForm: spy(),
-      goToSysForm: spy()
+      goToSysForm: spy(),
+      t: string => string
     }
     wrapper = shallow(<Accounts {...props} />)
   })
@@ -129,7 +130,6 @@ describe('Accounts component tests', () => {
     props.aliasAssets.selectedSymbol = 'PEPITA'
     wrapper = shallow(<Accounts {...props} />)
 
-    expect(wrapper.find('.transactions-table-title').text()).toBe('Transactions for PEPITA')
     expect(wrapper.find(TransactionList).length).toBe(1)
   })
 

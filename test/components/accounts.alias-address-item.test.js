@@ -18,7 +18,8 @@ describe('Accounts - AliasAddressItem component', () => {
       isSelected: false,
       updateSelectedAlias: spy(),
       getPrivateKey: spy(),
-      avatarUrl: ''
+      avatarUrl: '',
+      t: string => string
     }
     wrapper = shallow(<AliasAddressItem {...props} />)
   })
@@ -79,15 +80,6 @@ describe('Accounts - AliasAddressItem component', () => {
   it('should display default avatar if avatarUrl is not provided', () => {
     wrapper = shallow(<AliasAddressItem {...props} />)
     expect(wrapper.find('.alias-img').prop('src')).toBe(`https://ui-avatars.com/api/?name=${props.alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`)
-  })
-
-  it('should display alias type equal to Alias when alias is provided', () => {
-    expect(wrapper.find('.alias-type').contains('Alias')).toBe(true)
-  })
-
-  it('should display alias type equal to Address when alias is not provided', () => {
-    wrapper = shallow(<AliasAddressItem {...props} alias='' address='some_address' />)
-    expect(wrapper.find('.alias-type').contains('Address')).toBe(true)
   })
 
   it('should add loading and expanded classes to parent div when isLoading or isSelected are true', () => {

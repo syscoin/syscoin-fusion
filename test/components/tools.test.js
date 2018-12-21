@@ -21,7 +21,8 @@ describe('Tools component tests', () => {
       unfinishedAliases: [],
       createNewAlias: spy(),
       importWallet: spy(),
-      exportWallet: spy()
+      exportWallet: spy(),
+      t: string => string
     }
     wrapper = shallow(<Tools {...props} />)
   })

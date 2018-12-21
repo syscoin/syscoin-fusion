@@ -18,7 +18,8 @@ type Props = {
       address: string,
       amount: string
     }
-  }
+  },
+  t: Function
 };
 
 export default class SendAssetForm extends Component<Props> {
@@ -49,8 +50,9 @@ export default class SendAssetForm extends Component<Props> {
   }
 
   render() {
+    const { t } = this.props
     const {
-      title = 'Send SYS',
+      title = t('send.send_sys.title'),
       columnSize = 12,
       balance = '0.00',
       isLoading = false,
@@ -71,11 +73,11 @@ export default class SendAssetForm extends Component<Props> {
       >
         <div className='send-sys-form-container'>
           <h3 className='send-sys-form-title'>{title}</h3>
-          <h4 className='send-sys-form-balance'>Current balance: <span className='send-sys-form-balance-number'>{balance}</span></h4>
+          <h4 className='send-sys-form-balance'>{t('send.send_sys.current_balance')} <span className='send-sys-form-balance-number'>{balance}</span></h4>
           <Input
             disabled={isLoading}
             name='address'
-            placeholder='Send to address...'
+            placeholder={t('send.send_sys.send_to')}
             onChange={e => this.updateField(e, 'address')}
             value={address}
             className='send-sys-form-control send-sys-form-to-address'
@@ -83,7 +85,7 @@ export default class SendAssetForm extends Component<Props> {
           <Input
             disabled={isLoading}
             name='amount'
-            placeholder='Amount'
+            placeholder={t('send.send_sys.amount')}
             pattern='\d+'
             onChange={e => this.updateField(e, 'amount', /^\d+(\.)?(\d+)?$/)}
             value={amount}
@@ -92,7 +94,7 @@ export default class SendAssetForm extends Component<Props> {
           <Input
             disabled={isLoading}
             name='comment'
-            placeholder='Comment'
+            placeholder={t('send.send_sys.comment')}
             onChange={e => this.updateField(e, 'comment')}
             value={comment}
             className='send-sys-form-control send-sys-form-comment'
@@ -106,16 +108,16 @@ export default class SendAssetForm extends Component<Props> {
               onClick={() => {
                 sendSys(this.props.form.data, err => {
                   if (err) {
-                    return swal('Error', parseError(err.message), 'error')
+                    return swal(t('misc.error'), parseError(err.message), 'error')
                   }
 
                   this.resetForm()
-                  return swal('Success', 'SYS successfully sent', 'success')
+                  return swal(t('misc.success'), t('send.send_sys.sys_send_success'), 'success')
                 })
               }}
               className='send-sys-form-btn-send'
             >
-              Send
+              {t('misc.send')}
             </Button>
           </div>
         </div>

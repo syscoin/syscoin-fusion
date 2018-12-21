@@ -2,16 +2,17 @@
 import React from 'react'
 
 type Props = {
-  currentBalance: number
+  currentBalance: number,
+  t: Function
 };
 
 export default (props: Props) => (
   <div className='balance-container'>
     <h4 className='your-balance-title'>
-      Your balance
+      {props.t('accounts.panel.your_balance')}
     </h4>
     <h2 className='your-balance-amount'>
-      {Number(props.currentBalance).toFixed(2)} SYS
+      {Number(props.currentBalance).toFixed(2)} {props.t('misc.sys')}
     </h2>
   </div>
 )

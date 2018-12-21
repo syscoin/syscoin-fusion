@@ -30,7 +30,8 @@ type Props = {
   }>,
   isEncrypted: boolean,
   isUnlocked: boolean,
-  walletUnlocked: Function
+  walletUnlocked: Function,
+  t: Function
 };
 
 class ToolsContainer extends Component<Props> {
@@ -107,6 +108,7 @@ class ToolsContainer extends Component<Props> {
         lockWallet={this.lockWallet.bind(this)}
         getFolder={this.getFolder}
         toggleConsole={this.toggleConsole}
+        t={this.props.t}
       />
     )
   }

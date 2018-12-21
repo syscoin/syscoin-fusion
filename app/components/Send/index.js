@@ -31,7 +31,8 @@ type Props = {
     isLoading: boolean,
     error: boolean
   },
-  onChangeForm: Function
+  onChangeForm: Function,
+  t: Function
 };
 
 type sendAssetType = {
@@ -51,26 +52,29 @@ type sendSysType = {
 export default class Send extends Component<Props> {
 
   async sendSys(obj: sendSysType) {
+    const { t } = this.props
     try {
       await this.props.sendSys(obj)
     } catch (err) {
-      return swal('Error', parseError(err.message), 'error')
+      return swal(t('misc.error'), parseError(err.message), 'error')
     }
 
-    swal('Success', 'SYS successfully sent', 'success')
+    swal(t('misc.success'), t('misc.sys_send_success'), 'success')
   }
 
   async sendAsset(obj: sendAssetType) {
+    const { t } = this.props
     try {
       await this.props.sendAsset(obj)
     } catch (err) {
-      return swal('Error', parseError(err.message), 'error')
+      return swal(t('misc.error'), parseError(err.message), 'error')
     }
 
-    swal('Success', 'Asset successfully sent', 'success')
+    swal(t('misc.success'), t('misc.asset_send_success'), 'success')
   }
 
   render() {
+    const { t } = this.props
     return (
       <div className='send-forms-container'>
         <Row gutter={24}>
@@ -84,6 +88,7 @@ export default class Send extends Component<Props> {
             assetsFromAlias={this.props.assetsForm.states.assetsFromAlias}
             form={this.props.assetsForm}
             onChangeForm={this.props.onChangeForm}
+            t={t}
           />
         </Row>
         <Row>
@@ -100,6 +105,7 @@ export default class Send extends Component<Props> {
             sendSys={this.sendSys.bind(this)}
             form={this.props.sysForm}
             onChangeForm={this.props.onChangeForm}
+            t={t}
           />
         </Row>
       </div>

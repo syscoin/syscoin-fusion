@@ -14,7 +14,8 @@ describe('Accounts - SyncLoader component', () => {
     props = {
       syncPercentage: 100,
       currentBlock: 100,
-      headBlock: 100
+      headBlock: 100,
+      t: string => string
     }
     wrapper = shallow(<SyncLoader {...props} />)
   })

@@ -12,7 +12,8 @@ describe('Accounts - SendButton component', () => {
 
   beforeEach(() => {
     props = {
-      className: 'test-class'
+      className: 'test-class',
+      t: string => string
     }
     wrapper = shallow(<SendButton {...props} />)
   })

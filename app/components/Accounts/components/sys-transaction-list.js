@@ -10,7 +10,8 @@ type Props = {
   data: Array<Object>,
   error: boolean,
   isLoading: boolean,
-  refresh: Function
+  refresh: Function,
+  t: Function
 };
 
 type State = {
@@ -32,6 +33,8 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   generateColumns() {
+    const { t } = this.props
+
     return [
       {
         title: ' ',
@@ -45,19 +48,19 @@ export default class SysTransactionList extends Component<Props, State> {
         )
       },
       {
-        title: 'To',
+        title: t('misc.to'),
         key: 'address',
         dataIndex: 'address',
         render: (text?: string = '') => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },
       {
-        title: 'Date',
+        title: t('misc.date'),
         key: 'time',
         dataIndex: 'time',
         render: (time: number) => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
       },
       {
-        title: 'Details',
+        title: t('misc.details'),
         key: 'amount',
         dataIndex: 'amount',
         render: (amount: number, transaction: Object) => ({
@@ -95,10 +98,12 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   render() {
+    const { t } = this.props
+
     return (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
-          SYS Transactions
+          {t('accounts.summary.sys_transactions')}
         </h3>
         <Table
           data={this.prepareData()}
@@ -109,6 +114,7 @@ export default class SysTransactionList extends Component<Props, State> {
           error={this.props.error}
           onChange={this.changePage}
           pagination={false}
+          t={t}
         />
         {!this.props.isLoading && (
           <Pagination
@@ -117,6 +123,7 @@ export default class SysTransactionList extends Component<Props, State> {
             prevDisabled={this.state.currentPage === 0}
             currentPage={this.state.currentPage}
             showPage
+            t={t}
           />
         )}
       </div>

@@ -12,7 +12,8 @@ describe('Tools - ImportWallet component', () => {
 
   beforeEach(() => {
     props = {
-      importWallet: spy()
+      importWallet: spy(),
+      t: string => string
     }
     wrapper = shallow(<ImportWallet {...props} />)
   })

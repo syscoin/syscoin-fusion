@@ -5,14 +5,18 @@ import { Icon, Spin, Tooltip } from 'antd'
 type Props = {
   syncPercentage: number,
   currentBlock: number,
-  headBlock: number
+  headBlock: number,
+  t: Function
 };
 
 export default (props: Props) => (
   <Tooltip
     placement='top'
-    title={`${props.syncPercentage}% synced: ${props.currentBlock} out of ${props.headBlock} blocks processed.
-This might affect some wallet functionalities.`}
+    title={props.t('accounts.panel.syncing', {
+      syncPercentage: props.syncPercentage,
+      currentBlock: props.currentBlock,
+      headBlock: props.headBlock
+    })}
   >
     <Spin
       className='sync-loader'

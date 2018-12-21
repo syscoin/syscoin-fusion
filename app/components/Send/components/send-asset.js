@@ -22,7 +22,8 @@ type Props = {
     error: boolean,
     data: FormDataType
   },
-  onChangeForm: Function
+  onChangeForm: Function,
+  t: Function
 };
 
 type FormDataType = {
@@ -57,8 +58,9 @@ export default class SendAssetForm extends Component<Props> {
   }
   
   render() {
+    const { t } = this.props
     const {
-      title = 'Send Address',
+      title = t('send.send_asset.title'),
       columnSize = 12,
       aliases = [],
       isLoading = false,
@@ -105,7 +107,7 @@ export default class SendAssetForm extends Component<Props> {
           <Select
             disabled={isLoading || assetsFromAlias.isLoading}
             onChange={val => this.updateField(val, 'asset')}
-            placeholder='Select asset'
+            placeholder={t('send.send_asset.select_asset')}
             className='send-asset-form-control send-asset-form-select-asset'
             id='asset-form-select-asset'
             value={asset.length ? asset : undefined}
@@ -120,7 +122,7 @@ export default class SendAssetForm extends Component<Props> {
           <Input
             disabled={isLoading}
             name='toAddress'
-            placeholder='Send to address...'
+            placeholder={t('send.send_asset.send_to')}
             onChange={e => this.updateField(e, 'toAddress')}
             value={toAddress}
             className='send-asset-form-control send-asset-form-to-address'
@@ -129,7 +131,7 @@ export default class SendAssetForm extends Component<Props> {
           <Input
             disabled={isLoading}
             name='amount'
-            placeholder='Amount'
+            placeholder={t('send.send_asset.amount')}
             onChange={e => this.updateField(e, 'amount', /^\d+(\.)?(\d+)?$/)}
             value={amount}
             className='send-asset-form control send-asset-form-amount'
@@ -138,7 +140,7 @@ export default class SendAssetForm extends Component<Props> {
           <Input
             disabled={isLoading}
             name='comment'
-            placeholder='Comment'
+            placeholder={t('send.send_asset.comment')}
             onChange={e => this.updateField(e, 'comment')}
             value={comment}
             className='send-asset-form control send-asset-form-comment'
@@ -151,7 +153,7 @@ export default class SendAssetForm extends Component<Props> {
               disabled={isLoading || !from || !asset || !toAddress || !amount}
               onClick={() => sendAsset(this.props.form.data)}
             >
-              Send
+              {t('misc.send')}
             </Button>
           </div>
         </div>

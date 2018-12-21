@@ -25,7 +25,8 @@ type Props = {
   sysForm: Object,
   assetForm: Object,
   isEncrypted: boolean,
-  getAssetsFromAlias: Function
+  getAssetsFromAlias: Function,
+  t: Function
 };
 
 type sendAssetType = {
@@ -121,6 +122,7 @@ class SendContainer extends Component<Props> {
         assetsForm={this.props.assetForm}
         sysForm={this.props.sysForm}
         onChangeForm={this.onChangeForm.bind(this)}
+        t={this.props.t}
       />
     )
   }

@@ -40,7 +40,8 @@ type Props = {
   changeTab: Function,
   editSendAsset: Function,
   isEncrypted: boolean,
-  getAssetsFromAlias: Function
+  getAssetsFromAlias: Function,
+  t: Function
 };
 
 type State = {
@@ -333,6 +334,7 @@ class AccountsContainer extends Component<Props, State> {
         goToSysForm={this.goToSysForm.bind(this)}
         claimInterest={this.claimAssetInterest}
         claimAllInterestFromAsset={this.claimAllFromAsset.bind(this)}
+        t={this.props.t}
       />
     )
   }

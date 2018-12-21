@@ -17,6 +17,7 @@ export default class TransactionList extends Component<Props> {
   }
 
   generateColumns() {
+    const { t } = this.props
     return [
       {
         title: ' ',
@@ -30,25 +31,25 @@ export default class TransactionList extends Component<Props> {
         )
       },
       {
-        title: 'From',
+        title: t('misc.from'),
         key: 'sender',
         dataIndex: 'sender',
         render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },
       {
-        title: 'To',
+        title: t('misc.to'),
         key: 'receiver',
         dataIndex: 'receiver',
         render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },
       {
-        title: 'Date',
+        title: t('misc.date'),
         key: 'time',
         dataIndex: 'time',
         render: (time: number) => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
       },
       {
-        title: 'Details',
+        title: t('misc.details'),
         key: 'amount',
         dataIndex: 'amount',
         render: (amount: string, transaction: Object) => ({
@@ -70,14 +71,15 @@ export default class TransactionList extends Component<Props> {
   }
 
   defineLocales() {
+    const { t } = this.props
     let emptyText
 
     if (this.props.error) {
-      emptyText = 'Something went wrong. Try again later'
+      emptyText = t('misc.try_again_later')
     } else if (this.props.isLoading) {
-      emptyText = 'Loading...'
+      emptyText = t('misc.loading') + '...'
     } else {
-      emptyText = 'No data'
+      emptyText = t('misc.no_data')
     }
 
     return emptyText

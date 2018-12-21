@@ -5,19 +5,21 @@ import SendButton from './send-button'
 
 type Props = {
   balance: number,
-  goToSysForm: Function
+  goToSysForm: Function,
+  t: Function
 };
 
 const DashboardBalance = (props: Props) => (
   <Row>
     <Col xs={24}>
       <div className='wallet-summary-balance-container'>
-        <h3 className='wallet-summary-balance-title'>Total SYS</h3>
+        <h3 className='wallet-summary-balance-title'>{props.t('accounts.summary.total_sys')}</h3>
         <h3 className='wallet-summary-balance-number'>
           {props.balance.toFixed(2)}
           <SendButton
             className='wallet-summary-balance-send-btn'
             onClick={props.goToSysForm}
+            t={props.t}
           />
         </h3>
       </div>

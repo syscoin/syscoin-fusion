@@ -30,7 +30,9 @@ class ConsoleContainer extends Component<Props> {
     if (!this.props.console.data.length) {
       this.props.pushToConsole({
         cmd: '',
-        result: 'Welcome to Fusion Wallet console!',
+        result: this.props.t('console.welcome', {
+          appName: this.props.t('general.app_name')
+        }),
         error: false,
         time: Date.now()
       })
@@ -86,6 +88,7 @@ class ConsoleContainer extends Component<Props> {
         handleConsoleSubmit={this.handleConsoleSubmit.bind(this)}
         history={this.props.console.history}
         data={this.props.console.data}
+        t={this.props.t}
       />
     )
   }

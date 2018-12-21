@@ -17,7 +17,8 @@ describe('Accounts - SysTransactionList component', () => {
       data: [],
       error: false,
       isLoading: false,
-      refresh: spy()
+      refresh: spy(),
+      t: string => string
     }
     wrapper = shallow(<SysTransactionList {...props} />)
   })

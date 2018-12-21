@@ -17,7 +17,8 @@ type editAliasType = {
   expireTimestamp: string,
   encPrivKey: string,
   encPubKey: string,
-  witness: string
+  witness: string,
+  t: Function
 };
 
 class PersonalizeContainer extends Component<Props> {

@@ -14,7 +14,8 @@ type Props = {
   isLoading: boolean,
   error: boolean,
   refresh: Function,
-  claimAllInterestFromAsset: Function
+  claimAllInterestFromAsset: Function,
+  t: Function
 };
 
 const { Item } = Menu
@@ -22,21 +23,23 @@ const { Item } = Menu
 export default class DashboardBalance extends Component<Props> {
 
   generateTableColumns() {
+    const { t } = this.props
+
     return [
       {
-        title: 'Symbol',
+        title: t('misc.symbol'),
         key: 'symbol',
         dataIndex: 'symbol',
         render: (text: string) => <span>{text}</span>
       },
       {
-        title: 'Asset',
+        title: t('misc.asset'),
         key: 'asset',
         dataIndex: 'asset',
         render: (text: string) => <span>{text}</span>
       },
       {
-        title: 'Balance',
+        title: t('misc.balance'),
         key: 'balance',
         dataIndex: 'balance',
         render: (text: number) => <span>{text}</span>
@@ -51,7 +54,7 @@ export default class DashboardBalance extends Component<Props> {
               <Dropdown
                 overlay={(
                   <Menu>
-                    <Item onClick={() => this.claimAll(row.asset, claimable.map(i => i.alias))} disabled={!(claimable.length)}>Claim interest</Item>
+                    <Item onClick={() => this.claimAll(row.asset, claimable.map(i => i.alias))} disabled={!(claimable.length)}>{t('misc.claim_interest')}</Item>
                   </Menu>
                 )}
                 trigger={['click']}
@@ -59,7 +62,12 @@ export default class DashboardBalance extends Component<Props> {
                 <Icon type='setting' className='token-table-actions' />
               </Dropdown>
               {claimable.length ? (
-                <Tooltip title={`You have ${claimable.reduce((prev, curr) => prev + curr.accumulatedInterest, 0)} of accumulated interest on this asset from aliases: ${claimable.map(i => i.alias).join(', ')}`}>
+                <Tooltip
+                  title={t('accounts.summary.total_tokens_notification', {
+                    amount: claimable.reduce((prev, curr) => prev + curr.accumulatedInterest, 0),
+                    aliases: claimable.map(i => i.alias).join(', ')
+                  })}
+                >
                   <Icon type='info-circle' className='token-table-info' />
                 </Tooltip>
               ) : null}
@@ -71,16 +79,18 @@ export default class DashboardBalance extends Component<Props> {
   }
 
   claimAll(asset, aliases) {
+    const { t } = this.props
     this.props.claimAllInterestFromAsset(asset, aliases)
-      .then(() => swal('Success', 'Successfully claimed interest', 'success'))
-      .catch(() => swal('Error', 'Error while claiming interest', 'error'))
+      .then(() => swal(t('misc.success'), t('misc.claim_interest_success'), 'success'))
+      .catch(() => swal(t('misc.error'), t('misc.claim_interest_error'), 'error'))
   }
 
   render() {
+    const { t } = this.props
     return (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
-          Total Tokens {!this.props.isLoading && (
+          {t('accounts.summary.total_tokens')} {!this.props.isLoading && (
             <Icon
               type='reload'
               className='dashboard-refresh'
@@ -94,6 +104,7 @@ export default class DashboardBalance extends Component<Props> {
           rowKey='asset'
           isLoading={this.props.isLoading}
           error={this.props.error}
+          t={t}
         />
       </div>
     )
