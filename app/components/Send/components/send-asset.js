@@ -93,7 +93,7 @@ export default class SendAssetForm extends Component<Props> {
               // Give some time to updateField to update "from" so it wont be empty when firing this
               setTimeout(() => this.updateField('', 'asset'), 200)
             }}
-            placeholder='Select alias'
+            placeholder={t('send.send_asset.select_alias')}
             className='send-asset-form-control send-asset-form-select-alias'
             id='asset-form-select-alias'
             value={from.length ? from : undefined}

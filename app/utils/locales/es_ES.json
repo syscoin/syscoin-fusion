@@ -1,0 +1,99 @@
+{
+  "general": {
+    "window_name": "Fusion Wallet",
+    "app_name": "Fusion Wallet"
+  },
+  "accounts": {
+    "title": "Cuentas",
+    "summary": {
+      "title": "Resumen de cuenta",
+      "total_sys": "Balance de SYS",
+      "total_tokens": "Balances de Tokens",
+      "total_tokens_notification": "Tienes {{amount}} de interés acumulado en este asset para los siguientes aliases: {{aliases}}",
+      "sys_transactions": "Transacciones de SYS"
+    },
+    "panel": {
+      "your_balance": "Tu balance",
+      "your_aliases": "Tus aliases/direcciones",
+      "get_private_key": "Obtener llave privada",
+      "get_private_key_success": "Ésta es tu llave",
+      "syncing": "{{syncPercentage}}% sincronizado: {{currentBlock}} de {{headBlock}} bloques procesados.\nEsto puede afectar algunas funciones de la cartera."
+    },
+    "asset": {
+      "available_assets": "Assets disponibles",
+      "transactions_for": "Transacciones de {{asset}}"
+    }
+  },
+  "send": {
+    "title": "Enviar",
+    "send_asset": {
+      "title": "Enviar asset",
+      "select_alias": "Selecciona un alias",
+      "select_asset": "Selecciona un asset",
+      "send_to": "Enviar a",
+      "amount": "Cantidad",
+      "comment": "Comentario",
+      "asset_send_success": "Asset enviado con éxito"
+    },
+    "send_sys": {
+      "title": "Enviar SYS",
+      "current_balance": "Balance actual:",
+      "send_to": "Enviar a",
+      "amount": "Cantidad",
+      "comment": "Comentario",
+      "sys_send_success": "SYS enviado correctamente"
+    }
+  },
+  "tools": {
+    "title": "Herramientas",
+    "backup_wallet": "Respaldar cartera",
+    "backup_success": "Respaldo guardado con éxito",
+    "backup_error": "Un error ha ocurrido durante el guardado",
+    "import_wallet": "Importar respaldo",
+    "import_success": "Respaldo cargado con éxito",
+    "import_error": "Un error ha ocurrido durante el cargado del respaldo",
+    "lock_wallet": "Encriptar cartera",
+    "lock_new_password": "Introduce la nueva contraseña",
+    "lock_confirm_password": "Confirmar contraseña",
+    "lock_password_dont_match": "Las contraseñas no coinciden",
+    "lock_reboot": "La cartera necesita reiniciarte para terminar con el encriptado, ¿Quieres continuar?",
+    "lock_old_password": "Introduce tu vieja contraseña",
+    "lock_success": "Contraseña cambiada con éxito",
+    "lock_unlock_session": "Desbloquear cartera",
+    "lock_session_success": "La cartera permanecerá desbloqueada hasta que cierres la aplicación",
+    "lock_change_password": "Cambiar contraseña",
+    "unlock_input_password": "Introduce la contraseña",
+    "unlock_wrong_password": "Contraseña incorrecta",
+    "console_title": "Consola",
+    "console_button": "Abrir consola"
+  },
+  "console": {
+    "title": "{{appName}} - Consola",
+    "welcome": "Bienvenido a la cosola de {{appName}}!"
+  },
+  "misc": {
+    "balance": "Balance",
+    "send": "Enviar",
+    "symbol": "Símbolo",
+    "asset": "Asset",
+    "showing_page": "Mostrando página {{number}}",
+    "claim_interest": "Reclamar interés",
+    "claim_interest_success": "Interés reclamado con éxito",
+    "claim_interest_error": "Ha ocurrido un error al reclamar el interés",
+    "from": "Remitente",
+    "to": "Destinatario",
+    "date": "Fecha",
+    "details": "Detalles",
+    "alias": "Alias",
+    "address": "Dirección",
+    "success": "Éxito",
+    "error": "Error",
+    "try_again_later": "Ha ocurrido un error. Intenta de nuevo más tarde",
+    "loading": "Cargando",
+    "no_data": "Sin datos",
+    "sys": "SYS",
+    "warning": "Advertencia",
+    "continue": "Continuar",
+    "password": "Contraseña"
+  }
+}

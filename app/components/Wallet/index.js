@@ -41,6 +41,7 @@ class Wallet extends Component<Props, State> {
   }
 
   render() {
+    const { t } = this.props
     return (
       <Row className='app-body'>
         <WindowControls
@@ -52,13 +53,13 @@ class Wallet extends Component<Props, State> {
         />
         <Col xs={24}>
           <Tabs className='tabs-app' activeKey={this.state.activeTab} onChange={this.onChangeTab.bind(this)}>
-            <Tab className='tab tab-accounts' tab='Accounts' key='1'>
+            <Tab className='tab tab-accounts' tab={t('accounts.title')} key='1'>
               <AccountsContainer changeTab={this.onChangeTab.bind(this)} />
             </Tab>
-            <Tab className='tab tab-send' tab='Send' key='2'>
+            <Tab className='tab tab-send' tab={t('send.title')} key='2'>
               <SendContainer />
             </Tab>
-            <Tab className='tab tab-tools' tab='Tools' key='3'>
+            <Tab className='tab tab-tools' tab={t('tools.title')} key='3'>
               <ToolsContainer />
             </Tab>
             {/* <Tab className='tab tab-personalize' tab='Personalize' key='4'>

@@ -80,7 +80,7 @@ export default class Send extends Component<Props> {
         <Row gutter={24}>
           <SendAssetForm
             isLoading={this.props.assetsForm.isLoading}
-            title='Send Asset'
+            title={t('send.send_asset.title')}
             columnSize={12}
             aliases={this.props.aliases}
             sendAsset={this.sendAsset.bind(this)}
@@ -99,7 +99,7 @@ export default class Send extends Component<Props> {
         <Row gutter={24}>
           <SendSysForm
             isLoading={this.props.sysForm.isLoading}
-            title='Send SYS'
+            title={t('send.send_sys.title')}
             columnSize={12}
             balance={this.props.balance}
             sendSys={this.sendSys.bind(this)}

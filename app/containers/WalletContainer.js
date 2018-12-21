@@ -32,7 +32,8 @@ type Props = {
   saveBlockchainInfo: Function,
   toggleMaximize: Function,
   dashboardTransactions: Function,
-  checkWalletEncryption: Function
+  checkWalletEncryption: Function,
+  t: Function
 };
 
 class WalletContainer extends Component<Props> {
@@ -119,6 +120,7 @@ class WalletContainer extends Component<Props> {
         onClose={this.onClose}
         onMaximize={this.onMaximize.bind(this)}
         onUnmaximize={this.onUnmaximize.bind(this)}
+        t={this.props.t}
       />
     )
   }
