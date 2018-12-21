@@ -65,7 +65,9 @@
     "unlock_input_password": "Input your wallet password",
     "unlock_wrong_password": "Wrong password",
     "console_title": "Console",
-    "console_button": "Open console"
+    "console_button": "Open console",
+    "change_language_title": "Change Language",
+    "change_language_current_language": "Current language"
   },
   "console": {
     "title": "{{appName}} - Console",
@@ -94,6 +96,9 @@
     "sys": "SYS",
     "warning": "Warning",
     "continue": "Continue",
-    "password": "Password"
+    "password": "Password",
+    "english": "English",
+    "spanish": "Spanish",
+    "language": "Language"
   }
 }

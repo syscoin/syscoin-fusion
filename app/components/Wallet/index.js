@@ -16,7 +16,8 @@ type Props = {
   onMinimize: Function,
   onClose: Function,
   onMaximize: Function,
-  onUnmaximize: Function
+  onUnmaximize: Function,
+  t: Function
 };
 
 type State = {

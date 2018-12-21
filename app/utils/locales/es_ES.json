@@ -65,7 +65,9 @@
     "unlock_input_password": "Introduce la contraseña",
     "unlock_wrong_password": "Contraseña incorrecta",
     "console_title": "Consola",
-    "console_button": "Abrir consola"
+    "console_button": "Abrir consola",
+    "change_language_title": "Cambiar idioma",
+    "change_language_current_language": "Idioma seleccionado"
   },
   "console": {
     "title": "{{appName}} - Consola",
@@ -94,6 +96,9 @@
     "sys": "SYS",
     "warning": "Advertencia",
     "continue": "Continuar",
-    "password": "Contraseña"
+    "password": "Contraseña",
+    "english": "English",
+    "spanish": "Spanish",
+    "language": "Idioma"
   }
 }

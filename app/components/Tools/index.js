@@ -6,6 +6,7 @@ import BackupWallet from './components/backup-wallet'
 import ImportWallet from './components/import-wallet'
 import LockWallet from './components/lock-wallet'
 import Console from './components/console'
+import ChangeLanguage from './components/change-language'
 
 type Props = {
   /* currentBlock: number,
@@ -25,6 +26,8 @@ type Props = {
   lockWallet: Function,
   getFolder: Function,
   toggleConsole: Function,
+  changeLanguage: Function,
+  currentLanguage: string,
   t: Function
 };
 
@@ -61,6 +64,8 @@ export default class Tools extends Component<Props> {
           />
           <hr />
           <Console toggleConsole={this.props.toggleConsole} t={t} />
+          <hr />
+          <ChangeLanguage changeLanguage={this.props.changeLanguage} currentLanguage={this.props.currentLanguage} t={t} />
         </Col>
       </Row>
     )
