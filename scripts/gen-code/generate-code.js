@@ -4,7 +4,7 @@ const admin = require('firebase-admin')
 const randomKey = require('random-key')
 const args = process.argv.slice(2)
 
-let serviceAccount, email, months
+let serviceAccount, email, amount, times
 
 try {
     serviceAccount = require('../serviceKey.json')
@@ -14,13 +14,14 @@ try {
 
 try {
     email = args[0]
-    months = parseInt(args[1])
+    amount = parseInt(args[1])
+    times = parseInt(args[2])
 } catch (err) {
     throw new Error('ERROR: Incorrect params')
 }
 
-if (!months) {
-    throw new Error('Invalid month number')
+if (!amount) {
+    throw new Error('Invalid amount')
 }
 
 if (!email.length) {
@@ -32,22 +33,21 @@ admin.initializeApp({
     databaseURL: process.env.SCRIPT_DB_URL
 })
 
-admin.database().ref('/codes').push({
-    email,
-    months,
-    code: randomKey.generateBase30(17),
-    redeemed: false
-}).then(val => {
-    console.log('SUCCESS! Retrieving code...')
-    val.once('value', snap => {
-        console.log('Code:')
-        console.log(snap.val().code)
-        console.log('Valid for email: ' + snap.val().email)
-        console.log('Duration: ' + snap.val().months + ' months')
-
-        process.exit(0)
-    })
-}).catch((err) => {
-    process.stderr.write('ERROR: SOMETHING WENT WRONG')
-    process.exit(1)
-})
+for (let i = 0 ; i < times ; i++) {
+    admin.database().ref('/codes').push({
+        email,
+        amount,
+        code: randomKey.generateBase30(17),
+        redeemed: false
+    }).then(val => {
+        console.log('SUCCESS! Retrieving code...')
+        val.once('value', snap => {
+            console.log('Code:')
+            console.log(snap.val().code)
+            console.log('Valid for email: ' + snap.val().email)
+            console.log('Amount: ' + snap.val().amount + ' cents')
+        })
+    }).catch((err) => {
+        process.stderr.write('ERROR: SOMETHING WENT WRONG')
+    })    
+}
