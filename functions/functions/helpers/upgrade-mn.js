@@ -6,6 +6,7 @@ module.exports = (obj) => new Promise(async (resolve, reject) => {
     let data
     let vpsData
     let vpsKey
+    let vpsPromise
 
     try {
         vpsPromise = await admin.database().ref('/vps')
@@ -21,15 +22,15 @@ module.exports = (obj) => new Promise(async (resolve, reject) => {
 
     try {
         data = await upgradeAwsNode({
-            InstanceId: vpsData.InstanceId,
-            AllocationId: vpsData.AllocationId
+            instanceId: vpsData.vpsid,
+            allocationId: vpsData.allocationId
         })
     } catch(err) {
         return reject(err)
     }
 
     try {
-        await data.database().ref('/vps/' + vpsKey).update(data)
+        await admin.database().ref('/vps/' + vpsKey).update(data)
     } catch(err) {
         return reject(err)
     }

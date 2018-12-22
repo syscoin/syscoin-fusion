@@ -21,6 +21,6 @@ module.exports = nodeType => new Promise(async (resolve, reject) => {
         return reject(err)
     }
 
-    setTimeout(() => resolve(instance), 5000)
+    setTimeout(() => resolve(instance), 10000)
 
 })

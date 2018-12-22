@@ -17,7 +17,7 @@ module.exports = obj => new Promise(async (resolve, reject) => {
     try {
         newAllocation = await associateIp({
             AllocationId: allocationId,
-            InstanceId: instanceId
+            InstanceId: newInstance.Instances[0].InstanceId
         })
     } catch(err) {
         await terminateInstance(newInstance.Instances[0].InstanceId)
@@ -25,7 +25,7 @@ module.exports = obj => new Promise(async (resolve, reject) => {
     }
 
     try {
-        await terminateInstance(InstanceId)
+        await terminateInstance(instanceId)
     } catch(err) {
         return reject(err)
     }

@@ -8,6 +8,7 @@ module.exports = obj => new Promise(async (resolve, reject) => {
         AllocationId: AllocationId,
         InstanceId: InstanceId
     }
+    console.log(allocationParams)
 
     ec2.associateAddress(allocationParams, (err, data) => {
         if (err) {
