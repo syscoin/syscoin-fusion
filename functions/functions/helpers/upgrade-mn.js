@@ -1,29 +1,38 @@
 const admin = require('firebase-admin')
-const functions = require('firebase-functions')
-const axios = require('axios')
+const upgradeAwsNode = require('./aws/upgrade')
 
-const DOHeader = {
-    'Authorization': 'Bearer ' + functions.config().keys.digitalocean
-}
+module.exports = (obj) => new Promise(async (resolve, reject) => {
+    const { nodeType, dropletId } = obj
+    let data
+    let vpsData
+    let vpsKey
 
-module.exports = (obj, cb) => {
-    const { dropletId } = obj
-    const imageId = functions.config().images.sys
+    try {
+        vpsPromise = await admin.database().ref('/vps')
+            .orderByChild('vpsid')
+            .equalTo(dropletId)
+            .once('value')
+        vpsKey = Object.keys(vpsPromise.val())[0]
+        vpsData = vpsPromise.val()[vpsKey]
+    } catch(err) {
+        return reject(err)
+    }
 
-    axios({
-        method: 'post',
-        url: 'https://api.digitalocean.com/v2/droplets/' + dropletId + '/actions',
-        data: {
-            type: 'rebuild',
-            image: imageId
-        },
-        headers: DOHeader
-    }).then((response) => {
-        return cb(null, {
-            status: 'Masternode is updating.',
-            configFile: 'Masternode is updating.'
+
+    try {
+        data = await upgradeAwsNode({
+            InstanceId: vpsData.InstanceId,
+            AllocationId: vpsData.AllocationId
         })
-    }).catch((error) => {
-        return cb(error)
-    })
-}
+    } catch(err) {
+        return reject(err)
+    }
+
+    try {
+        await data.database().ref('/vps/' + vpsKey).update(data)
+    } catch(err) {
+        return reject(err)
+    }
+
+    return resolve()
+})

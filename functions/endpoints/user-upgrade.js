@@ -28,8 +28,8 @@ module.exports = (req, res) => {
         })
     }
 
-    if (functions.config().images[nodeType.toLowerString()]) {
-        imageId = functions.config().images[nodeType.toLowerString()]
+    if (functions.config().images[nodeType.toLowerCase()]) {
+        imageId = functions.config().images[nodeType.toLowerCase()]
     }
 
     if (!imageId) {

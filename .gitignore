@@ -6,3 +6,4 @@ serviceKey.json
 /scripts/.env
 /scripts/serviceKey.json
 .runtimeconfig.json
+aws.js

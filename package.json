@@ -4,6 +4,7 @@
   "description": "Google App Engine provides a Cron service. Using this service for scheduling and\r Google Cloud Pub/Sub for distributed messaging, you can build an application to\r reliably schedule tasks which can trigger Google Cloud Functions.",
   "main": "index.js",
   "dependencies": {
+    "aws-sdk": "^2.382.0",
     "dotenv": "^5.0.1",
     "firebase-admin": "^5.12.1",
     "moment": "^2.22.2",
