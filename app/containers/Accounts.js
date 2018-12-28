@@ -46,6 +46,7 @@ type Props = {
 
 type State = {
   selectedAlias: string,
+  selectedIsAlias: boolean,
   aliasAssets: {
     selected: string,
     selectedSymbol: string,
@@ -73,6 +74,7 @@ class AccountsContainer extends Component<Props, State> {
 
     this.initialState = {
       selectedAlias: '',
+      selectedIsAlias: true,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -107,6 +109,7 @@ class AccountsContainer extends Component<Props, State> {
     
     this.setState({
       selectedAlias: alias,
+      selectedIsAlias: alias.length !== 34,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -145,7 +148,8 @@ class AccountsContainer extends Component<Props, State> {
           isLoading: false,
           error: false
         },
-        selectedAlias: ''
+        selectedAlias: '',
+        selectedIsAlias: false
       })
       return swal('No asset detected', 'The wallet hasn\'t detected any asset. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
     } else if (!results.length && assets.length) {
@@ -186,11 +190,12 @@ class AccountsContainer extends Component<Props, State> {
 
       try {
         transactions = await getTransactionsPerAsset({
+          isAlias: this.state.selectedIsAlias,
           alias: this.state.selectedAlias,
           assetId: asset
         })
       } catch(err) {
-        this.setState({
+        return this.setState({
           transactions: {
             data: [],
             isLoading: false,

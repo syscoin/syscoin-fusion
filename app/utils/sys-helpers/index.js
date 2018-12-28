@@ -207,12 +207,33 @@ const aliasInfo = (name: string) => syscoin.walletServices.alias.info({ aliasNam
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   parallel([
     (done) => {
-      syscoin.walletServices.assetAllocation.listTransactions({ count: 999999, from: 0, options: { sender_address: obj.alias, asset: obj.assetId } })
-        .then(results => done(null, results))
+      syscoin.walletServices.assetAllocation.listTransactions({
+        count: 999999,
+        from: 0,
+        options: {
+          senders: [
+            {
+              [obj.isAlias ? 'sender_alias' : 'sender_address']: obj.alias
+            }
+          ],
+          asset: obj.assetId
+        } 
+      }).then(results => done(null, results))
         .catch(err => done(err))
     },
     (done) => {
-      syscoin.walletServices.assetAllocation.listTransactions({ count: 999999, from: 0, options: { receiver_address: obj.alias, asset: obj.assetId } })
+      syscoin.walletServices.assetAllocation.listTransactions({
+        count: 999999,
+        from: 0,
+        options: {
+            receivers: [
+              {
+                [obj.isAlias ? 'receiver_alias' : 'receiver_address']: obj.alias,
+              }
+            ],
+            asset: obj.assetId
+        }
+      })
         .then(results => done(null, results))
         .catch(err => done(err))
     }
