@@ -59,7 +59,7 @@ export default class Send extends Component<Props> {
       return swal(t('misc.error'), parseError(err.message), 'error')
     }
 
-    swal(t('misc.success'), t('misc.sys_send_success'), 'success')
+    swal(t('misc.success'), t('send.send_sys.sys_send_success'), 'success')
   }
 
   async sendAsset(obj: sendAssetType) {
@@ -70,7 +70,7 @@ export default class Send extends Component<Props> {
       return swal(t('misc.error'), parseError(err.message), 'error')
     }
 
-    swal(t('misc.success'), t('misc.asset_send_success'), 'success')
+    swal(t('misc.success'), t('send.send_asset.asset_send_success'), 'success')
   }
 
   render() {

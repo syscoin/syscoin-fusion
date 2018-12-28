@@ -12,7 +12,7 @@ export default (props: Props) => (
       {props.t('accounts.panel.your_balance')}
     </h4>
     <h2 className='your-balance-amount'>
-      {Number(props.currentBalance).toFixed(2)} {props.t('misc.sys')}
+      {props.currentBalance} {props.t('misc.sys')}
     </h2>
   </div>
 )

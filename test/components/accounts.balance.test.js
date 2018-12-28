@@ -23,7 +23,7 @@ describe('Accounts - Balance component', () => {
   })
   
   it('should render correct balance', () => {
-    expect(wrapper.find('.your-balance-amount').contains(props.currentBalance.toFixed(2))).toBeTruthy()
+    expect(wrapper.find('.your-balance-amount').contains(props.currentBalance)).toBeTruthy()
   })
 
 })
