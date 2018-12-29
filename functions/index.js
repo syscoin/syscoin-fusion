@@ -27,6 +27,7 @@ const creditCharge = require('./endpoints/credit-charge')
 const cryptoCharge = require('./endpoints/crypto-charge')
 const codeRedeem = require('./endpoints/code-redeem')
 const supportEmail = require('./endpoints/support-email')
+const getWalletBalance = require('./endpoints/get-wallet-balance')
 
 const balCheck = require('./functions/wallet-balance-watch/index')
 
@@ -118,6 +119,7 @@ app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
 app.post('/info', dataTracking)
 app.post('/support-email', validateFirebaseIdToken, supportEmail)
+app.get('/wallet/balance', validateFirebaseIdToken, getWalletBalance)
 
 app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)

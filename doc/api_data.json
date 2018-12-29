@@ -113,6 +113,26 @@
     "name": "GetPoolingData"
   },
   {
+    "type": "get",
+    "url": "/wallet/balance",
+    "title": "Get user balance",
+    "description": "<p>Needs firebase authentication - no params taken. Balance returned in cents.</p>",
+    "group": "Endpoints",
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\n    error: false,\n\tbalance: 12345\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/get-wallet-balance.js",
+    "groupTitle": "Endpoints",
+    "name": "GetWalletBalance"
+  },
+  {
     "type": "post",
     "url": "/code-redeem",
     "title": "Add funds to wallet - Code",
