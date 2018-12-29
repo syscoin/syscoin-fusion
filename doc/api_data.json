@@ -134,6 +134,39 @@
   },
   {
     "type": "post",
+    "url": "/code-redeem",
+    "title": "Add funds to wallet - Code",
+    "description": "<p>Needs firebase authentication</p>",
+    "group": "Endpoints",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Code to redeem</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success",
+          "content": "{\n\t\"message\": \"Payment completed\",\n\t\"expiresOn\": null,\n\t\"purchaseDate\": 1532560005885,\n\t\"paymentId\": \"CODE_REDEEMED\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "functions/endpoints/code-redeem.js",
+    "groupTitle": "Endpoints",
+    "name": "PostCodeRedeem"
+  },
+  {
+    "type": "post",
     "url": "/coinbase-postback Coinbase postback",
     "title": "Will need someone else to describe this endpoint.",
     "group": "Endpoints",

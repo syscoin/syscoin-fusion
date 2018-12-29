@@ -1,10 +1,20 @@
-const firebase = require('firebase-functions')
-const admin = require('firebase-admin')
-const async = require('async')
-
 const redeemCode = require('./helpers/redeem-code')
 const updateBalance = require('./helpers/update-balance')
 
+/**
+ * @api {post} /code-redeem Add funds to wallet - Code
+ * @apiDescription Needs firebase authentication
+ * @apiGroup Endpoints
+ * 
+ * @apiParam {String} code Code to redeem
+ * @apiSuccessExample {json} Success
+ * {
+	"message": "Payment completed",
+	"expiresOn": null,
+	"purchaseDate": 1532560005885,
+	"paymentId": "CODE_REDEEMED"
+}
+ */
 module.exports = (req, res, next) => {
     // Handles new Masternode orders
     try {
