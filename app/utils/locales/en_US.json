@@ -99,6 +99,7 @@
     "password": "Password",
     "english": "English",
     "spanish": "Spanish",
-    "language": "Language"
+    "language": "Language",
+    "label": "Label"
   }
 }
