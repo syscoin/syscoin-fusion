@@ -32,7 +32,7 @@ module.exports = (req, res, next) => {
             if (err) {
                 return res.status(400).send({
                     error: true,
-                    message: 'Credit Something went wrong during the payment. Try again later.'
+                    message: 'Something went wrong during the payment. Try again later.'
                 })
             }
             updateBalance(req.user.uid, chargeAmount, (err) => {
@@ -42,13 +42,13 @@ module.exports = (req, res, next) => {
                         message: 'Error updating balance. Contact support'
                     })
                 }
-            });
 
-            return res.send({
-                message: 'Payment completed',
-                expiresOn: new Date().setMonth(new Date().getMonth()),
-                purchaseDate: Date.now(),
-                paymentId: charge.id
+                return res.send({
+                    message: 'Payment completed',
+                    expiresOn: new Date().setMonth(new Date().getMonth()),
+                    purchaseDate: Date.now(),
+                    paymentId: charge.id
+                })
             })
         })
     } catch (err) {

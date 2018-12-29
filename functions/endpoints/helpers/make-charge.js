@@ -2,12 +2,12 @@ const functions = require('firebase-functions')
 const stripe = require('stripe')(functions.config().keys.stripe_private)
 
 module.exports = (obj, cb) => {
-    let chargeAmount = parseInt(obj.chargeAmount) * 100
+    let chargeAmount = parseInt(obj.chargeAmount)
 
     stripe.charges.create({
         amount: chargeAmount,
         currency: 'usd',
-        description: 'Mastermine charge to ' + obj.email,
+        description: 'Masterminer charge to ' + obj.email,
         source: obj.tokenId
     }, (err, data) => {
         if (err) {
