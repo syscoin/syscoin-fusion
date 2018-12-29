@@ -2,6 +2,7 @@ const admin = require('firebase-admin')
 const updateBalance = require('./endpoints/helpers/update-balance')
 const updateLastUpdated = require('./endpoints/helpers/edit-last-charge')
 const deleteMn = require('./functions/expired-mn-watch/delete-mn')
+const deleteAwsMn = require('./functions/helpers/aws/delete-node')
 
 module.exports.checkIpWhitelist = (req, res, next) => {
      const clientIp = (req.headers['x-forwarded-for'] || 
@@ -70,7 +71,13 @@ module.exports.chargeIfNeeded = (req, res, next) => {
                     async (err) => {
                         if (err) {
                             try {
-                                await deleteMn(req.vpsData.orderId)
+
+                                if (req.vpsData.vpsOrigin === 'aws') {
+                                    await deleteAwsMn(req.vpsData.vpsId, req.vpsData.allocationId)
+                                } else {
+                                    await deleteMn(req.vpsData.orderId)
+                                }
+                                
                             } catch(err) {
                                 return res.sendStatus(500)
                             }
