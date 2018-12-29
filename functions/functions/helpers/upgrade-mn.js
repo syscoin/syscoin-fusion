@@ -30,7 +30,10 @@ module.exports = (obj) => new Promise(async (resolve, reject) => {
     }
 
     try {
-        await admin.database().ref('/vps/' + vpsKey).update(data)
+        await admin.database().ref('/vps/' + vpsKey).update({
+            vpsId: data.InstanceId,
+            allocationId: data.AllocationId
+        })
     } catch(err) {
         return reject(err)
     }
