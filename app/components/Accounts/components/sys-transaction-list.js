@@ -51,7 +51,10 @@ export default class SysTransactionList extends Component<Props, State> {
         title: t('misc.address') + ' / ' + t('misc.label'),
         key: 'address',
         dataIndex: 'address',
-        render: (text?: string = '', transaction: Object) => <span title={text || transaction.systx}>{this.cutTextIfNeeded(text || transaction.systx)}</span>
+        render: (text?: string = '', transaction: Object) => ({
+          children: <span title={text || transaction.systx}>{this.cutTextIfNeeded(text || transaction.systx)}</span>,
+          width: 200
+        })
       },
       {
         title: t('misc.date'),
@@ -66,11 +69,11 @@ export default class SysTransactionList extends Component<Props, State> {
         render: (amount: number, transaction: Object) => ({
           children: (
             <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>
-              {this.isIncoming(transaction) ? '+' : '-'}{amount.toString().length > 1 ? amount.toString().slice(1) : amount.toString()}
+              {this.isIncoming(transaction) ? '+' : '-'}{this.removeSigns(amount)}
             </span>
           ),
           props: {
-            width: 150
+            width: 120
           }
         })
       }
@@ -78,11 +81,15 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   isIncoming(transaction: Object) {
-    if (transaction.amount[0] !== '-') {
+    if (transaction.amount > 0) {
       return true
     }
 
     return false
+  }
+
+  removeSigns(amount: number) {
+    return Math.abs(amount)
   }
 
 

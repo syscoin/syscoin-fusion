@@ -54,4 +54,9 @@ describe('Accounts - SysTransactionList component', () => {
     expect(wrapper.instance().cutTextIfNeeded('1234567890123456')).toBe('123456789012...')
   })
 
+  it('should remove plus and minus signs from amounts', () => {
+    expect(wrapper.instance().removeSigns(-123)).toBe(123)
+    expect(wrapper.instance().removeSigns(123)).toBe(123)
+  })
+
 })
