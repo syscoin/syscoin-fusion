@@ -19,7 +19,7 @@ module.exports = (req, res) => {
     	console.log('Crypto Charge confirmed: ', data.code)
 
         
-        updateBalance(data.metadata.uid, parseFloat(data.metadata.chargeAmount) * 100, (err) => {
+        updateBalance(data.metadata.userId, parseFloat(data.metadata.chargeAmount) * 100, (err) => {
             if (err) {
                 return res.status(400).send({
                     error: true,
