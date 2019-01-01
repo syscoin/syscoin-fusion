@@ -1,0 +1,105 @@
+{
+  "general": {
+    "window_name": "Fusion Wallet",
+    "app_name": "Fusion Wallet"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "summary": {
+      "title": "Overzicht van Portemonnee",
+      "total_sys": "Totale hoeveelheid SYS",
+      "total_tokens": "Totale hoeveelheid Tokens",
+      "total_tokens_notification": "U hebt een rente opgebouwd van {{amount}} op deze asset van aliasen: {{aliases}}",
+      "sys_transactions": "SYS Transacties"
+    },
+    "panel": {
+      "your_balance": "Uw saldo",
+      "your_aliases": "Uw aliasen/addressen",
+      "get_private_key": "Verkrijg uw privé sleutel",
+      "get_private_key_success": "Hier is uw sleutel",
+      "syncing": "{{syncPercentage}}% gesynchroniseerd: {{currentBlock}} van de {{headBlock}} blokken verwerkt.\nDit kan gevolgen hebben voor sommige functionaliteiten in de portomonnee"
+    },
+    "asset": {
+      "available_assets": "Beschikbare assets",
+      "transactions_for": "Transacties voor {{asset}}"
+    }
+  },
+  "send": {
+    "title": "Verzenden",
+    "send_asset": {
+      "title": "Verzend Asset",
+      "select_alias": "Selecteer alias",
+      "select_asset": "Selecteer asset",
+      "send_to": "Verzend naar",
+      "amount": "Amount",
+      "comment": "Extra informatie",
+      "asset_send_success": "Asset successvol verzonden"
+    },
+    "send_sys": {
+      "title": "Verzend SYS",
+      "current_balance": "Huidige saldo:",
+      "send_to": "Verzend naar",
+      "amount": "Hoeveelheid",
+      "comment": "Extra informatie",
+      "sys_send_success": "SYS successvol verzonden"
+    }
+  },
+  "tools": {
+    "title": "Hulpmiddelen",
+    "backup_wallet": "Backup portomonnee",
+    "backup_success": "Backup succesvol opgeslagen",
+    "backup_error": "Fout tijdens het maken van de backup",
+    "import_wallet": "Importeer portomonnee",
+    "import_success": "Backup is succesvol geladen",
+    "import_error": "Fout tijdens het laden van de backup",
+    "lock_wallet": "Versleutel portomonnee",
+    "lock_new_password": "Voer een nieuw wachtwoord in",
+    "lock_confirm_password": "Bevestig uw wachtwoord",
+    "lock_password_dont_match": "Wachtwoorden komen niet overeen",
+    "lock_reboot": "Fusion moet opnieuw worden opgestart om de portomonneeversleuteling te voltooien. Wilt u doorgaan?",
+    "lock_old_password": "Voer het oude wachtwoord in",
+    "lock_success": "Wachtwoord succesvol veranderd",
+    "lock_unlock_session": "Ontgrendel voor de sessie",
+    "lock_session_success": "De portomonnee blijft ontgrendeld totdat u Fusion sluit",
+    "lock_change_password": "Verander wachtwoord",
+    "unlock_input_password": "Voer uw wachtwoord in",
+    "unlock_wrong_password": "Verkeerd wachtwoord",
+    "console_title": "Console",
+    "console_button": "Open console",
+    "change_language_title": "Wijzig taal",
+    "change_language_current_language": "Huidige taal"
+  },
+  "console": {
+    "title": "{{appName}} - Console",
+    "welcome": "Welkom bij de {{appName}} console!"
+  },
+  "misc": {
+    "balance": "Saldo",
+    "send": "Verstuur",
+    "symbol": "Symbool",
+    "asset": "Asset",
+    "showing_page": "Pagina {{number}} wordt getoond",
+    "claim_interest": "Claim rente",
+    "claim_interest_success": "Successfully de rente geclaimed",
+    "claim_interest_error": "Fout tijdens het claiming van de rente",
+    "from": "Van",
+    "to": "Naar",
+    "date": "Datum",
+    "details": "Details",
+    "alias": "Alias",
+    "address": "Addres",
+    "success": "Succes",
+    "error": "Fout",
+    "try_again_later": "Er is iets fout gegaan. Probeer het later opnieuw",
+    "loading": "Bezig met laden",
+    "no_data": "Geen data",
+    "sys": "SYS",
+    "warning": "Waarschuwing",
+    "continue": "Ga door",
+    "password": "Wachtwoord",
+    "english": "Engels",
+    "spanish": "Spaans",
+    "language": "Taal",
+    "label": "Label"
+  }
+}
