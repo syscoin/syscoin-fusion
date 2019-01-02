@@ -64,11 +64,14 @@
         }
       ]
     },
+    "mac": {
+      "icon": "app/app.icns"
+    },
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "<rootDir>/app/favicon.ico"
+      "icon": "app/favicon.ico"
     },
     "linux": {
       "target": [
