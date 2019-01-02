@@ -1,0 +1,106 @@
+{
+	"general": {
+		"window_name": "融合钱包",
+		"app_name": "融合钱包"
+	},
+	"accounts": {
+		"title": "账户",
+		"summary": {
+			"title": "钱包汇总",
+			"total_sys": " SYS总额",
+			"total_tokens": "代币总额",
+			"total_tokens_notification": "您拥有{{amount}}累计利息，来自别名的资产",
+			"sys_transactions": "SYS交易"
+		},
+		"panel": {
+			"your_balance": "您的余额",
+			"your_aliases": "您的别名/地址",
+			"get_private_key": "得到私钥",
+			"get_private_key_success": "您已得到私钥",
+			"syncing": "{{syncPercentage}}% 同步: 已处理{{headBlock}}区块中的{{currentBlock}}.\n可能会影响某些钱包功能。"
+		},
+		"asset": {
+			"available_assets": "可用资产",
+			"transactions_for": "为{{asset}}交易"
+		}
+	},
+	"send": {
+		"title": "发送",
+		"send_asset": {
+			"title": "发送资产",
+			"select_alias": "选择别名",
+			"select_asset": "选择资产",
+			"send_to": "发送至",
+			"amount": "数额",
+			"comment": "备注",
+			"asset_send_success": "成功发送资产"
+		},
+		"send_sys": {
+			"title": "发送SYS",
+			"current_balance": "当前余额:",
+			"send_to": "发送至",
+			"amount": "数额",
+			"comment": "备注",
+			"sys_send_success": "成功发送SYS "
+		}
+	},
+	"tools": {
+		"title": "工具",
+		"backup_wallet": "备份钱包",
+		"backup_success": "成功保存备份",
+		"backup_error": "保存备份时出错",
+		"import_wallet": "导入钱包",
+		"import_success": "成功下载备份",
+		"import_error": "下载备份时出错",
+		"lock_wallet": "锁定钱包",
+		"lock_new_password": "输入新密码",
+		"lock_confirm_password": "确认密码",
+		"lock_password_dont_match": "密码不匹配",
+		"lock_reboot": "需重启融合才能完成钱包加密。是否继续?",
+		"lock_old_password": "输入旧密码",
+		"lock_success": "成功更改密码",
+		"lock_unlock_session": "解锁会话",
+		"lock_session_success": "在您关闭融合之前，钱包将保持开启状态",
+		"lock_change_password": "更改密码",
+		"unlock_input_password": "输入钱包密码",
+		"unlock_wrong_password": "密码错误",
+		"console_title": "控制台",
+		"console_button": "开启控制台",
+		"change_language_title": "更改语言",
+		"change_language_current_language": "当前语言"
+	},
+	"console": {
+		"title": "{{appName}} – 控制台",
+		"welcome": "欢迎来到{{appName}}控制台!"
+	},
+	"misc": {
+		"balance": "余额",
+		"send": "发送",
+		"symbol": "符号",
+		"asset": "资产",
+		"showing_page": "显示页面{{number}}",
+		"claim_interest": "索赔利息",
+		"claim_interest_success": "成功索赔利息",
+		"claim_interest_error": "索赔利息时出错",
+		"from": "从",
+		"to": "至",
+		"date": "日期",
+		"details": "详情",
+		"alias": "别名",
+		"address": "地址",
+		"success": "成功",
+		"error": "错误",
+		"try_again_later": "当前出错，请稍后再试",
+		"loading": "加载中",
+		"no_data": "无数据",
+		"sys": "SYS",
+		"warning": "警告",
+		"continue": "继续",
+		"password": "密码",
+		"english": "英语",
+    "spanish": "西班牙语",
+    "duch": "Dutch",
+    "chinese": "Chinese",
+		"language": "语言"
+	}
+}

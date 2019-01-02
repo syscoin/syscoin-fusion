@@ -67,7 +67,8 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "<rootDir>/app/favicon.ico"
     },
     "linux": {
       "target": [

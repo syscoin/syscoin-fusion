@@ -25,6 +25,12 @@ export default (props: Props) => (
         <Option value='es_ES' key='es_ES'>
           {props.t('misc.spanish')}
         </Option>
+        <Option value='nl_DUT' key='nl_DUT'>
+          {props.t('misc.dutch')}
+        </Option>
+        <Option value='chi_CN' key='chi_CN'>
+          {props.t('misc.chinese')}
+        </Option>
     </Select>
   </div>
 )
