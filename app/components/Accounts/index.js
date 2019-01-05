@@ -132,8 +132,8 @@ export default class Accounts extends Component<Props> {
     this.props.getDashboardAssets()
   }
 
-  refreshDashboardTransactions(page: number = 0, pageSize: number = 10) {
-    this.props.getDashboardTransactions(page, pageSize)
+  refreshDashboardTransactions() {
+    this.props.getDashboardTransactions()
   }
 
   goToSendAssetForm(asset: string) {

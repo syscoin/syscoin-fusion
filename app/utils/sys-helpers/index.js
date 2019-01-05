@@ -1,5 +1,6 @@
 // @flow
 const { waterfall, parallel } = require('async')
+const { uniqBy } = require('lodash')
 
 const Syscoin = require('fw/syscoin-js')
 
@@ -299,13 +300,15 @@ const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGui
 
 // Get list of SYS transactions in the wallet
 const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise((resolve, reject) => {
-  syscoin.walletServices.listTransactions(pageSize, page * pageSize)
+  syscoin.walletServices.listTransactions(pageSize, pageSize * page)
     .then(results => {
-      const data = results.map(i => {
+      let data = results.map(i => {
         const obj = { ...i }
         obj.time = (new Date(0)).setUTCSeconds(i.time)
         return obj
       })
+
+      data = uniqBy(data, 'txid')
 
       return resolve(data)
     })

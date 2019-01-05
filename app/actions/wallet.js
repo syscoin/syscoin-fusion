@@ -131,11 +131,11 @@ export const saveBlockchainInfo = () => async (dispatch: (action: saveBlockchain
   }
 }
 
-export const dashboardTransactions = (page: number, pageSize: number) => async (dispatch: (action: saveDashboardTransactionsActionType) => void) => {
+export const dashboardTransactions = () => async (dispatch: (action: saveDashboardTransactionsActionType) => void) => {
   dispatch(dashboardTransactionsIsLoadingAction())
 
   try {
-    return dispatch(dashboardTransactionsReceiveAction(await listSysTransactions(page, pageSize)))
+    return dispatch(dashboardTransactionsReceiveAction(await listSysTransactions(0, 999999)))
   } catch(err) {
     return dashboardTransactionsErrorAction(err)
   }

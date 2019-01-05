@@ -52,7 +52,7 @@ export default class SysTransactionList extends Component<Props, State> {
         key: 'address',
         dataIndex: 'address',
         render: (text?: string = '', transaction: Object) => ({
-          children: <span title={text || transaction.systx}>{this.cutTextIfNeeded(text || transaction.systx)}</span>,
+          children: <span title={transaction.systx || transaction.systype || text}>{this.cutTextIfNeeded(transaction.systx || transaction.systype || text)}</span>,
           width: 200
         })
       },
@@ -81,11 +81,7 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   isIncoming(transaction: Object) {
-    if (transaction.amount > 0) {
-      return true
-    }
-
-    return false
+    return transaction.category === 'receive'
   }
 
   removeSigns(amount: number) {
@@ -97,7 +93,7 @@ export default class SysTransactionList extends Component<Props, State> {
     // Sort time by date - more recent first
     const data = this.props.data.sort((a, b) => b.time - a.time)
 
-    return uniqBy(data, 'txid') 
+    return data
   }
 
   changePage(type: string) {
@@ -115,6 +111,11 @@ export default class SysTransactionList extends Component<Props, State> {
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
           {t('accounts.summary.sys_transactions')}
+          <Icon
+            type='reload'
+            className='dashboard-refresh'
+            onClick={this.props.refresh}
+          />
         </h3>
         <Table
           data={this.prepareData()}
@@ -124,19 +125,8 @@ export default class SysTransactionList extends Component<Props, State> {
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
-          pagination={false}
           t={t}
         />
-        {!this.props.isLoading && (
-          <Pagination
-            onChange={this.changePage.bind(this)}
-            nextDisabled={this.props.data.length < 10}
-            prevDisabled={this.state.currentPage === 0}
-            currentPage={this.state.currentPage}
-            showPage
-            t={t}
-          />
-        )}
       </div>
     )
   }
