@@ -134,14 +134,11 @@ export const saveAliases = () => async (dispatch: (action: getAliasesActionType)
 
   aliases = aliases.map(i => {
     if (i.alias) {
-
       try {
         i.avatarUrl = JSON.parse(i.aliasInfo.publicvalue).avatarUrl 
       } catch(err) {
         i.avatarUrl = ''
       }
-
-      return i
     }
 
     return i

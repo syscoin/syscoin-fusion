@@ -68,7 +68,7 @@
 }
 
 .aliases-container {
-    height: 56.2%;
+    height: unquote("calc(100% - 265px)");
     overflow-y: scroll;
     overflow-x: hidden;
     background: $accounts_alias_background;

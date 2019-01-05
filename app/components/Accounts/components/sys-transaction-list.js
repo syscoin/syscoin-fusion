@@ -28,6 +28,10 @@ export default class SysTransactionList extends Component<Props, State> {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.data.length !== this.props.data.length
+  }
+
   cutTextIfNeeded(text: string) {
     return text.length > 13 ? `${text.slice(0, 12)}...` : text
   }
@@ -51,10 +55,9 @@ export default class SysTransactionList extends Component<Props, State> {
         title: t('misc.address') + ' / ' + t('misc.label'),
         key: 'address',
         dataIndex: 'address',
-        render: (text?: string = '', transaction: Object) => ({
-          children: <span title={transaction.systx || transaction.systype || text}>{this.cutTextIfNeeded(transaction.systx || transaction.systype || text)}</span>,
-          width: 200
-        })
+        render: (text?: string = '', transaction: Object) => (
+          <span title={transaction.systx || transaction.systype || text}>{transaction.systx || transaction.systype || text}</span>
+        )
       },
       {
         title: t('misc.date'),
@@ -122,7 +125,7 @@ export default class SysTransactionList extends Component<Props, State> {
           data={this.prepareData()}
           columns={this.generateColumns()}
           rowKey='txid'
-          pageSize={10}
+          pageSize={20}
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
