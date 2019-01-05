@@ -1,11 +1,12 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation, isEncrypted, getBlockByNumber } from 'fw-sys'
+import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation, isEncrypted, getBlockByNumber, aliasInfo } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
 import _ from 'lodash'
 import each from 'async/each'
+import map from 'async/map'
 import moment from 'moment'
 
 type getInfoActionType = {
@@ -108,11 +109,45 @@ export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) =>
 }
 
 export const saveAliases = () => async (dispatch: (action: getAliasesActionType) => void) => {
+  let aliases
+
   try {
-    dispatch(saveAliasesAction(await getAliases()))
+    aliases = await getAliases()
   } catch(err) {
-    dispatch(saveAliasesAction([]))
+    return dispatch(saveAliasesAction([]))
   }
+
+  aliases = aliases.map(async i => {
+
+    if (i.alias) {
+      i.aliasInfo = await aliasInfo(i.alias)
+    }
+
+    return i
+  })
+
+  try {
+    aliases = await Promise.all(aliases)
+  } catch(err) {
+    return dispatch(saveAliasesAction([]))
+  }
+
+  aliases = aliases.map(i => {
+    if (i.alias) {
+
+      try {
+        i.avatarUrl = JSON.parse(i.aliasInfo.publicvalue).avatarUrl 
+      } catch(err) {
+        i.avatarUrl = ''
+      }
+
+      return i
+    }
+
+    return i
+  })
+
+  return dispatch(saveAliasesAction(aliases))
 }
 
 export const saveUnfinishedAliases = () => (dispatch: (action: saveUnfinishedAliasesActionType) => void) => {

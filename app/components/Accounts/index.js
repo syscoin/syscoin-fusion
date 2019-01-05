@@ -27,6 +27,7 @@ type Props = {
   headBlock: number,
   currentBlock: number,
   syncPercentage: number,
+  getAliasInfo: Function,
   getPrivateKey: Function,
   goToHome: Function,
   dashboardSysTransactions: {
@@ -60,28 +61,14 @@ export default class Accounts extends Component<Props> {
     const addresses = []
 
     this.props.aliases.forEach(i => {
-      const iCopy = {...i}
-
-      // Separating aliases and addresses for later ordering
-      // Using of sort method would result in unpredictable result and kinda complex ordering logic
-      if (iCopy.alias) {
-        
-        try {
-          if (iCopy.publicValue.length && JSON.parse(iCopy.publicValue).avatarUrl) {
-            iCopy.avatarUrl = JSON.parse(iCopy.publicValue).avatarUrl
-          }
-        } catch(err) {
-          iCopy.avatarUrl = ''
-        }
-        return aliases.push(iCopy)
+      if (i.alias) {
+        return aliases.push(i)
       }
 
-      iCopy.avatarUrl = ''
-
-      return addresses.push(iCopy)
+      addresses.push(i)
     })
     
-    return aliases.concat(addresses).map((i: Object) => (
+    return aliases.concat(addresses).map(i => (
       <AliasAddressItem
         key={i.address}
         alias={i.alias}
@@ -91,7 +78,7 @@ export default class Accounts extends Component<Props> {
         updateSelectedAlias={this.props.updateSelectedAlias}
         getPrivateKey={this.props.getPrivateKey}
         hasAvatar={i.hasAvatar}
-        avatarUrl={i.avatarUrl}
+        avatarUrl={i.avatarUrl || ''}
         claimInterest={this.props.claimInterest}
         t={this.props.t}
       />

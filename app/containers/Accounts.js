@@ -11,7 +11,8 @@ import {
   getTransactionsPerAsset,
   listAssetAllocation,
   getPrivateKey,
-  claimAssetInterest
+  claimAssetInterest,
+  aliasInfo
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import { editSendAsset, getAssetsFromAlias } from 'fw-actions/forms'
@@ -312,6 +313,10 @@ class AccountsContainer extends Component<Props, State> {
     })
   }
 
+  async getAliasInfo(alias: name) {
+    return await aliasInfo(alias)
+  }
+
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
     const { balance, aliases } = this.props
@@ -329,6 +334,7 @@ class AccountsContainer extends Component<Props, State> {
         aliasAssets={aliasAssets}
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
+        getAliasInfo={this.getAliasInfo}
         getPrivateKey={this.getPrivateKey.bind(this)}
         goToHome={this.goToHome.bind(this)}
         dashboardSysTransactions={this.props.dashboardSysTransactions}

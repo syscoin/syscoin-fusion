@@ -110,12 +110,13 @@ export default class SysTransactionList extends Component<Props, State> {
     return (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
-          {t('accounts.summary.sys_transactions')}
-          <Icon
-            type='reload'
-            className='dashboard-refresh'
-            onClick={this.props.refresh}
-          />
+          {t('accounts.summary.sys_transactions')} {!this.props.isLoading && (
+            <Icon
+              type='reload'
+              className='dashboard-refresh'
+              onClick={this.props.refresh}
+            />
+          )}
         </h3>
         <Table
           data={this.prepareData()}
