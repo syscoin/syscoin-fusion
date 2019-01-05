@@ -27,10 +27,6 @@ describe('Accounts - SysTransactionList component', () => {
     expect(wrapper.find('.wallet-summary-balance-container').length).toBe(1)
   })
 
-  it('should render an instance of Pagination', () => {
-    expect(wrapper.find(Pagination).length).toBe(1)
-  })
-
   it('should disable pagination when loading', () => {
     wrapper = shallow(<SysTransactionList {...props} isLoading />)
 
@@ -43,10 +39,10 @@ describe('Accounts - SysTransactionList component', () => {
 
   it('should identify incoming and outgoing transactions correctly', () => {
     expect(wrapper.instance().isIncoming({
-      amount: '1000'
+      category: 'receive'
     })).toBe(true)
     expect(wrapper.instance().isIncoming({
-      amount: '-1000'
+      category: 'send'
     })).toBe(false)
   })
 
