@@ -59,7 +59,7 @@
     "lock_reboot": "Fusion moet opnieuw worden opgestart om de portomonneeversleuteling te voltooien. Wilt u doorgaan?",
     "lock_old_password": "Voer het oude wachtwoord in",
     "lock_success": "Wachtwoord succesvol veranderd",
-    "lock_unlock_session": "Ontgrendel voor de sessie",
+    "lock_unlock_session": "Ontgrendel sessie",
     "lock_session_success": "De portomonnee blijft ontgrendeld totdat u Fusion sluit",
     "lock_change_password": "Verander wachtwoord",
     "unlock_input_password": "Voer uw wachtwoord in",
