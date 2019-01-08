@@ -7,7 +7,9 @@ type Props = {
   data: Array<Object>,
   error: boolean,
   isLoading: boolean,
-  selectedAlias: string
+  selectedAlias: string,
+  selectedSymbol: string,
+  t: Function
 };
 
 export default class TransactionList extends Component<Props> {
@@ -63,11 +65,7 @@ export default class TransactionList extends Component<Props> {
   }
 
   isIncoming(transaction: Object) {
-    if (transaction.receiver === this.props.selectedAlias) {
-      return true
-    }
-
-    return false
+    return transaction.receiver === this.props.selectedAlias
   }
 
   defineLocales() {
@@ -94,19 +92,22 @@ export default class TransactionList extends Component<Props> {
 
   render() {
     return (
-      <Table
-        dataSource={this.prepareData()}
-        columns={this.generateColumns()}
-        className='transactions-table'
-        rowClassName='transactions-table-row'
-        rowKey='txid'
-        pagination={{
-          defaultPageSize: 10
-        }}
-        locale={{
-          emptyText: this.defineLocales()
-        }}
-      />
+      <div>
+        <h4 className='transactions-table-title'>{this.props.t('accounts.asset.transactions_for', { asset: this.props.selectedSymbol })}</h4>
+        <Table
+          dataSource={this.prepareData()}
+          columns={this.generateColumns()}
+          className='transactions-table'
+          rowClassName='transactions-table-row'
+          rowKey='txid'
+          pagination={{
+            defaultPageSize: 10
+          }}
+          locale={{
+            emptyText: this.defineLocales()
+          }}
+        />
+      </div>
     )
   }
 }

@@ -8,6 +8,7 @@ import UserBalance from './components/balance'
 import SyncLoader from './components/sync-loader'
 import Home from './components/home'
 import Dashboard from './components/dashboard'
+import AssetDetails from './components/asset-details'
 
 type Props = {
   backgroundLogo: string,
@@ -85,36 +86,6 @@ export default class Accounts extends Component<Props> {
     ))
   }
 
-  generateAliasAssets() {
-    return this.props.aliasAssets.data.map((i: Object) => (
-      <AssetBox
-        isSelected={this.props.aliasAssets.selected === i.asset}
-        selectAsset={this.props.selectAsset}
-        asset={i.asset}
-        balance={i.balance}
-        symbol={i.symbol}
-        key={i.asset}
-        goToSendAssetForm={this.goToSendAssetForm.bind(this)}
-        selectedAlias={this.props.selectedAlias}
-        claimInterest={this.props.claimInterest}
-        canClaimInterest={i.interest_rate > 0}
-        t={this.props.t}
-      />
-    ))
-  }
-
-  generateTransactionsTable() {
-    return (
-      <TransactionList
-        data={this.props.transactions.data}
-        error={this.props.transactions.error}
-        isLoading={this.props.transactions.isLoading}
-        selectedAlias={this.props.selectedAlias}
-        t={this.props.t}
-      />
-    )
-  }
-
   refreshDashboardAssets() {
     this.props.getDashboardAssets()
   }
@@ -169,26 +140,15 @@ export default class Accounts extends Component<Props> {
               t={t}
             />
           ) : null}
-          {this.props.aliasAssets.data.length ? (
-            <div>
-              <Row className='asset-box-container'>
-                <h4 className='asset-box-text'>
-                  {t('accounts.asset.available_assets')}
-                </h4>
-                {this.generateAliasAssets()}
-              </Row>
-            </div>
-          ) : null}
-          <Row>
-            <Col offset={1} xs={21}>
-              {this.props.aliasAssets.selected ? (
-                <div>
-                  <h4 className='transactions-table-title'>{t('accounts.asset.transactions_for', { asset: this.props.aliasAssets.selectedSymbol })}</h4>
-                  {this.generateTransactionsTable()}
-                </div>
-              ) : null}
-            </Col>
-          </Row>
+          <AssetDetails
+            t={t}
+            aliasAssets={this.props.aliasAssets}
+            selectAsset={this.props.selectAsset}
+            goToSendAssetForm={this.goToSendAssetForm.bind(this)}
+            selectedAlias={this.props.selectedAlias}
+            claimInterest={this.props.claimInterest}
+            transactions={this.props.transactions}
+          />
           {this.props.aliasAssets.isLoading &&
             <div className='loading-container'>
               <Spin indicator={<Icon type='loading' spin />} />
