@@ -59,8 +59,13 @@ class WalletContainer extends Component<Props> {
     if (!window.updateWalletHigh) {
       window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 5000)
     }
+
+    if (!window.updateWalletLow) {
+      window.updateWalletLow = setInterval(() => this.updateWalletLow(), 60000)
+    }
     
     this.updateWalletHigh()
+    this.updateWalletLow()
     // Update guids in store
     this.updateAssets()
 
@@ -68,9 +73,12 @@ class WalletContainer extends Component<Props> {
     this.props.dashboardTransactions(0, 10)
   }
 
+  updateWalletLow() {
+    this.props.saveAliases()
+  }
+
   updateWalletHigh() {
     this.props.saveGetInfo()
-    this.props.saveAliases()
     this.props.saveUnfinishedAliases()
     this.props.saveBlockchainInfo()
     this.props.checkWalletEncryption()
