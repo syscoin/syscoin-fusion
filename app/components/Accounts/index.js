@@ -1,14 +1,10 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin } from 'antd'
-import AliasAddressItem from './components/alias-address-item'
 import AssetBox from './components/asset-box'
-import TransactionList from './components/transaction-list'
-import UserBalance from './components/balance'
-import SyncLoader from './components/sync-loader'
-import Home from './components/home'
 import Dashboard from './components/dashboard'
 import AssetDetails from './components/asset-details'
+import Panel from './components/panel'
 
 type Props = {
   backgroundLogo: string,
@@ -53,39 +49,6 @@ type Props = {
 export default class Accounts extends Component<Props> {
   props: Props;
 
-  isAliasSelected(aliasInfo: Object) {
-    return aliasInfo.alias ? aliasInfo.alias === this.props.selectedAlias : aliasInfo.address === this.props.selectedAlias
-  }
-
-  generateAliasesBoxes() {
-    const aliases = []
-    const addresses = []
-
-    this.props.aliases.forEach(i => {
-      if (i.alias) {
-        return aliases.push(i)
-      }
-
-      addresses.push(i)
-    })
-    
-    return aliases.concat(addresses).map(i => (
-      <AliasAddressItem
-        key={i.address}
-        alias={i.alias}
-        address={i.address}
-        isLoading={this.props.aliasAssets.isLoading}
-        isSelected={this.isAliasSelected(i)}
-        updateSelectedAlias={this.props.updateSelectedAlias}
-        getPrivateKey={this.props.getPrivateKey}
-        hasAvatar={i.hasAvatar}
-        avatarUrl={i.avatarUrl || ''}
-        claimInterest={this.props.claimInterest}
-        t={this.props.t}
-      />
-    ))
-  }
-
   refreshDashboardAssets() {
     this.props.getDashboardAssets()
   }
@@ -102,30 +65,21 @@ export default class Accounts extends Component<Props> {
     const { t } = this.props
     return (
       <Row className='accounts-container'>
-        <Col xs={9} className='accounts-container-left'>
-          <Home
-            onClick={this.props.goToHome}
-            className='home-btn'
-            disabled={this.props.transactions.isLoading || this.props.aliasAssets.isLoading}
-          />
-          <UserBalance
-            currentBalance={this.props.balance}
-            t={t}
-          />
-          <hr className='alias-separator' />
-          <h4 className='your-aliases-text'>{t('accounts.panel.your_aliases')}</h4>
-          {this.props.syncPercentage !== 100 ? (
-            <SyncLoader
-              syncPercentage={this.props.syncPercentage}
-              headBlock={this.props.headBlock}
-              currentBlock={this.props.currentBlock}
-              t={t}
-            />
-          ) : null}
-          <div className='aliases-container'>
-            {this.generateAliasesBoxes()}
-          </div>
-        </Col>
+        <Panel
+          t={t}
+          aliases={this.props.aliases}
+          aliasAssets={this.props.aliasAssets}
+          transactions={this.props.transactions}
+          currentBalance={this.props.balance}
+          goToHome={this.props.goToHome}
+          syncPercentage={this.props.syncPercentage}
+          headBlock={this.props.headBlock}
+          currentBlock={this.props.currentBlock}
+          updateSelectedAlias={this.props.updateSelectedAlias}
+          claimInterest={this.props.claimInterest}
+          selectedAlias={this.props.selectedAlias}
+          getPrivateKey={this.props.getPrivateKey}
+        />
         <Col xs={15} className='accounts-container-right'>
           {(!this.props.selectedAlias || this.props.aliasAssets.error) ? (
             <Dashboard
