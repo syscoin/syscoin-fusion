@@ -77,13 +77,10 @@ export default class SendAssetForm extends Component<Props> {
     } = form.data
 
     return (
-      <Col
-        xs={columnSize}
-        offset={6}
+      <div
         className='send-asset-container'
       >
         <div className='send-asset-form-container'>
-          <h3 className='send-asset-form-title'>{title}</h3>
           <Select
             disabled={isLoading}
             onChange={val => {
@@ -157,7 +154,7 @@ export default class SendAssetForm extends Component<Props> {
             </Button>
           </div>
         </div>
-      </Col>
+      </div>
     )
   }
 }

@@ -15,7 +15,7 @@ import {
   aliasInfo
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
-import { editSendAsset, getAssetsFromAlias } from 'fw-actions/forms'
+import { editSendAsset, getAssetsFromAlias, sendChangeTab } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 import unlockWallet from 'fw-utils/unlock-wallet'
@@ -42,6 +42,7 @@ type Props = {
   editSendAsset: Function,
   isEncrypted: boolean,
   getAssetsFromAlias: Function,
+  sendChangeTab: Function,
   t: Function
 };
 
@@ -277,6 +278,7 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   goToSysForm() {
+    this.props.sendChangeTab('sys')
     this.props.changeTab('2')
   }
 
@@ -345,6 +347,7 @@ class AccountsContainer extends Component<Props, State> {
         goToSysForm={this.goToSysForm.bind(this)}
         claimInterest={this.claimAssetInterest}
         claimAllInterestFromAsset={this.claimAllFromAsset.bind(this)}
+        sendChangeTab={this.props.sendChangeTab}
         t={this.props.t}
       />
     )
@@ -366,7 +369,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   dashboardAssets,
   dashboardTransactions,
   editSendAsset,
-  getAssetsFromAlias
+  getAssetsFromAlias,
+  sendChangeTab
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(AccountsContainer))

@@ -66,13 +66,10 @@ export default class SendAssetForm extends Component<Props> {
     } = form.data
 
     return (
-      <Col
-        xs={columnSize}
-        offset={6}
+      <div
         className='send-sys-container'
       >
         <div className='send-sys-form-container'>
-          <h3 className='send-sys-form-title'>{title}</h3>
           <h4 className='send-sys-form-balance'>{t('send.send_sys.current_balance')} <span className='send-sys-form-balance-number'>{balance}</span></h4>
           <Input
             disabled={isLoading}
@@ -121,7 +118,7 @@ export default class SendAssetForm extends Component<Props> {
             </Button>
           </div>
         </div>
-      </Col>
+      </div>
     )
   }
 }

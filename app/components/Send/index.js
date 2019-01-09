@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Collapse, Icon } from 'antd'
 import swal from 'sweetalert'
 
 import parseError from 'fw-utils/error-parser'
 import SendAssetForm from './components/send-asset'
 import SendSysForm from './components/send-sys'
+
+const Panel = Collapse.Panel
 
 
 type Props = {
@@ -32,6 +34,7 @@ type Props = {
     error: boolean
   },
   onChangeForm: Function,
+  activeTab: string,
   t: Function
 };
 
@@ -73,11 +76,17 @@ export default class Send extends Component<Props> {
     swal(t('misc.success'), t('send.send_asset.asset_send_success'), 'success')
   }
 
+  changeTab(tab) {
+    if (tab) {
+      this.props.changeTab(tab)
+    }
+  }
+
   render() {
     const { t } = this.props
     return (
       <div className='send-forms-container'>
-        <Row gutter={24}>
+        {/*<Row gutter={24}>
           <SendAssetForm
             isLoading={this.props.assetsForm.isLoading}
             title={t('send.send_asset.title')}
@@ -107,6 +116,56 @@ export default class Send extends Component<Props> {
             onChangeForm={this.props.onChangeForm}
             t={t}
           />
+        </Row>*/}
+        <Row>
+          <Col xs={10} offset={7}>
+            <Collapse accordion activeKey={this.props.activeTab} onChange={this.changeTab.bind(this)}>
+              <Panel
+                header={
+                  <h3 className='send-asset-form-title'>
+                    {t('send.send_asset.title')}
+                    <Icon type={this.props.activeTab === 'asset' ? 'down' : 'right'} className='send-form-title-row' />
+                  </h3>
+                }
+                className='send-collapse-panel'
+                key='asset'
+              >
+                <SendAssetForm
+                  isLoading={this.props.assetsForm.isLoading}
+                  title={t('send.send_asset.title')}
+                  columnSize={12}
+                  aliases={this.props.aliases}
+                  sendAsset={this.sendAsset.bind(this)}
+                  onSelectAlias={this.props.getAssetsFromAlias}
+                  assetsFromAlias={this.props.assetsForm.states.assetsFromAlias}
+                  form={this.props.assetsForm}
+                  onChangeForm={this.props.onChangeForm}
+                  t={t}
+                />
+              </Panel>
+              <Panel
+                header={
+                <h3 className='send-asset-form-title'>
+                  {t('send.send_sys.title')}
+                  <Icon type={this.props.activeTab === 'sys' ? 'down' : 'right'} className='send-form-title-row' />
+                </h3>}
+                className='send-collapse-panel'
+                key='sys'
+              >
+                <SendSysForm
+                  isLoading={this.props.sysForm.isLoading}
+                  title={t('send.send_sys.title')}
+                  columnSize={12}
+                  balance={this.props.balance}
+                  sendSys={this.sendSys.bind(this)}
+                  form={this.props.sysForm}
+                  onChangeForm={this.props.onChangeForm}
+                  t={t}
+                />
+              </Panel>
+            </Collapse>
+          </Col>
+
         </Row>
       </div>
     )
