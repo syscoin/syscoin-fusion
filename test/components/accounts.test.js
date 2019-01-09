@@ -1,8 +1,8 @@
 import React from 'react'
 import Accounts from 'fw-components/Accounts'
-import SyncLoader from 'fw-components/Accounts/components/sync-loader'
 import Dashboard from 'fw-components/Accounts/components/dashboard'
 import AssetDetails from 'fw-components/Accounts/components/asset-details'
+import Panel from 'fw-components/Accounts/components/panel'
 import Enzyme, { shallow, render } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { spy } from 'sinon'
@@ -55,6 +55,10 @@ describe('Accounts component tests', () => {
     wrapper = shallow(<Accounts {...props} />)
   })
 
+  it('should render an instance of Panel', () => {
+    expect(wrapper.find(Panel).length).toBe(1)
+  })
+
   it('should render successfully', () => {
     expect(wrapper.find('.accounts-container').length).toEqual(1)
   })
@@ -77,7 +81,7 @@ describe('Accounts component tests', () => {
     expect(wrapper.find(Dashboard).length).toEqual(1)
   })
 
-  it('should render loader if syncPercentage is not 100%', () => {
+  /*it('should render loader if syncPercentage is not 100%', () => {
     expect(wrapper.find(SyncLoader).length).toEqual(1)
   })
 
@@ -87,7 +91,7 @@ describe('Accounts component tests', () => {
     wrapper = shallow(<Accounts {...props} />)
 
     expect(wrapper.find(SyncLoader).length).toEqual(0)
-  })
+  })*/
 
   it('should render an AssetDetails instance', () => {
     expect(wrapper.find(AssetDetails).length).toEqual(1)
