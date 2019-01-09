@@ -175,7 +175,7 @@ describe('Forms reducer', () => {
   it('should handle GET_ASSETS_FROM_ALIAS_RECEIVE', () => {
     const action = {
       type: types.GET_ASSETS_FROM_ALIAS_RECEIVE,
-      payload: [{ asset: 'test_asset', symbol: 'TEST_ASSET'}]
+      payload: [{ asset: 'test_asset', symbol: 'TEST_ASSET' }]
     }
     const expectedState = {
       ...initialState,
@@ -212,6 +212,21 @@ describe('Forms reducer', () => {
             data: []
           }
         }
+      }
+    }
+
+    expect(reducer(initialState, action)).toEqual(expectedState)
+  })
+
+  it('should handle SEND_CHANGE_TAB', () => {
+    const action = {
+      type: types.SEND_CHANGE_TAB,
+      payload: 'test'
+    }
+    const expectedState = {
+      ...initialState,
+      sendTab: {
+        activeTab: 'test'
       }
     }
 
