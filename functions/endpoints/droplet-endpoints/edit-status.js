@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
 
     admin.database().ref('/vps/' + req.orderData.vpsId).update({
         status,
-        info: getinfo
+        info: JSON.stringify(getinfo)
     }).then(() => res.send({
         error: false,
         message: `Status updated to "${status}"`
