@@ -8,7 +8,7 @@ module.exports = (uid, chargeAmount, cb) => {
             return cb('Error get balance')
         }
 
-        currentBalance = parseFloat(val) + chargeAmount
+        currentBalance = parseInt(val) + chargeAmount
 
         if (currentBalance < 0) {
             return cb('Transaction failed: Insufficient balance')

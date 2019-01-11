@@ -19,7 +19,7 @@ module.exports = (req, res) => {
     	console.log('Crypto Charge confirmed: ', data.code)
 
         
-        updateBalance(data.metadata.userId, parseFloat(data.metadata.chargeAmount) * 100, (err) => {
+        updateBalance(data.metadata.userId, parseInt(data.metadata.chargeAmount) * 100, (err) => {
             if (err) {
                 return res.status(400).send({
                     error: true,
@@ -34,7 +34,7 @@ module.exports = (req, res) => {
         // Check payments blob for these cases
         if (typeof  _.findKey(data.timeline, {context: 'UNDERPAID'}) !== 'undefined' || typeof  _.findKey(data.timeline, {context: 'OVERPAID'}) !== 'undefined') {
             // Charge amount will be converted to cents before updating balance
-            updateBalance(data.metadata.userId, parseFloat(data.payments[0].value.local.amount) * 100, (err) => {
+            updateBalance(data.metadata.userId, parseInt(data.payments[0].value.local.amount) * 100, (err) => {
                 if (err) {
                     return res.status(400).send({
                         error: true,

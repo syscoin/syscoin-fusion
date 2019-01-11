@@ -29,7 +29,7 @@ module.exports = (req, res, next) => {
             if (snaps.userId === req.user.uid) {
                 return updateBalance(
                     req.user.uid,
-                    parseFloat(chargeAmount) * -100,
+                    parseInt(chargeAmount) * -100,
                     (err) => {
                         if (err) {
                             console.log("Error in update balance")
