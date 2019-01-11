@@ -1,4 +1,3 @@
-const AWS = require('./init')
 const terminateInstance = require('./terminate-instance')
 const detachIp = require('./detach-ip')
 
