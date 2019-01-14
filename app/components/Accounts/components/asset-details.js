@@ -3,9 +3,11 @@ import React, { Component } from 'react'
 import { Row, Col, Icon, Spin, Tooltip } from 'antd'
 import AvailableAssets from './available-assets'
 import TransactionList from './transaction-list'
+import AliasInfo from './alias-info'
 
 type Props = {
   t: Function,
+  aliasInfo?: Object,
   aliasAssets: Object,
   selectAsset: Functiton,
   goToSendAssetForm: Function,
@@ -17,14 +19,26 @@ type Props = {
 export default (props: Props) => (
   <Row>
     {props.aliasAssets.data.length ? (
-      <AvailableAssets
-        assets={props.aliasAssets.data}
-        selectedAsset={props.aliasAssets.selected}
-        selectAsset={props.selectAsset}
-        goToSendAssetForm={props.goToSendAssetForm}
-        claimInterest={props.claimInterest}
-        t={props.t}
-      />
+      <div>
+        <Col offset={1} xs={21}>
+          <AliasInfo
+            t={props.t}
+            isAlias={!!props.aliasInfo.alias.length}
+            alias={props.aliasInfo.alias}
+            address={props.aliasInfo.address}
+            balance={props.aliasInfo.balance}
+            avatarUrl={props.aliasInfo.avatarUrl}
+          />
+        </Col>
+        <AvailableAssets
+          t={props.t}
+          assets={props.aliasAssets.data}
+          selectedAsset={props.aliasAssets.selected}
+          selectAsset={props.selectAsset}
+          goToSendAssetForm={props.goToSendAssetForm}
+          claimInterest={props.claimInterest}
+        />
+      </div>
     ) : null}
     {props.aliasAssets.selected ? (
       <Row>

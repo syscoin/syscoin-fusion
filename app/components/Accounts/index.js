@@ -63,6 +63,12 @@ export default class Accounts extends Component<Props> {
     this.props.goToAssetForm(asset, this.props.selectedAlias)
   }
 
+  getSelectedAlias() {
+    const { aliases, selectedAlias } = this.props
+
+    return aliases.find(i => i.alias === selectedAlias || i.address === selectedAlias)
+  }
+
   render() {
     const { t } = this.props
     return (
@@ -98,6 +104,7 @@ export default class Accounts extends Component<Props> {
           ) : null}
           <AssetDetails
             t={t}
+            aliasInfo={this.getSelectedAlias()}
             aliasAssets={this.props.aliasAssets}
             selectAsset={this.props.selectAsset}
             goToSendAssetForm={this.goToSendAssetForm.bind(this)}

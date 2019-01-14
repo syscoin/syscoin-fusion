@@ -503,3 +503,39 @@
     margin-right: 10px;
     cursor: pointer;
 }
+
+.alias-info-container {
+    padding: 0 5px 0 5px;
+    margin-bottom: 25px;
+
+    & .alias-info-text-container {
+        padding-right: 25px;
+    }
+
+    & h3 {
+        color: $main_white;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 400;
+        font-size: 20px;
+    }
+
+    & hr {
+        margin-bottom: 16px;
+    }
+
+    & p, & span {
+        line-height: 0.5;
+        font-size: 14px;
+        color: $main_white;
+    }
+
+    & span {
+        color: $main_blue;
+    }
+
+    & .alias-info-alias-avatar {
+        width: 100%;
+        height: auto;
+    }
+}

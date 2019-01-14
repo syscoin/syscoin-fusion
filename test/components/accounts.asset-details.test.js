@@ -22,6 +22,12 @@ describe('Accounts - AssetDetails component tests', () => {
         data: [],
         error: false
       },
+      aliasInfo: {
+        alias: 'test',
+        address: 'test',
+        balance: 0,
+        isAlias: true
+      },
       selectAsset: spy(),
       goToSendAssetForm: spy(),
       selectedAlias: '',
