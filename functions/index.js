@@ -28,6 +28,7 @@ const cryptoCharge = require('./endpoints/crypto-charge')
 const codeRedeem = require('./endpoints/code-redeem')
 const supportEmail = require('./endpoints/support-email')
 const getWalletBalance = require('./endpoints/get-wallet-balance')
+const deleteNode = require('./endpoints/delete-node')
 
 const balCheck = require('./functions/wallet-balance-watch/index')
 
@@ -114,12 +115,15 @@ app.post('/code-redeem', validateFirebaseIdToken, codeRedeem)
 app.post('/extend-subscription', validateFirebaseIdToken, extendSubscription)
 app.post('/request-pooling', validateFirebaseIdToken, requestPooling)
 app.post('/upgrade-mn', validateFirebaseIdToken, upgradeMn)
-app.get('/nodes', validateFirebaseIdToken, getUserNodes)
-app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.post('/edit-node', validateFirebaseIdToken, editNode)
 app.post('/info', dataTracking)
 app.post('/support-email', validateFirebaseIdToken, supportEmail)
+
+app.get('/nodes', validateFirebaseIdToken, getUserNodes)
+app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.get('/wallet/balance', validateFirebaseIdToken, getWalletBalance)
+
+app.delete('/delete-node', validateFirebaseIdToken, deleteNode)
 
 app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)
