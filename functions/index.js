@@ -123,7 +123,7 @@ app.get('/nodes', validateFirebaseIdToken, getUserNodes)
 app.get('/pooling-data', validateOptionalFirebaseIdToken, getPoolingData)
 app.get('/wallet/balance', validateFirebaseIdToken, getWalletBalance)
 
-app.delete('/delete-node', validateFirebaseIdToken, deleteNode)
+app.post('/delete-node', validateFirebaseIdToken, deleteNode)
 
 app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, editStatus)
 app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)

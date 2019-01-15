@@ -17,23 +17,5 @@ module.exports = (instanceId, allocationId) => new Promise(async (resolve, rejec
         return reject(err)
     }
 
-    try {
-        vps = await admin
-            .database()
-            .ref('/vps')
-            .orderByChild('vpsId')
-            .equalTo(instanceId)
-            .once('value')
-        vps = vps.val()
-        
-        vpsKey = Object.keys(vps)[0]
-
-        await admin.database().ref('/orders/' + vps.orderId).remove()
-        await admin.database().ref('/mn-data/' + vps.mnData).remove()
-        await admin.database().ref('/vps/' + vpsKey).remove()
-    } catch(err) {
-        return reject(err)
-    }
-
     return resolve()
 })

@@ -11,16 +11,25 @@ const deleteAwsMn = require('../functions/helpers/aws/delete-node')
  * 
  * @apiSuccessExample {json} Success
  *  {
-        error: false
+        error: false,
+        message: 'Success.'
     }
  */
 module.exports = async (req, res, next) => {
     const { vpsId } = req.body
 
+    if (!vpsId) {
+        return res.status(400).send({
+            error: true,
+            message: 'Missing required parameter'
+        })
+    }
+
     let vps,  vpsKey
 
     try {
         vps = await admin.database().ref('/vps/' + vpsId).once('value')
+        vps = vps.val()
         vpsKey = Object.keys(vps)[0]
     } catch(err) {
         return res.status(404).send({
@@ -31,9 +40,30 @@ module.exports = async (req, res, next) => {
 
     try {
         if (vps.vpsOrigin === 'aws') {
-            await deleteAwsMn(vpsKey, vps.allocationId)
+            await deleteAwsMn(vps.vpsid, vps.allocationId)
         } else {
             await deleteMn(vps.orderId)
         }
+    } catch(err) {
+        return res.status(500).send({
+            error: true,
+            message: 'Error while trying to delete node'
+        })
     }
+
+    try {
+        await admin.database().ref('/orders/' + vps.orderId).remove()
+        await admin.database().ref('/mn-data/' + vps.mnDataId).remove()
+        await admin.database().ref('/vps/' + vpsKey).remove()
+    } catch(err) {
+        return req.status(500).send({
+            error: true,
+            message: 'Error while trying to delete logs'
+        })
+    }
+
+    return res.send({
+        error: false,
+        message: 'Success'
+    })
 }
