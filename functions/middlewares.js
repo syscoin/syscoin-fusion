@@ -65,7 +65,11 @@ module.exports.chargeIfNeeded = (req, res, next) => {
         admin.database().ref('/prices/' + req.mnData.nodeType)
             .once('value', snapshot => {
                 const amount = snapshot.val()
-                const dailyAmount = parseInt(amount) / 30 // dividing by 30 so we can get the daily rate
+                let dailyAmount = parseInt(amount) / 30 // dividing by 30 so we can get the daily rate
+
+                if (req.vpsData.vpsOrigin === 'do') {
+                    dailyAmount = 1500 / 30
+                }
 
                 updateBalance(req.orderData.userId, dailyAmount * -1,
                     async (err) => {
