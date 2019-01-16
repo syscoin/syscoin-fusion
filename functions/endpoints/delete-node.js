@@ -45,7 +45,6 @@ module.exports = async (req, res, next) => {
             await deleteMn(vps.orderId)
         }
     } catch(err) {
-        console.log(err)
         return res.status(500).send({
             error: true,
             message: 'Error while trying to delete node'
@@ -57,7 +56,6 @@ module.exports = async (req, res, next) => {
         await admin.database().ref('/mn-data/' + vps.mnDataId).remove()
         await admin.database().ref('/vps/' + vpsKey).remove()
     } catch(err) {
-        console.log(err)
         return req.status(500).send({
             error: true,
             message: 'Error while trying to delete logs'
