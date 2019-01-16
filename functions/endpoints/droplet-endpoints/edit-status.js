@@ -4,7 +4,7 @@ const admin = require('firebase-admin')
  * @api {post} /droplets/edit-status Edit MN status
  * @apiDescription Goes through API filter - Edits MN status shown in UI.
  * @apiGroup Droplets Endpoints
- * 
+ *
  * @apiParam {String} status New status
  * @apiParam {Object} info getinfo output
  * @apiSuccessExample {json} Success
@@ -12,7 +12,7 @@ const admin = require('firebase-admin')
  *      error: false,
  *      message: `Status updated to ${status}`
  *  }
- * 
+ *
  */
 module.exports = (req, res, next) => {
     const clientIp = (req.headers['x-forwarded-for'] ||
@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
 
     admin.database().ref('/vps/' + req.orderData.vpsId).update({
         status,
-        info: JSON.stringify(getinfo)
+        info: JSON.stringify(info)
     }).then(() => res.send({
         error: false,
         message: `Status updated to "${status}"`
