@@ -22,10 +22,16 @@ module.exports = (req, res, next) => {
 
     const { status, info } = req.body
 
-    admin.database().ref('/vps/' + req.orderData.vpsId).update({
-        status,
-        info: JSON.stringify(info)
-    }).then(() => res.send({
+    const toUpdate = {
+        status
+    }
+
+    if (info) {
+        toUpdate.info = info
+    }
+
+    admin.database().ref('/vps/' + req.orderData.vpsId).update(toUpdate)
+    .then(() => res.send({
         error: false,
         message: `Status updated to "${status}"`
     })).catch(() => res.status(500).send({
