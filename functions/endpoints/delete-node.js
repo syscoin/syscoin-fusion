@@ -54,7 +54,7 @@ module.exports = async (req, res, next) => {
     try {
         await admin.database().ref('/orders/' + vps.orderId).remove()
         await admin.database().ref('/mn-data/' + vps.mnDataId).remove()
-        await admin.database().ref('/vps/' + vpsKey).remove()
+        await admin.database().ref('/vps/' + vpsId).remove()
     } catch(err) {
         return req.status(500).send({
             error: true,

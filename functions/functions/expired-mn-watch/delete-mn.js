@@ -14,34 +14,25 @@ module.exports = (i) => new Promise((resolve, reject) => {
 
             const { orderId, vpsId } = data[key]
 
-            getKeyId(vpsId, (err, keyId) => {
+
+            deleteDropletByKey(vpsId, (err) => {
                 if (err) {
-                    reject('Cant find key')
-                    return false
+                    console.log('Cant find vpsid ' + vpsId + ' in DO. Deleting records')
                 }
 
-                deleteDropletByKey(vpsId, (err) => {
-                    if (err) {
-                        console.log('Cant find vpsid ' + vpsId + ' in DO. Deleting records')
+                async.parallel([
+                    cb => {
+                        admin.database().ref('/mn-data/' + key).remove().then(() => cb()).catch(() => cb())
+                    },
+                    cb => {
+                        admin.database().ref('/vps/' + vpsId).remove().then(() => cb()).catch(() => cb())
+                    },
+                    cb => {
+                        admin.database().ref('/orders/' + orderId).remove().then(() => cb()).catch(() => cb())
                     }
-
-                    async.parallel([
-                        cb => {
-                            admin.database().ref('/keys/' + keyId).remove().then(() => cb()).catch(() => cb())
-                        },
-                        cb => {
-                            admin.database().ref('/mn-data/' + key).remove().then(() => cb()).catch(() => cb())
-                        },
-                        cb => {
-                            admin.database().ref('/vps/' + vpsId).remove().then(() => cb()).catch(() => cb())
-                        },
-                        cb => {
-                            admin.database().ref('/orders/' + orderId).remove().then(() => cb()).catch(() => cb())
-                        }
-                    ], () => {
-                        console.log('Deleted order ' + orderId)
-                        resolve()
-                    })
+                ], () => {
+                    console.log('Deleted order ' + orderId)
+                    resolve()
                 })
             })
         })
