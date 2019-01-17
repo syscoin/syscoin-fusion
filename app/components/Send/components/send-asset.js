@@ -56,6 +56,14 @@ export default class SendAssetForm extends Component<Props> {
       ...this.initialState
     })
   }
+
+  selectedAssetBalance() {
+    try {
+      return assetsFromAlias.data.find(i => i.asset === asset).balance
+    } catch(err) {
+      return ''
+    }
+  }
   
   render() {
     const { t } = this.props
@@ -115,6 +123,11 @@ export default class SendAssetForm extends Component<Props> {
               </Option>
             ))}
           </Select>
+          {asset.length && !assetsFromAlias.isLoading ? (
+            <div className='asset-form-asset-balance'>
+              <p>Balance: <span className='blue-text'>{this.selectedAssetBalance()}</span></p>
+            </div>
+          ) : null}
           {assetsFromAlias.isLoading && <Spin indicator={<Icon type='loading' spin />} className='assets-from-alias-loader' />}
           <Input
             disabled={isLoading}

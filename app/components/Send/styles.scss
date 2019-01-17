@@ -53,6 +53,18 @@
             }
         }
     }
+
+    .asset-form-asset-balance {
+        & > p {
+            text-align: right;
+            color: $main_white;
+            line-height: 0.8;
+            margin-bottom: 13px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    }
 }
 
 .send-forms-container .send-collapse-panel {
