@@ -59,7 +59,7 @@ export default class SendAssetForm extends Component<Props> {
 
   selectedAssetBalance() {
     try {
-      return assetsFromAlias.data.find(i => i.asset === asset).balance
+      return this.props.assetsFromAlias.data.find(i => i.asset === this.props.form.data.asset).balance
     } catch(err) {
       return ''
     }
