@@ -19,6 +19,9 @@ module.exports = (obj) => new Promise(async (resolve, reject) => {
         return reject(err)
     }
 
+    if (vpsData.vpsOrigin === 'do') {
+        return reject(new Error('This node is not allowed to upgrade'))
+    }
 
     try {
         data = await upgradeAwsNode({
