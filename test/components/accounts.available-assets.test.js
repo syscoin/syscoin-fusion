@@ -20,7 +20,7 @@ describe('Accounts - AvailableAssets component tests', () => {
       goToSendAssetForm: spy(),
       claimInterest: spy()
     }
-    wrapper = shallow(<AssetBox {...props} />)
+    wrapper = shallow(<AvailableAssets {...props} />)
   })
 
   it('should render AvailableAssets if assets prop is populated', () => {
@@ -41,6 +41,13 @@ describe('Accounts - AvailableAssets component tests', () => {
     wrapper = shallow(<AvailableAssets {...props} />)
 
     expect(wrapper.find(AssetBox).length).toBe(1)
+  })
+
+  it('should display text in case that assets is empty', () => {
+    wrapper = shallow(<AvailableAssets {...props} assets={[]} />)
+
+    expect(wrapper.find('.available-assets-no-asset').length).toBe(1)
+    expect(wrapper.find('.available-assets-no-asset').text()).toBe('accounts.asset.no_available_assets')
   })
 
 })

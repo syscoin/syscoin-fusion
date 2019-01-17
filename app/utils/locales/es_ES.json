@@ -20,6 +20,7 @@
       "syncing": "{{syncPercentage}}% sincronizado: {{currentBlock}} de {{headBlock}} bloques procesados.\nEsto puede afectar algunas funciones de la cartera."
     },
     "asset": {
+      "no_available_assets": "No hay assets disponibles para este alias.",
       "alias_information": "Información del alias",
       "available_assets": "Assets disponibles",
       "transactions_for": "Transacciones de {{asset}}"

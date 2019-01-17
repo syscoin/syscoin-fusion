@@ -20,6 +20,7 @@
       "syncing": "{{syncPercentage}}% synced: {{currentBlock}} out of {{headBlock}} blocks processed.\nThis might affect some wallet functionalities."
     },
     "asset": {
+      "no_available_assets": "No available assets for this alias",
       "alias_information": "Alias information",
       "available_assets": "Available assets",
       "transactions_for": "Transactions for {{asset}}"

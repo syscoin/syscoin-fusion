@@ -20,6 +20,7 @@
 			"syncing": "{{syncPercentage}}% 同步: 已处理{{headBlock}}区块中的{{currentBlock}}.\n可能会影响某些钱包功能。"
 		},
 		"asset": {
+			"no_available_assets": "No available assets for this alias",
 			"alias_information": "Alias information",
 			"available_assets": "可用资产",
 			"transactions_for": "为{{asset}}交易"

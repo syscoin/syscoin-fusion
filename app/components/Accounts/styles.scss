@@ -369,6 +369,10 @@
 
 .asset-box-container {
     margin-top: 30px;
+
+    & .available-assets-no-asset {
+        color: $main_white;
+    }
 }
 
 .asset-box-container .asset-box-text {

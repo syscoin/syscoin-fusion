@@ -66,7 +66,12 @@ export default class Accounts extends Component<Props> {
   getSelectedAlias() {
     const { aliases, selectedAlias } = this.props
 
-    return aliases.find(i => i.alias === selectedAlias || i.address === selectedAlias)
+    return aliases.find(i => i.alias === selectedAlias || i.address === selectedAlias) || {
+      alias: '',
+      address: '',
+      balance: 0,
+      avatarUrl: ''
+    }
   }
 
   render() {

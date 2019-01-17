@@ -130,7 +130,7 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAssetsInfo(alias: string) {
-    const { assets } = this.props
+    const { assets, t } = this.props
     let results
 
     try {
@@ -138,23 +138,10 @@ class AccountsContainer extends Component<Props, State> {
         receiver_address: alias
       }, assets.map(i => i._id))
     } catch(err) {
-      return swal('Error', parseError(err.message), 'error')
+      return swal(t('misc.error'), parseError(err.message), 'error')
     }
 
-    if (!results.length && !assets.length) {
-      this.setState({
-        aliasAssets: {
-          selected: '',
-          selectedSymbol: '',
-          data: [],
-          isLoading: false,
-          error: false
-        },
-        selectedAlias: '',
-        selectedIsAlias: false
-      })
-      return swal('No asset detected', 'The wallet hasn\'t detected any asset. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
-    } else if (!results.length && assets.length) {
+    if (!results.length && assets.length) {
       results = assets.map(i => ({
         asset: i._id,
         balance: '0.00000000',

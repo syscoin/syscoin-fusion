@@ -18,7 +18,7 @@ type Props = {
 
 export default (props: Props) => (
   <Row>
-    {props.aliasAssets.data.length ? (
+    {(props.selectedAlias && !props.aliasAssets.isLoading) && (
       <div>
         <Col offset={1} xs={21}>
           <AliasInfo
@@ -39,7 +39,7 @@ export default (props: Props) => (
           claimInterest={props.claimInterest}
         />
       </div>
-    ) : null}
+    )}
     {props.aliasAssets.selected ? (
       <Row>
         <Col offset={1} xs={21}>

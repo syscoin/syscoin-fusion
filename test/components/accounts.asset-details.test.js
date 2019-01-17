@@ -56,14 +56,14 @@ describe('Accounts - AssetDetails component tests', () => {
       'inputs': [],
       'accumulated_interest': '0.00000000'
     }]
-    wrapper = shallow(<AssetDetails {...props} />)
+    wrapper = shallow(<AssetDetails {...props} selectedAlias='test' />)
 
     expect(wrapper.find(AvailableAssets).length).toBe(1)
   })
 
   it('should render TransactionList if asset is selected', () => {
     props.aliasAssets.selected = 'test'
-    wrapper = shallow(<AssetDetails {...props} />)
+    wrapper = shallow(<AssetDetails {...props} selectedAlias='some_alias' />)
 
     expect(wrapper.find(TransactionList).length).toBe(1)
   })

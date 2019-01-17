@@ -20,6 +20,7 @@
       "syncing": "{{syncPercentage}}% gesynchroniseerd: {{currentBlock}} van de {{headBlock}} blokken verwerkt.\nDit kan gevolgen hebben voor sommige functionaliteiten in de portomonnee"
     },
     "asset": {
+      "no_available_assets": "No available assets for this alias",
       "alias_information": "Alias information",
       "available_assets": "Beschikbare assets",
       "transactions_for": "Transacties voor {{asset}}"
