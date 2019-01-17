@@ -15,11 +15,6 @@ const admin = require('firebase-admin')
  *
  */
 module.exports = (req, res, next) => {
-    const clientIp = (req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress).split(",")[0]
-
     const { status, info } = req.body
 
     const toUpdate = {
