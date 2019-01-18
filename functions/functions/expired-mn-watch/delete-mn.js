@@ -20,20 +20,7 @@ module.exports = (i) => new Promise((resolve, reject) => {
                     console.log('Cant find vpsid ' + vpsId + ' in DO. Deleting records')
                 }
 
-                async.parallel([
-                    cb => {
-                        admin.database().ref('/mn-data/' + key).remove().then(() => cb()).catch(() => cb())
-                    },
-                    cb => {
-                        admin.database().ref('/vps/' + vpsId).remove().then(() => cb()).catch(() => cb())
-                    },
-                    cb => {
-                        admin.database().ref('/orders/' + orderId).remove().then(() => cb()).catch(() => cb())
-                    }
-                ], () => {
-                    console.log('Deleted order ' + orderId)
-                    resolve()
-                })
+                resolve()
             })
         })
 })

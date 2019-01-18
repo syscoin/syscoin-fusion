@@ -1,6 +1,7 @@
 const admin = require('firebase-admin')
 const deleteMn = require('../functions/expired-mn-watch/delete-mn')
 const deleteAwsMn = require('../functions/helpers/aws/delete-node')
+const deleteLogs = require('../functions/helpers/delete-logs')
 
 /**
  * @api {post} /edit-node Edit node
@@ -52,9 +53,11 @@ module.exports = async (req, res, next) => {
     }
 
     try {
-        await admin.database().ref('/orders/' + vps.orderId).remove()
-        await admin.database().ref('/mn-data/' + vps.mnDataId).remove()
-        await admin.database().ref('/vps/' + vpsId).remove()
+        await deleteLogs({
+            vpsId: vpsId,
+            mnDataId: vps.mnDataId,
+            orderId: vps.orderId
+        })
     } catch(err) {
         return req.status(500).send({
             error: true,
