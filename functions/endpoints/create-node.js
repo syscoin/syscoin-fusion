@@ -57,6 +57,13 @@ module.exports = async (req, res, next) => {
     // Getting final price
     nodePrice = nodePrice * parseInt(months)
 
+    if (nodePrice === 0) {
+        return res.status(400).send({
+            error: true,
+            message: 'Invalid node type.'
+        })
+    }
+
     return getBalance(uid, (err, balance) => {
         if (err) {
             return res.status(400).send({
