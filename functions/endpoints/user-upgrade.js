@@ -60,6 +60,13 @@ module.exports = (req, res) => {
                 })
             }
 
+            if (data[key].vpsOrigin === 'do') {
+                return res.status(400).send({
+                    error: true,
+                    message: 'This node is not allowed to upgrade',
+                })
+            }
+
             if (data[key].userId !== userId) {
                 return res.status(403).send({
                     error: true,
