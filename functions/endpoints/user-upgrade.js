@@ -1,7 +1,7 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 
-const upgradeMn = require('../functions/helpers/upgrade-mn')
+const upgradeMn = require('../functions/helpers/aws/upgrade')
 const saveMnStatus = require('../functions/helpers/save-vps-status')
 
 /**
@@ -75,13 +75,14 @@ module.exports = (req, res) => {
             }
 
             upgradeMn({
-                dropletId,
-                nodeType: imageId
-            }).then(data => {
+                instanceId: data[key].vpsid,
+                allocationId: data[key].allocationId
+            }).then(newVps => {
 
                 saveMnStatus(key, {
                     status: 'Node is updating.',
-                    imageId: imageId
+                    imageId: imageId,
+                    vpsid: newVps.InstanceId
                 }, (err) => {
                     if (err) {
                         return res.status(500).send({
@@ -96,9 +97,11 @@ module.exports = (req, res) => {
                     })
                 })
 
-            }).catch(() => res.status(500).send({
-                error: true,
-                message: 'Something went wrong.'
-            }))
+            }).catch(err => {
+                res.status(500).send({
+                    error: true,
+                    message: 'Something went wrong.'
+                })}
+            )
         })
 }

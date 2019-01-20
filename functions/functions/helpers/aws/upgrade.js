@@ -6,7 +6,7 @@ module.exports = obj => new Promise(async (resolve, reject) => {
     const { instanceId, allocationId } = obj
 
     let newInstance,
-        newAllocation
+        newAssociation
     
     try {
         newInstance = await createInstance('sys')
@@ -15,7 +15,7 @@ module.exports = obj => new Promise(async (resolve, reject) => {
     }
 
     try {
-        newAllocation = await associateIp({
+        newAssociation = await associateIp({
             AllocationId: allocationId,
             InstanceId: newInstance.Instances[0].InstanceId
         })
@@ -31,7 +31,7 @@ module.exports = obj => new Promise(async (resolve, reject) => {
     }
 
     return resolve({
-        AllocationId: newAllocation,
+        AssociationId: newAssociation,
         InstanceId: newInstance.Instances[0].InstanceId
     })
 })
