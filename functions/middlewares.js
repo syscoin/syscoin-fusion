@@ -137,7 +137,7 @@ module.exports.shouldUpgrade = async (req, res, next) => {
         return next()
     }
 
-    if (moment() < moment(maxDate) && image !== req.vpsData.imageId) {
+    if (moment() > moment(maxDate) && image !== req.vpsData.imageId) {
 
         try {
             await upgradeMn({
