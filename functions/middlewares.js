@@ -1,10 +1,15 @@
 const admin = require('firebase-admin')
+const functions = require('firebase-functions')
+const moment = require('moment')
+
 const updateBalance = require('./endpoints/helpers/update-balance')
 const updateLastUpdated = require('./endpoints/helpers/edit-last-charge')
 const deleteMn = require('./functions/expired-mn-watch/delete-mn')
 const deleteAwsMn = require('./functions/helpers/aws/delete-node')
 const deleteLogs = require('./functions/helpers/delete-logs')
 const getNodePrice = require('./endpoints/helpers/get-node-price')
+const upgradeMn = require('./functions/helpers/upgrade-mn')
+const saveVpsStatus = require('./functions/helpers/save-vps-status')
 
 module.exports.checkIpWhitelist = (req, res, next) => {
     const clientIp = (req.headers['x-forwarded-for'] ||
@@ -98,7 +103,6 @@ module.exports.chargeIfNeeded = async (req, res, next) => {
 
             updateLastUpdated(req.vpsData.orderId, (err) => {
                 if (err) {
-                    console.log("Error in update mn charge last updated: ", err)
                     return res.sendStatus(500)
                 }
 
@@ -122,4 +126,41 @@ module.exports.gatherData = (req, res, next) => {
         error: true,
         message: 'Internal server error.'
     }))
+}
+
+module.exports.shouldUpgrade = async (req, res, next) => {
+    const nodeType = req.mnData.nodeType
+    const image = functions.config().images[nodeType]
+    const maxDate = functions.config().images[nodeType + '_max_date']
+
+    if (req.vpsData.vpsOrigin === 'do') {
+        return next()
+    }
+
+    if (moment() < moment(maxDate) && image !== req.vpsData.imageId) {
+
+        try {
+            await upgradeMn({
+                dropletId: req.vpsData.vpsid
+            })
+        } catch(err) {
+            return res.status(500).send({
+                error: true,
+                message: 'Error while trying to upgrade'
+            })
+        }
+
+        return saveVpsStatus(req.vpsId, {
+            status: 'Node is updating.',
+            imageId: image
+        }, () => {
+            return res.status(202).send({
+                error: false,
+                message: 'Node is updating.'
+            })
+        })
+        
+    }
+
+    return next()
 }

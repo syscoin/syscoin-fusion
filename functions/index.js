@@ -50,6 +50,7 @@ const walletBalanceWatch = require('./functions/wallet-balance-watch')
 const checkIpWhitelist = require('./middlewares').checkIpWhitelist
 const chargeIfNeeded = require('./middlewares').chargeIfNeeded
 const gatherData = require('./middlewares').gatherData
+const shouldUpgrade = require('./middlewares').shouldUpgrade
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
@@ -125,9 +126,9 @@ app.get('/wallet/balance', validateFirebaseIdToken, getWalletBalance)
 
 app.post('/delete-node', validateFirebaseIdToken, deleteNode)
 
-app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, editStatus)
-app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, getMnData)
-app.post('/droplets/reward-notification', checkIpWhitelist, notificationReward)
+app.post('/droplets/edit-status', checkIpWhitelist, gatherData, chargeIfNeeded, shouldUpgrade, editStatus)
+app.get('/droplets/get-mn-data', checkIpWhitelist, gatherData, chargeIfNeeded, shouldUpgrade, getMnData)
+app.post('/droplets/reward-notification', checkIpWhitelist, shouldUpgrade, notificationReward)
 
 app.get('/balanceCheck', balCheck)
 

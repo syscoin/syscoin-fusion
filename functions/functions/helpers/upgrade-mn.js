@@ -2,7 +2,7 @@ const admin = require('firebase-admin')
 const upgradeAwsNode = require('./aws/upgrade')
 
 module.exports = (obj) => new Promise(async (resolve, reject) => {
-    const { nodeType, dropletId } = obj
+    const { dropletId } = obj
     let data
     let vpsData
     let vpsKey
@@ -30,7 +30,7 @@ module.exports = (obj) => new Promise(async (resolve, reject) => {
 
     try {
         await admin.database().ref('/vps/' + vpsKey).update({
-            vpsId: data.InstanceId,
+            vpsid: data.InstanceId,
             allocationId: data.AllocationId
         })
     } catch(err) {
