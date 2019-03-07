@@ -46,6 +46,8 @@ export const sendSysIsLoadingAction = createAction(types.SEND_SYS_IS_LOADING)
 export const sendSysErrorAction = createAction(types.SEND_SYS_ERROR)
 export const sendSysReceiveAction = createAction(types.SEND_SYS_RECEIVE)
 
+export const sendChangeTab = createAction(types.SEND_CHANGE_TAB)
+
 export const editSendAsset = (obj: editSendAssetType) => (dispatch: (action: editSendAssetActionType) => void) => dispatch(editSendAssetAction(obj))
 export const editSendSys = (obj: editSendSysType) => (dispatch: (action: editSendSysActionType) => void) => dispatch(editSendSysAction(obj))
 

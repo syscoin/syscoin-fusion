@@ -4,6 +4,7 @@ import { remote, ipcRenderer } from 'electron'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Tools from 'fw-components/Tools'
+import { withNamespaces } from 'react-i18next'
 
 import {
   exportWallet,
@@ -17,6 +18,7 @@ import {
 } from 'fw-utils/new-alias-manager'
 import unlockWallet from 'fw-utils/unlock-wallet'
 import { walletUnlocked } from 'fw-actions/wallet'
+import { changeLanguage } from 'fw-actions/options'
 
 const { dialog } = remote.require('electron')
 
@@ -29,7 +31,10 @@ type Props = {
   }>,
   isEncrypted: boolean,
   isUnlocked: boolean,
-  walletUnlocked: Function
+  walletUnlocked: Function,
+  changeLanguage: Function,
+  currentLanguage: string,
+  t: Function
 };
 
 class ToolsContainer extends Component<Props> {
@@ -106,6 +111,9 @@ class ToolsContainer extends Component<Props> {
         lockWallet={this.lockWallet.bind(this)}
         getFolder={this.getFolder}
         toggleConsole={this.toggleConsole}
+        changeLanguage={this.props.changeLanguage}
+        currentLanguage={this.props.currentLanguage}
+        t={this.props.t}
       />
     )
   }
@@ -115,11 +123,13 @@ const mapStateToProps = state => ({
   currentBlock: state.wallet.getinfo.blocks,
   unfinishedAliases: state.wallet.unfinishedAliases,
   isEncrypted: state.wallet.isEncrypted,
-  isUnlocked: state.wallet.isUnlocked
+  isUnlocked: state.wallet.isUnlocked,
+  currentLanguage: state.options.language
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  walletUnlocked
+  walletUnlocked,
+  changeLanguage
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToolsContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ToolsContainer))

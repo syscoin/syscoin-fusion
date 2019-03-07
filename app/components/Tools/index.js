@@ -6,6 +6,7 @@ import BackupWallet from './components/backup-wallet'
 import ImportWallet from './components/import-wallet'
 import LockWallet from './components/lock-wallet'
 import Console from './components/console'
+import ChangeLanguage from './components/change-language'
 
 type Props = {
   /* currentBlock: number,
@@ -24,12 +25,16 @@ type Props = {
   isUnlocked: boolean,
   lockWallet: Function,
   getFolder: Function,
-  toggleConsole: Function
+  toggleConsole: Function,
+  changeLanguage: Function,
+  currentLanguage: string,
+  t: Function
 };
 
 export default class Tools extends Component<Props> {
 
   render() {
+    const { t } = this.props
     return (
       <Row className='tools-container'>
         <Col
@@ -44,9 +49,9 @@ export default class Tools extends Component<Props> {
             currentBlock={this.props.currentBlock}
           />
           <hr /> */}
-          <BackupWallet exportWallet={this.props.exportWallet} getFolder={this.props.getFolder} />
+          <BackupWallet exportWallet={this.props.exportWallet} getFolder={this.props.getFolder} t={t} />
           <hr />
-          <ImportWallet importWallet={this.props.importWallet} />
+          <ImportWallet importWallet={this.props.importWallet} t={t} />
           <hr />
           <LockWallet
             encryptWallet={this.props.encryptWallet}
@@ -55,9 +60,12 @@ export default class Tools extends Component<Props> {
             unlockWallet={this.props.unlockWallet}
             isUnlocked={this.props.isUnlocked}
             lockWallet={this.props.lockWallet}
+            t={t}
           />
           <hr />
-          <Console toggleConsole={this.props.toggleConsole} />
+          <Console toggleConsole={this.props.toggleConsole} t={t} />
+          <hr />
+          <ChangeLanguage changeLanguage={this.props.changeLanguage} currentLanguage={this.props.currentLanguage} t={t} />
         </Col>
       </Row>
     )

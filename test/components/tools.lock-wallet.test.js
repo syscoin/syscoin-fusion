@@ -17,7 +17,8 @@ describe('Tools - LockWallet component', () => {
       changePwd: spy(),
       unlockWallet: spy(),
       isUnlocked: false,
-      lockWallet: spy()
+      lockWallet: spy(),
+      t: string => string
     }
     wrapper = shallow(<LockWallet {...props} />)
   })

@@ -14,7 +14,8 @@ describe('Tools - QueuedAlias component', () => {
   beforeEach(() => {
     props = {
       error: null,
-      aliasName: 'test'
+      aliasName: 'test',
+      t: string => string
     }
     wrapper = mount(<QueuedAlias {...props} />)
   })

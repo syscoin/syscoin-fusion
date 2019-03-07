@@ -2,6 +2,7 @@
 import React, { Component  } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { withNamespaces } from 'react-i18next'
 import { ipcRenderer, remote } from 'electron'
 import Wallet from 'fw-components/Wallet'
 import {
@@ -31,7 +32,8 @@ type Props = {
   saveBlockchainInfo: Function,
   toggleMaximize: Function,
   dashboardTransactions: Function,
-  checkWalletEncryption: Function
+  checkWalletEncryption: Function,
+  t: Function
 };
 
 class WalletContainer extends Component<Props> {
@@ -57,8 +59,13 @@ class WalletContainer extends Component<Props> {
     if (!window.updateWalletHigh) {
       window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 5000)
     }
+
+    if (!window.updateWalletLow) {
+      window.updateWalletLow = setInterval(() => this.updateWalletLow(), 60000)
+    }
     
     this.updateWalletHigh()
+    this.updateWalletLow()
     // Update guids in store
     this.updateAssets()
 
@@ -66,9 +73,12 @@ class WalletContainer extends Component<Props> {
     this.props.dashboardTransactions(0, 10)
   }
 
+  updateWalletLow() {
+    this.props.saveAliases()
+  }
+
   updateWalletHigh() {
     this.props.saveGetInfo()
-    this.props.saveAliases()
     this.props.saveUnfinishedAliases()
     this.props.saveBlockchainInfo()
     this.props.checkWalletEncryption()
@@ -118,6 +128,7 @@ class WalletContainer extends Component<Props> {
         onClose={this.onClose}
         onMaximize={this.onMaximize.bind(this)}
         onUnmaximize={this.onUnmaximize.bind(this)}
+        t={this.props.t}
       />
     )
   }
@@ -142,4 +153,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   checkWalletEncryption
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(WalletContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(WalletContainer))

@@ -1,8 +1,8 @@
 import React from 'react'
 import Accounts from 'fw-components/Accounts'
-import SyncLoader from 'fw-components/Accounts/components/sync-loader'
 import Dashboard from 'fw-components/Accounts/components/dashboard'
-import TransactionList from 'fw-components/Accounts/components/transaction-list'
+import AssetDetails from 'fw-components/Accounts/components/asset-details'
+import Panel from 'fw-components/Accounts/components/panel'
 import Enzyme, { shallow, render } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { spy } from 'sinon'
@@ -49,9 +49,14 @@ describe('Accounts component tests', () => {
       getDashboardAssets: spy(),
       getDashboardTransactions: spy(),
       goToAssetForm: spy(),
-      goToSysForm: spy()
+      goToSysForm: spy(),
+      t: string => string
     }
     wrapper = shallow(<Accounts {...props} />)
+  })
+
+  it('should render an instance of Panel', () => {
+    expect(wrapper.find(Panel).length).toBe(1)
   })
 
   it('should render successfully', () => {
@@ -76,7 +81,7 @@ describe('Accounts component tests', () => {
     expect(wrapper.find(Dashboard).length).toEqual(1)
   })
 
-  it('should render loader if syncPercentage is not 100%', () => {
+  /*it('should render loader if syncPercentage is not 100%', () => {
     expect(wrapper.find(SyncLoader).length).toEqual(1)
   })
 
@@ -86,51 +91,10 @@ describe('Accounts component tests', () => {
     wrapper = shallow(<Accounts {...props} />)
 
     expect(wrapper.find(SyncLoader).length).toEqual(0)
-  })
+  })*/
 
-  it('should display available assets if valid alias is selected and it owns any token', () => {
-    props.selectedAlias = 'test'
-    props.aliasAssets.data = [{
-      "_id": "0c9df9a04d306e02-argvil19",
-      "asset": "0c9df9a04d306e02",
-      "symbol": "PEPITA",
-      "interest_rate": 0,
-      "txid": "8a5d701e9cb7190e73cb737afba410d6f21036d8b85858109e945554bd173361",
-      "height": 216,
-      "alias": "argvil19",
-      "balance": "100.00000000",
-      "interest_claim_height": 216,
-      "memo": "memo",
-      "inputs": [],
-      "accumulated_interest": "0.00000000"
-    }]
-    wrapper = shallow(<Accounts {...props} />)
-
-    expect(wrapper.find('.asset-box-container').length).toBe(1)
-  })
-
-  it('should display asset transactions table when an asset is selected', () => {
-    props.selectedAlias = 'test'
-    props.aliasAssets.data = [{
-      "_id": "0c9df9a04d306e02-argvil19",
-      "asset": "0c9df9a04d306e02",
-      "symbol": "PEPITA",
-      "interest_rate": 0,
-      "txid": "8a5d701e9cb7190e73cb737afba410d6f21036d8b85858109e945554bd173361",
-      "height": 216,
-      "alias": "argvil19",
-      "balance": "100.00000000",
-      "interest_claim_height": 216,
-      "memo": "memo",
-      "inputs": [],
-      "accumulated_interest": "0.00000000"
-    }]
-    props.aliasAssets.selected = '0c9df9a04d306e02'
-    props.aliasAssets.selectedSymbol = 'PEPITA'
-    wrapper = shallow(<Accounts {...props} />)
-
-    expect(wrapper.find('.transactions-table-title').text()).toBe('Transactions for PEPITA')
-    expect(wrapper.find(TransactionList).length).toBe(1)
+  it('should render an AssetDetails instance', () => {
+    expect(wrapper.find(AssetDetails).length).toEqual(1)
   })
 
   it('should show spinning loader if assets are loading', () => {

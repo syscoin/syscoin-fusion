@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withNamespaces } from 'react-i18next'
 
 import Send from 'fw-components/Send'
 import {
@@ -9,7 +10,8 @@ import {
   editSendSys,
   sendAssetForm,
   sendSysForm,
-  getAssetsFromAlias
+  getAssetsFromAlias,
+  sendChangeTab
 } from 'fw-actions/forms'
 import unlockWallet from 'fw-utils/unlock-wallet'
 
@@ -24,7 +26,10 @@ type Props = {
   sysForm: Object,
   assetForm: Object,
   isEncrypted: boolean,
-  getAssetsFromAlias: Function
+  getAssetsFromAlias: Function,
+  sendChangeTab: Function,
+  activeTab: string,
+  t: Function
 };
 
 type sendAssetType = {
@@ -112,6 +117,8 @@ class SendContainer extends Component<Props> {
   render() {
     return (
       <Send
+        changeTab={this.props.sendChangeTab}
+        activeTab={this.props.activeTab}
         balance={this.props.balance}
         aliases={this.props.aliases.map(i => i.alias || i.address)}
         sendAsset={this.sendAsset.bind(this)}
@@ -120,6 +127,7 @@ class SendContainer extends Component<Props> {
         assetsForm={this.props.assetForm}
         sysForm={this.props.sysForm}
         onChangeForm={this.onChangeForm.bind(this)}
+        t={this.props.t}
       />
     )
   }
@@ -130,7 +138,8 @@ const mapStateToProps = state => ({
   aliases: state.wallet.aliases,
   assetForm: state.forms.sendAsset,
   sysForm: state.forms.sendSys,
-  isEncrypted: state.wallet.isEncrypted
+  isEncrypted: state.wallet.isEncrypted,
+  activeTab: state.forms.sendTab.activeTab
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -138,7 +147,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   editSendSys,
   sendAssetForm,
   sendSysForm,
-  getAssetsFromAlias
+  getAssetsFromAlias,
+  sendChangeTab
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(SendContainer))

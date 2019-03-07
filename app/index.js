@@ -10,6 +10,7 @@ import Storage from './utils/storage'
 import storageSchema from './utils/helpers/storage-schema'
 import attachWindowListeners from 'fw-utils/listeners'
 import './app.global.scss'
+import 'fw-utils/i18n'
 
 // App storage setup
 global.appStorage = new Storage({

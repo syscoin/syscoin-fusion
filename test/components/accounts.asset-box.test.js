@@ -19,7 +19,8 @@ describe('Accounts - Asset box component', () => {
       balance: '12.00',
       goToSendAssetForm: spy(),
       selectedAlias: 'testAlias',
-      claimInterest: spy()
+      claimInterest: spy(),
+      t: string => string
     }
     wrapper = shallow(<AssetBox {...props} />)
   })
@@ -39,7 +40,7 @@ describe('Accounts - Asset box component', () => {
   it('should render data correctly', () => {
     expect(wrapper.find('.asset-box-name').text()).toBe(props.symbol)
     expect(wrapper.find('.asset-box-guid').text()).toBe(props.asset)
-    expect(wrapper.find('.asset-box-balance').text()).toBe('Balance: 12.00')
+    expect(wrapper.find('.asset-box-balance').contains('12.00')).toBeTruthy()
   })
 
   it('should add selected class to wrapper when isSelected is true', () => {

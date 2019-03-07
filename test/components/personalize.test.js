@@ -15,7 +15,8 @@ describe('Personalize component tests', () => {
     props = {
       aliasInfo: spy(),
       currentAliases: [],
-      editAlias: spy()
+      editAlias: spy(),
+      t: string => string
     }
     wrapper = shallow(<Personalize {...props} />)
   })

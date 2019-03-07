@@ -46,7 +46,8 @@ describe('Send component tests', () => {
         isLoading: false,
         error: false
       },
-      onChangeForm: spy()
+      onChangeForm: spy(),
+      t: string => string
     }
     wrapper = shallow(<Send {...props} />)
   })

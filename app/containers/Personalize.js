@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withNamespaces } from 'react-i18next'
 import Personalize from 'fw-components/Personalize'
 import { aliasInfo, editAlias } from 'fw-sys'
 
@@ -16,7 +17,8 @@ type editAliasType = {
   expireTimestamp: string,
   encPrivKey: string,
   encPubKey: string,
-  witness: string
+  witness: string,
+  t: Function
 };
 
 class PersonalizeContainer extends Component<Props> {
@@ -53,4 +55,4 @@ const mapStateToProps = state => ({
   aliases: state.wallet.aliases
 })
 
-export default connect(mapStateToProps)(PersonalizeContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(PersonalizeContainer))

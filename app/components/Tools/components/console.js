@@ -5,14 +5,15 @@ import swal from 'sweetalert'
 import { join } from 'path'
 
 type Props = {
-  toggleConsole: Function
+  toggleConsole: Function,
+  t: Function
 };
 
 export default (props: Props) => (
   <div className='toggle-console-container'>
-    <h3 className='toggle-console-title'>Console</h3>
+    <h3 className='toggle-console-title'>{props.t('tools.console_title')}</h3>
     <Button className='toggle-console-btn' onClick={props.toggleConsole}>
-      <Icon type='download' /> Open console
+      <Icon type='download' /> {props.t('tools.console_button')}
     </Button>
   </div>
 )

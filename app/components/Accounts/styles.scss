@@ -68,7 +68,7 @@
 }
 
 .aliases-container {
-    height: 56.2%;
+    height: unquote("calc(100% - 265px)");
     overflow-y: scroll;
     overflow-x: hidden;
     background: $accounts_alias_background;
@@ -369,11 +369,14 @@
 
 .asset-box-container {
     margin-top: 30px;
+
+    & .available-assets-no-asset {
+        color: $main_white;
+    }
 }
 
 .asset-box-container .asset-box-text {
     font-size: 15px;
-    padding-left: 27px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: $title_color;
@@ -502,4 +505,41 @@
 .token-table-actions {
     margin-right: 10px;
     cursor: pointer;
+}
+
+.alias-info-container {
+    padding: 0 5px 0 5px;
+    margin-bottom: 25px;
+    margin-top: 30px;
+
+    & .alias-info-text-container {
+        padding-right: 25px;
+    }
+
+    & h3 {
+        color: $main_white;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 400;
+        font-size: 20px;
+    }
+
+    & hr {
+        margin-bottom: 16px;
+    }
+
+    & p, & span {
+        line-height: 0.5;
+        font-size: 14px;
+        color: $main_white;
+    }
+
+    & span {
+        color: $main_blue;
+    }
+
+    & .alias-info-alias-avatar {
+        width: 100%;
+        height: auto;
+    }
 }

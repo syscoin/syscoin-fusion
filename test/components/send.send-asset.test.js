@@ -34,7 +34,13 @@ describe('Send - Send Asset Form component', () => {
         error: false,
         data: []
       },
-      onChangeForm: spy()
+      onChangeForm: spy(),
+      assetsFromAlias: {
+        isLoading: false,
+        error: false,
+        data: []
+      },
+      t: string => string
     }
     wrapper = shallow(<SendAssetForm {...props} />)
   })
@@ -147,6 +153,24 @@ describe('Send - Send Asset Form component', () => {
     }
     wrapper = shallow(<SendAssetForm {...mockProps} />)
     expect(wrapper.find('.send-asset-form-btn-send').prop('disabled')).toBe(false)
+  })
+
+  it('should show balance field when asset is selected', () => {
+    let mockProps = {
+      ...props,
+      assetsFromAlias: {
+        isLoading: false,
+        error: false,
+        data: [{
+          balance: '100.00',
+          asset: 'asset_test'
+        }]
+      }
+    }
+    wrapper = shallow(<SendAssetForm {...mockProps} />)
+
+    expect(wrapper.find('.asset-form-asset-balance').length).toBe(1)
+    expect(wrapper.find('.asset-form-asset-balance').text()).toBe('Balance: 100.00')
   })
 
 })

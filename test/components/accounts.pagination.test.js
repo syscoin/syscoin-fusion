@@ -16,7 +16,8 @@ describe('Accounts - Pagination component', () => {
       nextDisabled: false,
       onChange: spy(),
       showPage: true,
-      currentPage: 0
+      currentPage: 0,
+      t: string => string
     }
     wrapper = shallow(<Pagination {...props} />)
   })
@@ -28,11 +29,6 @@ describe('Accounts - Pagination component', () => {
   it('should now show page if showPage is not present', () => {
     wrapper = shallow(<Pagination {...props} showPage={false} />)
     expect(wrapper.find('.fw-table-pagination-page').length).toBe(0)
-  })
-
-  it('should render correct page number', () => {
-    wrapper = shallow(<Pagination {...props} currentPage={5} />)
-    expect(wrapper.find('.fw-table-pagination-page').text()).toBe('Showing page 6')
   })
 
   it('should disable prev button when prevDisabled is present', () => {

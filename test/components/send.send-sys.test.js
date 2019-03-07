@@ -25,7 +25,8 @@ describe('Send - Send SYS Form component', () => {
           amount: ''
         }
       },
-      onChangeForm: spy()
+      onChangeForm: spy(),
+      t: string => string
     }
     wrapper = shallow(<SendSysForm {...props} />)
   })

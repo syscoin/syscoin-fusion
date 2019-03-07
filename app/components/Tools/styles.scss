@@ -94,15 +94,32 @@
 .backup-wallet-container,
 .get-priv-key-container,
 .import-wallet-container,
-.toggle-console-container {
+.toggle-console-container,
+.change-language-container {
     text-align: center;
 }
 
 .backup-wallet-container h3,
 .get-priv-key-container h3,
 .import-wallet-container h3,
-.toggle-console-container h3    {
+.toggle-console-container h3,
+.change-language-container h3    {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: $main_white;
+}
+
+.change-language-container {
+    p {
+        font-size: 16px;
+        color: $main_white;
+
+        span {
+            color: $main_blue;
+        }
+    }
+
+    .change-language-dropdown {
+        width: 60%;
+    }
 }

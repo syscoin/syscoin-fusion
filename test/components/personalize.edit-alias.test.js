@@ -23,7 +23,8 @@ describe('Personalize - EditAlias component', () => {
         expireTimestamp: data.expires_on
       })),
       currentAliases: [{ alias: 'test1' }, { alias: 'test2' }, { alias: 'test3' }],
-      editAlias: spy()
+      editAlias: spy(),
+      t: string => string
     }
     wrapper = shallow(<EditAlias {...props} />)
   })

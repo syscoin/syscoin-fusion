@@ -12,7 +12,8 @@ describe('Accounts - Balance component', () => {
 
   beforeEach(() => {
     props = {
-      currentBalance: 100
+      currentBalance: 100,
+      t: string => string
     }
     wrapper = shallow(<Balance {...props} />)
   })
@@ -22,7 +23,7 @@ describe('Accounts - Balance component', () => {
   })
   
   it('should render correct balance', () => {
-    expect(wrapper.find('.your-balance-amount').text()).toBe(`${props.currentBalance.toFixed(2)} SYS`)
+    expect(wrapper.find('.your-balance-amount').contains(props.currentBalance)).toBeTruthy()
   })
 
 })

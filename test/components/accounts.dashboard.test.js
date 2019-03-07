@@ -30,7 +30,8 @@ describe('Accounts - Dashboard component', () => {
       },
       refreshDashboardAssets: spy(),
       refreshDashboardTransactions: spy(),
-      goToSysForm: spy()
+      goToSysForm: spy(),
+      t: string => string
     }
     wrapper = shallow(<Dashboard {...props} />)
   })

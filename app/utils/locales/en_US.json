@@ -1,0 +1,109 @@
+{
+  "general": {
+    "window_name": "Fusion Wallet",
+    "app_name": "Fusion Wallet"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "summary": {
+      "title": "Wallet Summary",
+      "total_sys": "Total SYS",
+      "total_tokens": "Total Tokens",
+      "total_tokens_notification": "You have {{amount}} of accumulated interest on this asset from aliases: {{aliases}}",
+      "sys_transactions": "SYS Transactions"
+    },
+    "panel": {
+      "your_balance": "Your balance",
+      "your_aliases": "Your aliases/addresses",
+      "get_private_key": "Get private key",
+      "get_private_key_success": "Here is your key",
+      "syncing": "{{syncPercentage}}% synced: {{currentBlock}} out of {{headBlock}} blocks processed.\nThis might affect some wallet functionalities."
+    },
+    "asset": {
+      "no_available_assets": "No available assets for this alias",
+      "alias_information": "Alias information",
+      "available_assets": "Available assets",
+      "transactions_for": "Transactions for {{asset}}"
+    }
+  },
+  "send": {
+    "title": "Send",
+    "send_asset": {
+      "title": "Send Asset",
+      "select_alias": "Select alias",
+      "select_asset": "Select asset",
+      "send_to": "Send to",
+      "amount": "Amount",
+      "comment": "Comment",
+      "asset_send_success": "Asset successfully sent"
+    },
+    "send_sys": {
+      "title": "Send SYS",
+      "current_balance": "Current balance:",
+      "send_to": "Send to",
+      "amount": "Amount",
+      "comment": "Comment",
+      "sys_send_success": "SYS successfully sent"
+    }
+  },
+  "tools": {
+    "title": "Tools",
+    "backup_wallet": "Backup wallet",
+    "backup_success": "Backup saved successfully",
+    "backup_error": "Error while saving the backup",
+    "import_wallet": "Import wallet",
+    "import_success": "Backup loaded successfully",
+    "import_error": "Error while loading the backup",
+    "lock_wallet": "Lock wallet",
+    "lock_new_password": "Enter new password",
+    "lock_confirm_password": "Confirm your password",
+    "lock_password_dont_match": "Passwords does not match",
+    "lock_reboot": "Fusion needs to reboot to complete the wallet encryption. Do you want to continue?",
+    "lock_old_password": "Enter old password",
+    "lock_success": "Password changed successfully",
+    "lock_unlock_session": "Unlock for the session",
+    "lock_session_success": "Wallet will remain unlocked until you close Fusion",
+    "lock_change_password": "Change password",
+    "unlock_input_password": "Input your wallet password",
+    "unlock_wrong_password": "Wrong password",
+    "console_title": "Console",
+    "console_button": "Open console",
+    "change_language_title": "Change Language",
+    "change_language_current_language": "Current language"
+  },
+  "console": {
+    "title": "{{appName}} - Console",
+    "welcome": "Welcome to {{appName}} console!"
+  },
+  "misc": {
+    "balance": "Balance",
+    "send": "Send",
+    "symbol": "Symbol",
+    "asset": "Asset",
+    "showing_page": "Showing page {{number}}",
+    "claim_interest": "Claim interest",
+    "claim_interest_success": "Successfully claimed interest",
+    "claim_interest_error": "Error while claiming interest",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "details": "Details",
+    "alias": "Alias",
+    "address": "Address",
+    "success": "Success",
+    "error": "Error",
+    "try_again_later": "Something went wrong. Try again later",
+    "loading": "Loading",
+    "no_data": "No data",
+    "sys": "SYS",
+    "warning": "Warning",
+    "continue": "Continue",
+    "password": "Password",
+    "english": "English",
+    "spanish": "Spanish",
+    "dutch": "Dutch",
+    "chinese": "Chinese",
+    "language": "Language",
+    "label": "Label"
+  }
+}
