@@ -30,14 +30,16 @@ export default (props: Props) => (
             avatarUrl={props.aliasInfo.avatarUrl}
           />
         </Col>
-        <AvailableAssets
-          t={props.t}
-          assets={props.aliasAssets.data}
-          selectedAsset={props.aliasAssets.selected}
-          selectAsset={props.selectAsset}
-          goToSendAssetForm={props.goToSendAssetForm}
-          claimInterest={props.claimInterest}
-        />
+        <Col offset={1} xs={21}>
+          <AvailableAssets
+            t={props.t}
+            assets={props.aliasAssets.data}
+            selectedAsset={props.aliasAssets.selected}
+            selectAsset={props.selectAsset}
+            goToSendAssetForm={props.goToSendAssetForm}
+            claimInterest={props.claimInterest}
+          />
+        </Col>
       </div>
     )}
     {props.aliasAssets.selected ? (

@@ -43,8 +43,7 @@ export default class AssetBox extends Component<Props> {
     )
     return (
       <Col
-        xs={10}
-        offset={1}
+        xs={11}
         className={`asset-box ${isSelected ? 'selected' : ''}`}
         key={asset}
         onClick={() => selectAsset({ asset, symbol })}

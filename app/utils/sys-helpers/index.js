@@ -2,7 +2,7 @@
 const { waterfall, parallel } = require('async')
 const { uniqBy } = require('lodash')
 
-const Syscoin = require('fw/syscoin-js')
+const Syscoin = require('fw/syscoin-js').default
 
 const syscoin = new Syscoin()
 window.sys = syscoin

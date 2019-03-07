@@ -46,6 +46,10 @@ class ConsoleContainer extends Component<Props> {
     
     let json
 
+    if(param[0] == "'" && param[param.length - 1] == "'"){
+      param = param.slice(1, param.length - 1)
+    }
+
     try {
       json = JSON.parse(param)
     } catch(err) {
