@@ -30,6 +30,8 @@ export default class AliasContainer extends Component<Props> {
       addresses.push(i)
     })
 
+    console.log(this.props)
+
     return aliases.concat(addresses).map(i => (
       <AliasAddressItem
         key={i.address}

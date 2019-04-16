@@ -6,7 +6,7 @@ describe('Utils - CMD Generator tests', () => {
 
     expect(typeof cmd).toBe('string')
     expect(cmd).toContain('syscoind')
-    expect(cmd[cmd.length - 1]).toBe(' ')
+    expect(cmd[cmd.length - 1]).toBe('e')
   })
 
   it('should return cmd to init cli with no additional params', () => {

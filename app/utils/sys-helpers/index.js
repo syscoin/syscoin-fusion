@@ -5,6 +5,7 @@ const { uniqBy } = require('lodash')
 const Syscoin = require('fw/syscoin-js').default
 
 const syscoin = new Syscoin()
+
 window.sys = syscoin
 
 /*
@@ -43,7 +44,8 @@ type listAssetAllocationType = {
 };
 
 // Get network info
-const getInfo = () => syscoin.networkServices.getInfo()
+// const getInfo = () => syscoin.networkServices.getInfo()
+const getInfo = () => syscoin.callRpc('-getinfo', [])
 
 // Get current SYS address
 const currentSysAddress = (address?: string = '') => syscoin.walletServices.getAccountAddress(address)

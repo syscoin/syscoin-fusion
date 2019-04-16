@@ -11,17 +11,29 @@ const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 const getSysPath = require('./syspath')
 
+// const checkSyscoind = (cb) => {
+//   // Just a test to check if syscoind is ready
+//   getInfo()
+//     .then(result => cb(false, 'up', result))
+//     .catch(err => {
+//       if (err.code === -28) {
+//         // Verifying wallet... Let the user know.
+//         return cb(null, 'verify', err.message)
+//       }
+//       cb(err)
+//     })
+// }
+
 const checkSyscoind = (cb) => {
-  // Just a test to check if syscoind is ready
-  getInfo()
-    .then(result => cb(false, 'up', result))
-    .catch(err => {
-      if (err.code === -28) {
-        // Verifying wallet... Let the user know.
-        return cb(null, 'verify', err.message)
-      }
-      cb(err)
-    })
+	exec(generateCmd('cli', '-rpcport=8336 -rpcuser=u -rpcpassword=p -getinfo'), (err, stdout, stderr) => {
+		if(err) {
+			cb(err)
+		} else if (stdout){
+			cb(false, 'up', stdout)
+		} else {
+			return cb(null, 'verify', err)
+		}
+	})
 }
 
 const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
@@ -110,7 +122,7 @@ const startUpRoutine = (cb) => {
   waterfall([
     done => {
       let isDone = false
-      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -assetallocationindex -server -rpcallowip=127.0.0.1 -rpcport=8336 -rpcuser=u -rpcpassword=p`), (err) => {
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -assetindex=1 -server -rpcallowip=127.0.0.1 -rpcport=8336 -rpcuser=u -rpcpassword=p`), (err) => {
         if (isDone) {
           return
         }
@@ -140,7 +152,7 @@ const startUpRoutine = (cb) => {
     },
     (reindex, done) => {
       if (reindex) {
-        exec(generateCmd('syscoind', '-reindex -addressindex -assetallocationindex -server -rpcallowip=127.0.0.1 -rpcport=8336 -rpcuser=u -rpcpassword=p'))
+        exec(generateCmd('syscoind', '-reindex -assetindex=1 -server -rpcallowip=127.0.0.1 -rpcport=8336 -rpcuser=u -rpcpassword=p'))
       }
       done()
     },

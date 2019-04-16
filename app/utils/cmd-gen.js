@@ -14,10 +14,11 @@ const generateCmd = (type: string, cmdLine: string = ''): string => {
 
   switch (type) {
     case 'syscoind':
-      cmd += `"${syscoindPath}" --datadir="${syscoinDataPath}" `
+      // cmd += `"${syscoindPath}" --datadir="${syscoinDataPath}" `
+      cmd += `${syscoindPath}`
       break
     case 'cli':
-      cmd += `"${syscoinCliPath}" --datadir="${syscoinDataPath}" `
+      cmd += `${syscoinCliPath} `
       break
     default:
       throw new Error('type should be either "cli" or "syscoind"')
@@ -26,7 +27,6 @@ const generateCmd = (type: string, cmdLine: string = ''): string => {
   if (cmdLine.length) {
     cmd += cmdLine
   }
-
   return cmd
 }
 
