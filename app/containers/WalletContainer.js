@@ -11,7 +11,8 @@ import {
   saveUnfinishedAliases,
   saveBlockchainInfo,
   dashboardTransactions,
-  checkWalletEncryption
+  checkWalletEncryption,
+  getWalletBalance,
 } from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
@@ -82,6 +83,7 @@ class WalletContainer extends Component<Props> {
     this.props.saveUnfinishedAliases()
     this.props.saveBlockchainInfo()
     this.props.checkWalletEncryption()
+    this.props.getWalletBalance()
     processIncompleteAliases({
       unfinishedAliases: this.props.unfinishedAliases,
       actualBlock: this.props.currentBlock
@@ -150,7 +152,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   saveBlockchainInfo,
   toggleMaximize,
   dashboardTransactions,
-  checkWalletEncryption
+  checkWalletEncryption,
+  getWalletBalance
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(WalletContainer))

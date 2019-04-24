@@ -43,6 +43,7 @@ type Props = {
   isEncrypted: boolean,
   getAssetsFromAlias: Function,
   sendChangeTab: Function,
+  verificationProgressSync: number,
   t: Function
 };
 
@@ -204,13 +205,15 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   syncPercentage() {
-    const { currentBlock, headBlock } = this.props
+    const { currentBlock, headBlock, verificationProgressSync } = this.props
 
     if (headBlock === 0) {
       return 0
     }
 
-    return parseInt((currentBlock / headBlock) * 100, 10)
+    let percentage = (verificationProgressSync * 100).toFixed(2)
+    // return parseInt((currentBlock / headBlock) * 100, 10)
+    return parseFloat(percentage)
   }
 
   getBackgroundLogo() {
@@ -342,14 +345,15 @@ class AccountsContainer extends Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  balance: state.wallet.getinfo.balance,
+  balance: state.wallet.balance,
   aliases: state.wallet.aliases,
   assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,
-  currentBlock: state.wallet.getinfo.blocks,
+  currentBlock: state.wallet.blockchaininfo.blocks,
   dashboardSysTransactions: state.wallet.dashboard.transactions,
   dashboardAssetsBalances: state.wallet.dashboard.assets,
-  isEncrypted: state.wallet.isEncrypted
+  isEncrypted: state.wallet.isEncrypted,
+  verificationProgressSync: state.wallet.blockchaininfo.verificationprogress
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

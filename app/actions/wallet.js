@@ -1,13 +1,24 @@
 // @flow
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
-import { getInfo, getAliases, getBlockchainInfo, listSysTransactions, listAssetAllocation, isEncrypted, getBlockByNumber, aliasInfo } from 'fw-sys'
+import {
+  getInfo,
+  getAliases, 
+  getBlockchainInfo, 
+  listSysTransactions, 
+  listAssetAllocation, 
+  isEncrypted, 
+  getBlockByNumber, 
+  aliasInfo,
+  currentBalance
+} from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
 import _ from 'lodash'
 import each from 'async/each'
 import map from 'async/map'
 import moment from 'moment'
+import { error } from 'util';
 
 type getInfoActionType = {
   type: string,
@@ -99,6 +110,17 @@ const dashboardTransactionsReceiveAction = createAction(types.WALLET_DASHBOARD_T
 
 const walletIsEncrypted = createAction(types.WALLET_IS_ENCRYPTED)
 const walletIsUnlocked = createAction(types.WALLET_IS_UNLOCKED)
+
+const getWalletBalanceAction = createAction(types.WALLET_BALANCE)
+
+export const getWalletBalance = () => async (dispatch: (action) => void) => {
+  try{
+    dispatch(getWalletBalanceAction(await currentBalance()))
+  } catch(err) {
+    console.log(err)
+    dispatch(getWalletBalanceAction(0))
+  }
+}
 
 export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
   try {

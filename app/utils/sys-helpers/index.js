@@ -51,7 +51,7 @@ const getInfo = () => syscoin.callRpc('-getinfo', [])
 const currentSysAddress = (address?: string = '') => syscoin.walletServices.getAccountAddress(address)
 
 // Get current SYS Balance
-const currentBalance = () => syscoin.callRpc('getbalance')
+const currentBalance = () => syscoin.callRpc('getbalance', [])
 
 // Get current aliases
 const getAliases = () => syscoin.walletServices.syscoinListReceivedByAddress()

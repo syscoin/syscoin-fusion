@@ -11,7 +11,8 @@ import {
   WALLET_DASHBOARD_TRANSACTIONS_ERROR,
   WALLET_DASHBOARD_TRANSACTIONS_RECEIVE,
   WALLET_IS_ENCRYPTED,
-  WALLET_IS_UNLOCKED
+  WALLET_IS_UNLOCKED,
+  WALLET_BALANCE,
 } from 'fw-types/wallet'
 
 type actionType = {
@@ -173,6 +174,11 @@ export default function wallet(state: Object = initialState, action: actionType)
       return {
         ...state,
         isUnlocked: action.payload
+      }
+    case WALLET_BALANCE:
+      return {
+        ...state,
+        balance: action.payload
       }
     default:
       return state
