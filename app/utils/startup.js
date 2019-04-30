@@ -30,7 +30,7 @@ const RPCPASSWORD='p'
 const RPCALLOWIP='127.0.0.1'
 
 const checkSyscoind = (cb) => {
-	exec(generateCmd('cli', `-rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} getinfo`), (err, stdout, stderr) => {
+	exec(generateCmd('cli', `-rpcport=${RPCPORT} -regtest -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} getinfo`), (err, stdout, stderr) => {
     console.log(stdout, err, stderr)
     if(err) {
 			cb(err)
@@ -128,7 +128,7 @@ const startUpRoutine = (cb) => {
   waterfall([
     done => {
       let isDone = false
-      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -assetindex=1 -server -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`), (err) => {
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -addressindex -blockindex=1 -assetindex=1 -address -server -regtest -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`), (err) => {
         if (isDone) {
           return
         }
@@ -158,7 +158,7 @@ const startUpRoutine = (cb) => {
     },
     (reindex, done) => {
       if (reindex) {
-        exec(generateCmd('syscoind', `-reindex -assetindex=1 -server -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`))
+        exec(generateCmd('syscoind', `-reindex -blockindex=1 -addressindex -assetindex=1 -regtest=1 -server -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`))
       }
       done()
     },

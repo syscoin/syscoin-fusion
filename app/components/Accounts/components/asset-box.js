@@ -51,9 +51,9 @@ export default class AssetBox extends Component<Props> {
         <h3 className='asset-box-name'>{symbol}</h3>
         <h5 className='asset-box-guid'>{asset}</h5>
         <h4 className='asset-box-balance'>{t('misc.balance')}: {Number(balance).toFixed(2)}</h4>
-        <Dropdown overlay={menu} trigger={['click']}>
+        {/* <Dropdown overlay={menu} trigger={['click']}>
           <Icon type='setting' className='asset-box-settings' />
-        </Dropdown>
+        </Dropdown> */}
         <SendButton className='asset-box-send' onClick={() => goToSendAssetForm(asset)} t={t} />
       </Col>
     )

@@ -345,7 +345,7 @@ class AccountsContainer extends Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  balance: state.wallet.balance,
+  balance: parseFloat(state.wallet.balance),
   aliases: state.wallet.aliases,
   assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,

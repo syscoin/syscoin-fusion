@@ -26,7 +26,7 @@ const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" -datadir
 const sendRawTransaction = raw => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" syscoinsendrawtransaction ${raw}`).toString()).txid
 
 const generateOne = () => {
-    exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" generate 1`)
+    exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" generate 101`)
 }
 
 const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" aliasinfo ${aliasName}`).toString())

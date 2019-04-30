@@ -134,7 +134,7 @@ class SendContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  balance: state.wallet.getinfo.balance,
+  balance: state.wallet.balance,
   aliases: state.wallet.aliases,
   assetForm: state.forms.sendAsset,
   sysForm: state.forms.sendSys,
