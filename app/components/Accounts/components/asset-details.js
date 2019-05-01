@@ -19,7 +19,7 @@ type Props = {
 export default (props: Props) => (
   <Row>
     {(props.selectedAlias && !props.aliasAssets.isLoading) && (
-      <div>
+      <Row>
         <Col offset={1} xs={21}>
           <AliasInfo
             t={props.t}
@@ -40,7 +40,7 @@ export default (props: Props) => (
             claimInterest={props.claimInterest}
           />
         </Col>
-      </div>
+      </Row>
     )}
     {props.aliasAssets.selected ? (
       <Row>

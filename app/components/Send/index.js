@@ -9,7 +9,6 @@ import SendSysForm from './components/send-sys'
 
 const Panel = Collapse.Panel
 
-
 type Props = {
   aliases: Array<string>,
   sendAsset: Function,

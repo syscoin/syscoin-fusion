@@ -2,7 +2,7 @@
 const { waterfall, parallel } = require('async')
 const { uniqBy } = require('lodash')
 
-const Syscoin = require('fw/syscoin-js').default
+const Syscoin = require('syscoin-js').default
 
 const syscoin = new Syscoin()
 
@@ -65,58 +65,59 @@ const getAssetInfo = (asset: string) => syscoin.walletServices.asset.info({
 // Get asset allocation info
 const getAssetAllocationInfo = (obj: AllocationInfoType) => syscoin.walletServices.assetAllocation.info(obj.assetId, obj.aliasName, false)
 
-// const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
-//   // Sends asset to specific alias
-//   const { fromAlias, toAlias, assetId, amount, comment } = obj
-//   console.log(obj)
-//   waterfall([
-//     done => {
-//       syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, amount: amount }], comment])
-//         .then(result => done(null, result[0]))
-//         .catch(err => {
-//           console.log(err)
-//           if (err.message.indexOf('ERRCODE: 1018') !== -1) {
-//             return done(null, null)
-//           }
-
-//           return done(err)
-//         })
-//     },
-//     (firstOutput, done) => {
-//       if (!firstOutput) {
-//         return syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, ranges: [{ start: 0, end: parseFloat(amount) }] }], comment, ''])
-//           .then(stringTwo => done(null, stringTwo[0]))
-//           .catch(err => done(err))
-//       }
-
-//       done(null, firstOutput)
-//     },
-//     (assetAllocationOutput, done) => {
-//       syscoin.transactionServices.signRawTransaction({ hexString: assetAllocationOutput })
-//         .then(resultSign => done(null, resultSign.hex))
-//         .catch(err => done(err))
-//     },
-//     (signOutput, done) => {
-//       syscoin.walletServices.syscoinSendRawTransaction(signOutput)
-//         .then(resultSend => done(null, resultSend))
-//         .catch(err => done(err))
-//     }
-//   ], (err) => {
-//     if (err) {
-//       return reject(err)
-//     }
-
-//     resolve()
-//   })
-// })
-
-const sendAsset = async (obj: SendAssetType) => {
+const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
   // Sends asset to specific alias
   const { fromAlias, toAlias, assetId, amount, comment } = obj
-  let response
-  return await syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, amount: parseFloat(amount) }], comment])
+  console.log(obj)
+  waterfall([
+    done => {
+      syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, amount: parseFloat(amount) }], comment, ''])
+        .then(result => done(null, result[0]))
+        .catch(err => {
+          console.log(err)
+          if (err.message.indexOf('ERRCODE: 1018') !== -1) {
+            return done(null, null)
+          }
+
+          return done(err)
+        })
+    },
+    (firstOutput, done) => {
+      if (!firstOutput) {
+        return syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, ranges: [{ start: 0, end: parseFloat(amount) }] }], comment, ''])
+          .then(stringTwo => done(null, stringTwo[0]))
+          .catch(err => done(err))
+      }
+
+      done(null, firstOutput)
+    },
+    (assetAllocationOutput, done) => {
+      syscoin.transactionServices.signRawTransaction({ hexString: assetAllocationOutput })
+        .then(resultSign => done(null, resultSign.hex))
+        .catch(err => done(err))
+    },
+    (signOutput, done) => {
+      console.log(signOutput)
+      syscoin.callRpc('syscoinsendrawtransaction', [signOutput])
+        .then(resultSend => done(null, resultSend))
+        .catch(err => done(err))
+    }
+  ], (err) => {
+    if (err) {
+      return reject(err)
+    }
+
+    resolve()
+  })
+})
+
+// const sendAsset = async (obj: SendAssetType) => {
+//   // Sends asset to specific alias
+//   const { fromAlias, toAlias, assetId, amount, comment } = obj
+//   let response
+//   return await syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, amount: parseFloat(amount) }], comment, ''])
   
-}
+// }
 // const sendSysTransaction = (obj: sendSysTransactionType) => {
 //   // Send SYS to address
 //   const { address, amount, comment = '' } = obj
@@ -170,13 +171,13 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
 })
 
 // Backup wallet
-const exportWallet = (backupDir: string) => syscoin.walletServices.dumpWallet(backupDir)
+const exportWallet = (backupDir: string) => syscoin.callRpc('dumpwallet', [backupDir])
 
 // Imports wallet backup
-const importWallet = (backupDir: string) => syscoin.walletServices.importWallet(backupDir)
+const importWallet = (backupDir: string) => syscoin.callRpc('importwallet', [backupDir])
 
 // Returns priv key of desired address.
-const getPrivateKey = (address: string) => syscoin.walletServices.dumpPrivKey(address)
+const getPrivateKey = (address: string) => syscoin.callRpc('dumpprivkey', [address])
 
 // Edit existing alias
 const editAlias = (obj: Object) => new Promise((resolve, reject) => {
@@ -329,7 +330,9 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
     .catch(err => reject(err))
 })
 
-const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
+const encryptWallet = (pass: string) => {
+  return syscoin.callRpc('encryptwallet', [pass])
+}
 const unlockWallet = (pass: string, time: number) => syscoin.callRpc('walletpassphrase', [pass, time])
 const changePwd = (oldPwd: string, newPwd: string) => syscoin.callRpc('walletpassphrasechange', [oldPwd, newPwd])
 const lockWallet = () => syscoin.callRpc('walletlock')
