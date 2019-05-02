@@ -31,6 +31,7 @@ const RPCALLOWIP='127.0.0.1'
 
 const checkSyscoind = (cb) => {
 	exec(generateCmd('cli', `-rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} -getinfo`), (err, stdout, stderr) => {
+    console.log(err, stdout, stderr)
     if(err) {
 			cb(err)
 		} else if (stdout){
