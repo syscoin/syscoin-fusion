@@ -24,7 +24,7 @@ const getSysPath = require('./syspath')
 //     })
 // }
 
-const RPCPORT='8370'
+const RPCPORT='8369'
 const RPCUSER='u'
 const RPCPASSWORD='p'
 const RPCALLOWIP='127.0.0.1'
