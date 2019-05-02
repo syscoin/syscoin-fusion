@@ -107,7 +107,6 @@ export default class EditAlias extends Component<Props, State> {
       try {
         await this.props.editAlias(obj)
       } catch (err) {
-        console.log(err)
         this.setState({ isLoading: false })
         return swal('Error', parseError(err.message), 'error')
       }

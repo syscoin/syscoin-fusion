@@ -51,7 +51,7 @@ export default class DashboardBalance extends Component<Props> {
 
           return (
             <div>
-              <Dropdown
+              {/* <Dropdown
                 overlay={(
                   <Menu>
                     <Item onClick={() => this.claimAll(row.asset, claimable.map(i => i.alias))} disabled={!(claimable.length)}>{t('misc.claim_interest')}</Item>
@@ -60,7 +60,7 @@ export default class DashboardBalance extends Component<Props> {
                 trigger={['click']}
               >
                 <Icon type='setting' className='token-table-actions' />
-              </Dropdown>
+              </Dropdown> */}
               {claimable.length ? (
                 <Tooltip
                   title={t('accounts.summary.total_tokens_notification', {

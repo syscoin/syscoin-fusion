@@ -2,9 +2,9 @@
 const { waterfall, parallel } = require('async')
 const { uniqBy } = require('lodash')
 
-const Syscoin = require('syscoin-js').default
+const {SyscoinRpcClient} = require('syscoin-js')
 
-const syscoin = new Syscoin()
+const syscoin = new SyscoinRpcClient({port: 8370, username: 'u', password: 'p'})
 
 window.sys = syscoin
 
@@ -56,6 +56,9 @@ const currentBalance = () => syscoin.callRpc('getbalance', [])
 // Get current aliases
 const getAliases = () => syscoin.walletServices.syscoinListReceivedByAddress()
 
+// Get assets
+const getAssets = () => syscoin.callRpc('listassets', [])
+
 // Get asset info
 const getAssetInfo = (asset: string) => syscoin.walletServices.asset.info({
   asset,
@@ -68,13 +71,11 @@ const getAssetAllocationInfo = (obj: AllocationInfoType) => syscoin.walletServic
 const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
   // Sends asset to specific alias
   const { fromAlias, toAlias, assetId, amount, comment } = obj
-  console.log(obj)
   waterfall([
     done => {
       syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, amount: parseFloat(amount) }], comment, ''])
         .then(result => done(null, result[0]))
         .catch(err => {
-          console.log(err)
           if (err.message.indexOf('ERRCODE: 1018') !== -1) {
             return done(null, null)
           }
@@ -97,7 +98,6 @@ const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
         .catch(err => done(err))
     },
     (signOutput, done) => {
-      console.log(signOutput)
       syscoin.callRpc('syscoinsendrawtransaction', [signOutput])
         .then(resultSend => done(null, resultSend))
         .catch(err => done(err))
@@ -208,7 +208,6 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
     }
   ], (err) => {
     if (err) {
-      console.log(err)
       return reject(err)
     }
 
@@ -223,10 +222,10 @@ const aliasInfo = (name: string) => syscoin.walletServices.alias.info({ aliasNam
 const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
   parallel([
     (done) => {
-      syscoin.walletServices.assetAllocation.listTransactions({
-        count: 999999,
-        from: 0,
-        options: {
+      syscoin.callRpc('listassetallocationtransactions', [
+        999999,
+        0,
+        {
           /*senders: [
             {
               [obj.isAlias ? 'sender_alias' : 'sender_address']: obj.alias
@@ -234,15 +233,17 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
           ],*/
           [obj.isAlias ? 'sender_alias' : 'sender_address']: obj.alias,
           asset: obj.assetId
-        } 
-      }).then(results => done(null, results))
-        .catch(err => done(err))
+        }
+      ]).then(results => done(null, results))
+        .catch(err => {
+          done(err)
+        })
     },
     (done) => {
-      syscoin.walletServices.assetAllocation.listTransactions({
-        count: 999999,
-        from: 0,
-        options: {
+      syscoin.callRpc('listassetallocationtransactions', [
+        999999,
+        0,
+        {
             /*receivers: [
               {
                 [obj.isAlias ? 'receiver_alias' : 'receiver_address']: obj.alias,
@@ -251,7 +252,7 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
             [obj.isAlias ? 'receiver_alias' : 'receiver_address']: obj.alias,
             asset: obj.assetId
         }
-      })
+      ])
         .then(results => done(null, results))
         .catch(err => done(err))
     }
@@ -259,7 +260,6 @@ const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promis
     if (err) {
       return reject(err)
     }
-
     let data = tasks[0].concat(tasks[1])
 
     const txids = data.map(i => i.txid)
@@ -293,7 +293,6 @@ const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<s
       if (Array.isArray(filterGuids) && filterGuids.length) {
         data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
       }
-
       return resolve(data)
     })
     .catch(err => reject(err))
@@ -406,5 +405,6 @@ module.exports = {
   lockWallet,
   isEncrypted,
   claimAssetInterest,
-  getBlockByNumber
+  getBlockByNumber,
+  getAssets
 }

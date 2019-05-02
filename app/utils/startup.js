@@ -31,7 +31,6 @@ const RPCALLOWIP='127.0.0.1'
 
 const checkSyscoind = (cb) => {
 	exec(generateCmd('cli', `-rpcport=${RPCPORT} -regtest -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} getinfo`), (err, stdout, stderr) => {
-    console.log(stdout, err, stderr)
     if(err) {
 			cb(err)
 		} else if (stdout){
@@ -187,7 +186,6 @@ const startUpRoutine = (cb) => {
     }
   ], err => {
     if (err) {
-      console.log(err)
       return swal('Error', 'Something went wrong during wallet initialization. Exiting.', 'error')
         .then(() => app.quit())
     }

@@ -177,7 +177,6 @@ class AccountsContainer extends Component<Props, State> {
     }, async () => {
 
       let transactions
-
       try {
         transactions = await getTransactionsPerAsset({
           isAlias: this.state.selectedIsAlias,

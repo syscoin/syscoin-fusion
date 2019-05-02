@@ -38,6 +38,7 @@ export default (props: Props) => (
             selectAsset={props.selectAsset}
             goToSendAssetForm={props.goToSendAssetForm}
             claimInterest={props.claimInterest}
+            selectedAlias={props.selectedAlias}
           />
         </Col>
       </Row>

@@ -17,7 +17,7 @@ import {
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
-import { getAssetInfo } from 'fw-sys'
+import { getAssetInfo, getAssets } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
 import getPaths from 'fw-utils/get-doc-paths'
@@ -102,7 +102,6 @@ class WalletContainer extends Component<Props> {
     } catch(err) {
       guids = []
     }
-
     this.props.saveGuids(guids)
   }
 

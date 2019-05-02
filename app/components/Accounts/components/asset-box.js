@@ -23,6 +23,7 @@ const { Item } = Menu
 export default class AssetBox extends Component<Props> {
 
   async claimInterest() {
+    
     const { t } = this.props
     try {
       await this.props.claimInterest(this.props.asset, this.props.selectedAlias)
@@ -35,7 +36,6 @@ export default class AssetBox extends Component<Props> {
 
   render() {
     const { isSelected, selectAsset, asset, symbol, balance, goToSendAssetForm, canClaimInterest, t } = this.props
-
     const menu = (
       <Menu>
         <Item key='0' onClick={this.claimInterest.bind(this)} disabled={!canClaimInterest}>{t('misc.claim_interest')}</Item>

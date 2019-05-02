@@ -117,7 +117,6 @@ export const getWalletBalance = () => async (dispatch: (action) => void) => {
   try{
     dispatch(getWalletBalanceAction(await currentBalance()))
   } catch(err) {
-    console.log(err)
     dispatch(getWalletBalanceAction(0))
   }
 }
@@ -213,7 +212,6 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
     )
 
     const allocs = await Promise.all(promises)
-
     allocs.forEach(i => {
       allocations = allocations.concat(i)
     })
@@ -222,7 +220,8 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
   }
 
   // Generating balances per asset
-  each(_.flatten(allocations), async (i, done) => {
+
+  allocations.map(async (i, index) => {
     if (!assets[i.asset]) {
       assets[i.asset] = {
         balance: 0,
@@ -232,29 +231,47 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
         interestData: []
       }
     }
-
-    const lastInterestClaimBlock = await getBlockByNumber(i.interest_claim_height)
-
     assets[i.asset].balance += Number(i.balance)
-
-    assets[i.asset].interestData.push({
-      lastClaimedInterest: i.interest_rate > 0 ? (new Date(0)).setUTCSeconds(lastInterestClaimBlock.time) : moment.now(),
-      accumulatedInterest: Number(i.accumulated_interest),
-      alias: i.alias
-    })
-
-    done()
-  }, () => {
-    // Turning the object into an array
-    assets = Object.keys(assets).map(i => assets[i])
-
-    if (fixedGuids.length) {
-      // Filtering out guids not present in fusion.cfg
-      assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
-    }
-
-    dispatch(dashboardAssetsReceiveAction(assets))
   })
+  
+  assets = Object.keys(assets).map(i => assets[i])
+
+  if (fixedGuids.length) {
+    // Filtering out guids not present in fusion.cfg
+    assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
+  }
+  dispatch(dashboardAssetsReceiveAction(assets))
+  // each(_.flatten(allocations), async (i, done) => {
+  //   if (!assets[i.asset]) {
+  //     assets[i.asset] = {
+  //       balance: 0,
+  //       accumulated_interest: 0,
+  //       asset: i.asset,
+  //       symbol: i.symbol,
+  //       interestData: []
+  //     }
+  //   }
+
+  //   const lastInterestClaimBlock = await getBlockByNumber(i.interest_claim_height)
+
+  //   assets[i.asset].balance += Number(i.balance)
+
+  //   assets[i.asset].interestData.push({
+  //     lastClaimedInterest: i.interest_rate > 0 ? (new Date(0)).setUTCSeconds(lastInterestClaimBlock.time) : moment.now(),
+  //     accumulatedInterest: Number(i.accumulated_interest),
+  //     alias: i.alias
+  //   })
+  //   done()
+  // }, () => {
+  //   // Turning the object into an array
+  //   assets = Object.keys(assets).map(i => assets[i])
+
+  //   if (fixedGuids.length) {
+  //     // Filtering out guids not present in fusion.cfg
+  //     assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
+  //   }
+  //   dispatch(dashboardAssetsReceiveAction(assets))
+  // })
 
 }
 
