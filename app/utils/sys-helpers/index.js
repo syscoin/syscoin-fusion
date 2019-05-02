@@ -2,9 +2,9 @@
 const { waterfall, parallel } = require('async')
 const { uniqBy } = require('lodash')
 
-const {SyscoinRpcClient} = require('syscoin-js')
+const Syscoin = require('syscoin-js').SyscoinRpcClient
 
-const syscoin = new SyscoinRpcClient({port: 8370, username: 'u', password: 'p'})
+const syscoin = new Syscoin({port: 8370, username: 'u', password: 'p'})
 
 window.sys = syscoin
 
