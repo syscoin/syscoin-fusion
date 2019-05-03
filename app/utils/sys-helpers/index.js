@@ -58,7 +58,12 @@ const currentBalance = async () => {
   } catch(err) {
     return err
   }
-  return balance.result
+
+  if (balance.result) {
+    return balance.result
+  }
+
+  return balance
 }
 
 // Get current aliases
