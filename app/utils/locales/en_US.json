@@ -14,14 +14,14 @@
     },
     "panel": {
       "your_balance": "Your balance",
-      "your_aliases": "Your aliases/addresses",
+      "your_aliases": "Your addresses",
       "get_private_key": "Get private key",
       "get_private_key_success": "Here is your key",
       "syncing": "{{syncPercentage}}% synced: {{currentBlock}} out of {{headBlock}} blocks processed.\nThis might affect some wallet functionalities."
     },
     "asset": {
-      "no_available_assets": "No available assets for this alias",
-      "alias_information": "Alias information",
+      "no_available_assets": "No available assets for this address",
+      "alias_information": "Address information",
       "available_assets": "Available assets",
       "transactions_for": "Transactions for {{asset}}"
     }
@@ -30,7 +30,7 @@
     "title": "Send",
     "send_asset": {
       "title": "Send Asset",
-      "select_alias": "Select alias",
+      "select_alias": "Select address",
       "select_asset": "Select asset",
       "send_to": "Send to",
       "amount": "Amount",
