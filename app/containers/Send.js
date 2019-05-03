@@ -17,7 +17,7 @@ import unlockWallet from 'fw-utils/unlock-wallet'
 
 
 type Props = {
-  balance: number,
+  balance: Number,
   aliases: Array<Object>,
   sendAssetForm: Function,
   sendSysForm: Function,
@@ -115,11 +115,12 @@ class SendContainer extends Component<Props> {
   }
 
   render() {
+    const {balance} = this.props
     return (
       <Send
         changeTab={this.props.sendChangeTab}
         activeTab={this.props.activeTab}
-        balance={this.props.balance}
+        balance={balance}
         aliases={this.props.aliases.map(i => i.alias || i.address)}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}

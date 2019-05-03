@@ -21,6 +21,7 @@ type actionType = {
 };
 
 export const initialState = {
+  balance: 0,
   getinfo: {
     version: "",
     dashversion: "",

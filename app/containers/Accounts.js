@@ -21,7 +21,7 @@ import SyscoinLogo from 'fw/syscoin-logo.png'
 import unlockWallet from 'fw-utils/unlock-wallet'
 
 type Props = {
-  balance: number,
+  balance: obj,
   aliases: Array<Object>,
   assets: Array<Object>,
   headBlock: number,
@@ -310,8 +310,7 @@ class AccountsContainer extends Component<Props, State> {
 
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
-    const { balance, aliases } = this.props
-
+    const { aliases, balance } = this.props
     return (
       <Accounts
         backgroundLogo={this.getBackgroundLogo()}
@@ -344,7 +343,7 @@ class AccountsContainer extends Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  balance: parseFloat(state.wallet.balance),
+  balance: state.wallet.balance,
   aliases: state.wallet.aliases,
   assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,

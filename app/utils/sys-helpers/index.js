@@ -51,7 +51,15 @@ type listAssetAllocationType = {
 const currentSysAddress = (address?: string = '') => syscoin.walletServices.getAccountAddress(address)
 
 // Get current SYS Balance
-const currentBalance = () => syscoin.callRpc('getbalance', [])
+const currentBalance = async () => {
+  let balance
+  try {
+    balance = await syscoin.callRpc('getbalance', [])
+  } catch(err) {
+    return err
+  }
+  return balance.result
+}
 
 // Get current aliases
 const getAliases = () => new Promise(async (resolve, reject) => {
@@ -141,6 +149,42 @@ const sendSysTransaction = (obj: sendSysTransactionType) => {
   const { address, amount, comment = '' } = obj
   return syscoin.callRpc("sendtoaddress", [address, Number(amount), comment])
 }
+
+const createNewAsset = async (obj: Object) => {
+  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ""} = obj
+
+  let asset, txFund, signRaw
+
+  try {
+    asset = await assetNew(obj)
+    txFund = await syscoinTxFund(asset[0], aliasName)
+    signRaw = await signRawTransaction(txFund[0])
+    await sendRawTransaction(signRaw.hex)
+  } catch(error) {
+    return error
+  }
+
+  return asset
+}
+
+const assetNew = (obj: Object) => {
+  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ""} = obj
+  return syscoin.callRpc('assetnew', [aliasName, assetName, contract, burnMethodSignature, precision, supply, maxSupply, updateFlags, witness])
+}
+
+const syscoinTxFund = (tx, aliasName) => {
+  return syscoin.callRpc('syscointxfund', [tx, aliasName])
+}
+
+const signRawTransaction = (txFund) => {
+  return syscoin.callRpc('signrawtransactionwithwallet', [txFund])
+}
+
+const sendRawTransaction = (raw) => {
+  return syscoin.callRpc('sendrawtransaction', [raw])
+}
+
+
 const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   // Creates new alias
   const { aliasName, publicValue = '', acceptTransferFlags = 3, expireTimestamp = 1548184538, address = '', encryptionPrivKey = '', encryptionPublicKey = '', witness = '' } = obj
