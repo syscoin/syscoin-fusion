@@ -23,8 +23,8 @@ export default (props: Props) => (
         <Col offset={1} xs={21}>
           <AliasInfo
             t={props.t}
-            isAlias={!!props.aliasInfo.alias.length}
-            alias={props.aliasInfo.alias}
+            isAlias={!!props.aliasInfo.alias}
+            alias={props.aliasInfo.alias || ''}
             address={props.aliasInfo.address}
             balance={props.aliasInfo.balance}
             avatarUrl={props.aliasInfo.avatarUrl}

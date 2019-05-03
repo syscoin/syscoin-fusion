@@ -3,22 +3,16 @@ import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
 import {
   getInfo,
-  getAliases, 
-  getBlockchainInfo, 
-  listSysTransactions, 
-  listAssetAllocation, 
-  isEncrypted, 
-  getBlockByNumber, 
+  getAliases,
+  getBlockchainInfo,
+  listSysTransactions,
+  listAssetAllocation,
+  isEncrypted,
   aliasInfo,
   currentBalance
 } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
-import _ from 'lodash'
-import each from 'async/each'
-import map from 'async/map'
-import moment from 'moment'
-import { error } from 'util';
 
 type getInfoActionType = {
   type: string,

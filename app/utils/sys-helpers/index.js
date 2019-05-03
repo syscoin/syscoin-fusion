@@ -4,7 +4,7 @@ const { uniqBy } = require('lodash')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
 
-const syscoin = new Syscoin({port: 8370, username: 'u', password: 'p'})
+const syscoin = new Syscoin({port: 8369, username: 'u', password: 'p'})
 
 window.sys = syscoin
 
@@ -54,7 +54,19 @@ const currentSysAddress = (address?: string = '') => syscoin.walletServices.getA
 const currentBalance = () => syscoin.callRpc('getbalance', [])
 
 // Get current aliases
-const getAliases = () => syscoin.walletServices.syscoinListReceivedByAddress()
+const getAliases = () => new Promise(async (resolve, reject) => {
+  let aliases
+  
+  try {
+    aliases = await syscoin.walletServices.syscoinListReceivedByAddress()
+  } catch(err) {
+    return reject(err)
+  }
+
+  aliases = aliases.filter(i => i.address)
+
+  return resolve(aliases)
+})
 
 // Get assets
 const getAssets = () => syscoin.callRpc('listassets', [])

@@ -22,6 +22,8 @@ export default class AliasContainer extends Component<Props> {
     const aliases = []
     const addresses = []
 
+    console.log(this.props.aliases)
+
     this.props.aliases.forEach(i => {
       if (i.alias) {
         return aliases.push(i)
@@ -30,11 +32,12 @@ export default class AliasContainer extends Component<Props> {
       addresses.push(i)
     })
 
+
     return aliases.concat(addresses).map(i => (
       <AliasAddressItem
-        key={i.address}
-        alias={i.alias}
-        address={i.address}
+        key={i.address || 'NO_ADDRESS'}
+        alias={i.alias || ''}
+        address={i.address || 'NO_ADDRESS'}
         isLoading={this.props.aliasAssets.isLoading}
         isSelected={this.isAliasSelected(i)}
         updateSelectedAlias={this.props.updateSelectedAlias}
