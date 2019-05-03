@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const exec = require('child_process').execSync
 
-const { SYS_LOCATION, DATA_DIR } = process.env
+const { SYS_LOCATION, DATA_DIR, RPCPORT, RPCUSERNAME, RPCPASSWORD } = process.env
 
 /* SCRIPT PARAMS */
 
@@ -15,23 +15,23 @@ if (!aliasName || !assetName) {
 
 /* FUNCTIONS */
 
-const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=8369 -rpcuser=u -rpcpassword=p assetnew ${aliasName} "${assetName}" "" "" 8 1000 10000 1 ""`).toString())
+const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetnew ${aliasName} "${assetName}" "" "" 8 1000 10000 1 ""`).toString())
 
-const assetSend = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=8369 -rpcuser=u -rpcpassword=p assetsend ${assetUid} ${aliasName} [{\\"ownerto\\":\\"${aliasName}\\",\\"amount\\":100}] "memo" ""`).toString())[0]
+const assetSend = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetsend ${assetUid} ${aliasName} [{\\"ownerto\\":\\"${aliasName}\\",\\"amount\\":100}] "memo" ""`).toString())[0]
 
-const assetAllocation = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=8369 -rpcuser=u -rpcpassword=p assetallocationinfo ${assetUid} ${aliasName} false`).toString())
+const assetAllocation = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetallocationinfo ${assetUid} ${aliasName} false`).toString())
 
-const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=8369 -rpcuser=u -rpcpassword=p signrawtransactionwithwallet ${txfund}`).toString()).hex
+const signRawTransaction = txfund => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} signrawtransactionwithwallet ${txfund}`).toString()).hex
 
-const sendRawTransaction = raw => exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=8369 -rpcuser=u -rpcpassword=p sendrawtransaction ${raw}`)
+const sendRawTransaction = raw => exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} sendrawtransaction ${raw}`)
 
 const generateOne = () => {
-    exec(`"${SYS_LOCATION}" -rpcport=8369 -rpcuser=u -rpcpassword=p -datadir="${DATA_DIR}" generate 101`)
+    exec(`"${SYS_LOCATION}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} -datadir="${DATA_DIR}" generate 101`)
 }
 
-const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" -rpcport=8369 -rpcuser=u -rpcpassword=p -datadir="${DATA_DIR}" aliasinfo ${aliasName}`).toString())
+const getAliasInfo = () => JSON.parse(exec(`"${SYS_LOCATION}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} -datadir="${DATA_DIR}" aliasinfo ${aliasName}`).toString())
 
-const syscoinTxFund = (tx) => JSON.parse(exec(`"${SYS_LOCATION}" -rpcport=8369 -rpcuser=u -rpcpassword=p -datadir="${DATA_DIR}" syscointxfund ${tx} ${aliasName}`).toString())[0]
+const syscoinTxFund = (tx) => JSON.parse(exec(`"${SYS_LOCATION}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} -datadir="${DATA_DIR}" syscointxfund ${tx} ${aliasName}`).toString())[0]
 
 
 // Process

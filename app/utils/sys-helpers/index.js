@@ -45,7 +45,7 @@ type listAssetAllocationType = {
 
 // Get network info
 // const getInfo = () => syscoin.networkServices.getInfo()
-const getInfo = () => syscoin.callRpc('getinfo', [])
+// const getInfo = () => syscoin.callRpc('getinfo', [])
 
 // Get current SYS address
 const currentSysAddress = (address?: string = '') => syscoin.walletServices.getAccountAddress(address)
@@ -399,7 +399,7 @@ module.exports = {
   getAliases,
   getAssetInfo,
   getAssetAllocationInfo,
-  getInfo,
+  // getInfo,
   listAssetAllocation,
   listAssetAllocationTransactions,
   sendAsset,
