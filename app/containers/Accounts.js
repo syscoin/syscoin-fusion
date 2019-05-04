@@ -9,7 +9,7 @@ import Accounts from 'fw-components/Accounts/'
 
 import {
   getTransactionsPerAsset,
-  listAssetAllocation,
+  getAssetBalancesByAddress,
   getPrivateKey,
   claimAssetInterest,
   aliasInfo
@@ -112,7 +112,7 @@ class AccountsContainer extends Component<Props, State> {
     
     this.setState({
       selectedAlias: alias,
-      selectedIsAlias: alias.length !== 34,
+      selectedIsAlias: false,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -135,19 +135,16 @@ class AccountsContainer extends Component<Props, State> {
     let results
 
     try {
-      results = await listAssetAllocation({
-        receiver_address: alias
-      }, assets.map(i => i._id))
+      results = await getAssetBalancesByAddress(alias, assets.map(i => i._id))
     } catch(err) {
+      this.setState({
+        aliasAssets: {
+          ...this.state.aliasAssets,
+          selectedSymbol: '',
+          isLoading: false
+        }
+      })
       return swal(t('misc.error'), parseError(err.message), 'error')
-    }
-
-    if (!results.length && assets.length) {
-      results = assets.map(i => ({
-        asset: i._id,
-        balance: '0.00000000',
-        symbol: i.symbol
-      }))
     }
 
     this.setState({
@@ -179,9 +176,8 @@ class AccountsContainer extends Component<Props, State> {
       let transactions
       try {
         transactions = await getTransactionsPerAsset({
-          isAlias: this.state.selectedIsAlias,
-          alias: this.state.selectedAlias,
-          assetId: asset
+          address: this.state.selectedAlias,
+          asset
         })
       } catch(err) {
         return this.setState({

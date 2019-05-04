@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col, Icon, Spin } from 'antd'
 import SyncLoader from './sync-loader'
 import AliasAddressItem from './alias-address-item'
 
@@ -21,8 +20,6 @@ export default class AliasContainer extends Component<Props> {
   generateAliasesBoxes() {
     const aliases = []
     const addresses = []
-
-    console.log(this.props.aliases)
 
     this.props.aliases.forEach(i => {
       if (i.alias) {

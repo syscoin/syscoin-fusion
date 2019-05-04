@@ -1,6 +1,6 @@
 // @flow
-import React, { Component } from 'react'
-import { Row, Col, Icon, Spin, Tooltip } from 'antd'
+import React from 'react'
+import { Row, Col } from 'antd'
 import AssetBox from './asset-box'
 
 type Props = {
@@ -24,9 +24,9 @@ export default (props: Props) => (
             <AssetBox
               isSelected={props.selectedAlias === i.asset}
               selectAsset={props.selectAsset}
-              asset={i.asset}
+              asset={i.asset.toString()}
               balance={i.balance}
-              symbol={i.symbol}
+              symbol={i.assetinfo.publicvalue.toUpperCase()}
               key={i.asset}
               goToSendAssetForm={props.goToSendAssetForm}
               selectedAlias={props.selectedAlias}

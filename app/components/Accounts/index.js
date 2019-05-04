@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin } from 'antd'
-import AssetBox from './components/asset-box'
 import Dashboard from './components/dashboard'
 import AssetDetails from './components/asset-details'
 import Panel from './components/panel'

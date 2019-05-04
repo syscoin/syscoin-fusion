@@ -2,9 +2,7 @@
 import React, { Component } from 'react'
 import { Icon } from 'antd'
 import moment from 'moment'
-import { uniqBy } from 'lodash'
 import Table from './table'
-import Pagination from './pagination'
 
 type Props = {
   data: Array<Object>,
@@ -94,7 +92,7 @@ export default class SysTransactionList extends Component<Props, State> {
 
   prepareData() {
     // Sort time by date - more recent first
-    const data = this.props.data.sort((a, b) => b.time - a.time)
+    const data = this.props.data.sort((a, b) => b.time - a.time).filter(i => i.address)
 
     return data
   }

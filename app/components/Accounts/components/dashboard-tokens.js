@@ -99,7 +99,8 @@ export default class DashboardBalance extends Component<Props> {
           )}
         </h3>
         <Table
-          data={this.props.assets}
+          // data={this.props.assets}
+          data={[]}
           columns={this.generateTableColumns()}
           rowKey='asset'
           isLoading={this.props.isLoading}

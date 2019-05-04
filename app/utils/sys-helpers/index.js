@@ -1,5 +1,5 @@
 // @flow
-const { waterfall, parallel } = require('async')
+const { waterfall } = require('async')
 const { uniqBy } = require('lodash')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
@@ -27,11 +27,6 @@ type sendSysTransactionType = {
   address: string,
   amount: string,
   comment?: string
-};
-
-type getTransactionsPerAssetType = {
-  assetId: string,
-  alias: string
 };
 
 type listAssetAllocationType = {
@@ -279,67 +274,24 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
 // Get info from alias
 const aliasInfo = (name: string) => syscoin.walletServices.alias.info({ aliasName: name })
 
-// Generates transaction history per specific asset and alias
-const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
-  parallel([
-    (done) => {
-      syscoin.callRpc('listassetallocationtransactions', [
-        999999,
-        0,
-        {
-          /*senders: [
-            {
-              [obj.isAlias ? 'sender_alias' : 'sender_address']: obj.alias
-            }
-          ],*/
-          [obj.isAlias ? 'sender_alias' : 'sender_address']: obj.alias,
-          asset: obj.assetId
-        }
-      ]).then(results => done(null, results))
-        .catch(err => {
-          done(err)
-        })
-    },
-    (done) => {
-      syscoin.callRpc('listassetallocationtransactions', [
-        999999,
-        0,
-        {
-            /*receivers: [
-              {
-                [obj.isAlias ? 'receiver_alias' : 'receiver_address']: obj.alias,
-              }
-            ],*/
-            [obj.isAlias ? 'receiver_alias' : 'receiver_address']: obj.alias,
-            asset: obj.assetId
-        }
-      ])
-        .then(results => done(null, results))
-        .catch(err => done(err))
-    }
-  ], (err, tasks) => {
-    if (err) {
-      return reject(err)
-    }
-    let data = tasks[0].concat(tasks[1])
+// Generates transaction history per specific asset and address
+const getTransactionsPerAsset = ({ address, asset }) => new Promise(async (resolve, reject) => {
+  let allocations
 
-    const txids = data.map(i => i.txid)
+  try {
+    allocations = await syscoin.callRpc('listassetindex', [0, {
+      asset: Number(asset),
+      addresses: [{ address }]
+    }])
+  } catch(err) {
+    return reject(err)
+  }
+  allocations = allocations.filter(i => i.txtype === 'assetsend')
+  allocations = uniqBy(allocations, 'txid')
 
-    // remove duplicates
-    data = data.filter((i, ind) => txids.indexOf(i.txid) === ind)
-    // temporal workaround for transactions from other aliases in output
-    data = data.filter(i => !(i.receiver !== obj.alias && i.sender !== obj.alias))
+  console.log(allocations)
 
-    // Parse JSON and filter out transactions that dont include selected alias.
-    data = data.map(i => {
-        const asset = { ...i }
-        asset.amount = asset.amount[0] === '-' ? asset.amount.slice(1) : asset.amount
-        asset.time = (new Date(0)).setUTCSeconds(asset.time)
-        return asset
-      })
-
-    return resolve(data)
-  })
+  return resolve(allocations)
 })
 
 // Get Blockchain status
@@ -439,6 +391,41 @@ const getBlockByNumber = (blockNumber: number) => new Promise(async (resolve, re
   return resolve(block)
 })
 
+const getAssetBalancesByAddress = address => new Promise(async (resolve, reject) => {
+  let associatedAssets
+  let allocationsInfo
+
+  try {
+    associatedAssets = await syscoin.callRpc('listassetindexassets', [address])
+  } catch(err) {
+    return reject(err)
+  }
+
+  associatedAssets = associatedAssets.map(i => i.asset)
+  
+  try {
+    allocationsInfo = await Promise.all(
+      associatedAssets.map(i => syscoin.callRpc('assetallocationinfo', [i, address]))
+    )
+  } catch(err) {
+    return reject(err)
+  }
+
+  try {
+    allocationsInfo = await Promise.all(
+      allocationsInfo.map(async i => {
+        // eslint-disable-next-line no-param-reassign
+        i.assetinfo = await syscoin.callRpc('assetinfo', [i.asset])
+        return i
+      })
+    )
+  } catch(err) {
+    return reject(err)
+  }
+
+  return resolve(allocationsInfo)
+})
+
 module.exports = {
   callRpc: syscoin.callRpc,
   aliasInfo,
@@ -448,7 +435,7 @@ module.exports = {
   getAliases,
   getAssetInfo,
   getAssetAllocationInfo,
-  // getInfo,
+  getAssetBalancesByAddress,
   listAssetAllocation,
   listAssetAllocationTransactions,
   sendAsset,

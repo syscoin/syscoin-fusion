@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react'
 import { Icon, Table } from 'antd'
-import moment from 'moment'
 
 type Props = {
   data: Array<Object>,
@@ -15,7 +14,7 @@ type Props = {
 export default class TransactionList extends Component<Props> {
 
   cutTextIfNeeded(text: string) {
-    return text.length > 13 ? `${text.slice(0, 12)}...` : text
+    return text.length > 13 ? `${text.slice(0, 24)}...` : text
   }
 
   generateColumns() {
@@ -25,7 +24,7 @@ export default class TransactionList extends Component<Props> {
         title: ' ',
         key: 'asset',
         dataIndex: 'asset',
-        render: (text: string, transaction: Object) => (
+        render: (asset: number, transaction: Object) => (
           <Icon
             className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}
             type={`arrow-${this.isIncoming(transaction) ? 'down' : 'up'}`}
@@ -40,22 +39,14 @@ export default class TransactionList extends Component<Props> {
       },
       {
         title: t('misc.to'),
-        key: 'receiver',
-        dataIndex: 'receiver',
-        render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
-      },
-      {
-        title: t('misc.date'),
-        key: 'time',
-        dataIndex: 'time',
-        render: (time: number) => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
+        dataIndex: 'allocations',
+        render: (arr: array) => <span title={arr[0].address}>{this.cutTextIfNeeded(arr[0].address)}</span>
       },
       {
         title: t('misc.details'),
-        key: 'amount',
-        dataIndex: 'amount',
-        render: (amount: string, transaction: Object) => ({
-          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{amount}</span>,
+        dataIndex: 'total',
+        render: (total: string, transaction: Object) => ({
+          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{total}</span>,
           props: {
             width: 150
           }
@@ -65,7 +56,7 @@ export default class TransactionList extends Component<Props> {
   }
 
   isIncoming(transaction: Object) {
-    return transaction.receiver === this.props.selectedAlias
+    return transaction.sender !== this.props.selectedAlias
   }
 
   defineLocales() {
