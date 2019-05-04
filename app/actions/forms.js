@@ -4,7 +4,7 @@ import * as types from 'fw-types/forms'
 import {
   sendAsset,
   sendSysTransaction,
-  listAssetAllocation
+  getAssetBalancesByAddress
 } from 'fw-sys'
 
 type editSendAssetActionType = {
@@ -88,12 +88,12 @@ export const sendSysForm = (obj: editSendSysType) => async (dispatch: (action: e
   return Promise.resolve()
 }
 
-export const getAssetsFromAlias = (filters: Object) => async (dispatch: (action: Array<Object>) => void, getState: Function) => {
+export const getAssetsFromAlias = (address) => async (dispatch: (action: Array<Object>) => void) => {
   dispatch(getAssetsFromAliasIsLoadingAction())
-  const filterGuids = getState().options.guids.map(i => i._id)
+  // const filterGuids = getState().options.guids.map(i => i._id)
 
   try {
-    dispatch(getAssetsFromAliasReceivedAction(await listAssetAllocation(filters, filterGuids)))
+    dispatch(getAssetsFromAliasReceivedAction(await getAssetBalancesByAddress(address)))
   } catch(err) {
     dispatch(getAssetsFromAliasErrorAction(err))
   }

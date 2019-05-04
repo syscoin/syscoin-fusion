@@ -59,7 +59,7 @@ export default class SendAssetForm extends Component<Props> {
 
   selectedAssetBalance() {
     try {
-      return this.props.assetsFromAlias.data.find(i => i.asset === this.props.form.data.asset).balance
+      return this.props.assetsFromAlias.data.find(i => i.asset.toString() === this.props.form.data.asset).balance
     } catch(err) {
       return ''
     }
@@ -118,8 +118,8 @@ export default class SendAssetForm extends Component<Props> {
             value={asset.length ? asset : undefined}
           >
             {assetsFromAlias.data.map(i => (
-              <Option value={i.asset} key={i.asset}>
-                {i.symbol} - {i.asset}
+              <Option value={i.asset.toString()} key={i.asset}>
+                {i.assetinfo.publicvalue.toUpperCase()} - {i.asset}
               </Option>
             ))}
           </Select>

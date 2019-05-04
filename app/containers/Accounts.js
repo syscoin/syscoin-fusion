@@ -258,7 +258,7 @@ class AccountsContainer extends Component<Props, State> {
       amount: '',
       comment: ''
     })
-    this.props.getAssetsFromAlias({ receiver_address: alias })
+    this.props.getAssetsFromAlias(alias)
     this.props.changeTab('2')
   }
 
