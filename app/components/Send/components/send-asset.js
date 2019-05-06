@@ -59,7 +59,15 @@ export default class SendAssetForm extends Component<Props> {
 
   selectedAssetBalance() {
     try {
-      return this.props.assetsFromAlias.data.find(i => i.asset.toString() === this.props.form.data.asset).balance
+      return this.getSelectedAsset().balance
+    } catch(err) {
+      return ''
+    }
+  }
+
+  getSelectedAsset() {
+    try {
+      return this.props.assetsFromAlias.data.find(i => i.asset_guid.toString() === this.props.form.data.asset)
     } catch(err) {
       return ''
     }
@@ -118,8 +126,8 @@ export default class SendAssetForm extends Component<Props> {
             value={asset.length ? asset : undefined}
           >
             {assetsFromAlias.data.map(i => (
-              <Option value={i.asset.toString()} key={i.asset}>
-                {i.assetinfo.publicvalue.toUpperCase()} - {i.asset}
+              <Option value={i.asset_guid.toString()} key={i.asset_guid}>
+                {i.publicvalue.toUpperCase()} - {i.asset_guid}
               </Option>
             ))}
           </Select>
@@ -161,7 +169,7 @@ export default class SendAssetForm extends Component<Props> {
             <Button
               className='send-asset-form-btn-send'
               disabled={isLoading || !from || !asset || !toAddress || !amount}
-              onClick={() => sendAsset(this.props.form.data)}
+              onClick={() => sendAsset(!!this.getSelectedAsset().isOwner)}
             >
               {t('misc.send')}
             </Button>

@@ -64,10 +64,10 @@ export default class Send extends Component<Props> {
     swal(t('misc.success'), t('send.send_sys.sys_send_success'), 'success')
   }
 
-  async sendAsset(obj: sendAssetType) {
+  async sendAsset(isOwner) {
     const { t } = this.props
     try {
-      await this.props.sendAsset(obj)
+      await this.props.sendAsset(isOwner)
     } catch (err) {
       return swal(t('misc.error'), parseError(err.message), 'error')
     }

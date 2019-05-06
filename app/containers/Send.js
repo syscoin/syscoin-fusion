@@ -17,7 +17,7 @@ import unlockWallet from 'fw-utils/unlock-wallet'
 
 
 type Props = {
-  balance: Number,
+  balance: number,
   aliases: Array<Object>,
   sendAssetForm: Function,
   sendSysForm: Function,
@@ -47,9 +47,7 @@ type sendSysType = {
 
 class SendContainer extends Component<Props> {
 
-  sendAsset(obj: sendAssetType) {
-    const { from, asset, toAddress, amount, comment } = obj
-
+  sendAsset(isOwner) {
     return new Promise(async (resolve, reject) => {
       let lock = () => {}
 
@@ -62,13 +60,7 @@ class SendContainer extends Component<Props> {
       }
 
       try {
-        await this.props.sendAssetForm({
-          fromAlias: from,
-          toAlias: toAddress,
-          assetId: asset,
-          amount,
-          comment
-        })
+        await this.props.sendAssetForm(isOwner)
       } catch (err) {
         lock()
         return reject(err)

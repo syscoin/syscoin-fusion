@@ -21,6 +21,7 @@ type SendAssetType = {
   toAlias: string,
   assetId: string,
   amount: string,
+  isOwner: boolean,
   comment?: string
 };
 type sendSysTransactionType = {
@@ -80,23 +81,26 @@ const getAliases = () => new Promise(async (resolve, reject) => {
 const getAssets = () => syscoin.callRpc('listassets', [])
 
 // Get asset info
-const getAssetInfo = (asset: string) => syscoin.walletServices.asset.info({
-  asset,
-  getInputs: false
-})
+const getAssetInfo = (asset: string) => syscoin.callRpc('assetinfo', [asset])
 
 // Get asset allocation info
 const getAssetAllocationInfo = (obj: AllocationInfoType) => syscoin.walletServices.assetAllocation.info(obj.assetId, obj.aliasName, false)
 
 const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) => {
   // Sends asset to specific alias
-  const { fromAlias, toAlias, assetId, amount } = obj
+  const { fromAlias, toAlias, assetId, amount, isOwner } = obj
   let assetSend
   let txFund
   let signTransaction
+
+  console.log(amount, isOwner)
   
   try {
-    assetSend = await syscoin.callRpc('assetsend', [Number(assetId), toAlias, amount])
+    if (isOwner) {
+      assetSend = await syscoin.callRpc('assetsend', [Number(assetId), toAlias, amount])
+    } else {
+      assetSend = await syscoin.callRpc('assetallocationsend', [Number(assetId), fromAlias, toAlias, amount])
+    }
   } catch(err) {
     return reject(err)
   }
@@ -380,7 +384,58 @@ const getBlockByNumber = (blockNumber: number) => new Promise(async (resolve, re
   return resolve(block)
 })
 
-const getAssetBalancesByAddress = address => syscoin.callRpc('listassetindexassets', [address])
+const getAssetBalancesByAddress = address => new Promise(async (resolve, reject) => {
+  let ownAssets
+  let ownTokens
+
+  try {
+    ownAssets = await syscoin.callRpc('listassetindexassets', [address])
+  } catch(err) {
+    return reject(err)
+  }
+
+  ownAssets = ownAssets.map(i => {
+    // Adds isOwner prop in order to identify which send method to use
+    const asset = {...i}
+
+    asset.isOwner = true
+    asset.balanceBeforeAllocation = asset.balance
+
+    return asset
+  })
+
+  try {
+    ownTokens = await syscoin.callRpc('listassetindexallocations', [address])
+    ownTokens = await Promise.all(
+      // eslint-disable-next-line no-shadow
+      ownTokens.map(i => new Promise(async (resolve, reject) => {
+        const asset = {...i}
+
+        try {
+          asset.publicvalue = (await getAssetInfo(i.asset_guid.toString())).publicvalue
+        } catch(err) {
+          return reject(err)
+        }
+
+        return resolve(asset)
+      }))
+    )
+  } catch(err) {
+    return reject(err)
+  }
+
+  ownTokens.forEach(i => {
+    const assetIndex = ownAssets.findIndex(x => i.asset_guid === x.asset_guid)
+    
+    if (assetIndex !== -1) {
+      ownAssets[assetIndex].balance = (Number(ownAssets[assetIndex].balance) + Number(i.balance)).toString()
+    } else {
+      ownAssets.push(i)
+    }
+  })
+
+  return resolve(ownAssets)
+})
 
 module.exports = {
   callRpc: syscoin.callRpc,

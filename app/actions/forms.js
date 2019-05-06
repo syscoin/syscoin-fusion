@@ -51,7 +51,7 @@ export const sendChangeTab = createAction(types.SEND_CHANGE_TAB)
 export const editSendAsset = (obj: editSendAssetType) => (dispatch: (action: editSendAssetActionType) => void) => dispatch(editSendAssetAction(obj))
 export const editSendSys = (obj: editSendSysType) => (dispatch: (action: editSendSysActionType) => void) => dispatch(editSendSysAction(obj))
 
-export const sendAssetForm = () => async (dispatch: (action: editSendAssetActionType) => void, getState: Function) => {
+export const sendAssetForm = (isOwner) => async (dispatch: (action: editSendAssetActionType) => void, getState: Function) => {
   const { from, toAddress, asset, amount, comment } = getState().forms.sendAsset.data
   dispatch(sendAssetIsLoadingAction())
 
@@ -63,7 +63,8 @@ export const sendAssetForm = () => async (dispatch: (action: editSendAssetAction
           comment,
           fromAlias: from,
           toAlias: toAddress,
-          assetId: asset
+          assetId: asset,
+          isOwner
         })
       )
     )
