@@ -6,7 +6,7 @@ import {
   getAliases,
   getBlockchainInfo,
   listSysTransactions,
-  listAssetAllocation,
+  getAllTokenBalances,
   isEncrypted,
   aliasInfo,
   currentBalance
@@ -188,85 +188,18 @@ export const dashboardTransactions = () => async (dispatch: (action: saveDashboa
   }
 }
 
-export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void, getState: Function) => {
+export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void) => {
+  let balances
+  // const fixedGuids = getState().options.guids.map(i => i._id)
   dispatch(dashboardAssetsIsLoadingAction())
 
-  const { aliases } = getState().wallet
-  const fixedGuids = getState().options.guids.map(i => i._id)
-  let assets = {}
-  let allocations = []
-
   try {
-    const promises = aliases.map(
-      alias => listAssetAllocation(
-        {
-          receiver_address: alias.alias || alias.address
-        },
-        fixedGuids)
-    )
-
-    const allocs = await Promise.all(promises)
-    allocs.forEach(i => {
-      allocations = allocations.concat(i)
-    })
+    balances = await getAllTokenBalances()
   } catch(err) {
     return dispatch(dashboardAssetsErrorAction(err.message))
   }
-
-  // Generating balances per asset
-
-  allocations.map(async (i, index) => {
-    if (!assets[i.asset]) {
-      assets[i.asset] = {
-        balance: 0,
-        accumulated_interest: 0,
-        asset: i.asset,
-        symbol: i.symbol,
-        interestData: []
-      }
-    }
-    assets[i.asset].balance += Number(i.balance)
-  })
   
-  assets = Object.keys(assets).map(i => assets[i])
-
-  if (fixedGuids.length) {
-    // Filtering out guids not present in fusion.cfg
-    assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
-  }
-  dispatch(dashboardAssetsReceiveAction(assets))
-  // each(_.flatten(allocations), async (i, done) => {
-  //   if (!assets[i.asset]) {
-  //     assets[i.asset] = {
-  //       balance: 0,
-  //       accumulated_interest: 0,
-  //       asset: i.asset,
-  //       symbol: i.symbol,
-  //       interestData: []
-  //     }
-  //   }
-
-  //   const lastInterestClaimBlock = await getBlockByNumber(i.interest_claim_height)
-
-  //   assets[i.asset].balance += Number(i.balance)
-
-  //   assets[i.asset].interestData.push({
-  //     lastClaimedInterest: i.interest_rate > 0 ? (new Date(0)).setUTCSeconds(lastInterestClaimBlock.time) : moment.now(),
-  //     accumulatedInterest: Number(i.accumulated_interest),
-  //     alias: i.alias
-  //   })
-  //   done()
-  // }, () => {
-  //   // Turning the object into an array
-  //   assets = Object.keys(assets).map(i => assets[i])
-
-  //   if (fixedGuids.length) {
-  //     // Filtering out guids not present in fusion.cfg
-  //     assets = assets.filter(i => fixedGuids.indexOf(i.asset) !== -1)
-  //   }
-  //   dispatch(dashboardAssetsReceiveAction(assets))
-  // })
-
+  dispatch(dashboardAssetsReceiveAction(balances))
 }
 
 export const checkWalletEncryption = () => async (dispatch: ((action: checkWalletEncryptionActionType) => void)) => dispatch(walletIsEncrypted(await isEncrypted()))

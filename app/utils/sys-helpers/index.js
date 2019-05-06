@@ -283,17 +283,33 @@ const getTransactionsPerAsset = ({ address, asset }) => new Promise(async (resol
 const getBlockchainInfo = () => syscoin.blockchainServices.getBlockchainInfo()
 
 // Get filtered asset allocation
-const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
-  syscoin.callRpc('listassetallocations', [999999, 0, obj])
-    .then(result => {
-      let data = result
+const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
+  let allocationsByAddress
+  const balancesByAssets = []
+  
+  try {
+    allocationsByAddress = await getAliases()
+    allocationsByAddress = await Promise.all(
+      allocationsByAddress.map(i => getAssetBalancesByAddress(i.address))
+    )
+  } catch(err) {
+    return reject(err)
+  }
 
-      if (Array.isArray(filterGuids) && filterGuids.length) {
-        data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
+  allocationsByAddress.forEach(i => {
+    i.forEach(x => {
+      const assetIndex = balancesByAssets.findIndex(z => z.asset_guid === x.asset_guid)
+
+      if (assetIndex !== -1) {
+        balancesByAssets[assetIndex].balance = (Number(balancesByAssets[assetIndex].balance) + Number(x.balance)).toString()
+        balancesByAssets[assetIndex].balance_zdag = (Number(balancesByAssets[assetIndex].balance_zdag) + Number(x.balance_zdag)).toString()
+      } else {
+        balancesByAssets.push(x)
       }
-      return resolve(data)
     })
-    .catch(err => reject(err))
+  })
+
+  return resolve(balancesByAssets)
 })
 
 const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
@@ -403,11 +419,11 @@ module.exports = {
   currentSysAddress,
   currentBalance,
   editAlias,
+  getAllTokenBalances,
   getAliases,
   getAssetInfo,
   getAssetAllocationInfo,
   getAssetBalancesByAddress,
-  listAssetAllocation,
   listAssetAllocationTransactions,
   sendAsset,
   sendSysTransaction,
