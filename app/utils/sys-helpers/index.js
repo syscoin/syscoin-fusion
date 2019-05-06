@@ -54,7 +54,7 @@ const currentBalance = async () => {
     return err
   }
 
-  if (balance.result) {
+  if (typeof balance !== 'number') {
     return balance.result
   }
 
@@ -96,7 +96,7 @@ const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) =>
   let signTransaction
   
   try {
-    assetSend = await syscoin.callRpc('assetsend', [Number(assetId), [{ address: toAlias, amount: Number(amount) }], ''])
+    assetSend = await syscoin.callRpc('assetsend', [Number(assetId), toAlias, amount])
   } catch(err) {
     return reject(err)
   }
@@ -142,7 +142,7 @@ const sendSysTransaction = (obj: sendSysTransactionType) => {
 }
 
 const createNewAsset = async (obj: Object) => {
-  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ""} = obj
+  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ''} = obj
 
   let asset, txFund, signRaw
 
@@ -280,8 +280,6 @@ const getTransactionsPerAsset = ({ address, asset }) => new Promise(async (resol
   allocations = allocations.filter(i => i.txtype === 'assetsend')
   allocations = uniqBy(allocations, 'txid')
 
-  console.log(allocations)
-
   return resolve(allocations)
 })
 
@@ -382,40 +380,7 @@ const getBlockByNumber = (blockNumber: number) => new Promise(async (resolve, re
   return resolve(block)
 })
 
-const getAssetBalancesByAddress = address => new Promise(async (resolve, reject) => {
-  let associatedAssets
-  let allocationsInfo
-
-  try {
-    associatedAssets = await syscoin.callRpc('listassetindexassets', [address])
-  } catch(err) {
-    return reject(err)
-  }
-
-  associatedAssets = associatedAssets.map(i => i.asset)
-  
-  try {
-    allocationsInfo = await Promise.all(
-      associatedAssets.map(i => syscoin.callRpc('assetallocationinfo', [i, address]))
-    )
-  } catch(err) {
-    return reject(err)
-  }
-
-  try {
-    allocationsInfo = await Promise.all(
-      allocationsInfo.map(async i => {
-        // eslint-disable-next-line no-param-reassign
-        i.assetinfo = await syscoin.callRpc('assetinfo', [i.asset])
-        return i
-      })
-    )
-  } catch(err) {
-    return reject(err)
-  }
-
-  return resolve(allocationsInfo)
-})
+const getAssetBalancesByAddress = address => syscoin.callRpc('listassetindexassets', [address])
 
 module.exports = {
   callRpc: syscoin.callRpc,

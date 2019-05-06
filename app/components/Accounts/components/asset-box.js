@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from 'react'
-import { Col, Dropdown, Menu, Icon } from 'antd'
-import SendButton from './send-button'
+import { Col, Menu } from 'antd'
 import swal from 'sweetalert'
 import parseError from 'fw-utils/error-parser'
+import SendButton from './send-button'
 
 type Props = {
   isSelected: boolean,
@@ -14,7 +14,6 @@ type Props = {
   goToSendAssetForm: Function,
   claimInterest: Function,
   selectedAlias: string,
-  canClaimInterest: boolean,
   t: Function
 };
 
@@ -35,12 +34,14 @@ export default class AssetBox extends Component<Props> {
   }
 
   render() {
-    const { isSelected, selectAsset, asset, symbol, balance, goToSendAssetForm, canClaimInterest, t } = this.props
+    const { isSelected, selectAsset, asset, symbol, balance, goToSendAssetForm, t } = this.props
+    /*
     const menu = (
       <Menu>
         <Item key='0' onClick={this.claimInterest.bind(this)} disabled={!canClaimInterest}>{t('misc.claim_interest')}</Item>
       </Menu>
     )
+    */
     return (
       <Col
         xs={11}

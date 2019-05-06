@@ -22,11 +22,11 @@ export default (props: Props) => (
         {props.assets.length ?
           props.assets.map(i => (
             <AssetBox
-              isSelected={props.selectedAlias === i.asset}
+              isSelected={props.selectedAsset === i.asset_guid.toString()}
               selectAsset={props.selectAsset}
-              asset={i.asset.toString()}
+              asset={i.asset_guid.toString()}
               balance={i.balance}
-              symbol={i.assetinfo.publicvalue.toUpperCase()}
+              symbol={i.publicvalue.toUpperCase()}
               key={i.asset}
               goToSendAssetForm={props.goToSendAssetForm}
               selectedAlias={props.selectedAlias}
