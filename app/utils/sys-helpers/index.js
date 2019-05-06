@@ -92,8 +92,6 @@ const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) =>
   let assetSend
   let txFund
   let signTransaction
-
-  console.log(amount, isOwner)
   
   try {
     if (isOwner) {
