@@ -15,9 +15,9 @@ if (!aliasName || !assetName) {
 
 /* FUNCTIONS */
 
-const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetnew ${aliasName} "${assetName}" "" "" 8 1000 10000 1 ""`).toString())
+const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetnew ${aliasName} "${assetName}" "" 8 1000 10000 1 ""`).toString())
 
-const assetSend = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetsend ${assetUid} ${aliasName} [{\\"ownerto\\":\\"${aliasName}\\",\\"amount\\":100}] "memo" ""`).toString())[0]
+const assetSend = (assetGuid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetsend ${assetGuid} ${aliasName} 1000`).toString())[0]
 
 const assetAllocation = (assetUid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetallocationinfo ${assetUid} ${aliasName} false`).toString())
 
@@ -37,12 +37,20 @@ const syscoinTxFund = (tx) => JSON.parse(exec(`"${SYS_LOCATION}" -rpcport=${RPCP
 // Process
 
 const assetUid = assetNew()
+console.log(assetUid)
 const txFund = syscoinTxFund(assetUid[0])
 let signRaw = signRawTransaction(txFund)
 sendRawTransaction(signRaw)
 
 generateOne()
 
+const send = assetSend(assetUid[1])
+const txFundSend = syscoinTxFund(send)
+const signRawSend = signRawTransaction(txFundSend)
+sendRawTransaction(signRawSend)
+
+generateOne()
+/*
 const secAssetGuid = assetNew()
 console.log(secAssetGuid)
 const sectxFund = syscoinTxFund(secAssetGuid[0])
@@ -50,5 +58,5 @@ let secSignRaw = signRawTransaction(sectxFund)
 sendRawTransaction(secSignRaw)
 
 generateOne()
-
+*/
 process.exit()
