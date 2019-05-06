@@ -22,8 +22,8 @@ export default class TransactionList extends Component<Props> {
     return [
       {
         title: ' ',
-        key: 'asset',
-        dataIndex: 'asset',
+        key: 'txid',
+        dataIndex: 'asset_guid',
         render: (asset: number, transaction: Object) => (
           <Icon
             className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}
@@ -33,7 +33,6 @@ export default class TransactionList extends Component<Props> {
       },
       {
         title: t('misc.from'),
-        key: 'sender',
         dataIndex: 'sender',
         render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
       },

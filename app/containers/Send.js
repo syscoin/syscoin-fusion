@@ -47,7 +47,7 @@ type sendSysType = {
 
 class SendContainer extends Component<Props> {
 
-  sendAsset(isOwner) {
+  sendAsset() {
     return new Promise(async (resolve, reject) => {
       let lock = () => {}
 
@@ -60,7 +60,7 @@ class SendContainer extends Component<Props> {
       }
 
       try {
-        await this.props.sendAssetForm(isOwner)
+        await this.props.sendAssetForm()
       } catch (err) {
         lock()
         return reject(err)

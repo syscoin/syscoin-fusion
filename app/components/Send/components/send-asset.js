@@ -169,7 +169,7 @@ export default class SendAssetForm extends Component<Props> {
             <Button
               className='send-asset-form-btn-send'
               disabled={isLoading || !from || !asset || !toAddress || !amount}
-              onClick={() => sendAsset(!!this.getSelectedAsset().isOwner)}
+              onClick={() => sendAsset()}
             >
               {t('misc.send')}
             </Button>
