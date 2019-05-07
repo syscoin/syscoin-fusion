@@ -136,6 +136,17 @@ app.on('ready', async () => {
     }
   })
 
+  mainWindow.on('close', ev => {
+    ev.preventDefault()
+
+    if (!mainWindow.isDestroyed()) {
+      mainWindow.destroy()
+    }
+    if (!consoleWindow.isDestroyed()) {
+      consoleWindow.destroy()
+    }
+  })
+
   consoleWindow.on('close', ev => {
     ev.preventDefault()
     consoleWindow.hide()
