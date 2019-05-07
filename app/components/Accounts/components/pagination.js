@@ -17,14 +17,14 @@ const Pagination = (props: Props) => (
     )}
     <Button
       className={`fw-table-pagination-prev ${props.prevDisabled ? 'disabled' : ''}`}
-      onClick={() => props.onChange('prev')}
+      onClick={() => props.onChange(props.currentPage - 1)}
       disabled={props.prevDisabled}
     >
       <Icon type='left' />
     </Button>
     <Button
       className={`fw-table-pagination-next ${props.nextDisabled ? 'disabled' : ''}`}
-      onClick={() => props.onChange('next')}
+      onClick={() => props.onChange(props.currentPage + 1)}
       disabled={props.nextDisabled}
     >
       <Icon type='right' />

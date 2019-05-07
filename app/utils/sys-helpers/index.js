@@ -1,6 +1,7 @@
 // @flow
 const { waterfall } = require('async')
 const { uniqBy } = require('lodash')
+const transactionParse = require('./transaction-parse')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
 
@@ -328,15 +329,15 @@ const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGui
 
 // Get list of SYS transactions in the wallet
 const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise((resolve, reject) => {
-  syscoin.walletServices.listTransactions(pageSize, pageSize * page)
+  syscoin.callRpc('listtransactions', ['*', pageSize, pageSize * page])
     .then(results => {
-      let data = results.map(i => {
+      const data = results.map(i => {
         const obj = { ...i }
         obj.time = (new Date(0)).setUTCSeconds(i.time)
-        return obj
+        return transactionParse(obj)
       })
 
-      data = uniqBy(data, 'txid')
+      console.log(data)
 
       return resolve(data)
     })
