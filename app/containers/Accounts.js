@@ -159,7 +159,7 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   selectAsset(obj: selectAssetType) {
-    const { asset, symbol } = obj
+    const { asset, symbol, page = 0 } = obj
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
@@ -177,7 +177,8 @@ class AccountsContainer extends Component<Props, State> {
       try {
         transactions = await getTransactionsPerAsset({
           address: this.state.selectedAlias,
-          asset
+          asset,
+          page
         })
       } catch(err) {
         return this.setState({

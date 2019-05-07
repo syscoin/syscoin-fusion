@@ -114,7 +114,7 @@ class WalletContainer extends Component<Props> {
     closeSysd()
     setTimeout(() => {
       ipcRenderer.send('close')
-    }, 500)
+    }, 1500)
   }
 
   onMaximize() {

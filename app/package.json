@@ -15,7 +15,5 @@
   },
   "license": "MIT",
   "dependencies": {
-    "bunyan": "^1.8.12",
-    "syscoin-js": "git+https://gitlab.com/argvil19/syscoin-js.git#custom_hot_fixes"
   }
 }

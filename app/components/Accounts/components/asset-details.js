@@ -52,6 +52,11 @@ export default (props: Props) => (
             isLoading={props.transactions.isLoading}
             selectedAlias={props.selectedAlias}
             selectedSymbol={props.aliasAssets.selectedSymbol}
+            changePage={(page) => props.selectAsset({
+              asset: props.aliasAssets.selected,
+              symbol: props.aliasAssets.selectedSymbol,
+              page
+            })}
             t={props.t}
           />
         </Col>

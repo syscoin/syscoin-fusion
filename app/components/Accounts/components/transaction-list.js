@@ -1,8 +1,10 @@
 // @flow
 import React, { Component } from 'react'
 import { Icon, Table } from 'antd'
+import Pagination from './pagination'
 
 type Props = {
+  changePage: Function,
   data: Array<Object>,
   error: boolean,
   isLoading: boolean,
@@ -12,6 +14,21 @@ type Props = {
 };
 
 export default class TransactionList extends Component<Props> {
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      currentPage: 0
+    }
+  }
+
+  changePage(page: number) {
+    this.setState({
+      currentPage: page
+    }, () => {
+      this.props.changePage(this.state.currentPage)
+    })
+  }
 
   cutTextIfNeeded(text: string) {
     return text.length > 13 ? `${text.slice(0, 24)}...` : text
@@ -22,7 +39,7 @@ export default class TransactionList extends Component<Props> {
     return [
       {
         title: ' ',
-        key: 'txid',
+        key: 'random',
         dataIndex: 'asset_guid',
         render: (asset: number, transaction: Object) => (
           <Icon
@@ -82,7 +99,7 @@ export default class TransactionList extends Component<Props> {
 
   render() {
     return (
-      <div>
+      <div className='token-transaction-list'>
         <h4 className='transactions-table-title'>{this.props.t('accounts.asset.transactions_for', { asset: this.props.selectedSymbol })}</h4>
         <Table
           dataSource={this.prepareData()}
@@ -90,12 +107,18 @@ export default class TransactionList extends Component<Props> {
           className='transactions-table'
           rowClassName='transactions-table-row'
           rowKey='txid'
-          pagination={{
-            defaultPageSize: 10
-          }}
+          pagination={false}
           locale={{
             emptyText: this.defineLocales()
           }}
+        />
+        <Pagination
+          showPage
+          currentPage={this.state.currentPage}
+          t={this.props.t}
+          prevDisabled={this.state.currentPage === 0}
+          nextDisabled={this.prepareData().length < Number(process.env.TABLE_PAGINATION_LENGTH)}
+          onChange={(page) => this.changePage(page)}
         />
       </div>
     )

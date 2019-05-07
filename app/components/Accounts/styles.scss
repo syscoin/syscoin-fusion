@@ -226,11 +226,6 @@
         letter-spacing: 2px;
     }
 
-    .fw-table-pagination-page {
-        color: $main_white;
-        margin-right: 10px;
-    }
-
     .wallet-summary-balance-container {
         .wallet-summary-balance-title {
             color: $main_white;
@@ -266,34 +261,41 @@
     & > hr {
         margin: 20px 0;
     }
+}
 
-    
+.fw-table-pagination-container {
+    float: right;
 
-    .fw-table-pagination-container {
-        float: right;
+    .fw-table-pagination-page {
+        color: $main_white;
+        margin-right: 10px;
+    }
 
-        button {
-            background: transparent;
-            border-color: $main_white;
-            margin-left: 5px;
+    button {
+        background: transparent;
+        border-color: $main_white;
+        margin-left: 5px;
 
-            i {
-                color: $main_white;
-            }
-
-            &:hover {
-                background: transparent;
-                
-                i {
-                    color: #fff;
-                }
-            }
+        i {
+            color: $main_white;
         }
 
-        button.disabled {
-            opacity: 0.5;
+        &:hover {
+            background: transparent;
+            
+            i {
+                color: #fff;
+            }
         }
     }
+
+    button.disabled {
+        opacity: 0.5;
+    }
+}
+
+.token-transaction-list {
+    margin-bottom: 100px;
 }
 
 .accounts-container-right .loading-container {

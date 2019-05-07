@@ -1,6 +1,5 @@
 // @flow
 const { waterfall } = require('async')
-const { uniqBy } = require('lodash')
 const transactionParse = require('./transaction-parse')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
@@ -264,15 +263,19 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
 const aliasInfo = (name: string) => syscoin.walletServices.alias.info({ aliasName: name })
 
 // Generates transaction history per specific asset and address
-const getTransactionsPerAsset = ({ address, asset }) => new Promise(async (resolve, reject) => {
+const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(async (resolve, reject) => {
   let allocations
 
   try {
-    allocations = await syscoin.callRpc('listassetindex', [0, {
+    allocations = await syscoin.callRpc('listassetindex', [page, {
       asset_guid: Number(asset),
       address
     }])
-    allocations = uniqBy(allocations, 'txid')
+    allocations = allocations(i => {
+      const allocation = {...i}
+      allocation.random = Math.random()
+      return allocation
+    })
   } catch(err) {
     return reject(err)
   }
@@ -336,8 +339,6 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
         obj.time = (new Date(0)).setUTCSeconds(i.time)
         return transactionParse(obj)
       })
-
-      console.log(data)
 
       return resolve(data)
     })
