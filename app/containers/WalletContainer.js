@@ -21,6 +21,7 @@ import { getAssetInfo, getAssets } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
 import getPaths from 'fw-utils/get-doc-paths'
+import closeSysd from 'fw-utils/close-sysd'
 
 type Props = {
   isMaximized: boolean,
@@ -110,7 +111,10 @@ class WalletContainer extends Component<Props> {
   }
 
   onClose() {
-    ipcRenderer.send('close')
+    closeSysd()
+    setTimeout(() => {
+      ipcRenderer.send('close')
+    }, 500)
   }
 
   onMaximize() {

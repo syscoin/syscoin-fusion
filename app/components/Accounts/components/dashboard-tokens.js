@@ -5,9 +5,9 @@ import Table from './table'
 
 type Props = {
   assets: Array<{
-    balance: number,
-    symbol: string,
-    asset: string
+    balance: string,
+    publicvalue: string,
+    asset_guid: number
   }>,
   isLoading: boolean,
   error: boolean,

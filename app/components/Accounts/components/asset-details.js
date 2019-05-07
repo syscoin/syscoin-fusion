@@ -1,6 +1,6 @@
 // @flow
-import React, { Component } from 'react'
-import { Row, Col, Icon, Spin, Tooltip } from 'antd'
+import React from 'react'
+import { Row, Col } from 'antd'
 import AvailableAssets from './available-assets'
 import TransactionList from './transaction-list'
 import AliasInfo from './alias-info'

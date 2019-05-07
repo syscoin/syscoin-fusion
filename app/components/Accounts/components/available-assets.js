@@ -8,7 +8,6 @@ type Props = {
   selectedAsset: string,
   selectAsset: Function,
   goToSendAssetForm: Function,
-  claimInterest: Function,
   t: Function
 };
 
@@ -27,11 +26,8 @@ export default (props: Props) => (
               asset={i.asset_guid.toString()}
               balance={i.balance}
               symbol={i.publicvalue.toUpperCase()}
-              key={i.asset}
+              key={i.asset_guid}
               goToSendAssetForm={props.goToSendAssetForm}
-              selectedAlias={props.selectedAlias}
-              claimInterest={props.claimInterest}
-              canClaimInterest={i.interest_rate > 0}
               t={props.t}
             />
           )) : (
