@@ -116,7 +116,7 @@ export default class SysTransactionList extends Component<Props, State> {
             <Icon
               type='reload'
               className='dashboard-refresh'
-              onClick={this.props.refresh}
+              onClick={() => this.changePage(0)}
             />
           )}
         </h3>

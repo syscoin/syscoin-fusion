@@ -128,7 +128,6 @@ const startUpRoutine = (cb) => {
   waterfall([
     done => {
       let isDone = false
-      console.log(process.env.TABLE_PAGINATION_LENGTH)
       exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -assetindex=1 -assetindexpagesize=${process.env.TABLE_PAGINATION_LENGTH} -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`), (err) => {
         if (isDone) {
           return
