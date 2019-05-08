@@ -193,6 +193,14 @@
 
 /* Right column */
 
+.ant-table-placeholder {
+    background: transparent !important;
+}
+
+.ant-collapse-content {
+    background-color: transparent !important;
+}
+
 .accounts-container-right {
     position: relative;
     overflow-y: scroll;
@@ -204,8 +212,8 @@
             font-weight: 500;
             font-size: 13px;
         }
-        background: $asset_box_background;
-        border-color: $main_white;
+        background: $asset_box_background !important;
+        border-color: $main_white !important;
         text-transform: uppercase;
         height: auto;
         padding: 0px 10px;
@@ -271,8 +279,12 @@
         margin-right: 10px;
     }
 
+    .ant-pagination-item {
+        background: transparent !important;
+    }
+
     button {
-        background: transparent;
+        background: transparent !important;
         border-color: $main_white;
         margin-left: 5px;
 
@@ -281,7 +293,7 @@
         }
 
         &:hover {
-            background: transparent;
+            background: transparent !important;
             
             i {
                 color: #fff;
@@ -460,7 +472,7 @@
 }
 
 .transactions-table .ant-pagination-item {
-    background: transparent;
+    background: transparent !important;
     border: 1px solid $main_white;
 }
 

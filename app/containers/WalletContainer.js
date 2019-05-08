@@ -8,16 +8,14 @@ import Wallet from 'fw-components/Wallet'
 import {
   saveGetInfo,
   saveAliases,
-  saveUnfinishedAliases,
   saveBlockchainInfo,
   dashboardTransactions,
   checkWalletEncryption,
   getWalletBalance,
 } from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
-import processIncompleteAliases from 'fw-utils/process-incomplete-alias'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
-import { getAssetInfo, getAssets } from 'fw-sys'
+import { getAssetInfo } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
 import getPaths from 'fw-utils/get-doc-paths'
@@ -25,12 +23,10 @@ import closeSysd from 'fw-utils/close-sysd'
 
 type Props = {
   isMaximized: boolean,
-  unfinishedAliases: Array<Object>,
-  currentBlock: number,
+  getWalletBalance: Function,
   saveGetInfo: Function,
   saveAliases: Function,
   saveGuids: Function,
-  saveUnfinishedAliases: Function,
   saveBlockchainInfo: Function,
   toggleMaximize: Function,
   dashboardTransactions: Function,
@@ -81,14 +77,9 @@ class WalletContainer extends Component<Props> {
 
   updateWalletHigh() {
     this.props.saveGetInfo()
-    this.props.saveUnfinishedAliases()
     this.props.saveBlockchainInfo()
     this.props.checkWalletEncryption()
     this.props.getWalletBalance()
-    processIncompleteAliases({
-      unfinishedAliases: this.props.unfinishedAliases,
-      actualBlock: this.props.currentBlock
-    })
   }
 
   async updateAssets() {
@@ -140,7 +131,6 @@ class WalletContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  unfinishedAliases: state.wallet.unfinishedAliases,
   aliases: state.wallet.aliases,
   headBlock: state.wallet.blockchaininfo.headers,
   currentBlock: state.wallet.getinfo.blocks,
@@ -151,7 +141,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   saveGetInfo,
   saveAliases,
   saveGuids,
-  saveUnfinishedAliases,
   saveBlockchainInfo,
   toggleMaximize,
   dashboardTransactions,

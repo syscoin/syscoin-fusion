@@ -266,12 +266,14 @@ const aliasInfo = (name: string) => syscoin.walletServices.alias.info({ aliasNam
 const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(async (resolve, reject) => {
   let allocations
 
+  console.log(page, asset, address)
+
   try {
     allocations = await syscoin.callRpc('listassetindex', [page, {
       asset_guid: Number(asset),
       address
     }])
-    allocations = allocations(i => {
+    allocations = allocations.map(i => {
       const allocation = {...i}
       allocation.random = Math.random()
       return allocation
@@ -279,6 +281,8 @@ const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(as
   } catch(err) {
     return reject(err)
   }
+
+  console.log(allocations)
 
   return resolve(allocations)
 })

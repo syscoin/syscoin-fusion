@@ -4,25 +4,11 @@ const { ipcRenderer } = require('electron')
 const fs = require('fs')
 const swal = require('sweetalert')
 const waterfall = require('async/waterfall')
-const { getInfo } = require('fw-sys')
 
 const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 const getSysPath = require('./syspath')
-
-// const checkSyscoind = (cb) => {
-//   // Just a test to check if syscoind is ready
-//   getInfo()
-//     .then(result => cb(false, 'up', result))
-//     .catch(err => {
-//       if (err.code === -28) {
-//         // Verifying wallet... Let the user know.
-//         return cb(null, 'verify', err.message)
-//       }
-//       cb(err)
-//     })
-// }
 
 const RPCPORT='8369'
 const RPCUSER='u'
