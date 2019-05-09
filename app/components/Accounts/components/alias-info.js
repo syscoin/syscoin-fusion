@@ -28,6 +28,7 @@ export default (props: Props) => (
     </Col>
     <Col xs={6}>
       <img
+        alt='address-avatar'
         className='alias-info-alias-avatar'
         src={props.avatarUrl ? props.avatarUrl : extractAvatar(props.alias || props.address)}
       />
