@@ -1,6 +1,7 @@
 // @flow
 const { waterfall } = require('async')
 const transactionParse = require('./transaction-parse')
+const isSegwit = require('./is-segwit')
 const { flatten } =  require('lodash')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
@@ -125,19 +126,6 @@ const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) =>
 
   return resolve(true)
 })
-
-// const sendAsset = async (obj: SendAssetType) => {
-//   // Sends asset to specific alias
-//   const { fromAlias, toAlias, assetId, amount, comment } = obj
-//   let response
-//   return await syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, amount: parseFloat(amount) }], comment, ''])
-  
-// }
-// const sendSysTransaction = (obj: sendSysTransactionType) => {
-//   // Send SYS to address
-//   const { address, amount, comment = '' } = obj
-//   return syscoin.walletServices.sendToAddress(address, Number(amount), comment)
-// }
 
 const sendSysTransaction = (obj: sendSysTransactionType) => {
   // Send SYS to address
@@ -273,8 +261,6 @@ const aliasInfo = (name: string) => syscoin.walletServices.alias.info({ aliasNam
 const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(async (resolve, reject) => {
   let allocations
 
-  console.log(page, asset, address)
-
   try {
     allocations = await syscoin.callRpc('listassetindex', [page, {
       asset_guid: Number(asset),
@@ -289,8 +275,6 @@ const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(as
     return reject(err)
   }
 
-  console.log(allocations)
-
   return resolve(allocations)
 })
 
@@ -304,12 +288,16 @@ const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
   
   try {
     allocationsByAddress = await getAddresses()
+    allocationsByAddress = allocationsByAddress.filter(i => isSegwit(i.address))
+    console.log(allocationsByAddress)
     allocationsByAddress = await Promise.all(
       allocationsByAddress.map(i => getAssetBalancesByAddress(i.address))
     )
   } catch(err) {
     return reject(err)
   }
+
+  console.log(allocationsByAddress)
 
   allocationsByAddress.forEach(i => {
     i.forEach(x => {

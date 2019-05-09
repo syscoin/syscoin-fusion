@@ -12,29 +12,19 @@ type Props = {
   updateSelectedAlias: Function,
   claimInterest: Function,
   selectedAlias: string,
-  getPrivateKey: Function
+  getPrivateKey: Function,
+  syncPercentage: number
 };
 
 export default class AliasContainer extends Component<Props> {
 
   generateAliasesBoxes() {
-    const aliases = []
-    const addresses = []
-
-    this.props.aliases.forEach(i => {
-      if (i.alias) {
-        return aliases.push(i)
-      }
-
-      addresses.push(i)
-    })
-
-
-    return aliases.concat(addresses).map(i => (
+    return this.props.aliases.map(i => (
       <AliasAddressItem
-        key={i.address || 'NO_ADDRESS'}
+        key={i.address}
         alias={i.alias || ''}
-        address={i.address || 'NO_ADDRESS'}
+        address={i.address}
+        label={i.label}
         isLoading={this.props.aliasAssets.isLoading}
         isSelected={this.isAliasSelected(i)}
         updateSelectedAlias={this.props.updateSelectedAlias}
@@ -48,7 +38,7 @@ export default class AliasContainer extends Component<Props> {
   }
 
   isAliasSelected(aliasInfo: Object) {
-    return aliasInfo.alias ? aliasInfo.alias === this.props.selectedAlias : aliasInfo.address === this.props.selectedAlias
+    return aliasInfo.address === this.props.selectedAlias
   }
 
   render() {

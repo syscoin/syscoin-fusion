@@ -5,13 +5,12 @@ import swal from 'sweetalert'
 import parseError from 'fw-utils/error-parser'
 
 type Props = {
-  alias: string,
   address: string,
   isLoading: boolean,
   isSelected: boolean,
+  label: string,
   updateSelectedAlias: Function,
   getPrivateKey: Function,
-  avatarUrl: string,
   t: Function
 };
 
@@ -44,7 +43,7 @@ class AliasAddressItem extends Component<Props, State> {
   }
 
   render() {
-    const { alias, address, isLoading, isSelected, updateSelectedAlias, avatarUrl, t } = this.props
+    const { address, isLoading, isSelected, label, updateSelectedAlias, t } = this.props
     return (
       <Row
         className={`alias-box ${isSelected ? 'expanded' : 'non-expanded'} ${isLoading ? 'loading' : ''}`}
@@ -52,17 +51,12 @@ class AliasAddressItem extends Component<Props, State> {
           if (isSelected) {
             return
           }
-          updateSelectedAlias(alias || address)
+          updateSelectedAlias(address)
         }}
       >
-        {alias && (
-          <Col xs={isSelected ? 6 : 4} lg={isSelected ? 4 : 3} offset={isSelected ? 1 : 0} className='alias-img-container'>
-            <img className='alias-img' src={avatarUrl.length ? avatarUrl : `https://ui-avatars.com/api/?name=${alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`} alt='Alias' />
-          </Col>
-        )}
-        <Col xs={alias ? 18 : 23} className={`alias-text-container ${!alias ? 'address' : ''}`}>
+        <Col xs={23} className='alias-text-container address'>
           <div className='alias-name'>
-            {alias || address}
+            {label || address}
             {isSelected && (
               <div className='alias-toolbox'>
                 {
@@ -77,7 +71,7 @@ class AliasAddressItem extends Component<Props, State> {
               </div>
             )}
           </div>
-          <div className='alias-type'>{alias ? t('misc.alias') : t('misc.address')}</div>
+          <div className='alias-type'>{t('misc.address')}</div>
         </Col>
       </Row>
     )
