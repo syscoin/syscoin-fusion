@@ -15,7 +15,7 @@ const DashboardBalance = (props: Props) => (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>{props.t('accounts.summary.total_sys')}</h3>
         <h3 className='wallet-summary-balance-number'>
-          {props.balance.toFixed(2)}
+          {props.balance}
           <SendButton
             className='wallet-summary-balance-send-btn'
             onClick={props.goToSysForm}

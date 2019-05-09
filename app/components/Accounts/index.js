@@ -23,7 +23,6 @@ type Props = {
   headBlock: number,
   currentBlock: number,
   syncPercentage: number,
-  getAliasInfo: Function,
   getPrivateKey: Function,
   goToHome: Function,
   dashboardSysTransactions: {
