@@ -120,7 +120,7 @@ class ToolsContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  currentBlock: state.wallet.getinfo.blocks,
+  currentBlock: state.wallet.blockchaininfo.blocks,
   unfinishedAliases: state.wallet.unfinishedAliases,
   isEncrypted: state.wallet.isEncrypted,
   isUnlocked: state.wallet.isUnlocked,

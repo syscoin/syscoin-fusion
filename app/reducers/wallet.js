@@ -22,25 +22,6 @@ type actionType = {
 
 export const initialState = {
   balance: 0,
-  getinfo: {
-    version: "",
-    dashversion: "",
-    protocolversion: 0,
-    walletversion: 0,
-    balance: 0,
-    privatesend_balance: 0,
-    blocks: 0,
-    timeoffset: 0,
-    connections: 0,
-    proxy: "",
-    difficulty: 0,
-    testnet: false,
-    keypoololdest: 0,
-    keypoolsize: 0,
-    paytxfee: 0,
-    relayfee: 0,
-    errors: ""
-  },
   aliases: [],
   unfinishedAliases: [],
   blockchaininfo: {
@@ -74,11 +55,6 @@ export const initialState = {
 
 export default function wallet(state: Object = initialState, action: actionType) {
   switch (action.type) {
-    case WALLET_GETINFO:
-      return {
-        ...state,
-        getinfo: action.payload
-      }
     case WALLET_ALIASES:
       return {
         ...state,

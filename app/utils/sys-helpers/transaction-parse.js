@@ -1,5 +1,5 @@
 export default (transaction: object) => {
-  if (transaction.category === 'send') {
+  if (transaction.systx && transaction.systx.asset_guid) {
     return {
       txid: transaction.txid,
       address: `Token transaction: ${transaction.systx.asset_guid} from ${transaction.systx.sender}`,

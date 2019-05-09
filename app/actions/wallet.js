@@ -2,40 +2,15 @@
 import { createAction } from 'redux-actions'
 import * as types from 'fw-types/wallet'
 import {
-  getInfo,
-  getAliases,
+  getAddresses,
   getBlockchainInfo,
   listSysTransactions,
   getAllTokenBalances,
   isEncrypted,
-  aliasInfo,
   currentBalance
 } from 'fw-sys'
 import { getUnfinishedAliases } from 'fw-utils/new-alias-manager'
 import { initialState } from 'fw-reducers/wallet'
-
-type getInfoActionType = {
-  type: string,
-  payload: {
-    version: string,
-    dashversion: string,
-    protocolversion: number,
-    walletversion: number,
-    balance: number,
-    privatesend_balance: number,
-    blocks: number,
-    timeoffset: number,
-    connections: number,
-    proxy: string,
-    difficulty: number,
-    testnet: boolean,
-    keypoololdest: number,
-    keypoolsize: number,
-    paytxfee: number,
-    relayfee: number,
-    errors: string
-  }
-};
 
 type getAliasesActionType = {
   type: string,
@@ -89,7 +64,6 @@ type checkWalletEncryptionActionType = {
   payload: boolean
 };
 
-const saveGetInfoAction = createAction(types.WALLET_GETINFO)
 const saveAliasesAction = createAction(types.WALLET_ALIASES)
 const saveUnfinishedAliasesAction = createAction(types.WALLET_UNFINISHED_ALIASES)
 const saveBlockchainInfoAction = createAction(types.WALLET_BLOCKCHAIN_INFO)
@@ -115,49 +89,14 @@ export const getWalletBalance = () => async (dispatch: (action) => void) => {
   }
 }
 
-export const saveGetInfo = () => async (dispatch: (action: getInfoActionType) => void) => {
-  try {
-    dispatch(saveGetInfoAction(await getInfo()))
-  } catch(err) {
-    dispatch(saveGetInfoAction(initialState.getinfo))
-  }
-}
-
 export const saveAliases = () => async (dispatch: (action: getAliasesActionType) => void) => {
   let aliases
 
   try {
-    aliases = await getAliases()
+    aliases = await getAddresses()
   } catch(err) {
     return dispatch(saveAliasesAction([]))
   }
-
-  aliases = aliases.map(async i => {
-
-    if (i.alias) {
-      i.aliasInfo = await aliasInfo(i.alias)
-    }
-
-    return i
-  })
-
-  try {
-    aliases = await Promise.all(aliases)
-  } catch(err) {
-    return dispatch(saveAliasesAction([]))
-  }
-
-  aliases = aliases.map(i => {
-    if (i.alias) {
-      try {
-        i.avatarUrl = JSON.parse(i.aliasInfo.publicvalue).avatarUrl 
-      } catch(err) {
-        i.avatarUrl = ''
-      }
-    }
-
-    return i
-  })
 
   return dispatch(saveAliasesAction(aliases))
 }
@@ -182,11 +121,11 @@ export const dashboardTransactions = (page = 0) => async (dispatch: (action: sav
   dispatch(dashboardTransactionsIsLoadingAction())
 
   try {
-    return dispatch(dashboardTransactionsReceiveAction(
+    dispatch(dashboardTransactionsReceiveAction(
       await listSysTransactions(page, Number(process.env.TABLE_PAGINATION_LENGTH))
     ))
   } catch(err) {
-    return dashboardTransactionsErrorAction(err)
+    dashboardTransactionsErrorAction(err)
   }
 }
 

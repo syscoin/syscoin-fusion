@@ -114,7 +114,7 @@ const startUpRoutine = (cb) => {
   waterfall([
     done => {
       let isDone = false
-      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -assetindex=1 -assetindexpagesize=${process.env.TABLE_PAGINATION_LENGTH} -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`), (err) => {
+      exec(generateCmd('syscoind', `${isFirstTime ? '-reindex' : ''} -daemon=0 -assetindex=1 -assetindexpagesize=${process.env.TABLE_PAGINATION_LENGTH} -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`), (err) => {
         if (isDone) {
           return
         }
@@ -144,7 +144,7 @@ const startUpRoutine = (cb) => {
     },
     (reindex, done) => {
       if (reindex) {
-        exec(generateCmd('syscoind', `-reindex -assetindex=1 -assetindexpagesize=${process.env.TABLE_PAGINATION_LENGTH} -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`))
+        exec(generateCmd('syscoind', `-reindex -daemon=0 -assetindex=1 -assetindexpagesize=${process.env.TABLE_PAGINATION_LENGTH} -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`))
       }
       done()
     },

@@ -1,6 +1,7 @@
 // @flow
 const { waterfall } = require('async')
 const transactionParse = require('./transaction-parse')
+const { flatten } =  require('lodash')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
 
@@ -61,19 +62,25 @@ const currentBalance = async () => {
   return balance
 }
 
-// Get current aliases
-const getAliases = () => new Promise(async (resolve, reject) => {
-  let aliases
+// Get current addresses
+const getAddresses = () => new Promise(async (resolve, reject) => {
+  let addresses
   
   try {
-    aliases = await syscoin.walletServices.syscoinListReceivedByAddress()
+    addresses = await syscoin.callRpc('listaddressgroupings', [])
+    addresses = flatten(addresses)
   } catch(err) {
     return reject(err)
   }
 
-  aliases = aliases.filter(i => i.address)
+  addresses = addresses.map(i => ({
+    address: i[0],
+    balance: i[1],
+    label: i[2] || '',
+    avatarUrl: ''
+  }))
 
-  return resolve(aliases)
+  return resolve(addresses)
 })
 
 // Get assets
@@ -296,7 +303,7 @@ const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
   const balancesByAssets = []
   
   try {
-    allocationsByAddress = await getAliases()
+    allocationsByAddress = await getAddresses()
     allocationsByAddress = await Promise.all(
       allocationsByAddress.map(i => getAssetBalancesByAddress(i.address))
     )
@@ -335,18 +342,23 @@ const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGui
 })
 
 // Get list of SYS transactions in the wallet
-const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise((resolve, reject) => {
-  syscoin.callRpc('listtransactions', ['*', pageSize, pageSize * page])
-    .then(results => {
-      const data = results.map(i => {
-        const obj = { ...i }
-        obj.time = (new Date(0)).setUTCSeconds(i.time)
-        return transactionParse(obj)
-      })
+const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise(async (resolve, reject) => {
+  let results
+  
+  try {
+    results = await syscoin.callRpc('listtransactions', ['*', pageSize, pageSize * page])
+  } catch(err) {
+    return reject(err)
+  }
 
-      return resolve(data)
-    })
-    .catch(err => reject(err))
+  const data = results.map(i => {
+    const obj = { ...i }
+    obj.time = (new Date(0)).setUTCSeconds(i.time)
+
+    return transactionParse(obj)
+  })
+
+  return resolve(data)
 })
 
 const encryptWallet = (pass: string) => {
@@ -426,7 +438,7 @@ module.exports = {
   currentBalance,
   editAlias,
   getAllTokenBalances,
-  getAliases,
+  getAddresses,
   getAssetInfo,
   getAssetAllocationInfo,
   getAssetBalancesByAddress,

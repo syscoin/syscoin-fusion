@@ -6,7 +6,6 @@ import { withNamespaces } from 'react-i18next'
 import { ipcRenderer, remote } from 'electron'
 import Wallet from 'fw-components/Wallet'
 import {
-  saveGetInfo,
   saveAliases,
   saveBlockchainInfo,
   dashboardTransactions,
@@ -24,7 +23,6 @@ import closeSysd from 'fw-utils/close-sysd'
 type Props = {
   isMaximized: boolean,
   getWalletBalance: Function,
-  saveGetInfo: Function,
   saveAliases: Function,
   saveGuids: Function,
   saveBlockchainInfo: Function,
@@ -57,26 +55,17 @@ class WalletContainer extends Component<Props> {
     if (!window.updateWalletHigh) {
       window.updateWalletHigh = setInterval(() => this.updateWalletHigh(), 5000)
     }
-
-    if (!window.updateWalletLow) {
-      window.updateWalletLow = setInterval(() => this.updateWalletLow(), 60000)
-    }
     
     this.updateWalletHigh()
-    this.updateWalletLow()
     // Update guids in store
     this.updateAssets()
 
     // Get Dashboard data
-    this.props.dashboardTransactions(0, 10)
-  }
-
-  updateWalletLow() {
-    this.props.saveAliases()
+    this.props.dashboardTransactions(0)
   }
 
   updateWalletHigh() {
-    this.props.saveGetInfo()
+    this.props.saveAliases()
     this.props.saveBlockchainInfo()
     this.props.checkWalletEncryption()
     this.props.getWalletBalance()
@@ -133,12 +122,11 @@ class WalletContainer extends Component<Props> {
 const mapStateToProps = state => ({
   aliases: state.wallet.aliases,
   headBlock: state.wallet.blockchaininfo.headers,
-  currentBlock: state.wallet.getinfo.blocks,
+  currentBlock: state.wallet.blockchaininfo.blocks,
   isMaximized: state.options.isMaximized
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  saveGetInfo,
   saveAliases,
   saveGuids,
   saveBlockchainInfo,
