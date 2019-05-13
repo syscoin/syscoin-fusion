@@ -32,13 +32,6 @@ type Props = {
   t: Function
 };
 
-type sendAssetType = {
-  from: string,
-  asset: string,
-  toAddress: string,
-  amount: string,
-  comment?: string
-};
 type sendSysType = {
   amount: string,
   address: string,

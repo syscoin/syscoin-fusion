@@ -13,7 +13,6 @@ import {
   GET_ASSETS_FROM_ALIAS_RECEIVE,
   GET_ASSETS_FROM_ALIAS_ERROR
 } from 'fw-types/forms'
-import { editSendAssetAction } from '../actions/forms';
 
 type actionType = {
   +type: string,
@@ -29,8 +28,7 @@ type StateType = {
       from: string,
       asset: string,
       toAddress: string,
-      amount: string,
-      comment: string
+      amount: string
     },
     isLoading: boolean,
     error: boolean,
@@ -62,8 +60,7 @@ export const initialState = {
       from: '',
       asset: '',
       toAddress: '',
-      amount: '',
-      comment: ''
+      amount: ''
     },
     isLoading: false,
     error: false,

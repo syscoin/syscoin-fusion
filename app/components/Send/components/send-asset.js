@@ -30,8 +30,7 @@ type FormDataType = {
   from: string,
   asset: string,
   toAddress: string,
-  amount: string,
-  comment: string
+  amount: string
 };
 
 export default class SendAssetForm extends Component<Props> {
@@ -154,15 +153,6 @@ export default class SendAssetForm extends Component<Props> {
             value={amount}
             className='send-asset-form control send-asset-form-amount'
             id='asset-form-amount'
-          />
-          <Input
-            disabled={isLoading}
-            name='comment'
-            placeholder={t('send.send_asset.comment')}
-            onChange={e => this.updateField(e, 'comment')}
-            value={comment}
-            className='send-asset-form control send-asset-form-comment'
-            id='asset-form-comment'
           />
           <div className='send-asset-form-btn-container'>
             {isLoading && <Spin indicator={<Icon type='loading' spin />} className='send-loading' />}

@@ -22,8 +22,7 @@ type SendAssetType = {
   fromAlias: string,
   toAlias: string,
   assetId: string,
-  amount: string,
-  comment?: string
+  amount: string
 };
 type sendSysTransactionType = {
   address: string,
@@ -97,7 +96,6 @@ const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) =>
   // Sends asset to specific alias
   const { fromAlias, toAlias, assetId, amount } = obj
   let assetSend
-  let txFund
   let signTransaction
   
   try {
@@ -107,13 +105,7 @@ const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) =>
   }
 
   try {
-    txFund = await syscoin.callRpc('syscointxfund', [assetSend[0], fromAlias])
-  } catch(err) {
-    return reject(err)
-  }
-
-  try {
-    signTransaction = await syscoin.callRpc('signrawtransactionwithwallet', [txFund[0]])
+    signTransaction = await syscoin.callRpc('signrawtransactionwithwallet', [assetSend.hex])
   } catch(err) {
     return reject(err)
   }
