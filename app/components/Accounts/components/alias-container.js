@@ -46,14 +46,13 @@ export default class AliasContainer extends Component<Props> {
     return (
       <div className='full-height'>
         <h4 className='your-aliases-text'>{t('accounts.panel.your_aliases')}</h4>
-        {this.props.syncPercentage !== 100 ? (
-          <SyncLoader
-            syncPercentage={this.props.syncPercentage}
-            headBlock={this.props.headBlock}
-            currentBlock={this.props.currentBlock}
-            t={t}
-          />
-        ) : null}
+        <SyncLoader
+          syncPercentage={this.props.syncPercentage}
+          headBlock={this.props.headBlock}
+          isSynced={this.props.syncPercentage === 100}
+          currentBlock={this.props.currentBlock}
+          t={t}
+        />
         <div className='aliases-container'>
           {this.generateAliasesBoxes()}
         </div>

@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Col, Input, Button, Select, Spin, Icon } from 'antd'
+import { Input, Button, Select, Spin, Icon } from 'antd'
 import formChangeFormat from 'fw-utils/form-change-format'
 
 const { Option } = Select

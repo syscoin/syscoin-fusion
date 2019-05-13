@@ -6,6 +6,7 @@ type Props = {
   syncPercentage: number,
   currentBlock: number,
   headBlock: number,
+  isSynced: boolean,
   t: Function
 };
 
@@ -18,14 +19,16 @@ export default (props: Props) => (
       headBlock: props.headBlock
     })}
   >
-    <Spin
-      className='sync-loader'
-      indicator={
-        <Icon
-          type='loading'
-          spin
-        />
-      }
-    />
+    {props.isSynced ?
+      <Icon className='sync-loader sync-loaded' type='check' />
+      : <Spin
+        className='sync-loader'
+        indicator={
+          <Icon
+            type='loading'
+            spin
+          />
+        }
+      />}
   </Tooltip>
 )

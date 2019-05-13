@@ -65,6 +65,12 @@
     margin-top: 10px;
     cursor: pointer;
     padding-right: 15px;
+
+    &.sync-loaded {
+        color: $main_green;
+        font-size: 18px;
+        margin-top: 15px;
+    }
 }
 
 .aliases-container {
