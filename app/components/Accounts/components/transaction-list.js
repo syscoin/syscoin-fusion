@@ -1,6 +1,8 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Table } from 'antd'
+import goToDetail from 'fw/utils/helpers/go-to-transaction-detail'
+import goToBlock from 'fw/utils/helpers/go-to-block-detail'
+import { Icon, Table, Tooltip } from 'antd'
 import Pagination from './pagination'
 
 type Props = {
@@ -9,6 +11,7 @@ type Props = {
   error: boolean,
   isLoading: boolean,
   selectedAlias: string,
+  selectedAsset: string,
   selectedSymbol: string,
   t: Function
 };
@@ -51,24 +54,59 @@ export default class TransactionList extends Component<Props> {
       {
         title: t('misc.from'),
         dataIndex: 'sender',
-        render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
-      },
-      {
-        title: t('misc.to'),
-        dataIndex: 'allocations',
-        render: (arr: array) => <span title={arr[0].address}>{this.cutTextIfNeeded(arr[0].address)}</span>
+        render: (text: string) => <span title={text}>{text}</span>
       },
       {
         title: t('misc.details'),
-        dataIndex: 'total',
-        render: (total: string, transaction: Object) => ({
-          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{total}</span>,
-          props: {
-            width: 150
-          }
+        dataIndex: 'allocations',
+        render: (allocations: array, transaction: object) => <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.getAmountFromTransaction(transaction)}</span>
+      },
+      {
+        title: '',
+        dataIndex: 'txid',
+        render: (txid: string, transaction: object) => ({
+          children: (
+            <div>
+              <Tooltip title='See transaction in block explorer.' placement='left'>
+                <Icon
+                  className='transaction-list-action-button'
+                  type='bars'
+                  onClick={() => goToDetail(txid)}
+                />
+              </Tooltip>
+              <Tooltip title='See block in block explorer.' placement='left'>
+                <Icon
+                  className='transaction-list-action-button'
+                  type='appstore'
+                  onClick={() => goToBlock(transaction.blockhash)}
+                />
+              </Tooltip>
+            </div>
+          )
         })
       }
     ]
+  }
+
+  getAmountFromTransaction(transaction) {
+    const { selectedAlias } = this.props
+
+    if (!this.isIncoming(transaction)) {
+      return Number(transaction.total).toFixed(2)
+    }
+
+    const amount = transaction.allocations.reduce((prev, curr) => {
+      const prevAmount = Number(prev)
+      const currAmount = Number(curr.amount)
+
+      if (selectedAlias === curr.address) {
+        return currAmount + prevAmount
+      }
+
+      return prevAmount
+    }, 0)
+
+    return amount.toFixed(2)
   }
 
   isIncoming(transaction: Object) {
@@ -106,7 +144,7 @@ export default class TransactionList extends Component<Props> {
           columns={this.generateColumns()}
           className='transactions-table'
           rowClassName='transactions-table-row'
-          rowKey='txid'
+          rowKey='random'
           pagination={false}
           locale={{
             emptyText: this.defineLocales()

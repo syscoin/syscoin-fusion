@@ -47,7 +47,8 @@
       "console.html"
     ],
     "extraFiles": [
-      "**/extra/**/*"
+      "**/extra/**/*",
+      "**/bin/**/*"
     ],
     "dmg": {
       "contents": [

@@ -436,6 +436,28 @@
 .transactions-table {
     margin-top: 10px;
     margin-bottom: 20px;
+
+    .transaction-list-action-button {
+        margin-right: 5px;
+        color: $main_white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .ant-table-row-expand-icon {
+        background: transparent !important;
+        border: 0;
+        font-size: 20px;
+    }
+
+    .ant-table-expanded-row {
+        background: transparent !important;
+        color: $title_color;
+
+        &:hover td {
+            background: transparent !important;
+        }
+    }
 }
 
 .transactions-table .ant-table-thead th {
@@ -447,12 +469,12 @@
     font-weight: 500;
 }
 
-.transactions-table .transactions-table-row td .amount.incoming {
-    color: $main_green;
+.transactions-table td .amount.incoming {
+    color: $main_green !important;
 }
 
-.transactions-table .transactions-table-row td .amount.outgoing {
-    color: $main_red;
+.transactions-table td .amount.outgoing {
+    color: $main_red !important;
 }
 
 .transactions-table .transactions-table-row td .arrow.incoming {
