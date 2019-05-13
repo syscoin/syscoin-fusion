@@ -56,7 +56,9 @@ class AliasAddressItem extends Component<Props, State> {
       >
         <Col xs={23} className='alias-text-container address'>
           <div className='alias-name'>
-            {label || address}
+            <span className='trim'>
+              {label || address}
+            </span>
             {isSelected && (
               <div className='alias-toolbox'>
                 {
@@ -71,7 +73,6 @@ class AliasAddressItem extends Component<Props, State> {
               </div>
             )}
           </div>
-          <div className='alias-type'>{t('misc.address')}</div>
         </Col>
       </Row>
     )

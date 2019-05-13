@@ -125,7 +125,7 @@
 
 .alias-box.expanded {
     background: $main_background;
-    padding: 10px 0;
+    padding: 0;
     position: sticky;
     width: 100%;
     transition: opacity 0.3s;
@@ -172,14 +172,15 @@
 .alias-box .alias-name {
     font-weight: 400;
     font-size: 14px;
-    color: $main_white;
-}
 
-.alias-box .alias-name.trim {
-    text-overflow: ellipsis;
-    overflow: hidden; 
-    width: 220px;
-    white-space: nowrap;
+    span {
+        display: inline-block;
+        width: 90%;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        color: $main_white;
+    }
 }
 
 .alias-box .alias-name .alias-toolbox {
