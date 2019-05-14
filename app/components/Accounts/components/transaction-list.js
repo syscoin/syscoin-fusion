@@ -11,7 +11,6 @@ type Props = {
   error: boolean,
   isLoading: boolean,
   selectedAlias: string,
-  selectedAsset: string,
   selectedSymbol: string,
   t: Function
 };
@@ -52,9 +51,9 @@ export default class TransactionList extends Component<Props> {
         )
       },
       {
-        title: t('misc.from'),
+        title: t('misc.address'),
         dataIndex: 'sender',
-        render: (text: string) => <span title={text}>{text}</span>
+        render: (text: string, transaction: object) => <div>{this.getAddressFromTransaction(transaction).map(i => <div><span>{i}</span></div>)}</div>
       },
       {
         title: t('misc.details'),
@@ -86,6 +85,14 @@ export default class TransactionList extends Component<Props> {
         })
       }
     ]
+  }
+
+  getAddressFromTransaction(transaction) {
+    if (this.isIncoming(transaction)) {
+      return [transaction.sender]
+    }
+
+    return transaction.allocations.map(i => i.address)
   }
 
   getAmountFromTransaction(transaction) {
@@ -120,7 +127,7 @@ export default class TransactionList extends Component<Props> {
     if (this.props.error) {
       emptyText = t('misc.try_again_later')
     } else if (this.props.isLoading) {
-      emptyText = t('misc.loading') + '...'
+      emptyText = `${t('misc.loading')}...`
     } else {
       emptyText = t('misc.no_data')
     }
@@ -136,6 +143,7 @@ export default class TransactionList extends Component<Props> {
   }
 
   render() {
+    console.log(this.prepareData())
     return (
       <div className='token-transaction-list'>
         <h4 className='transactions-table-title'>{this.props.t('accounts.asset.transactions_for', { asset: this.props.selectedSymbol })}</h4>

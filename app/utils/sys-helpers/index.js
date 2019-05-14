@@ -281,15 +281,12 @@ const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
   try {
     allocationsByAddress = await getAddresses()
     allocationsByAddress = allocationsByAddress.filter(i => isSegwit(i.address))
-    console.log(allocationsByAddress)
     allocationsByAddress = await Promise.all(
       allocationsByAddress.map(i => getAssetBalancesByAddress(i.address))
     )
   } catch(err) {
     return reject(err)
   }
-
-  console.log(allocationsByAddress)
 
   allocationsByAddress.forEach(i => {
     i.forEach(x => {

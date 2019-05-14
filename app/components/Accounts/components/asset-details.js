@@ -51,7 +51,6 @@ export default (props: Props) => (
             error={props.transactions.error}
             isLoading={props.transactions.isLoading}
             selectedAlias={props.selectedAlias}
-            selectedAsset={props.aliasAssets.selected}
             selectedSymbol={props.aliasAssets.selectedSymbol}
             changePage={(page) => props.selectAsset({
               asset: props.aliasAssets.selected,
