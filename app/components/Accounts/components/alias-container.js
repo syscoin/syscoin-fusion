@@ -19,7 +19,10 @@ type Props = {
 export default class AliasContainer extends Component<Props> {
 
   generateAliasesBoxes() {
-    return this.props.aliases.map(i => (
+    const withLabel = this.props.aliases.filter(i => i.label.length)
+    const withoutLabel = this.props.aliases.filter(i => !i.label.length)
+
+    return withLabel.concat(withoutLabel).map(i => (
       <AliasAddressItem
         key={i.address}
         alias={i.alias || ''}
