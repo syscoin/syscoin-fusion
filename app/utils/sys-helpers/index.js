@@ -6,7 +6,7 @@ const { flatten } =  require('lodash')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
 
-const syscoin = new Syscoin({port: 8369, username: 'u', password: 'p'})
+const syscoin = new Syscoin({port: 8369, username: 'u', password: 'p', allowCoerce: false})
 
 window.sys = syscoin
 
@@ -338,17 +338,21 @@ const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Pro
   return resolve(data)
 })
 
-const encryptWallet = (pass: string) => {
-  return syscoin.callRpc('encryptwallet', [pass])
-}
+const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
 const unlockWallet = (pass: string, time: number) => syscoin.callRpc('walletpassphrase', [pass, time])
 const changePwd = (oldPwd: string, newPwd: string) => syscoin.callRpc('walletpassphrasechange', [oldPwd, newPwd])
-const lockWallet = () => syscoin.callRpc('walletlock')
+const lockWallet = () => syscoin.callRpc('walletlock', [])
 
-const isEncrypted = () => new Promise((resolve) => {
-  syscoin.callRpc('walletpassphrase')
-    .then(() => resolve(true))
-    .catch(err => resolve(err.code === -1))
+const isEncrypted = () => new Promise(async (resolve, reject) => {
+  let output
+
+  try {
+    output = await syscoin.callRpc('getwalletinfo', [])
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve(Object.keys(output).indexOf('unlocked_until') !== -1)
 })
 
 const claimAssetInterest = (asset: string, alias: string) => new Promise((resolve, reject) => {

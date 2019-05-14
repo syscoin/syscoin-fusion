@@ -49,7 +49,6 @@ type Props = {
 
 type State = {
   selectedAlias: string,
-  selectedIsAlias: boolean,
   aliasAssets: {
     selected: string,
     selectedSymbol: string,
@@ -77,7 +76,6 @@ class AccountsContainer extends Component<Props, State> {
 
     this.initialState = {
       selectedAlias: '',
-      selectedIsAlias: true,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -112,7 +110,6 @@ class AccountsContainer extends Component<Props, State> {
     
     this.setState({
       selectedAlias: alias,
-      selectedIsAlias: false,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',

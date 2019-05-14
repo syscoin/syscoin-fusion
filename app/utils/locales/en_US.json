@@ -59,6 +59,7 @@
     "lock_confirm_password": "Confirm your password",
     "lock_password_dont_match": "Passwords does not match",
     "lock_reboot": "Fusion needs to reboot to complete the wallet encryption. Do you want to continue?",
+    "lock_confirmation": "Are you sure you want to encrypt your wallet?",
     "lock_old_password": "Enter old password",
     "lock_success": "Password changed successfully",
     "lock_unlock_session": "Unlock for the session",

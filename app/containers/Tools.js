@@ -66,16 +66,7 @@ class ToolsContainer extends Component<Props> {
   }
 
   async encryptWallet(pass: string) {
-    try {
-      await encryptWallet(pass)
-    } catch(err) {
-      return false
-    }
-
-    remote.app.relaunch()
-    remote.app.exit()
-
-    return true
+    return encryptWallet(pass)
   }
 
   async lockWallet() {
