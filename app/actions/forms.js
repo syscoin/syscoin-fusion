@@ -90,7 +90,6 @@ export const sendSysForm = (obj: editSendSysType) => async (dispatch: (action: e
 
 export const getAssetsFromAlias = (address) => async (dispatch: (action: Array<Object>) => void) => {
   dispatch(getAssetsFromAliasIsLoadingAction())
-  // const filterGuids = getState().options.guids.map(i => i._id)
 
   try {
     dispatch(getAssetsFromAliasReceivedAction(await getAssetBalancesByAddress(address)))

@@ -23,7 +23,6 @@ import unlockWallet from 'fw-utils/unlock-wallet'
 type Props = {
   balance: obj,
   aliases: Array<Object>,
-  assets: Array<Object>,
   headBlock: number,
   currentBlock: number,
   dashboardSysTransactions: {
@@ -128,11 +127,11 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAssetsInfo(alias: string) {
-    const { assets, t } = this.props
+    const { t } = this.props
     let results
 
     try {
-      results = await getAssetBalancesByAddress(alias, assets.map(i => i._id))
+      results = await getAssetBalancesByAddress(alias)
     } catch(err) {
       this.setState({
         aliasAssets: {
@@ -198,14 +197,13 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   syncPercentage() {
-    const { currentBlock, headBlock, verificationProgressSync } = this.props
+    const { headBlock, verificationProgressSync } = this.props
 
     if (headBlock === 0) {
       return 0
     }
 
-    let percentage = (verificationProgressSync * 100).toFixed(2)
-    // return parseInt((currentBlock / headBlock) * 100, 10)
+    const percentage = (verificationProgressSync * 100).toFixed(2)
     return parseFloat(percentage)
   }
 
@@ -339,7 +337,6 @@ class AccountsContainer extends Component<Props, State> {
 const mapStateToProps = state => ({
   balance: state.wallet.balance,
   aliases: state.wallet.aliases,
-  assets: state.options.guids,
   headBlock: state.wallet.blockchaininfo.headers,
   currentBlock: state.wallet.blockchaininfo.blocks,
   dashboardSysTransactions: state.wallet.dashboard.transactions,

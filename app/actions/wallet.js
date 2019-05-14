@@ -131,7 +131,6 @@ export const dashboardTransactions = (page = 0) => async (dispatch: (action: sav
 
 export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void) => {
   let balances
-  // const fixedGuids = getState().options.guids.map(i => i._id)
   dispatch(dashboardAssetsIsLoadingAction())
 
   try {
