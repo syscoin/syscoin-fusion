@@ -17,6 +17,7 @@ import replaceColorPalette from 'fw-utils/replace-color-palette'
 import { getAssetInfo } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
+import loadConf from 'fw-utils/load-conf-into-dev'
 import getPaths from 'fw-utils/get-doc-paths'
 import closeSysd from 'fw-utils/close-sysd'
 
@@ -37,16 +38,18 @@ class WalletContainer extends Component<Props> {
 
   componentWillMount() {
     loadCustomCss(getPaths().customCssPath)
-
-    ipcRenderer.on('maximize', () => {
-      this.props.toggleMaximize(true)
+    loadConf(getPaths().confPath, () => {
+      ipcRenderer.on('maximize', () => {
+        this.props.toggleMaximize(true)
+      })
+      ipcRenderer.on('unmaximize', () => {
+        this.props.toggleMaximize(false)
+      })
+  
+      this.props.toggleMaximize(remote.getCurrentWindow().isMaximized())
+      replaceColorPalette()
+      this.updateAssets()
     })
-    ipcRenderer.on('unmaximize', () => {
-      this.props.toggleMaximize(false)
-    })
-
-    this.props.toggleMaximize(remote.getCurrentWindow().isMaximized())
-    replaceColorPalette()
   }
 
   componentDidMount() {
@@ -57,8 +60,6 @@ class WalletContainer extends Component<Props> {
     }
     
     this.updateWalletHigh()
-    // Update guids in store
-    this.updateAssets()
 
     // Get Dashboard data
     this.props.dashboardTransactions(0)

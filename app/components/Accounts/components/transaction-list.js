@@ -53,7 +53,7 @@ export default class TransactionList extends Component<Props> {
       {
         title: t('misc.address'),
         dataIndex: 'sender',
-        render: (text: string, transaction: object) => <div>{this.getAddressFromTransaction(transaction).map(i => <div><span>{i}</span></div>)}</div>
+        render: (text: string, transaction: object) => <div>{this.getAddressFromTransaction(transaction).map(i => <div key={Math.random()}><span>{i}</span></div>)}</div>
       },
       {
         title: t('misc.details'),
@@ -143,7 +143,6 @@ export default class TransactionList extends Component<Props> {
   }
 
   render() {
-    console.log(this.prepareData())
     return (
       <div className='token-transaction-list'>
         <h4 className='transactions-table-title'>{this.props.t('accounts.asset.transactions_for', { asset: this.props.selectedSymbol })}</h4>

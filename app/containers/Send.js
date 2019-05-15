@@ -14,6 +14,7 @@ import {
   sendChangeTab
 } from 'fw-actions/forms'
 import unlockWallet from 'fw-utils/unlock-wallet'
+import isSegwit from 'fw-sys/is-segwit'
 
 
 type Props = {
@@ -107,6 +108,7 @@ class SendContainer extends Component<Props> {
         activeTab={this.props.activeTab}
         balance={balance}
         aliases={this.props.aliases.map(i => i.alias || i.address)}
+        isSegwit={isSegwit}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
         getAssetsFromAlias={this.getAssetsFromAlias.bind(this)}

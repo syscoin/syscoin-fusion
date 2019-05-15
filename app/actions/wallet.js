@@ -129,7 +129,8 @@ export const dashboardTransactions = (page = 0) => async (dispatch: (action: sav
   }
 }
 
-export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void) => {
+export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void, getState: Function) => {
+  const limitToAssets = getState().options.guids.map(i => i.asset_guid)
   let balances
   dispatch(dashboardAssetsIsLoadingAction())
 
@@ -137,6 +138,10 @@ export const dashboardAssets = () => async (dispatch: (action: saveDashboardAsse
     balances = await getAllTokenBalances()
   } catch(err) {
     return dispatch(dashboardAssetsErrorAction(err.message))
+  }
+
+  if (limitToAssets.length) {
+    balances = balances.filter(i => limitToAssets.indexOf(i.asset_guid) !== -1)
   }
   
   dispatch(dashboardAssetsReceiveAction(balances))

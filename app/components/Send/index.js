@@ -13,6 +13,7 @@ type Props = {
   aliases: Array<string>,
   sendAsset: Function,
   sendSys: Function,
+  isSegwit: Function,
   balance: number,
   getAssetsFromAlias: Function,
   assetsForm: {
@@ -102,6 +103,7 @@ export default class Send extends Component<Props> {
                   title={t('send.send_asset.title')}
                   columnSize={12}
                   aliases={this.props.aliases}
+                  isSegwit={this.props.isSegwit}
                   sendAsset={this.sendAsset.bind(this)}
                   onSelectAlias={this.props.getAssetsFromAlias}
                   assetsFromAlias={this.props.assetsForm.states.assetsFromAlias}

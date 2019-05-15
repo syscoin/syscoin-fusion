@@ -127,7 +127,7 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAssetsInfo(alias: string) {
-    const { t } = this.props
+    const { t, limitToAssets } = this.props
     let results
 
     try {
@@ -141,6 +141,10 @@ class AccountsContainer extends Component<Props, State> {
         }
       })
       return swal(t('misc.error'), parseError(err.message), 'error')
+    }
+
+    if (limitToAssets.length) {
+      results = results.filter(i => limitToAssets.indexOf(i.asset_guid) !== -1)
     }
 
     this.setState({
@@ -337,6 +341,7 @@ class AccountsContainer extends Component<Props, State> {
 const mapStateToProps = state => ({
   balance: state.wallet.balance,
   aliases: state.wallet.aliases,
+  limitToAssets: state.options.guids.map(i => i.asset_guid),
   headBlock: state.wallet.blockchaininfo.headers,
   currentBlock: state.wallet.blockchaininfo.blocks,
   dashboardSysTransactions: state.wallet.dashboard.transactions,

@@ -88,12 +88,19 @@ export const sendSysForm = (obj: editSendSysType) => async (dispatch: (action: e
   return Promise.resolve()
 }
 
-export const getAssetsFromAlias = (address) => async (dispatch: (action: Array<Object>) => void) => {
+export const getAssetsFromAlias = (address) => async (dispatch: (action: Array<Object>) => void, getState: Function) => {
+  const limitToAssets = getState().options.guids.map(i => i.asset_guid)
+  let assets
   dispatch(getAssetsFromAliasIsLoadingAction())
 
   try {
-    dispatch(getAssetsFromAliasReceivedAction(await getAssetBalancesByAddress(address)))
+    assets = await getAssetBalancesByAddress(address)
+    if (limitToAssets.length) {
+      assets = assets.filter(i => limitToAssets.indexOf(i.asset_guid) !== -1)
+    }
   } catch(err) {
     dispatch(getAssetsFromAliasErrorAction(err))
   }
+
+  dispatch(getAssetsFromAliasReceivedAction(assets))
 }

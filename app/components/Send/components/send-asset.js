@@ -10,6 +10,7 @@ type Props = {
   columnSize: number,
   aliases: Array<string>,
   isLoading: boolean,
+  isSegwit: Function,
   sendAsset: Function,
   onSelectAlias: Function,
   assetsFromAlias: {
@@ -71,13 +72,16 @@ export default class SendAssetForm extends Component<Props> {
       return ''
     }
   }
+
+  prepareAddresses() {
+    return this.props.aliases.filter(i => this.props.isSegwit(i))
+  }
   
   render() {
     const { t } = this.props
     const {
       title = t('send.send_asset.title'),
       columnSize = 12,
-      aliases = [],
       isLoading = false,
       sendAsset,
       assetsFromAlias,
@@ -87,8 +91,7 @@ export default class SendAssetForm extends Component<Props> {
       from,
       asset,
       toAddress,
-      amount,
-      comment
+      amount
     } = form.data
 
     return (
@@ -100,6 +103,7 @@ export default class SendAssetForm extends Component<Props> {
             disabled={isLoading}
             onChange={val => {
               this.updateField(val, 'from')
+
               this.props.onSelectAlias(val)
 
               // Give some time to updateField to update "from" so it wont be empty when firing this
@@ -110,7 +114,7 @@ export default class SendAssetForm extends Component<Props> {
             id='asset-form-select-alias'
             value={from.length ? from : undefined}
           >
-            {aliases.map(i => (
+            {this.prepareAddresses().map(i => (
               <Option value={i} key={i}>
                 {i}
               </Option>
