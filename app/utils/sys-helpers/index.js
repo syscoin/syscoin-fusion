@@ -87,7 +87,7 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
 const getAssets = () => syscoin.callRpc('listassets', [])
 
 // Get asset info
-const getAssetInfo = (asset: string) => syscoin.callRpc('assetinfo', [asset])
+const getAssetInfo = (asset: number) => syscoin.callRpc('assetinfo', [asset])
 
 // Get asset allocation info
 const getAssetAllocationInfo = (obj: AllocationInfoType) => syscoin.walletServices.assetAllocation.info(obj.assetId, obj.aliasName, false)
@@ -400,7 +400,7 @@ const getAssetBalancesByAddress = address => new Promise(async (resolve, reject)
       allocations.map(async i => {
         const asset = {...i}
 
-        asset.publicvalue = (await getAssetInfo(i.asset_guid.toString())).publicvalue
+        asset.publicvalue = (await getAssetInfo(i.asset_guid)).publicvalue
 
         return asset
       })
