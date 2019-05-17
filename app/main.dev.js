@@ -12,6 +12,7 @@
  */
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
+import closeSysd from './utils/close-sysd'
 import MenuBuilder from './menu'
 
 const favicon = join(__dirname, 'favicon.ico')
@@ -52,9 +53,13 @@ const installExtensions = async () => {
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  closeSysd()
+
+  setTimeout(() => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  }, 1500)
 })
 
 app.on('ready', async () => {
