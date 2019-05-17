@@ -387,8 +387,9 @@ const getBlockByNumber = (blockNumber: number) => new Promise(async (resolve, re
   return resolve(block)
 })
 
-const getAssetBalancesByAddress = address => new Promise(async (resolve, reject) => {
+const getAssetBalancesByAddress = (address: string) => new Promise(async (resolve, reject) => {
   let allocations
+  let assets
 
   try {
     allocations = await syscoin.callRpc('listassetindexallocations', [address])
@@ -397,6 +398,33 @@ const getAssetBalancesByAddress = address => new Promise(async (resolve, reject)
         const asset = {...i}
 
         asset.publicvalue = (await getAssetInfo(i.asset_guid)).publicvalue
+
+        return asset
+      })
+    )
+    assets = await getAssetOwnedByAddress(address)
+
+    allocations = allocations.concat(assets)
+  } catch(err) {
+    return reject(err)
+  }
+
+  console.log(assets)
+
+  return resolve(allocations)
+})
+
+const getAssetOwnedByAddress = (address: string) => new Promise(async (resolve, reject) => {
+  let allocations
+
+  try {
+    allocations = await syscoin.callRpc('listassetindexassets', [address])
+    allocations = await Promise.all(
+      allocations.map(async i => {
+        const asset = {...i}
+
+        asset.publicvalue = (await getAssetInfo(i.asset_guid)).publicvalue
+        asset.isOwner = true
 
         return asset
       })

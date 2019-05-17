@@ -391,6 +391,15 @@
         cursor: pointer;
         pointer-events: all;
     }
+
+    .asset-box-crown {
+        position: absolute;
+        font-size: 16px;
+        color: $main_white;
+        top: 5px;
+        right: 12px;
+        z-index: 999999;
+    }
 }
 
 .asset-box.selected {

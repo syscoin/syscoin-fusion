@@ -22,6 +22,7 @@ export default (props: Props) => (
           props.assets.map(i => (
             <AssetBox
               isSelected={props.selectedAsset === i.asset_guid.toString()}
+              isOwner={i.isOwner || false}
               selectAsset={props.selectAsset}
               asset={i.asset_guid.toString()}
               balance={i.balance}
