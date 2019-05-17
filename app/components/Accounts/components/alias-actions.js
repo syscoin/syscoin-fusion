@@ -19,6 +19,13 @@ export default class AliasActions extends Component<Props> {
     swal('Success', address, 'success')
   }
 
+  getSyncPercentage() {
+    const { currentBlock, headBlock } = this.props
+    const sync = headBlock ? Number((currentBlock / headBlock).toFixed(2)) : 0
+
+    return sync * 100
+  }
+
   render() {
     const { props } = this
     return (
@@ -27,7 +34,7 @@ export default class AliasActions extends Component<Props> {
           <Icon className='add-address' type='plus' onClick={() => this.getNewAddress()} />
         </Tooltip>
         <SyncLoader
-          syncPercentage={((props.headBlock / (props.currentBlock || 0.01)) * 100)}
+          syncPercentage={this.getSyncPercentage()}
           headBlock={props.headBlock}
           isSynced={props.headBlock / props.currentBlock === 1}
           currentBlock={props.currentBlock}
