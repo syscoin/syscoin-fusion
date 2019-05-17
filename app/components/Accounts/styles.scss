@@ -60,16 +60,26 @@
     text-shadow: 0 0 50px #888;
 }
 
-.accounts-container-left .sync-loader {
+.accounts-container-left .alias-actions-container {
     float: right;
-    margin-top: 10px;
-    cursor: pointer;
+    padding-top: 5px;
     padding-right: 15px;
 
-    &.sync-loaded {
-        color: $main_green;
+    i {
+        display: inline-block;
         font-size: 18px;
-        margin-top: 15px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    .add-address {
+        color: $main_white;
+    }
+
+    .sync-loader {
+        &.sync-loaded {
+            color: $main_green;
+        }
     }
 }
 

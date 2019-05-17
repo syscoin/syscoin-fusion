@@ -39,9 +39,6 @@ type listAssetAllocationType = {
   startblock?: number
 };
 
-// Get network info
-// const getInfo = () => syscoin.networkServices.getInfo()
-// const getInfo = () => syscoin.callRpc('getinfo', [])
 
 // Get current SYS address
 const currentSysAddress = (address?: string = '') => syscoin.walletServices.getAccountAddress(address)
@@ -67,16 +64,15 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
   let addresses
   
   try {
-    addresses = await syscoin.callRpc('listaddressgroupings', [])
-    addresses = flatten(addresses)
+    addresses = await syscoin.callRpc('listreceivedbyaddress', [0, true])
   } catch(err) {
     return reject(err)
   }
 
   addresses = addresses.map(i => ({
-    address: i[0],
-    balance: i[1],
-    label: i[2] || '',
+    address: i.address,
+    balance: Number(i.amount),
+    label: i.label,
     avatarUrl: ''
   }))
 
@@ -412,6 +408,8 @@ const getAssetBalancesByAddress = address => new Promise(async (resolve, reject)
   return resolve(allocations)
 })
 
+const getNewAddress = () => syscoin.callRpc('getnewaddress', [])
+
 module.exports = {
   callRpc: syscoin.callRpc,
   aliasInfo,
@@ -423,6 +421,7 @@ module.exports = {
   getAssetInfo,
   getAssetAllocationInfo,
   getAssetBalancesByAddress,
+  getNewAddress,
   listAssetAllocationTransactions,
   sendAsset,
   sendSysTransaction,

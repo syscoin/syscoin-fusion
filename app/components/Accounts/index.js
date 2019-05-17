@@ -25,6 +25,7 @@ type Props = {
   syncPercentage: number,
   getPrivateKey: Function,
   goToHome: Function,
+  getNewAddress: Function,
   dashboardSysTransactions: {
     isLoading: boolean,
     error: boolean,
@@ -83,6 +84,7 @@ export default class Accounts extends Component<Props> {
           transactions={this.props.transactions}
           currentBalance={this.props.balance}
           goToHome={this.props.goToHome}
+          getNewAddress={this.props.getNewAddress}
           syncPercentage={this.props.syncPercentage}
           headBlock={this.props.headBlock}
           currentBlock={this.props.currentBlock}

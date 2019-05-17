@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row, Col, Icon, Spin } from 'antd'
+import { Col } from 'antd'
 import AliasContainer from './alias-container'
 import Home from './home'
 import UserBalance from './balance'
@@ -14,6 +14,7 @@ type Props = {
   goToHome: Function,
   syncPercentage: number,
   headBlock: number,
+  getNewAddress: Function,
   currentBlock: number,
   updateSelectedAlias: Function,
   claimInterest: Function,
@@ -39,6 +40,7 @@ export default (props: Props) => (
       aliasAssets={props.aliasAssets}
       updateSelectedAlias={props.updateSelectedAlias}
       getPrivateKey={props.getPrivateKey}
+      getNewAddress={props.getNewAddress}
       claimInterest={props.claimInterest}
       syncPercentage={props.syncPercentage}
       headBlock={props.headBlock}

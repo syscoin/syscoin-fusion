@@ -12,7 +12,8 @@ import {
   getAssetBalancesByAddress,
   getPrivateKey,
   claimAssetInterest,
-  aliasInfo
+  aliasInfo,
+  getNewAddress
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import { editSendAsset, getAssetsFromAlias, sendChangeTab } from 'fw-actions/forms'
@@ -301,6 +302,7 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAliasInfo(alias: name) {
+    // eslint-disable-next-line no-return-await
     return await aliasInfo(alias)
   }
 
@@ -321,6 +323,7 @@ class AccountsContainer extends Component<Props, State> {
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
         getAliasInfo={this.getAliasInfo}
+        getNewAddress={getNewAddress}
         getPrivateKey={this.getPrivateKey.bind(this)}
         goToHome={this.goToHome.bind(this)}
         dashboardSysTransactions={this.props.dashboardSysTransactions}

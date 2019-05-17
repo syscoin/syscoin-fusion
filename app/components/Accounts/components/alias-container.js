@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react'
-import SyncLoader from './sync-loader'
 import AliasAddressItem from './alias-address-item'
+import AliasActions from './alias-actions'
 
 type Props = {
   t: Function,
@@ -10,6 +10,7 @@ type Props = {
   headBlock: number,
   currentBlock: number,
   updateSelectedAlias: Function,
+  getNewAddress: Function,
   claimInterest: Function,
   selectedAlias: string,
   getPrivateKey: Function,
@@ -49,11 +50,12 @@ export default class AliasContainer extends Component<Props> {
     return (
       <div className='full-height'>
         <h4 className='your-aliases-text'>{t('accounts.panel.your_aliases')}</h4>
-        <SyncLoader
+        <AliasActions
           syncPercentage={this.props.syncPercentage}
           headBlock={this.props.headBlock}
           isSynced={this.props.syncPercentage === 100}
           currentBlock={this.props.currentBlock}
+          getNewAddress={this.props.getNewAddress}
           t={t}
         />
         <div className='aliases-container'>
