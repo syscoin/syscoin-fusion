@@ -125,7 +125,7 @@ export const dashboardTransactions = (page = 0) => async (dispatch: (action: sav
       await listSysTransactions(page, Number(process.env.TABLE_PAGINATION_LENGTH))
     ))
   } catch(err) {
-    dashboardTransactionsErrorAction(err)
+    dispatch(dashboardTransactionsErrorAction(err))
   }
 }
 
