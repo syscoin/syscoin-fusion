@@ -1,13 +1,14 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin, Tooltip } from 'antd'
-import swal from 'sweetalert'
+import swal from 'sweetalert2'
 import parseError from 'fw-utils/error-parser'
 
 type Props = {
   address: string,
   isLoading: boolean,
   isSelected: boolean,
+  editLabel: Function,
   label: string,
   updateSelectedAlias: Function,
   getPrivateKey: Function,
@@ -42,6 +43,36 @@ class AliasAddressItem extends Component<Props, State> {
     })
   }
 
+  async editLabel() {
+    // const { t } = this.props
+
+    const label = await swal({
+      title: 'Edit label',
+      input: 'text',
+      inputPlaceholder: 'New label',
+      allowOutsideClick: true,
+      allowEscapeKey: true,
+      showCancelButton: true
+    })
+
+    if (label.dismiss) {
+      return
+    }
+
+    this.setState({ isLoading: true })
+
+    try {
+      await this.props.editLabel(this.props.address, label.value)
+    } catch (err) {
+      this.setState({ isLoading: false })
+      return swal('Error', parseError(err.message), 'error')
+    }
+
+    this.setState({ isLoading: false })
+
+    swal('Success', '', 'success')
+  }
+
   render() {
     const { address, isLoading, isSelected, label, updateSelectedAlias, t } = this.props
     return (
@@ -65,6 +96,9 @@ class AliasAddressItem extends Component<Props, State> {
                   this.state.isLoading ?
                     <Spin indicator={<Icon type='loading' spin />} /> :
                     <div>
+                      <Tooltip title='Edit address label'>
+                        <Icon type='edit' onClick={this.editLabel.bind(this)} />
+                      </Tooltip>
                       <Tooltip title='Get private key'>
                         <Icon type='key' onClick={this.getPrivateKey.bind(this)} />
                       </Tooltip>

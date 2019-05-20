@@ -13,7 +13,8 @@ import {
   getPrivateKey,
   claimAssetInterest,
   aliasInfo,
-  getNewAddress
+  getNewAddress,
+  editLabel
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import { editSendAsset, getAssetsFromAlias, sendChangeTab } from 'fw-actions/forms'
@@ -315,6 +316,7 @@ class AccountsContainer extends Component<Props, State> {
         syncPercentage={this.syncPercentage()}
         headBlock={this.props.headBlock}
         currentBlock={this.props.currentBlock}
+        editLabel={editLabel}
         balance={balance}
         aliases={aliases}
         transactions={transactions}

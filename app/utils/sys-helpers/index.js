@@ -460,6 +460,7 @@ const isAddressOwnerOfAsset = (address: string, guid: number) => new Promise(asy
 
   return resolve(!!assetsOwned.find(i => i.asset_guid === guid && i.isOwner))
 })
+const editLabel = (address: string, label: string) => syscoin.callRpc('setlabel', [address, label])
 
 module.exports = {
   callRpc: syscoin.callRpc,
@@ -467,6 +468,7 @@ module.exports = {
   currentSysAddress,
   currentBalance,
   editAlias,
+  editLabel,
   getAllTokenBalances,
   getAddresses,
   getAssetInfo,

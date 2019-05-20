@@ -200,11 +200,15 @@
 }
 
 .alias-box .alias-name .alias-toolbox {
-    float: right;
+    position: absolute;
+    right: 0;
+    top: 15px;
 
     i {
+        display: inline-block;
         cursor: pointer;
         color: $main_white;
+        margin-left: 10px;
     }
 }
 

@@ -9,6 +9,7 @@ type Props = {
   aliasAssets: Object,
   headBlock: number,
   currentBlock: number,
+  editLabel: Function,
   updateSelectedAlias: Function,
   getNewAddress: Function,
   claimInterest: Function,
@@ -29,6 +30,7 @@ export default class AliasContainer extends Component<Props> {
         alias={i.alias || ''}
         address={i.address}
         label={i.label}
+        editLabel={this.props.editLabel}
         isLoading={this.props.aliasAssets.isLoading}
         isSelected={this.isAliasSelected(i)}
         updateSelectedAlias={this.props.updateSelectedAlias}

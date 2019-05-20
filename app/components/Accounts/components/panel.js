@@ -11,6 +11,7 @@ type Props = {
   aliasAssets: Object,
   transactions: Object,
   currentBalance: number,
+  editLabel: Function,
   goToHome: Function,
   syncPercentage: number,
   headBlock: number,
@@ -38,6 +39,7 @@ export default (props: Props) => (
       t={props.t}
       aliases={props.aliases}
       aliasAssets={props.aliasAssets}
+      editLabel={props.editLabel}
       updateSelectedAlias={props.updateSelectedAlias}
       getPrivateKey={props.getPrivateKey}
       getNewAddress={props.getNewAddress}

@@ -9,6 +9,7 @@ type Props = {
   backgroundLogo: string,
   balance: number,
   aliases: Array<Object>,
+  editLabel: Function,
   transactions: Object,
   selectedAlias: string,
   aliasAssets: {
@@ -83,6 +84,7 @@ export default class Accounts extends Component<Props> {
           aliasAssets={this.props.aliasAssets}
           transactions={this.props.transactions}
           currentBalance={this.props.balance}
+          editLabel={this.props.editLabel}
           goToHome={this.props.goToHome}
           getNewAddress={this.props.getNewAddress}
           syncPercentage={this.props.syncPercentage}
