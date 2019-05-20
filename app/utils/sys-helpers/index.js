@@ -93,9 +93,20 @@ const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) =>
   const { fromAlias, toAlias, assetId, amount } = obj
   let assetSend
   let signTransaction
+  let isOwner
+
+  try {
+    isOwner = await isAddressOwnerOfAsset(fromAlias, Number(assetId))
+  } catch (err) {
+    return reject(err)
+  }
   
   try {
-    assetSend = await syscoin.callRpc('assetallocationsend', [Number(assetId), fromAlias, toAlias, amount])
+    if (isOwner) {
+      assetSend = await syscoin.callRpc('assetsend', [Number(assetId), toAlias, amount])
+    } else {
+      assetSend = await syscoin.callRpc('assetallocationsend', [Number(assetId), fromAlias, toAlias, amount])
+    }
   } catch(err) {
     return reject(err)
   }
@@ -423,6 +434,7 @@ const getAssetOwnedByAddress = (address: string) => new Promise(async (resolve, 
       allocations.map(async i => {
         const asset = {...i}
 
+        // See if can remove this when symbol is present
         asset.publicvalue = (await getAssetInfo(i.asset_guid)).publicvalue
         asset.isOwner = true
 
@@ -437,6 +449,17 @@ const getAssetOwnedByAddress = (address: string) => new Promise(async (resolve, 
 })
 
 const getNewAddress = () => syscoin.callRpc('getnewaddress', [])
+const isAddressOwnerOfAsset = (address: string, guid: number) => new Promise(async (resolve, reject) => {
+  let assetsOwned
+
+  try {
+    assetsOwned = await getAssetOwnedByAddress(address)
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve(!!assetsOwned.find(i => i.asset_guid === guid && i.isOwner))
+})
 
 module.exports = {
   callRpc: syscoin.callRpc,

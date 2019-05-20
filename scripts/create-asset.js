@@ -15,7 +15,7 @@ if (!aliasName || !assetName) {
 
 /* FUNCTIONS */
 
-const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetnew ${aliasName} "${assetName}" "" 8 1000 10000 1 ""`).toString())
+const assetNew = () => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetnew ${aliasName} "${assetName}" "" "" 8 1000 10000 1 ""`).toString())
 
 const assetSend = (assetGuid) => JSON.parse(exec(`"${SYS_LOCATION}" -datadir="${DATA_DIR}" -rpcport=${RPCPORT} -rpcuser=${RPCUSERNAME} -rpcpassword=${RPCPASSWORD} assetsend ${assetGuid} ${aliasName} 1000`).toString())[0]
 

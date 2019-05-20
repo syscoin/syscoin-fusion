@@ -130,7 +130,7 @@ export default class SendAssetForm extends Component<Props> {
           >
             {assetsFromAlias.data.map(i => (
               <Option value={i.asset_guid.toString()} key={i.asset_guid}>
-                {i.publicvalue.toUpperCase()} - {i.asset_guid}
+                {i.symbol} - {i.asset_guid}
               </Option>
             ))}
           </Select>
