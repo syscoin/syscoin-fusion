@@ -22,14 +22,14 @@
     "asset": {
       "no_available_assets": "No available assets for this address",
       "alias_information": "Address information",
-      "available_assets": "Available assets",
+      "available_assets": "Available Assets & Tokens",
       "transactions_for": "Transactions for {{asset}}"
     }
   },
   "send": {
     "title": "Send",
     "send_asset": {
-      "title": "Send Token",
+      "title": "Send Assets & Tokens",
       "select_alias": "Select address",
       "select_asset": "Select asset",
       "send_to": "Send to",
