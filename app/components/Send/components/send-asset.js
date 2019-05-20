@@ -6,8 +6,6 @@ import formChangeFormat from 'fw-utils/form-change-format'
 const { Option } = Select
 
 type Props = {
-  title: string,
-  columnSize: number,
   aliases: Array<string>,
   isLoading: boolean,
   isSegwit: Function,
@@ -80,8 +78,6 @@ export default class SendAssetForm extends Component<Props> {
   render() {
     const { t } = this.props
     const {
-      title = t('send.send_asset.title'),
-      columnSize = 12,
       isLoading = false,
       sendAsset,
       assetsFromAlias,
@@ -130,7 +126,7 @@ export default class SendAssetForm extends Component<Props> {
           >
             {assetsFromAlias.data.map(i => (
               <Option value={i.asset_guid.toString()} key={i.asset_guid}>
-                {i.symbol} - {i.asset_guid}
+                {i.symbol}{i.isOwner ? <span>{' '}<Icon className='send-star-icon' type='star' /></span> : ''} - {i.asset_guid}
               </Option>
             ))}
           </Select>

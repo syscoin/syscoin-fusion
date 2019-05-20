@@ -66,6 +66,13 @@
     }
 }
 
+.send-star-icon {
+    position: relative;
+    bottom: 0.5px;
+    font-size: 12px;
+    color: $main_blue;
+}
+
 .send-forms-container .send-collapse-panel {
     background: transparent;
 }
