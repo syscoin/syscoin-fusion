@@ -119,14 +119,15 @@ export const saveBlockchainInfo = () => async (dispatch: (action: saveBlockchain
 
 export const dashboardTransactions = (page = 0) => async (dispatch: (action: saveDashboardTransactionsActionType) => void) => {
   dispatch(dashboardTransactionsIsLoadingAction())
+  let transactions
 
   try {
-    dispatch(dashboardTransactionsReceiveAction(
-      await listSysTransactions(page, Number(process.env.TABLE_PAGINATION_LENGTH))
-    ))
+    transactions = await listSysTransactions(page, Number(process.env.TABLE_PAGINATION_LENGTH))
   } catch(err) {
     dispatch(dashboardTransactionsErrorAction(err))
   }
+
+  dispatch(dashboardTransactionsReceiveAction(transactions))
 }
 
 export const dashboardAssets = () => async (dispatch: (action: saveDashboardAssetsActionType) => void, getState: Function) => {

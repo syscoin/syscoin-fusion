@@ -28,7 +28,7 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.data.length !== this.props.data.length
+    return nextProps.data.length !== this.props.data.length || nextProps.isLoading !== this.props.isLoading
   }
 
   cutTextIfNeeded(text: string) {
@@ -108,6 +108,8 @@ export default class SysTransactionList extends Component<Props, State> {
 
   render() {
     const { t } = this.props
+
+    console.log(this.props.isLoading)
 
     return (
       <div className='wallet-summary-balance-container'>

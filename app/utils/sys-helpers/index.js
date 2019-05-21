@@ -420,8 +420,6 @@ const getAssetBalancesByAddress = (address: string) => new Promise(async (resolv
     return reject(err)
   }
 
-  console.log(assets)
-
   return resolve(allocations)
 })
 
