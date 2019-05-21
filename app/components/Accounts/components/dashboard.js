@@ -30,8 +30,6 @@ type Props = {
 class Dashboard extends Component<Props> {
   render() {
     const { t } = this.props
-
-    console.log(this.props.transactions)
     return (
       <div>
         <object className='sys-logo-bg' data={this.props.backgroundLogo} type="image/svg+xml" />

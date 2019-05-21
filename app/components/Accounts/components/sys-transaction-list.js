@@ -109,8 +109,6 @@ export default class SysTransactionList extends Component<Props, State> {
   render() {
     const { t } = this.props
 
-    console.log(this.props.isLoading)
-
     return (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
