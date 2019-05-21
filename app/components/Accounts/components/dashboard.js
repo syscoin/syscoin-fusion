@@ -31,7 +31,7 @@ class Dashboard extends Component<Props> {
     const { t } = this.props
     return (
       <div>
-        <img src={this.props.backgroundLogo} alt='sys-logo' className='sys-logo-bg' />
+        <object className='sys-logo-bg'  data={this.props.backgroundLogo} type="image/svg+xml"></object>
         <Row>
           <Col xs={18} offset={3}>
             <div className='wallet-summary-container'>

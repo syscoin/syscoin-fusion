@@ -19,7 +19,7 @@ import {
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
 import { editSendAsset, getAssetsFromAlias, sendChangeTab } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
-import SyscoinLogo from 'fw/syscoin-logo.png'
+import SyscoinLogo from 'fw/syscoin-logo.svg'
 import unlockWallet from 'fw-utils/unlock-wallet'
 
 type Props = {
