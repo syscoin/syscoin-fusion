@@ -1,8 +1,6 @@
 // @flow
-import React, { Component } from 'react'
-import { Button, Icon, Spin } from 'antd'
-import swal from 'sweetalert'
-import { join } from 'path'
+import React from 'react'
+import { Button, Icon } from 'antd'
 
 type Props = {
   toggleConsole: Function,
