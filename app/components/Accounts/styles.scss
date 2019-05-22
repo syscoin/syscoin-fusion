@@ -92,7 +92,7 @@
 
 .your-aliases-text {
     display: inline-block;
-    width: 80%;
+    width: 50%;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -101,6 +101,13 @@
     margin-top: 15px;
     margin-bottom: 15px;
     padding-left: 20px;
+}
+
+.ant-popover-inner-content {
+    background: $main_background;
+}
+.ant-popover-arrow {
+    background: $main_background;
 }
 
 .aliases-container::-webkit-scrollbar {

@@ -74,7 +74,7 @@ class AliasAddressItem extends Component<Props, State> {
   }
 
   render() {
-    const { address, isLoading, isSelected, label, updateSelectedAlias, t } = this.props
+    const { address, isLoading, isSelected, label, updateSelectedAlias } = this.props
     return (
       <Row
         className={`alias-box ${isSelected ? 'expanded' : 'non-expanded'} ${isLoading ? 'loading' : ''}`}
