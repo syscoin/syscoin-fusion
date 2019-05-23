@@ -43,7 +43,7 @@ type Props = {
   goToSysForm: Function,
   claimInterest: Function,
   claimAllInterestFromAsset: Function,
-  sendChangeTab: Function,
+  changeFormTab: Function,
   t: Function
 };
 
@@ -59,7 +59,7 @@ export default class Accounts extends Component<Props> {
   }
 
   goToSendAssetForm(asset: string) {
-    this.props.sendChangeTab('asset')
+    this.props.changeFormTab('asset', 'sendTab')
     this.props.goToAssetForm(asset, this.props.selectedAlias)
   }
 

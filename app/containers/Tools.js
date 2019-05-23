@@ -14,6 +14,9 @@ import {
   lockWallet
 } from 'fw-sys'
 import {
+  changeFormTab
+} from 'fw-actions/forms'
+import {
   pushNewAlias
 } from 'fw-utils/new-alias-manager'
 import unlockWallet from 'fw-utils/unlock-wallet'
@@ -23,6 +26,8 @@ import { changeLanguage } from 'fw-actions/options'
 const { dialog } = remote.require('electron')
 
 type Props = {
+  activeTab: string,
+  changeFormTab: Function,
   currentBlock: number,
   unfinishedAliases: Array<{
     aliasName: string,
@@ -89,6 +94,8 @@ class ToolsContainer extends Component<Props> {
   render() {
     return (
       <Tools
+        activeTab={this.props.activeTab}
+        changeFormTab={this.props.changeFormTab}
         currentBlock={this.props.currentBlock}
         unfinishedAliases={this.props.unfinishedAliases}
         createNewAlias={this.createNewAlias}
@@ -111,6 +118,7 @@ class ToolsContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
+  activeTab: state.forms.toolsTab.activeTab,
   currentBlock: state.wallet.blockchaininfo.blocks,
   unfinishedAliases: state.wallet.unfinishedAliases,
   isEncrypted: state.wallet.isEncrypted,
@@ -119,6 +127,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  changeFormTab,
   walletUnlocked,
   changeLanguage
 }, dispatch)

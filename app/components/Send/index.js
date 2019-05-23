@@ -77,7 +77,7 @@ export default class Send extends Component<Props> {
 
   changeTab(tab) {
     if (tab) {
-      this.props.changeTab(tab)
+      this.props.changeTab(tab, 'sendTab')
     }
   }
 

@@ -1,6 +1,6 @@
 // @flow
 import {
-  SEND_CHANGE_TAB,
+  CHANGE_FORM_TAB,
   EDIT_SEND_ASSET_FORM,
   EDIT_SEND_SYS_FORM,
   SEND_ASSET_IS_LOADING,
@@ -21,6 +21,9 @@ type actionType = {
 
 type StateType = {
   sendTab: {
+    activeTab: string
+  },
+  toolsTab: {
     activeTab: string
   },
   sendAsset: {
@@ -54,6 +57,9 @@ type StateType = {
 export const initialState = {
   sendTab: {
     activeTab: 'asset'
+  },
+  toolsTab: {
+    activeTab: ''
   },
   sendAsset: {
     data: {
@@ -209,14 +215,14 @@ export default function forms(state: StateType = initialState, action: actionTyp
               }
             }
           }
-        case SEND_CHANGE_TAB:
-        return {
-          ...state,
-          sendTab: {
-            ...state.sendTab,
-            activeTab: action.payload
+        case CHANGE_FORM_TAB:
+          return {
+            ...state,
+            [action.payload.tab]: {
+              ...state[action.payload.tab],
+              activeTab: action.payload.val
+            }
           }
-        }
     default:
       return state
   }

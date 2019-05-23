@@ -10,6 +10,8 @@ import ChangeLanguage from './components/change-language'
 const { Panel } = Collapse
 
 type Props = {
+  activeTab: string,
+  changeFormTab: Function,
   importWallet: Function,
   exportWallet: Function,
   encryptWallet: Function,
@@ -27,6 +29,12 @@ type Props = {
 
 export default class Tools extends Component<Props> {
 
+  changeTab(tab) {
+    if (tab) {
+      this.props.changeFormTab(tab, 'toolsTab')
+    }
+  }
+
   render() {
     const { t } = this.props
     return (
@@ -36,7 +44,7 @@ export default class Tools extends Component<Props> {
           offset={7}
           className='tools-form-container'
         >
-          <Collapse>
+          <Collapse accordion activeKey={this.props.activeTab} onChange={this.changeTab.bind(this)}>
             <Panel
               header={
                 <h3 className='send-asset-form-title'>
@@ -44,10 +52,8 @@ export default class Tools extends Component<Props> {
                   <Icon type='down' className='send-form-title-row' />
                 </h3>
               }
-            >
-
-            </Panel>
-            <br />
+              key='asset'
+            >PAPAPA</Panel>
             <Panel
               header={
                 <h3 className='send-asset-form-title'>
@@ -55,6 +61,7 @@ export default class Tools extends Component<Props> {
                   <Icon type='down' className='send-form-title-row' />
                 </h3>
               }
+              key='wallet'
             >
               <BackupWallet exportWallet={this.props.exportWallet} getFolder={this.props.getFolder} t={t} />
               <hr />
