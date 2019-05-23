@@ -48,6 +48,9 @@ export const sendSysReceiveAction = createAction(types.SEND_SYS_RECEIVE)
 
 export const changeFormTabAction = createAction(types.CHANGE_FORM_TAB)
 
+export const changeToolsAssetAction = createAction(types.CHANGE_ASSET_TOOLS_ACTION)
+export const changeToolsAssetUpdateGuid = createAction(types.CHANGE_ASSET_TOOLS_UPDATE_GUID)
+
 export const changeFormTab = (val, tab) => dispatch => {
   dispatch(changeFormTabAction({ val, tab }))
 }

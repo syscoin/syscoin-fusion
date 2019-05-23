@@ -11,7 +11,9 @@ import {
   SEND_SYS_ERROR,
   GET_ASSETS_FROM_ALIAS_IS_LOADING,
   GET_ASSETS_FROM_ALIAS_RECEIVE,
-  GET_ASSETS_FROM_ALIAS_ERROR
+  GET_ASSETS_FROM_ALIAS_ERROR,
+  CHANGE_ASSET_TOOLS_ACTION,
+  CHANGE_ASSET_TOOLS_UPDATE_GUID
 } from 'fw-types/forms'
 
 type actionType = {
@@ -24,7 +26,11 @@ type StateType = {
     activeTab: string
   },
   toolsTab: {
-    activeTab: string
+    activeTab: string,
+    assets: {
+      action: string,
+      updateGuid: number
+    }
   },
   sendAsset: {
     data: {
@@ -59,7 +65,11 @@ export const initialState = {
     activeTab: 'asset'
   },
   toolsTab: {
-    activeTab: ''
+    activeTab: '',
+    assets: {
+      action: '',
+      updateGuid: 0
+    }
   },
   sendAsset: {
     data: {
@@ -223,6 +233,28 @@ export default function forms(state: StateType = initialState, action: actionTyp
               activeTab: action.payload.val
             }
           }
+        case CHANGE_ASSET_TOOLS_ACTION:
+          return {
+            ...state,
+            toolsTab: {
+              ...state.toolsTab,
+              assets: {
+                ...state.toolsTab.assets,
+                action: action.payload
+              }
+            }
+          }
+        case CHANGE_ASSET_TOOLS_UPDATE_GUID:
+            return {
+              ...state,
+              toolsTab: {
+                ...state.toolsTab,
+                assets: {
+                  ...state.toolsTab.assets,
+                  updateGuid: action.payload
+                }
+              }
+            }
     default:
       return state
   }

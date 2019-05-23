@@ -14,7 +14,9 @@ import {
   lockWallet
 } from 'fw-sys'
 import {
-  changeFormTab
+  changeFormTab,
+  changeToolsAssetAction,
+  changeToolsAssetUpdateGuid
 } from 'fw-actions/forms'
 import {
   pushNewAlias
@@ -26,14 +28,13 @@ import { changeLanguage } from 'fw-actions/options'
 const { dialog } = remote.require('electron')
 
 type Props = {
+  assetFormAction: string,
+  assetFormUpdateGuid: number,
+  changeToolsAssetAction: Function,
+  changeToolsAssetUpdateGuid: Function,
   activeTab: string,
   changeFormTab: Function,
   currentBlock: number,
-  unfinishedAliases: Array<{
-    aliasName: string,
-    round: number,
-    block: number
-  }>,
   isEncrypted: boolean,
   isUnlocked: boolean,
   walletUnlocked: Function,
@@ -95,9 +96,12 @@ class ToolsContainer extends Component<Props> {
     return (
       <Tools
         activeTab={this.props.activeTab}
+        assetFormAction={this.props.assetFormAction}
+        assetFormUpdateGuid={this.props.assetFormUpdateGuid}
         changeFormTab={this.props.changeFormTab}
+        changeToolsAssetAction={this.props.changeToolsAssetAction}
+        changeToolsAssetUpdateGuid={this.props.changeToolsAssetUpdateGuid}
         currentBlock={this.props.currentBlock}
-        unfinishedAliases={this.props.unfinishedAliases}
         createNewAlias={this.createNewAlias}
         importWallet={this.importWallet}
         exportWallet={this.exportWallet}
@@ -120,16 +124,19 @@ class ToolsContainer extends Component<Props> {
 const mapStateToProps = state => ({
   activeTab: state.forms.toolsTab.activeTab,
   currentBlock: state.wallet.blockchaininfo.blocks,
-  unfinishedAliases: state.wallet.unfinishedAliases,
   isEncrypted: state.wallet.isEncrypted,
   isUnlocked: state.wallet.isUnlocked,
-  currentLanguage: state.options.language
+  currentLanguage: state.options.language,
+  assetFormAction: state.forms.toolsTab.assets.action,
+  assetFormUpdateGuid: state.forms.toolsTab.assets.updateGuid
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   changeFormTab,
   walletUnlocked,
-  changeLanguage
+  changeLanguage,
+  changeToolsAssetAction,
+  changeToolsAssetUpdateGuid
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ToolsContainer))

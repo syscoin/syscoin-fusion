@@ -16,6 +16,28 @@
         .ant-collapse-item {
             margin-bottom: 30px;
         }
+
+        input, .ant-select, .ant-input-number {
+            width: 100%;
+        }
+
+        input, .ant-input-number {
+            margin-bottom: 10px;
+        }
+
+        .asset-tools-send-button {
+            width: 100%;
+        }
+
+        .asset-tools-update-asset-text {
+            text-align: center;
+            color: $main_white;
+            margin-bottom: 10px;
+
+            .asset-tools-update-asset-number {
+                color: $main_blue;
+            }
+        }
     }
 }
 

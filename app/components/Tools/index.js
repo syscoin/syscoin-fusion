@@ -6,10 +6,15 @@ import ImportWallet from './components/import-wallet'
 import LockWallet from './components/lock-wallet'
 import Console from './components/console'
 import ChangeLanguage from './components/change-language'
+import AssetTools from './components/asset-tools'
 
 const { Panel } = Collapse
 
 type Props = {
+  assetFormAction: string,
+  assetFormUpdateGuid: number,
+  changeToolsAssetAction: Function,
+  changeToolsAssetUpdateGuid: Function,
   activeTab: string,
   changeFormTab: Function,
   importWallet: Function,
@@ -53,7 +58,15 @@ export default class Tools extends Component<Props> {
                 </h3>
               }
               key='asset'
-            >PAPAPA</Panel>
+            >
+              <AssetTools
+                t={t}
+                formAction={this.props.assetFormAction}
+                updateGuid={this.props.assetFormUpdateGuid}
+                changeToolsAssetAction={this.props.changeToolsAssetAction}
+                changeToolsAssetUpdateGuid={this.props.changeToolsAssetUpdateGuid}
+              />
+            </Panel>
             <Panel
               header={
                 <h3 className='send-asset-form-title'>
