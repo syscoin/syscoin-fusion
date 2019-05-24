@@ -271,7 +271,7 @@ const getBlockchainInfo = () => syscoin.blockchainServices.getBlockchainInfo()
 // Get filtered asset allocation
 const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
   let allocationsByAddress
-  const balancesByAssets = []
+  // const balancesByAssets = []
   
   try {
     allocationsByAddress = await getAddresses()
@@ -283,6 +283,7 @@ const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
     return reject(err)
   }
 
+  /*
   allocationsByAddress.forEach(i => {
     i.forEach(x => {
       const assetIndex = balancesByAssets.findIndex(z => z.asset_guid === x.asset_guid)
@@ -295,8 +296,9 @@ const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
       }
     })
   })
+  */
 
-  return resolve(balancesByAssets)
+  return resolve(flatten(allocationsByAddress))
 })
 
 const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
