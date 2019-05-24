@@ -17,12 +17,11 @@ type Props = {
 export default class AssetBox extends Component<Props> {
   render() {
     const { isSelected, isOwner, selectAsset, asset, symbol, balance, goToSendAssetForm, t } = this.props
-    console.log(isOwner)
     return (
       <Col
         xs={11}
         className={`asset-box ${isSelected ? 'selected' : ''}`}
-        key={asset}
+        key={Math.random()}
         onClick={() => selectAsset({ asset, symbol })}
       >
         <h3 className='asset-box-name'>{symbol}</h3>

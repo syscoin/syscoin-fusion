@@ -27,7 +27,7 @@ export default (props: Props) => (
               asset={i.asset_guid.toString()}
               balance={i.balance}
               symbol={i.symbol}
-              key={i.asset_guid}
+              key={Math.random()}
               goToSendAssetForm={props.goToSendAssetForm}
               t={props.t}
             />
