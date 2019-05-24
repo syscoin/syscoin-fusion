@@ -6,7 +6,7 @@ import formChangeFormat from 'fw-utils/form-change-format'
 const { Option } = Select
 
 type Props = {
-  aliases: Array<string>,
+  addresses: Array<Object>,
   isLoading: boolean,
   isSegwit: Function,
   sendAsset: Function,
@@ -72,7 +72,7 @@ export default class SendAssetForm extends Component<Props> {
   }
 
   prepareAddresses() {
-    return this.props.aliases.filter(i => this.props.isSegwit(i))
+    return this.props.addresses.filter(i => this.props.isSegwit(i.address))
   }
   
   render() {
@@ -111,8 +111,8 @@ export default class SendAssetForm extends Component<Props> {
             value={from.length ? from : undefined}
           >
             {this.prepareAddresses().map(i => (
-              <Option value={i} key={i}>
-                {i}
+              <Option value={i.address} key={i.address}>
+                {i.label || i.address}
               </Option>
             ))}
           </Select>

@@ -19,7 +19,7 @@ import isSegwit from 'fw-sys/is-segwit'
 
 type Props = {
   balance: number,
-  aliases: Array<Object>,
+  addresses: Array<Object>,
   sendAssetForm: Function,
   sendSysForm: Function,
   editSendAsset: Function,
@@ -107,7 +107,7 @@ class SendContainer extends Component<Props> {
         changeTab={this.props.changeFormTab}
         activeTab={this.props.activeTab}
         balance={balance}
-        aliases={this.props.aliases.map(i => i.alias || i.address)}
+        addresses={this.props.addresses}
         isSegwit={isSegwit}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
@@ -123,7 +123,7 @@ class SendContainer extends Component<Props> {
 
 const mapStateToProps = state => ({
   balance: state.wallet.balance,
-  aliases: state.wallet.aliases,
+  addresses: state.wallet.aliases,
   assetForm: state.forms.sendAsset,
   sysForm: state.forms.sendSys,
   isEncrypted: state.wallet.isEncrypted,
