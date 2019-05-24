@@ -11,12 +11,14 @@ import {
   importWallet,
   encryptWallet,
   changePwd,
-  lockWallet
+  lockWallet,
+  createNewAsset
 } from 'fw-sys'
 import {
   changeFormTab,
   changeToolsAssetAction,
-  changeToolsAssetUpdateGuid
+  changeToolsAssetUpdateGuid,
+  changeToolsAssetFormField
 } from 'fw-actions/forms'
 import {
   pushNewAlias
@@ -28,10 +30,13 @@ import { changeLanguage } from 'fw-actions/options'
 const { dialog } = remote.require('electron')
 
 type Props = {
+  addresses: Array<Object>,
   assetFormAction: string,
   assetFormUpdateGuid: number,
+  assetForm: Object,
   changeToolsAssetAction: Function,
   changeToolsAssetUpdateGuid: Function,
+  changeToolsAssetFormField: Function,
   activeTab: string,
   changeFormTab: Function,
   currentBlock: number,
@@ -95,12 +100,16 @@ class ToolsContainer extends Component<Props> {
   render() {
     return (
       <Tools
+        addresses={this.props.addresses}
         activeTab={this.props.activeTab}
         assetFormAction={this.props.assetFormAction}
         assetFormUpdateGuid={this.props.assetFormUpdateGuid}
         changeFormTab={this.props.changeFormTab}
         changeToolsAssetAction={this.props.changeToolsAssetAction}
         changeToolsAssetUpdateGuid={this.props.changeToolsAssetUpdateGuid}
+        changeFormField={this.props.changeToolsAssetFormField}
+        createNewAsset={createNewAsset}
+        assetForm={this.props.assetForm}
         currentBlock={this.props.currentBlock}
         createNewAlias={this.createNewAlias}
         importWallet={this.importWallet}
@@ -122,13 +131,15 @@ class ToolsContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
+  addresses: state.wallet.aliases,
   activeTab: state.forms.toolsTab.activeTab,
   currentBlock: state.wallet.blockchaininfo.blocks,
   isEncrypted: state.wallet.isEncrypted,
   isUnlocked: state.wallet.isUnlocked,
   currentLanguage: state.options.language,
   assetFormAction: state.forms.toolsTab.assets.action,
-  assetFormUpdateGuid: state.forms.toolsTab.assets.updateGuid
+  assetFormUpdateGuid: state.forms.toolsTab.assets.updateGuid,
+  assetForm: state.forms.toolsTab.assets.form
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -136,7 +147,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   walletUnlocked,
   changeLanguage,
   changeToolsAssetAction,
-  changeToolsAssetUpdateGuid
+  changeToolsAssetUpdateGuid,
+  changeToolsAssetFormField
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ToolsContainer))

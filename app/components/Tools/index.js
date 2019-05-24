@@ -11,10 +11,14 @@ import AssetTools from './components/asset-tools'
 const { Panel } = Collapse
 
 type Props = {
+  addresses: Array<Object>,
   assetFormAction: string,
   assetFormUpdateGuid: number,
   changeToolsAssetAction: Function,
   changeToolsAssetUpdateGuid: Function,
+  changeFormField: Function,
+  createNewAsset: Function,
+  assetForm: Object,
   activeTab: string,
   changeFormTab: Function,
   importWallet: Function,
@@ -41,7 +45,7 @@ export default class Tools extends Component<Props> {
   }
 
   render() {
-    const { t } = this.props
+    const { t, addresses } = this.props
     return (
       <Row className='tools-container'>
         <Col
@@ -61,10 +65,14 @@ export default class Tools extends Component<Props> {
             >
               <AssetTools
                 t={t}
+                addresses={addresses}
+                changeFormField={this.props.changeFormField}
+                createNewAsset={this.props.createNewAsset}
                 formAction={this.props.assetFormAction}
                 updateGuid={this.props.assetFormUpdateGuid}
                 changeToolsAssetAction={this.props.changeToolsAssetAction}
                 changeToolsAssetUpdateGuid={this.props.changeToolsAssetUpdateGuid}
+                assetForm={this.props.assetForm}
               />
             </Panel>
             <Panel

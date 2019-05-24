@@ -132,40 +132,28 @@ const sendSysTransaction = (obj: sendSysTransactionType) => {
   return syscoin.callRpc("sendtoaddress", [address, Number(amount), comment])
 }
 
-const createNewAsset = async (obj: Object) => {
-  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ''} = obj
-
-  let asset, txFund, signRaw
+const createNewAsset = (obj: Object) => new Promise(async (resolve, reject) => {
+  let asset
+  let signRaw
 
   try {
     asset = await assetNew(obj)
-    txFund = await syscoinTxFund(asset[0], aliasName)
-    signRaw = await signRawTransaction(txFund[0])
+    signRaw = await signRawTransaction(asset.hex)
     await sendRawTransaction(signRaw.hex)
   } catch(error) {
-    return error
+    return reject(error)
   }
 
-  return asset
-}
+  return resolve(asset)
+})
 
 const assetNew = (obj: Object) => {
-  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ""} = obj
-  return syscoin.callRpc('assetnew', [aliasName, assetName, contract, burnMethodSignature, precision, supply, maxSupply, updateFlags, witness])
+  const { address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags, witness } = obj
+  return syscoin.callRpc('assetnew', [address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags, witness])
 }
 
-const syscoinTxFund = (tx, aliasName) => {
-  return syscoin.callRpc('syscointxfund', [tx, aliasName])
-}
-
-const signRawTransaction = (txFund) => {
-  return syscoin.callRpc('signrawtransactionwithwallet', [txFund])
-}
-
-const sendRawTransaction = (raw) => {
-  return syscoin.callRpc('sendrawtransaction', [raw])
-}
-
+const signRawTransaction = (str) => syscoin.callRpc('signrawtransactionwithwallet', [str])
+const sendRawTransaction = (str) => syscoin.callRpc('sendrawtransaction', [str])
 
 const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   // Creates new alias
@@ -465,6 +453,7 @@ module.exports = {
   aliasInfo,
   currentSysAddress,
   currentBalance,
+  createNewAsset,
   editAlias,
   editLabel,
   getAllTokenBalances,

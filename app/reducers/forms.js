@@ -13,7 +13,8 @@ import {
   GET_ASSETS_FROM_ALIAS_RECEIVE,
   GET_ASSETS_FROM_ALIAS_ERROR,
   CHANGE_ASSET_TOOLS_ACTION,
-  CHANGE_ASSET_TOOLS_UPDATE_GUID
+  CHANGE_ASSET_TOOLS_UPDATE_GUID,
+  CHANGE_ASSET_TOOLS_FORM_FIELD
 } from 'fw-types/forms'
 
 type actionType = {
@@ -29,7 +30,18 @@ type StateType = {
     activeTab: string,
     assets: {
       action: string,
-      updateGuid: number
+      updateGuid: number,
+      form: {
+        address: string,
+        symbol: string,
+        publicValue: string,
+        contract: string,
+        precision: number,
+        supply: number,
+        maxSupply: number,
+        updateFlags: number,
+        witness: string
+      }
     }
   },
   sendAsset: {
@@ -68,7 +80,18 @@ export const initialState = {
     activeTab: '',
     assets: {
       action: '',
-      updateGuid: 0
+      updateGuid: 0,
+      form: {
+        address: '',
+        symbol: '',
+        publicValue: '',
+        contract: '',
+        precision: 0,
+        supply: 0,
+        maxSupply: 0,
+        updateFlags: 0,
+        witness: ''
+      }
     }
   },
   sendAsset: {
@@ -255,6 +278,20 @@ export default function forms(state: StateType = initialState, action: actionTyp
                 }
               }
             }
+        case CHANGE_ASSET_TOOLS_FORM_FIELD:
+          return {
+            ...state,
+            toolsTab: {
+              ...state.toolsTab,
+              assets: {
+                ...state.toolsTab.assets,
+                form: {
+                  ...state.toolsTab.assets.form,
+                  [action.payload.field]: action.payload.value
+                }
+              }
+            }
+          }
     default:
       return state
   }

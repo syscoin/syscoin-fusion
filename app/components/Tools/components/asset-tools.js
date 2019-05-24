@@ -9,10 +9,14 @@ const { Option } = Select
 
 type Props = {
   t: Function,
+  addresses: Array<Object>,
+  changeFormField: Function,
+  createNewAsset: Function,
   formAction: string,
   updateGuid: number,
   changeToolsAssetAction: Function,
-  changeToolsAssetUpdateGuid: Function
+  changeToolsAssetUpdateGuid: Function,
+  assetForm: Object
 };
 
 type State = {
@@ -26,12 +30,31 @@ export default class AssetToolsForm extends Component<Props, State> {
     super(props)
 
     this.state = {
-      
+      isLoading: false
     }
   }
 
+  createNewAsset() {
+    const { assetForm, createNewAsset } = this.props
+
+    return new Promise(async (resolve, reject) => {
+      this.setState({ isLoading: true })
+
+    try {
+      await createNewAsset(assetForm)
+    } catch (err) {
+      this.setState({ isLoading: false })
+      return reject(err)
+    }
+
+    this.setState({ isLoading: false })
+
+    return resolve()
+    })
+  }
+
   render() {
-    const { t, changeToolsAssetAction, changeToolsAssetUpdateGuid, formAction, updateGuid } = this.props
+    const { t, addresses, changeFormField, changeToolsAssetAction, changeToolsAssetUpdateGuid, formAction, updateGuid } = this.props
     return (
       <div className='asset-tools-container'>
         <Row>
@@ -41,7 +64,16 @@ export default class AssetToolsForm extends Component<Props, State> {
               <Option value='update'>Update an asset</Option>
             </Select>
           </Col>
-          {formAction === 'create' && <AssetForm t={t} onSubmit={() => console.log('submit!')} />}
+          {formAction === 'create' && (
+            <AssetForm
+              t={t}
+              addresses={addresses}
+              createNewAsset={this.createNewAsset.bind(this)}
+              form={this.props.assetForm}
+              isLoading={this.state.isLoading}
+              changeFormField={changeFormField}
+            />
+          )}
           {(formAction === 'update') && (
             <Select placeholder='Select an asset' onChange={value => changeToolsAssetUpdateGuid(Number(value))} value={updateGuid || undefined}>
               <Option value={12345}>GUID 1</Option>
@@ -52,7 +84,13 @@ export default class AssetToolsForm extends Component<Props, State> {
           {(formAction === 'update' && updateGuid !== 0) && (
             <div>
               <h4 className='asset-tools-update-asset-text'>Updating asset <span className='asset-tools-update-asset-number'>{updateGuid}</span></h4>
-              <AssetForm t={t} onSubmit={() => console.log('submit!')} />
+              <AssetForm
+                t={t}
+                createNewAsset={this.createNewAsset.bind(this)}
+                isLoading={this.state.isLoading}
+                form={this.props.assetForm}
+                changeFormField={changeFormField}
+              />
             </div>
           )}
         </Row>
