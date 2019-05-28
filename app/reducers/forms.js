@@ -14,7 +14,8 @@ import {
   GET_ASSETS_FROM_ALIAS_ERROR,
   CHANGE_ASSET_TOOLS_ACTION,
   CHANGE_ASSET_TOOLS_UPDATE_GUID,
-  CHANGE_ASSET_TOOLS_FORM_FIELD
+  CHANGE_ASSET_TOOLS_FORM_FIELD,
+  RESET_TOOLS_ASSET_FORM
 } from 'fw-types/forms'
 
 type actionType = {
@@ -289,6 +290,16 @@ export default function forms(state: StateType = initialState, action: actionTyp
                   ...state.toolsTab.assets.form,
                   [action.payload.field]: action.payload.value
                 }
+              }
+            }
+          }
+        case RESET_TOOLS_ASSET_FORM:
+          return {
+            ...state,
+            toolsTab: {
+              ...state.toolsTab,
+              assets: {
+                ...initialState.toolsTab.assets
               }
             }
           }

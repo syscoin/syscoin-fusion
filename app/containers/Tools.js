@@ -12,13 +12,16 @@ import {
   encryptWallet,
   changePwd,
   lockWallet,
-  createNewAsset
+  createNewAsset,
+  getAssetInfo,
+  updateAsset
 } from 'fw-sys'
 import {
   changeFormTab,
   changeToolsAssetAction,
   changeToolsAssetUpdateGuid,
-  changeToolsAssetFormField
+  changeToolsAssetFormField,
+  resetToolsAssetForm
 } from 'fw-actions/forms'
 import {
   pushNewAlias
@@ -45,6 +48,8 @@ type Props = {
   walletUnlocked: Function,
   changeLanguage: Function,
   currentLanguage: string,
+  resetToolsAssetForm: Function,
+  ownedTokens: Array<Object>,
   t: Function
 };
 
@@ -97,6 +102,32 @@ class ToolsContainer extends Component<Props> {
     ipcRenderer.send('toggle-console')
   }
 
+  createNewAsset(obj: Object) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await createNewAsset(obj)
+      } catch (err) {
+        return reject(err)
+      }
+
+      this.props.resetToolsAssetForm()
+      resolve()
+    })
+  }
+
+  updateAsset(obj: Object) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await updateAsset(obj)
+      } catch (err) {
+        return reject(err)
+      }
+
+      this.props.resetToolsAssetForm()
+      resolve()
+    })
+  }
+
   render() {
     return (
       <Tools
@@ -108,8 +139,10 @@ class ToolsContainer extends Component<Props> {
         changeToolsAssetAction={this.props.changeToolsAssetAction}
         changeToolsAssetUpdateGuid={this.props.changeToolsAssetUpdateGuid}
         changeFormField={this.props.changeToolsAssetFormField}
-        createNewAsset={createNewAsset}
+        createNewAsset={this.createNewAsset.bind(this)}
         assetForm={this.props.assetForm}
+        ownedTokens={this.props.ownedTokens}
+        getAssetInfo={getAssetInfo}
         currentBlock={this.props.currentBlock}
         createNewAlias={this.createNewAlias}
         importWallet={this.importWallet}
@@ -124,6 +157,7 @@ class ToolsContainer extends Component<Props> {
         toggleConsole={this.toggleConsole}
         changeLanguage={this.props.changeLanguage}
         currentLanguage={this.props.currentLanguage}
+        updateAsset={this.updateAsset.bind(this)}
         t={this.props.t}
       />
     )
@@ -139,7 +173,8 @@ const mapStateToProps = state => ({
   currentLanguage: state.options.language,
   assetFormAction: state.forms.toolsTab.assets.action,
   assetFormUpdateGuid: state.forms.toolsTab.assets.updateGuid,
-  assetForm: state.forms.toolsTab.assets.form
+  assetForm: state.forms.toolsTab.assets.form,
+  ownedTokens: state.wallet.dashboard.assets.data.filter(i => i.isOwner)
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -148,7 +183,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   changeLanguage,
   changeToolsAssetAction,
   changeToolsAssetUpdateGuid,
-  changeToolsAssetFormField
+  changeToolsAssetFormField,
+  resetToolsAssetForm
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ToolsContainer))

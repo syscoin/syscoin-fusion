@@ -18,7 +18,7 @@
 body {
   position: relative;
   color: $main_background;
-  background: $main_background;
+  background: $main_background !important;
   height: 100%;
   font-family: 'Roboto', sans-serif;
   overflow-y: hidden;

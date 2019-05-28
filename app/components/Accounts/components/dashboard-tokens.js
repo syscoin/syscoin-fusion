@@ -5,7 +5,7 @@ import Table from './table'
 
 type Props = {
   assets: Array<{
-    balance: string,
+    balance: number,
     publicvalue: string,
     asset_guid: number
   }>,
@@ -34,7 +34,7 @@ export default class DashboardBalance extends Component<Props> {
       {
         title: t('misc.balance'),
         dataIndex: 'balance',
-        render: (text: string) => <span>{text}</span>
+        render: (text: number) => <span>{text}</span>
       }
     ]
   }

@@ -18,6 +18,7 @@ type Props = {
   changeToolsAssetUpdateGuid: Function,
   changeFormField: Function,
   createNewAsset: Function,
+  ownedTokens: Array<Object>,
   assetForm: Object,
   activeTab: string,
   changeFormTab: Function,
@@ -33,6 +34,8 @@ type Props = {
   toggleConsole: Function,
   changeLanguage: Function,
   currentLanguage: string,
+  getAssetInfo: Function,
+  updateAsset: Function,
   t: Function
 };
 
@@ -45,7 +48,7 @@ export default class Tools extends Component<Props> {
   }
 
   render() {
-    const { t, addresses } = this.props
+    const { t, addresses, updateAsset } = this.props
     return (
       <Row className='tools-container'>
         <Col
@@ -68,11 +71,14 @@ export default class Tools extends Component<Props> {
                 addresses={addresses}
                 changeFormField={this.props.changeFormField}
                 createNewAsset={this.props.createNewAsset}
+                ownedTokens={this.props.ownedTokens}
+                getAssetInfo={this.props.getAssetInfo}
                 formAction={this.props.assetFormAction}
                 updateGuid={this.props.assetFormUpdateGuid}
                 changeToolsAssetAction={this.props.changeToolsAssetAction}
                 changeToolsAssetUpdateGuid={this.props.changeToolsAssetUpdateGuid}
                 assetForm={this.props.assetForm}
+                updateAsset={updateAsset}
               />
             </Panel>
             <Panel

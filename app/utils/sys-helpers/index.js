@@ -448,6 +448,22 @@ const isAddressOwnerOfAsset = (address: string, guid: number) => new Promise(asy
 })
 const editLabel = (address: string, label: string) => syscoin.callRpc('setlabel', [address, label])
 
+const updateAsset = (obj: Object) => new Promise(async (resolve, reject) => {
+  const { assetGuid, publicValue, contract, supply, updateFlags } = obj
+  let hex
+  let raw
+
+  try {
+    hex = await syscoin.callRpc('assetupdate', [assetGuid, publicValue, contract, supply, updateFlags, ''])
+    raw = await signRawTransaction(hex.hex)
+    await sendRawTransaction(raw.hex)
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve()
+})
+
 module.exports = {
   callRpc: syscoin.callRpc,
   aliasInfo,
@@ -479,5 +495,6 @@ module.exports = {
   isEncrypted,
   claimAssetInterest,
   getBlockByNumber,
-  getAssets
+  getAssets,
+  updateAsset
 }

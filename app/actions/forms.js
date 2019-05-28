@@ -52,6 +52,7 @@ export const changeToolsAssetAction = createAction(types.CHANGE_ASSET_TOOLS_ACTI
 export const changeToolsAssetUpdateGuid = createAction(types.CHANGE_ASSET_TOOLS_UPDATE_GUID)
 
 export const changeToolsAssetFormField = createAction(types.CHANGE_ASSET_TOOLS_FORM_FIELD)
+export const resetToolsAssetForm = createAction(types.RESET_TOOLS_ASSET_FORM)
 
 export const changeFormTab = (val, tab) => dispatch => {
   dispatch(changeFormTabAction({ val, tab }))
