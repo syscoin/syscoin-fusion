@@ -46,7 +46,8 @@ export default class AliasContainer extends Component<Props> {
         return true
       }
       // Filter by address/label
-      return i.address.indexOf(addressFilter) !== -1 || i.label.indexOf(addressFilter) !== -1
+      return i.address.toLowerCase().indexOf(addressFilter.toLowerCase()) !== -1
+      || i.label.toLowerCase().indexOf(addressFilter.toLowerCase()) !== -1
     }).map(i => (
       <AliasAddressItem
         key={i.address}
