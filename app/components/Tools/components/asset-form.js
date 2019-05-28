@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col, Input, Select, InputNumber, Button } from 'antd'
+import { Row, Col, Input, Select, InputNumber, Button, Tooltip } from 'antd'
 import swal from 'sweetalert'
 import parseError from 'fw-utils/error-parser'
 
@@ -73,21 +73,46 @@ export default class AssetForm extends Component<Props> {
             {addresses.map(i => <Option value={i.address} key={i.address}>{i.label || i.address}</Option>)}
           </Select>
         )}
-        {!isUpdate && <Input placeholder='Symbol' onChange={e => this.changeField(e.target.value, 'symbol')} value={symbol || undefined} disabled={isLoading} />}
-        <Input placeholder='Public value' onChange={e => this.changeField(e.target.value, 'publicValue')} value={publicValue || undefined} disabled={isLoading} />
-        <Input placeholder='Contract' onChange={e => this.changeField(e.target.value, 'contract')} value={contract || undefined} disabled={isLoading} />
-        {!isUpdate && <InputNumber placeholder='Precision (0-8)' min={0} max={8} onChange={val => this.changeField(val, 'precision')} value={precision || undefined} disabled={isLoading} />}
-        <InputNumber placeholder='Supply' min={0} onChange={val => this.changeField(val, 'supply')} value={supply || undefined} disabled={isLoading} />
-        {!isUpdate && <InputNumber placeholder='Max supply' min={0} onChange={val => this.changeField(val, 'maxSupply')} value={maxSupply || undefined} disabled={isLoading} />}
-        <Select placeholder='Update flags' onChange={val => this.changeField(val, 'updateFlags')} value={updateFlags || undefined} disabled={isLoading}>
-          <Option value={1}>0x01 (1)</Option>
-          <Option value={2}>0x10 (2)</Option>
-          <Option value={3}>0x100 (4)</Option>
-          <Option value={8}>0x1000 (8)</Option>
-          <Option value={16}>0x10000 (16)</Option>
-          <Option value={31}>0x11111 (31)</Option>
-        </Select>
-        {!isUpdate && <Input placeholder='Witness' onChange={e => this.changeField(e.target.value, 'witness')} value={witness || undefined} disabled={isLoading} />}
+        {!isUpdate && (
+          <Tooltip title='Symbol' trigger='focus' placement='right'>
+            <Input placeholder='Symbol' onChange={e => this.changeField(e.target.value, 'symbol')} value={symbol || undefined} disabled={isLoading} />
+          </Tooltip>
+        )}
+        <Tooltip title='Public value' trigger='focus' placement='right'>
+          <Input placeholder='Public value' onChange={e => this.changeField(e.target.value, 'publicValue')} value={publicValue || undefined} disabled={isLoading} />
+        </Tooltip>
+        <Tooltip title='Contract' trigger='focus' placement='right'>
+          <Input placeholder='Contract' onChange={e => this.changeField(e.target.value, 'contract')} value={contract || undefined} disabled={isLoading} />
+        </Tooltip>
+
+        {!isUpdate && (
+          <Tooltip title='Precision' trigger='focus' placement='right'>
+            <InputNumber placeholder='Precision (0-8)' min={0} max={8} onChange={val => this.changeField(val, 'precision')} value={precision || undefined} disabled={isLoading} />
+          </Tooltip>
+        )}
+        <Tooltip title='Supply' trigger='focus' placement='right'>
+          <InputNumber placeholder='Supply' min={0} onChange={val => this.changeField(val, 'supply')} value={supply || undefined} disabled={isLoading} />
+        </Tooltip>
+        {!isUpdate && (
+          <Tooltip title='Max supply' trigger='focus' placement='right'>
+            <InputNumber placeholder='Max supply' min={0} onChange={val => this.changeField(val, 'maxSupply')} value={maxSupply || undefined} disabled={isLoading} />
+          </Tooltip>
+        )}
+        <Tooltip title='Update flags' trigger='focus' placement='right'>
+          <Select placeholder='Update flags' onChange={val => this.changeField(val, 'updateFlags')} value={updateFlags || undefined} disabled={isLoading}>
+            <Option value={1}>0x01 (1)</Option>
+            <Option value={2}>0x10 (2)</Option>
+            <Option value={3}>0x100 (4)</Option>
+            <Option value={8}>0x1000 (8)</Option>
+            <Option value={16}>0x10000 (16)</Option>
+            <Option value={31}>0x11111 (31)</Option>
+          </Select>
+        </Tooltip>
+        {!isUpdate && (
+          <Tooltip title='Witness' trigger='focus' placement='right'>
+            <Input placeholder='Witness' onChange={e => this.changeField(e.target.value, 'witness')} value={witness || undefined} disabled={isLoading} />
+          </Tooltip>
+        )}
         <Row>
           <Col xs={8} offset={16}>
             <Button className='asset-tools-send-button' onClick={this.onSubmit.bind(this)} disabled={isLoading}>Send</Button>
