@@ -8,7 +8,6 @@ const waterfall = require('async/waterfall')
 const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
-const getSysPath = require('./syspath')
 
 const RPCPORT='8369'
 const RPCUSER='u'
@@ -66,20 +65,6 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
 
 const startUpRoutine = (cb) => {
   let isFirstTime
-
-  if (!fs.existsSync(getSysPath('default'))) {
-    isFirstTime = true
-    // Attemps to create SyscoinCore folder if this doesn't exists already.
-    try {
-      fs.mkdirSync(getSysPath('default'))
-    } catch (err) {
-      // Failed to create SyscoinCore folder
-      swal('Error', 'Failed to create SyscoinCore folder.', 'error')
-        .then(() => app.quit())
-        .catch(() => app.quit())
-      return
-    }
-  }
 
   const {
     appDocsPath,
