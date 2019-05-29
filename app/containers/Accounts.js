@@ -179,7 +179,7 @@ class AccountsContainer extends Component<Props, State> {
       try {
         transactions = await getTransactionsPerAsset({
           address: this.state.selectedAlias,
-          asset,
+          asset: asset.replace('-owner', ''),
           page
         })
       } catch(err) {

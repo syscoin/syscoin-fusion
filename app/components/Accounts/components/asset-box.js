@@ -22,7 +22,7 @@ export default class AssetBox extends Component<Props> {
         xs={11}
         className={`asset-box ${isSelected ? 'selected' : ''}`}
         key={Math.random()}
-        onClick={() => selectAsset({ asset, symbol })}
+        onClick={() => selectAsset({ asset: isOwner ? asset.concat('-owner') : asset, symbol })}
       >
         <h3 className='asset-box-name'>{symbol}</h3>
         <h5 className='asset-box-guid'>{asset}</h5>
