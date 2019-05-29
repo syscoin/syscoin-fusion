@@ -2,8 +2,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Select } from 'antd'
 import AssetForm from './asset-form'
-// import AssetCreateForm from './asset-create-form'
-// import AssetUpdateForm from './asset-update-form'
 
 const { Option } = Select
 
