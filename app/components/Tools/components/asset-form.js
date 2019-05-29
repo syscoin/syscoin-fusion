@@ -1,10 +1,12 @@
 // @flow
 import React, { Component } from 'react'
-import { Row, Col, Input, Select, InputNumber, Button, Tooltip } from 'antd'
+import { Row, Col, Input, Select, InputNumber, Button, Radio, Tooltip } from 'antd'
 import swal from 'sweetalert'
 import parseError from 'fw-utils/error-parser'
+import FWTooltip from 'fw-components/General/Tooltip'
 
 const { Option } = Select
+const { Group } = Radio
 
 type Props = {
   t: Function,
@@ -98,16 +100,23 @@ export default class AssetForm extends Component<Props> {
             <InputNumber placeholder='Max supply' min={0} onChange={val => this.changeField(val, 'maxSupply')} value={maxSupply || undefined} disabled={isLoading} />
           </Tooltip>
         )}
-        <Tooltip title='Update flags' trigger='focus' placement='right'>
-          <Select placeholder='Update flags' onChange={val => this.changeField(val, 'updateFlags')} value={updateFlags || undefined} disabled={isLoading}>
-            <Option value={1}>0x01 (1)</Option>
-            <Option value={2}>0x10 (2)</Option>
-            <Option value={3}>0x100 (4)</Option>
-            <Option value={8}>0x1000 (8)</Option>
-            <Option value={16}>0x10000 (16)</Option>
-            <Option value={31}>0x11111 (31)</Option>
-          </Select>
-        </Tooltip>
+        <div className='update-flags-container'>
+          <h3>Permissions</h3>
+          <Group name='updateFlags' style={{ display: 'block' }} value={updateFlags} onChange={e => this.changeField(e.target.value, 'updateFlags')}>
+            <Row>
+              <Col className='radio-buttons-container' xs={12}>
+                <Radio value={1}>Admin <FWTooltip title='Gives admin status' placement='right' /></Radio>
+                <Radio value={2}>Public <FWTooltip title='Can update public data field' placement='right' /></Radio>
+                <Radio value={4}>Smart <FWTooltip title='Can update smart contract/burn method signature fields' placement='right' /></Radio>
+              </Col>
+              <Col className='radio-buttons-container' xs={12}>
+                <Radio value={8}>Supply <FWTooltip title='Can update supply' placement='right' /></Radio>
+                <Radio value={16}>Flags <FWTooltip title='Can update permissions' placement='right' /></Radio>
+                <Radio value={31}>All <FWTooltip title='Grants all permissions' placement='right' /></Radio>
+              </Col>
+            </Row>
+          </Group>
+        </div>
         {!isUpdate && (
           <Tooltip title='Witness' trigger='focus' placement='right'>
             <Input placeholder='Witness' onChange={e => this.changeField(e.target.value, 'witness')} value={witness || undefined} disabled={isLoading} />

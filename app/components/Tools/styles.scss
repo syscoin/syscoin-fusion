@@ -5,6 +5,26 @@
     overflow-y: scroll;
     height: 93%;
 
+    .asset-create-container {
+        .update-flags-container {
+            padding: 10px 0 10px 10px;
+            h3 {
+                color: $main_white
+            }
+
+            .radio-buttons-container {
+                padding-left: 20px;
+                .ant-radio-wrapper {
+                    display: block;
+                    margin-bottom: 5px;
+                    span {
+                        color: $main_white;
+                    }
+                }
+            }
+        }
+    }
+
     .lock-utilities {
         button {
             margin-bottom: 10px;

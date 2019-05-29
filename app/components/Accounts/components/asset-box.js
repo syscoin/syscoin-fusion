@@ -28,7 +28,7 @@ export default class AssetBox extends Component<Props> {
         <h5 className='asset-box-guid'>{asset}</h5>
         <h4 className='asset-box-balance'>{t('misc.balance')}: {Number(balance).toFixed(2)}</h4>
         {isOwner ? <Icon className='asset-box-crown' type='star' /> : null}
-        <SendButton className='asset-box-send' onClick={() => goToSendAssetForm(asset)} t={t} />
+        <SendButton className='asset-box-send' onClick={() => goToSendAssetForm(isOwner ? asset.concat('-owner') : asset)} t={t} />
       </Col>
     )
   }
