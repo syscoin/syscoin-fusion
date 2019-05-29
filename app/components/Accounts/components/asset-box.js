@@ -9,7 +9,7 @@ type Props = {
   selectAsset: Function,
   asset: string,
   symbol: string,
-  balance: string,
+  balance: number,
   goToSendAssetForm: Function,
   t: Function
 };

@@ -5,6 +5,8 @@ const transactionParse = require('./transaction-parse')
 const isSegwit = require('./is-segwit')
 const { flatten } =  require('lodash')
 
+window.flatten = flatten
+
 const Syscoin = require('syscoin-js').SyscoinRpcClient
 
 const syscoin = new Syscoin({port: 8369, username: 'u', password: 'p', allowCoerce: false})
@@ -63,9 +65,11 @@ const currentBalance = async () => {
 // Get current addresses
 const getAddresses = () => new Promise(async (resolve, reject) => {
   let addresses
+  let addressesping
   
   try {
     addresses = await syscoin.callRpc('listreceivedbyaddress', [0, true])
+    addressesping = flatten(await syscoin.callRpc('listaddressgroupings', []))
   } catch(err) {
     return reject(err)
   }
@@ -76,6 +80,17 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
     label: i.label,
     avatarUrl: ''
   }))
+  addresses = addresses.map(i => {
+    const ping = addressesping.find(x => x[0] === i.address)
+    
+    if (!ping) {
+      return i
+    }
+
+    // gets real balance. listreceivedbyaddress gets total received instead of current balance
+    i.balance = Number(ping[1])
+    return i
+  })
 
   return resolve(addresses)
 })
