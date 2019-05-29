@@ -5,8 +5,6 @@ const transactionParse = require('./transaction-parse')
 const isSegwit = require('./is-segwit')
 const { flatten } =  require('lodash')
 
-window.flatten = flatten
-
 const Syscoin = require('syscoin-js').SyscoinRpcClient
 
 const syscoin = new Syscoin({port: 8369, username: 'u', password: 'p', allowCoerce: false})
