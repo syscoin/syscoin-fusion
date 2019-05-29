@@ -65,7 +65,11 @@ export default class SendAssetForm extends Component<Props> {
 
   getSelectedAsset() {
     try {
-      return this.props.assetsFromAlias.data.find(i => i.asset_guid.toString() === this.props.form.data.asset)
+      return this.props.assetsFromAlias.data.find(i => (
+        i.isOwner ?
+        i.asset_guid.toString().concat('-owner') === this.props.form.data.asset
+        : i.asset_guid.toString() === this.props.form.data.asset
+      ))
     } catch(err) {
       return ''
     }
@@ -74,12 +78,20 @@ export default class SendAssetForm extends Component<Props> {
   prepareAddresses() {
     return this.props.addresses.filter(i => this.props.isSegwit(i.address))
   }
+
+  prepareSubmit() {
+    const { form, sendAsset } = this.props
+    this.updateField(form.data.asset.replace('-owner', ''), 'asset')
+
+    setTimeout(() => {
+      sendAsset()
+    }, 100)
+  }
   
   render() {
     const { t } = this.props
     const {
       isLoading = false,
-      sendAsset,
       assetsFromAlias,
       form
     } = this.props
@@ -125,7 +137,7 @@ export default class SendAssetForm extends Component<Props> {
             value={asset.length ? asset : undefined}
           >
             {assetsFromAlias.data.map(i => (
-              <Option value={i.asset_guid.toString()} key={i.asset_guid}>
+              <Option value={`${i.asset_guid.toString()}${i.isOwner ? '-owner' : ''}`} key={`${i.asset_guid}${i.isOwner ? '-owner' : ''}`}>
                 {i.symbol}{i.isOwner ? <span>{' '}<Icon className='send-star-icon' type='star' /></span> : ''} - {i.asset_guid}
               </Option>
             ))}
@@ -159,7 +171,7 @@ export default class SendAssetForm extends Component<Props> {
             <Button
               className='send-asset-form-btn-send'
               disabled={isLoading || !from || !asset || !toAddress || !amount}
-              onClick={() => sendAsset()}
+              onClick={() => this.prepareSubmit()}
             >
               {t('misc.send')}
             </Button>

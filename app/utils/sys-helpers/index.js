@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // @flow
 const { waterfall } = require('async')
 const transactionParse = require('./transaction-parse')
@@ -288,8 +289,8 @@ const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
       const assetIndex = balancesByAssets.findIndex(z => z.asset_guid === x.asset_guid && z.isOwner === x.isOwner)
 
       if (assetIndex !== -1) {
-        balancesByAssets[assetIndex].balance = (Number(balancesByAssets[assetIndex].balance) + Number(x.balance)).toString()
-        balancesByAssets[assetIndex].balance_zdag = (Number(balancesByAssets[assetIndex].balance_zdag) + Number(x.balance_zdag)).toString()
+        balancesByAssets[assetIndex].balance = (Number(balancesByAssets[assetIndex].balance) + Number(x.balance))
+        balancesByAssets[assetIndex].balance_zdag = (Number(balancesByAssets[assetIndex].balance_zdag) + Number(x.balance_zdag))
       } else {
         balancesByAssets.push(x)
       }
