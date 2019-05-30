@@ -27,7 +27,7 @@ const checkSyscoind = (cb) => {
 	})
 }
 
-const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
+const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath, logPath }) => {
   const docs = require('./helpers/css-custom-template') // eslint-disable-line global-require
 
   if (!fs.existsSync(appDocsPath)) {
@@ -61,6 +61,14 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath }) => {
       docs.cfg
     )
   }
+
+  if (!fs.existsSync(logPath)) {
+    // If cant find fusion.cfg file, regenerate it.
+    fs.writeFileSync(
+      logPath,
+      `${(new Date()).toTimeString()}: Fusion started running.`
+    )
+  }
 }
 
 const startUpRoutine = (cb) => {
@@ -69,7 +77,8 @@ const startUpRoutine = (cb) => {
   const {
     appDocsPath,
     customCssPath,
-    confPath
+    confPath,
+    logPath
   } = getPaths()
 
   updateProgressbar(20)
@@ -78,7 +87,8 @@ const startUpRoutine = (cb) => {
   checkAndCreateDocFolder({
     appDocsPath,
     customCssPath,
-    confPath
+    confPath,
+    logPath
   })
 
   updateProgressbar(30, 'Loading custom CSS')
