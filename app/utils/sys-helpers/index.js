@@ -352,13 +352,13 @@ const unlockWallet = (pass: string, time: number) => syscoin.callRpc('walletpass
 const changePwd = (oldPwd: string, newPwd: string) => syscoin.callRpc('walletpassphrasechange', [oldPwd, newPwd])
 const lockWallet = () => syscoin.callRpc('walletlock', [])
 
-const isEncrypted = () => new Promise(async (resolve, reject) => {
+const isEncrypted = () => new Promise(async (resolve) => {
   let output
 
   try {
     output = await syscoin.callRpc('getwalletinfo', [])
   } catch (err) {
-    return reject(err)
+    return resolve(false)
   }
 
   return resolve(Object.keys(output).indexOf('unlocked_until') !== -1)

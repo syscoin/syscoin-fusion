@@ -8,6 +8,7 @@ const waterfall = require('async/waterfall')
 const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
+const pushToLogs = require('./push-to-logs')
 
 const RPCPORT='8369'
 const RPCUSER='u'
@@ -66,9 +67,11 @@ const checkAndCreateDocFolder = ({ customCssPath, appDocsPath, confPath, logPath
     // If cant find fusion.cfg file, regenerate it.
     fs.writeFileSync(
       logPath,
-      `${(new Date()).toTimeString()}: Fusion started running.`
+      ''
     )
   }
+
+  pushToLogs(`${(new Date()).toTimeString()}: Fusion started running.`)
 }
 
 const startUpRoutine = (cb) => {
