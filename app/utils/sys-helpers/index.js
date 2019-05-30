@@ -280,7 +280,7 @@ const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(as
 })
 
 // Get Blockchain status
-const getBlockchainInfo = () => syscoin.blockchainServices.getBlockchainInfo()
+const getBlockchainInfo = () => syscoin.callRpc('getblockchaininfo', [])
 
 // Get filtered asset allocation
 const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
