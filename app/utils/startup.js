@@ -9,7 +9,7 @@ const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 
-const RPCPORT='8369'
+const RPCPORT='8370'
 const RPCUSER='u'
 const RPCPASSWORD='p'
 const RPCALLOWIP='127.0.0.1'
