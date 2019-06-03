@@ -65,6 +65,11 @@ export default class AssetForm extends Component<Props> {
     }
   }
 
+  isDisabled() {
+    const { address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags } = this.props.form
+    return !address || !symbol && !publicValue && !contract && typeof precision !== 'number' && !supply && !maxSupply && !updateFlags
+  }
+
   render() {
     const { t, addresses, form, isLoading, isUpdate } = this.props
     const { address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags, witness } = form
@@ -124,7 +129,13 @@ export default class AssetForm extends Component<Props> {
         )}
         <Row>
           <Col xs={8} offset={16}>
-            <Button className='asset-tools-send-button' onClick={this.onSubmit.bind(this)} disabled={isLoading}>Send</Button>
+            <Button
+              className='asset-tools-send-button'
+              onClick={this.onSubmit.bind(this)}
+              disabled={isLoading || this.isDisabled()}
+            >
+              Send
+            </Button>
           </Col>
         </Row>
       </div>
