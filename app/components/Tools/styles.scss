@@ -5,10 +5,58 @@
     overflow-y: scroll;
     height: 93%;
 
+    .asset-create-container {
+        .update-flags-container {
+            padding: 10px 0 10px 10px;
+            h3 {
+                color: $main_white
+            }
+
+            .radio-buttons-container {
+                padding-left: 20px;
+                .ant-radio-wrapper {
+                    display: block;
+                    margin-bottom: 5px;
+                    span {
+                        color: $main_white;
+                    }
+                }
+            }
+        }
+    }
+
     .lock-utilities {
         button {
             margin-bottom: 10px;
             width: 200px;
+        }
+    }
+
+    .tools-form-container {
+        .ant-collapse-item {
+            margin-bottom: 30px;
+        }
+
+        input, .ant-select, .ant-input-number {
+            width: 100%;
+        }
+
+        input, .ant-input-number {
+            margin-bottom: 10px;
+        }
+
+        .asset-tools-send-button {
+            width: 100%;
+        }
+
+        .asset-tools-update-asset-text {
+            text-align: center;
+            color: $main_white;
+            margin-bottom: 10px;
+
+            .asset-tools-update-asset-number {
+                color: $main_blue;
+            }
         }
     }
 }

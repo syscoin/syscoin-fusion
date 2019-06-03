@@ -53,13 +53,9 @@ const installExtensions = async () => {
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
-  closeSysd()
-
-  setTimeout(() => {
-    if (process.platform !== 'darwin') {
-      app.quit()
-    }
-  }, 1500)
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
 
 app.on('ready', async () => {
@@ -141,16 +137,7 @@ app.on('ready', async () => {
     }
   })
 
-  mainWindow.on('close', ev => {
-    ev.preventDefault()
-
-    if (!mainWindow.isDestroyed()) {
-      mainWindow.destroy()
-    }
-    if (!consoleWindow.isDestroyed()) {
-      consoleWindow.destroy()
-    }
-  })
+  mainWindow.on('close', closeApp)
 
   consoleWindow.on('close', ev => {
     ev.preventDefault()
@@ -173,15 +160,7 @@ app.on('ready', async () => {
     }
   })
 
-  ipcMain.on('close', () => {
-    // Closes the app
-    if (!mainWindow.isDestroyed()) {
-      mainWindow.destroy()
-    }
-    if (!consoleWindow.isDestroyed()) {
-      consoleWindow.destroy()
-    }
-  })
+  ipcMain.on('close', closeApp)
 
   ipcMain.on('maximize', (e) => {
     // Maximize the window
@@ -209,3 +188,22 @@ app.on('ready', async () => {
   const menuBuilder = new MenuBuilder(mainWindow)
   menuBuilder.buildMenu()
 })
+
+async function closeApp(ev) {
+  ev.preventDefault()
+
+  try {
+    await closeSysd()
+  } catch (err) {
+    console.log(err.message)
+  }
+
+  setTimeout(() => {
+    if (!mainWindow.isDestroyed()) {
+      mainWindow.destroy()
+    }
+    if (!consoleWindow.isDestroyed()) {
+      consoleWindow.destroy()
+    }
+  }, 500)
+}

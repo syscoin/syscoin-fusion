@@ -1,3 +1,5 @@
+/* eslint-disable promise/param-names */
+/* eslint-disable no-param-reassign */
 // @flow
 const { waterfall } = require('async')
 const transactionParse = require('./transaction-parse')
@@ -6,7 +8,7 @@ const { flatten } =  require('lodash')
 
 const Syscoin = require('syscoin-js').SyscoinRpcClient
 
-const syscoin = new Syscoin({port: 8369, username: 'u', password: 'p', allowCoerce: false})
+const syscoin = new Syscoin({port: 8370, username: 'u', password: 'p', allowCoerce: false})
 
 window.sys = syscoin
 
@@ -49,7 +51,7 @@ const currentBalance = async () => {
   try {
     balance = await syscoin.callRpc('getbalance', [])
   } catch(err) {
-    return err
+    return 0
   }
 
   if (typeof balance !== 'number') {
@@ -62,9 +64,11 @@ const currentBalance = async () => {
 // Get current addresses
 const getAddresses = () => new Promise(async (resolve, reject) => {
   let addresses
+  let addressesping
   
   try {
     addresses = await syscoin.callRpc('listreceivedbyaddress', [0, true])
+    addressesping = flatten(await syscoin.callRpc('listaddressgroupings', []))
   } catch(err) {
     return reject(err)
   }
@@ -75,9 +79,33 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
     label: i.label,
     avatarUrl: ''
   }))
+  addresses = addresses.map(i => {
+    const ping = addressesping.find(x => x[0] === i.address)
+    
+    if (!ping) {
+      return i
+    }
+
+    // gets real balance. listreceivedbyaddress gets total received instead of current balance
+    i.balance = Number(ping[1])
+    return i
+  })
+
+  addresses = await Promise.all(
+    addresses.map(i => new Promise(async (resolveMap) => {
+        i.info = await getAddressInfo(i.address)
+
+        return resolveMap(i)
+      })
+    )
+  )
+
+  addresses = addresses.filter(i => i.info.ismine)
 
   return resolve(addresses)
 })
+
+const getAddressInfo = addr => syscoin.callRpc('getaddressinfo', [addr])
 
 // Get assets
 const getAssets = () => syscoin.callRpc('listassets', [])
@@ -132,40 +160,28 @@ const sendSysTransaction = (obj: sendSysTransactionType) => {
   return syscoin.callRpc("sendtoaddress", [address, Number(amount), comment])
 }
 
-const createNewAsset = async (obj: Object) => {
-  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ''} = obj
-
-  let asset, txFund, signRaw
+const createNewAsset = (obj: Object) => new Promise(async (resolve, reject) => {
+  let asset
+  let signRaw
 
   try {
     asset = await assetNew(obj)
-    txFund = await syscoinTxFund(asset[0], aliasName)
-    signRaw = await signRawTransaction(txFund[0])
+    signRaw = await signRawTransaction(asset.hex)
     await sendRawTransaction(signRaw.hex)
   } catch(error) {
-    return error
+    return reject(error)
   }
 
-  return asset
-}
+  return resolve(asset)
+})
 
 const assetNew = (obj: Object) => {
-  const { aliasName, assetName, contract = '', burnMethodSignature = '', precision = 8, supply = 1000, maxSupply = 10000, updateFlags = 1, witness = ""} = obj
-  return syscoin.callRpc('assetnew', [aliasName, assetName, contract, burnMethodSignature, precision, supply, maxSupply, updateFlags, witness])
+  const { address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags, witness } = obj
+  return syscoin.callRpc('assetnew', [address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags, witness])
 }
 
-const syscoinTxFund = (tx, aliasName) => {
-  return syscoin.callRpc('syscointxfund', [tx, aliasName])
-}
-
-const signRawTransaction = (txFund) => {
-  return syscoin.callRpc('signrawtransactionwithwallet', [txFund])
-}
-
-const sendRawTransaction = (raw) => {
-  return syscoin.callRpc('sendrawtransaction', [raw])
-}
-
+const signRawTransaction = (str) => syscoin.callRpc('signrawtransactionwithwallet', [str])
+const sendRawTransaction = (str) => syscoin.callRpc('sendrawtransaction', [str])
 
 const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   // Creates new alias
@@ -278,7 +294,7 @@ const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(as
 })
 
 // Get Blockchain status
-const getBlockchainInfo = () => syscoin.blockchainServices.getBlockchainInfo()
+const getBlockchainInfo = () => syscoin.callRpc('getblockchaininfo', [])
 
 // Get filtered asset allocation
 const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
@@ -297,11 +313,11 @@ const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
 
   allocationsByAddress.forEach(i => {
     i.forEach(x => {
-      const assetIndex = balancesByAssets.findIndex(z => z.asset_guid === x.asset_guid)
+      const assetIndex = balancesByAssets.findIndex(z => z.asset_guid === x.asset_guid && z.isOwner === x.isOwner)
 
       if (assetIndex !== -1) {
-        balancesByAssets[assetIndex].balance = (Number(balancesByAssets[assetIndex].balance) + Number(x.balance)).toString()
-        balancesByAssets[assetIndex].balance_zdag = (Number(balancesByAssets[assetIndex].balance_zdag) + Number(x.balance_zdag)).toString()
+        balancesByAssets[assetIndex].balance = (Number(balancesByAssets[assetIndex].balance) + Number(x.balance))
+        balancesByAssets[assetIndex].balance_zdag = (Number(balancesByAssets[assetIndex].balance_zdag) + Number(x.balance_zdag))
       } else {
         balancesByAssets.push(x)
       }
@@ -350,13 +366,13 @@ const unlockWallet = (pass: string, time: number) => syscoin.callRpc('walletpass
 const changePwd = (oldPwd: string, newPwd: string) => syscoin.callRpc('walletpassphrasechange', [oldPwd, newPwd])
 const lockWallet = () => syscoin.callRpc('walletlock', [])
 
-const isEncrypted = () => new Promise(async (resolve, reject) => {
+const isEncrypted = () => new Promise(async (resolve) => {
   let output
 
   try {
     output = await syscoin.callRpc('getwalletinfo', [])
   } catch (err) {
-    return reject(err)
+    return resolve(false)
   }
 
   return resolve(Object.keys(output).indexOf('unlocked_until') !== -1)
@@ -460,11 +476,30 @@ const isAddressOwnerOfAsset = (address: string, guid: number) => new Promise(asy
 })
 const editLabel = (address: string, label: string) => syscoin.callRpc('setlabel', [address, label])
 
+const updateAsset = (obj: Object) => new Promise(async (resolve, reject) => {
+  const { assetGuid, publicValue, contract, supply, updateFlags } = obj
+  let hex
+  let raw
+
+  try {
+    hex = await syscoin.callRpc('assetupdate', [assetGuid, publicValue, contract, supply, updateFlags, ''])
+    raw = await signRawTransaction(hex.hex)
+    await sendRawTransaction(raw.hex)
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve()
+})
+
+const stop = () => syscoin.callRpc('stop', [])
+
 module.exports = {
   callRpc: syscoin.callRpc,
   aliasInfo,
   currentSysAddress,
   currentBalance,
+  createNewAsset,
   editAlias,
   editLabel,
   getAllTokenBalances,
@@ -490,5 +525,7 @@ module.exports = {
   isEncrypted,
   claimAssetInterest,
   getBlockByNumber,
-  getAssets
+  getAssets,
+  updateAsset,
+  stop
 }

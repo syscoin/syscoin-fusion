@@ -51,6 +51,7 @@ main.js.map
 .idea
 npm-debug.log.*
 sys_dependencies/syscore
-extra/**/syscoin*
+extra/**/*.node
+extra/**/*syscoin*
 
 config.js

@@ -11,7 +11,7 @@ import {
   sendAssetForm,
   sendSysForm,
   getAssetsFromAlias,
-  sendChangeTab
+  changeFormTab
 } from 'fw-actions/forms'
 import unlockWallet from 'fw-utils/unlock-wallet'
 import isSegwit from 'fw-sys/is-segwit'
@@ -19,7 +19,7 @@ import isSegwit from 'fw-sys/is-segwit'
 
 type Props = {
   balance: number,
-  aliases: Array<Object>,
+  addresses: Array<Object>,
   sendAssetForm: Function,
   sendSysForm: Function,
   editSendAsset: Function,
@@ -28,7 +28,7 @@ type Props = {
   assetForm: Object,
   isEncrypted: boolean,
   getAssetsFromAlias: Function,
-  sendChangeTab: Function,
+  changeFormTab: Function,
   activeTab: string,
   t: Function
 };
@@ -104,10 +104,10 @@ class SendContainer extends Component<Props> {
     const {balance} = this.props
     return (
       <Send
-        changeTab={this.props.sendChangeTab}
+        changeTab={this.props.changeFormTab}
         activeTab={this.props.activeTab}
         balance={balance}
-        aliases={this.props.aliases.map(i => i.alias || i.address)}
+        addresses={this.props.addresses}
         isSegwit={isSegwit}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
@@ -123,7 +123,7 @@ class SendContainer extends Component<Props> {
 
 const mapStateToProps = state => ({
   balance: state.wallet.balance,
-  aliases: state.wallet.aliases,
+  addresses: state.wallet.aliases,
   assetForm: state.forms.sendAsset,
   sysForm: state.forms.sendSys,
   isEncrypted: state.wallet.isEncrypted,
@@ -136,7 +136,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   sendAssetForm,
   sendSysForm,
   getAssetsFromAlias,
-  sendChangeTab
+  changeFormTab
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(SendContainer))

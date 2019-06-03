@@ -9,7 +9,7 @@ type Props = {
   selectAsset: Function,
   asset: string,
   symbol: string,
-  balance: string,
+  balance: number,
   goToSendAssetForm: Function,
   t: Function
 };
@@ -17,19 +17,18 @@ type Props = {
 export default class AssetBox extends Component<Props> {
   render() {
     const { isSelected, isOwner, selectAsset, asset, symbol, balance, goToSendAssetForm, t } = this.props
-    console.log(isOwner)
     return (
       <Col
         xs={11}
         className={`asset-box ${isSelected ? 'selected' : ''}`}
-        key={asset}
-        onClick={() => selectAsset({ asset, symbol })}
+        key={Math.random()}
+        onClick={() => selectAsset({ asset: isOwner ? asset.concat('-owner') : asset, symbol })}
       >
         <h3 className='asset-box-name'>{symbol}</h3>
         <h5 className='asset-box-guid'>{asset}</h5>
         <h4 className='asset-box-balance'>{t('misc.balance')}: {Number(balance).toFixed(2)}</h4>
         {isOwner ? <Icon className='asset-box-crown' type='star' /> : null}
-        <SendButton className='asset-box-send' onClick={() => goToSendAssetForm(asset)} t={t} />
+        <SendButton className='asset-box-send' onClick={() => goToSendAssetForm(isOwner ? asset.concat('-owner') : asset)} t={t} />
       </Col>
     )
   }

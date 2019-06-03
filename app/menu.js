@@ -1,8 +1,10 @@
 // @flow
 import { app, Menu, shell, BrowserWindow } from 'electron'
 
+const OS = require('./utils/detect-os')()
+
 export default class MenuBuilder {
-  mainWindow: BrowserWindow;
+  mainWindow: BrowserWindow
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow
@@ -22,8 +24,12 @@ export default class MenuBuilder {
         : this.buildDefaultTemplate()
 
     const menu = Menu.buildFromTemplate(template)
-    Menu.setApplicationMenu(null)
 
+    if (OS === 'osx') {
+      Menu.setApplicationMenu(menu)
+      return
+    }
+    Menu.setApplicationMenu(null)
     return menu
   }
 
@@ -80,10 +86,12 @@ export default class MenuBuilder {
       submenu: [
         { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
         { label: 'Redo', accelerator: 'Shift+Command+Z', selector: 'redo:' },
+        { label: 'RedoDO', accelerator: 'Shift+Command+Z', selector: 'redo:' },
         { type: 'separator' },
         { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
         { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
         { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
+        { type: 'separator' },
         {
           label: 'Select All',
           accelerator: 'Command+A',

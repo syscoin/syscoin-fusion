@@ -11,8 +11,19 @@ import {
   importWallet,
   encryptWallet,
   changePwd,
-  lockWallet
+  lockWallet,
+  createNewAsset,
+  getAssetInfo,
+  updateAsset
 } from 'fw-sys'
+import isSegwit from 'fw-sys/is-segwit'
+import {
+  changeFormTab,
+  changeToolsAssetAction,
+  changeToolsAssetUpdateGuid,
+  changeToolsAssetFormField,
+  resetToolsAssetForm
+} from 'fw-actions/forms'
 import {
   pushNewAlias
 } from 'fw-utils/new-alias-manager'
@@ -23,17 +34,23 @@ import { changeLanguage } from 'fw-actions/options'
 const { dialog } = remote.require('electron')
 
 type Props = {
+  addresses: Array<Object>,
+  assetFormAction: string,
+  assetFormUpdateGuid: number,
+  assetForm: Object,
+  changeToolsAssetAction: Function,
+  changeToolsAssetUpdateGuid: Function,
+  changeToolsAssetFormField: Function,
+  activeTab: string,
+  changeFormTab: Function,
   currentBlock: number,
-  unfinishedAliases: Array<{
-    aliasName: string,
-    round: number,
-    block: number
-  }>,
   isEncrypted: boolean,
   isUnlocked: boolean,
   walletUnlocked: Function,
   changeLanguage: Function,
   currentLanguage: string,
+  resetToolsAssetForm: Function,
+  ownedTokens: Array<Object>,
   t: Function
 };
 
@@ -86,11 +103,48 @@ class ToolsContainer extends Component<Props> {
     ipcRenderer.send('toggle-console')
   }
 
+  createNewAsset(obj: Object) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await createNewAsset(obj)
+      } catch (err) {
+        return reject(err)
+      }
+
+      this.props.resetToolsAssetForm()
+      resolve()
+    })
+  }
+
+  updateAsset(obj: Object) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await updateAsset(obj)
+      } catch (err) {
+        return reject(err)
+      }
+
+      this.props.resetToolsAssetForm()
+      resolve()
+    })
+  }
+
   render() {
     return (
       <Tools
+        addresses={this.props.addresses}
+        activeTab={this.props.activeTab}
+        assetFormAction={this.props.assetFormAction}
+        assetFormUpdateGuid={this.props.assetFormUpdateGuid}
+        changeFormTab={this.props.changeFormTab}
+        changeToolsAssetAction={this.props.changeToolsAssetAction}
+        changeToolsAssetUpdateGuid={this.props.changeToolsAssetUpdateGuid}
+        changeFormField={this.props.changeToolsAssetFormField}
+        createNewAsset={this.createNewAsset.bind(this)}
+        assetForm={this.props.assetForm}
+        ownedTokens={this.props.ownedTokens}
+        getAssetInfo={getAssetInfo}
         currentBlock={this.props.currentBlock}
-        unfinishedAliases={this.props.unfinishedAliases}
         createNewAlias={this.createNewAlias}
         importWallet={this.importWallet}
         exportWallet={this.exportWallet}
@@ -104,6 +158,7 @@ class ToolsContainer extends Component<Props> {
         toggleConsole={this.toggleConsole}
         changeLanguage={this.props.changeLanguage}
         currentLanguage={this.props.currentLanguage}
+        updateAsset={this.updateAsset.bind(this)}
         t={this.props.t}
       />
     )
@@ -111,16 +166,26 @@ class ToolsContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
+  addresses: state.wallet.aliases.filter(i => isSegwit(i.address) && Number(i.balance) > 0),
+  activeTab: state.forms.toolsTab.activeTab,
   currentBlock: state.wallet.blockchaininfo.blocks,
-  unfinishedAliases: state.wallet.unfinishedAliases,
   isEncrypted: state.wallet.isEncrypted,
   isUnlocked: state.wallet.isUnlocked,
-  currentLanguage: state.options.language
+  currentLanguage: state.options.language,
+  assetFormAction: state.forms.toolsTab.assets.action,
+  assetFormUpdateGuid: state.forms.toolsTab.assets.updateGuid,
+  assetForm: state.forms.toolsTab.assets.form,
+  ownedTokens: state.wallet.dashboard.assets.data.filter(i => i.isOwner)
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  changeFormTab,
   walletUnlocked,
-  changeLanguage
+  changeLanguage,
+  changeToolsAssetAction,
+  changeToolsAssetUpdateGuid,
+  changeToolsAssetFormField,
+  resetToolsAssetForm
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ToolsContainer))

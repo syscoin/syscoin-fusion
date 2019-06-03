@@ -46,7 +46,8 @@ export default class AliasInfo extends Component<Props> {
           <div className='alias-info-text-container'>
             <h3>{t('accounts.asset.alias_information')}</h3>
             <hr />
-            <p><span className='blue-text'>{t('misc.address')}</span>: {address}</p>
+            <p><span className='blue-text'>{t('misc.address')}</span>:</p>
+            <p>{address}</p>
             <p><span className='blue-text'>{t('misc.balance')}</span>: {balance} SYS</p>
           </div>
         </Col>

@@ -5,8 +5,8 @@ import Table from './table'
 
 type Props = {
   assets: Array<{
-    balance: string,
-    publicvalue: string,
+    balance: number,
+    publicvalue: any,
     asset_guid: number
   }>,
   isLoading: boolean,
@@ -23,9 +23,8 @@ export default class DashboardBalance extends Component<Props> {
     return [
       {
         title: t('misc.symbol'),
-        key: 'publicvalue',
-        dataIndex: 'publicvalue',
-        render: (text: string) => <span>{text.toUpperCase()}</span>
+        dataIndex: 'symbol',
+        render: (text: string, asset: Object) => <span>{text.toUpperCase()} {asset.isOwner && <Icon type='star' />}</span>
       },
       {
         title: t('misc.asset'),
@@ -35,9 +34,18 @@ export default class DashboardBalance extends Component<Props> {
       {
         title: t('misc.balance'),
         dataIndex: 'balance',
-        render: (text: string) => <span>{text}</span>
+        render: (text: number) => <span>{text}</span>
       }
     ]
+  }
+
+  addRandomKeyToData() {
+    return this.props.assets.map(i => {
+      // eslint-disable-next-line no-param-reassign
+      i.randomKey = Math.random()
+
+      return i
+    })
   }
 
   render() {
@@ -45,7 +53,7 @@ export default class DashboardBalance extends Component<Props> {
     return (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
-          {t('accounts.summary.total_tokens')} {!this.props.isLoading && (
+          {'Total Tokens & Assets'} {!this.props.isLoading && (
             <Icon
               type='reload'
               className='dashboard-refresh'
@@ -54,9 +62,9 @@ export default class DashboardBalance extends Component<Props> {
           )}
         </h3>
         <Table
-          data={this.props.assets}
+          data={this.addRandomKeyToData()}
           columns={this.generateTableColumns()}
-          rowKey='asset_guid'
+          rowKey='randomKey'
           isLoading={this.props.isLoading}
           error={this.props.error}
           t={t}

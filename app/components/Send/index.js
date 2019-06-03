@@ -10,7 +10,7 @@ import SendSysForm from './components/send-sys'
 const { Panel } = Collapse
 
 type Props = {
-  aliases: Array<string>,
+  addresses: Array<Object>,
   sendAsset: Function,
   sendSys: Function,
   isSegwit: Function,
@@ -77,7 +77,7 @@ export default class Send extends Component<Props> {
 
   changeTab(tab) {
     if (tab) {
-      this.props.changeTab(tab)
+      this.props.changeTab(tab, 'sendTab')
     }
   }
 
@@ -102,7 +102,7 @@ export default class Send extends Component<Props> {
                   isLoading={this.props.assetsForm.isLoading}
                   title={t('send.send_asset.title')}
                   columnSize={12}
-                  aliases={this.props.aliases}
+                  addresses={this.props.addresses}
                   isSegwit={this.props.isSegwit}
                   sendAsset={this.sendAsset.bind(this)}
                   onSelectAlias={this.props.getAssetsFromAlias}
