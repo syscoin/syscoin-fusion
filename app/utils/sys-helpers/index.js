@@ -478,6 +478,8 @@ const updateAsset = (obj: Object) => new Promise(async (resolve, reject) => {
   return resolve()
 })
 
+const stop = () => syscoin.callRpc('stop', [])
+
 module.exports = {
   callRpc: syscoin.callRpc,
   aliasInfo,
@@ -510,5 +512,6 @@ module.exports = {
   claimAssetInterest,
   getBlockByNumber,
   getAssets,
-  updateAsset
+  updateAsset,
+  stop
 }

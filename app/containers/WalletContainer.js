@@ -14,7 +14,7 @@ import {
 } from 'fw-actions/wallet'
 import { saveGuids, toggleMaximize } from 'fw-actions/options'
 import replaceColorPalette from 'fw-utils/replace-color-palette'
-import { getAssetInfo } from 'fw-sys'
+import { getAssetInfo, stop } from 'fw-sys'
 
 import loadCustomCss from 'fw-utils/load-css'
 import loadConf from 'fw-utils/load-conf-into-dev'
@@ -91,6 +91,15 @@ class WalletContainer extends Component<Props> {
   }
 
   onClose() {
+    ipcRenderer.on('close-sys', async () => {
+      try {
+        await stop()
+      } catch (err) {
+        console.log(err.message)
+      }
+
+      ipcRenderer.send('exit')
+    })
     ipcRenderer.send('close')
   }
 
