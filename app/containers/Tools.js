@@ -16,6 +16,7 @@ import {
   getAssetInfo,
   updateAsset
 } from 'fw-sys'
+import isSegwit from 'fw-sys/is-segwit'
 import {
   changeFormTab,
   changeToolsAssetAction,
@@ -165,7 +166,7 @@ class ToolsContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  addresses: state.wallet.aliases,
+  addresses: state.wallet.aliases.filter(i => isSegwit(i.address) && Number(i.balance) > 0),
   activeTab: state.forms.toolsTab.activeTab,
   currentBlock: state.wallet.blockchaininfo.blocks,
   isEncrypted: state.wallet.isEncrypted,
