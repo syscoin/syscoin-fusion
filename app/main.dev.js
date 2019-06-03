@@ -59,7 +59,7 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
       app.quit()
     }
-  }, 1500)
+  }, 3000)
 })
 
 app.on('ready', async () => {
