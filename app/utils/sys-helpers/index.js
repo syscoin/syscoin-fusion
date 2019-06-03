@@ -1,3 +1,4 @@
+/* eslint-disable promise/param-names */
 /* eslint-disable no-param-reassign */
 // @flow
 const { waterfall } = require('async')
@@ -90,8 +91,21 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
     return i
   })
 
+  addresses = await Promise.all(
+    addresses.map(i => new Promise(async (resolveMap) => {
+        i.info = await getAddressInfo(i.address)
+
+        return resolveMap(i)
+      })
+    )
+  )
+
+  addresses = addresses.filter(i => i.info.ismine)
+
   return resolve(addresses)
 })
+
+const getAddressInfo = addr => syscoin.callRpc('getaddressinfo', [addr])
 
 // Get assets
 const getAssets = () => syscoin.callRpc('listassets', [])
