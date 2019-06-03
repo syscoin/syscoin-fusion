@@ -163,7 +163,7 @@ const startUpRoutine = cb => {
               'syscoind',
               `-reindex -daemon=0 -assetindex=1 -assetindexpagesize=${
                 process.env.TABLE_PAGINATION_LENGTH
-              } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
+                } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} -addnode=${ADDNODE}`
             )
           )
         }

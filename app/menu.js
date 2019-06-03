@@ -1,6 +1,8 @@
 // @flow
 import { app, Menu, shell, BrowserWindow } from 'electron'
 
+const OS = require('./utils/detect-os')()
+
 export default class MenuBuilder {
   mainWindow: BrowserWindow
 
@@ -22,8 +24,12 @@ export default class MenuBuilder {
         : this.buildDefaultTemplate()
 
     const menu = Menu.buildFromTemplate(template)
-    Menu.setApplicationMenu(menu)
 
+    if (OS === 'osx') {
+      Menu.setApplicationMenu(menu)
+      return
+    }
+    Menu.setApplicationMenu(null)
     return menu
   }
 
