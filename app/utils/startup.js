@@ -110,110 +110,108 @@ const startUpRoutine = cb => {
 
   updateProgressbar(60, 'Connecting to syscoin...')
 
-  checkSyscoind(false, (err, status) => {
-    if (status === 'up') {
-      return swal(
-        'Error',
-        'Another instance of Fusion or Syscoin is already running. Fusion will close.',
-        'error'
-      )
-        .then(() => app.quit())
-    }
+  waterfall(
+    [
+      done => {
+        let isDone = false
+        exec(
+          generateCmd(
+            'syscoind',
+            `${
+            isFirstTime ? '-reindex' : ''
+            } -debug=1 -daemon=0 -assetindex=1 -assetindexpagesize=${
+            process.env.TABLE_PAGINATION_LENGTH
+            } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
+          ),
+          err => {
+            if (isDone) {
+              return
+            }
 
-    waterfall(
-      [
-        done => {
-          let isDone = false
+            isDone = true
+            if (err.message.indexOf('-reindex') !== -1) {
+              return done(null, true)
+            }
+
+            if (err.message.indexOf('already running.') !== -1) {
+              return swal(
+                'Error',
+                'Another instance of Fusion or Syscoin is already running. Fusion will close.',
+                'error'
+              )
+                .then(() => app.quit())
+            }
+
+            return done(null, false)
+          }
+        )
+        setTimeout(() => {
+          if (!isDone) {
+            isDone = true
+            done(null, null)
+          }
+        }, 10000)
+      },
+      (reindex, done) => {
+        if (reindex) {
+          return swal(
+            'Corruption detected',
+            'Your files do not look quite well, reindexing.',
+            'warning'
+          )
+            .then(() => done(null, 'reindex'))
+            .catch(() => done(true))
+        }
+
+        return done(null, false)
+      },
+      (reindex, done) => {
+        if (reindex) {
           exec(
             generateCmd(
               'syscoind',
-              `${
-              isFirstTime ? '-reindex' : ''
-              } -debug=1 -daemon=0 -assetindex=1 -assetindexpagesize=${
+              `-reindex -daemon=0 -assetindex=1 -assetindexpagesize=${
               process.env.TABLE_PAGINATION_LENGTH
               } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
-            ),
-            err => {
-              if (isDone) {
-                return
-              }
-
-              isDone = true
-              if (err.message.indexOf('-reindex') !== -1) {
-                return done(null, true)
-              }
-
-              return done(null, false)
-            }
+            )
           )
-          setTimeout(() => {
-            if (!isDone) {
-              isDone = true
-              done(null, null)
+        }
+        done()
+      },
+      done => {
+        global.checkInterval = setInterval(() => {
+          // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
+          checkSyscoind(true, (error, status) => {
+            if (error) {
+              clearInterval(global.checkInterval)
+              updateProgressbar(60, 'Something went wrong.')
+              return done(error)
             }
-          }, 10000)
-        },
-        (reindex, done) => {
-          if (reindex) {
-            return swal(
-              'Corruption detected',
-              'Your files do not look quite well, reindexing.',
-              'warning'
-            )
-              .then(() => done(null, 'reindex'))
-              .catch(() => done(true))
-          }
 
-          return done(null, false)
-        },
-        (reindex, done) => {
-          if (reindex) {
-            exec(
-              generateCmd(
-                'syscoind',
-                `-reindex -daemon=0 -assetindex=1 -assetindexpagesize=${
-                process.env.TABLE_PAGINATION_LENGTH
-                } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
-              )
-            )
-          }
-          done()
-        },
-        done => {
-          global.checkInterval = setInterval(() => {
-            // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
-            checkSyscoind(true, (error, status) => {
-              if (error) {
-                clearInterval(global.checkInterval)
-                updateProgressbar(60, 'Something went wrong.')
-                return done(error)
-              }
+            if (status === 'verify') {
+              return updateProgressbar(80, 'Verifying data...')
+            }
 
-              if (status === 'verify') {
-                return updateProgressbar(80, 'Verifying data...')
-              }
-
-              if (status === 'up') {
-                updateProgressbar(100, 'Ready to launch')
-                // if its up, clear the interval.
-                clearInterval(global.checkInterval)
-                ipcRenderer.send('start-success')
-              }
-            })
-          }, 3000)
-        }
-      ],
-      err => {
-        if (err) {
-          return swal(
-            'Error',
-            'Something went wrong during wallet initialization. Exiting.',
-            'error'
-          ).then(() => app.quit())
-        }
+            if (status === 'up') {
+              updateProgressbar(100, 'Ready to launch')
+              // if its up, clear the interval.
+              clearInterval(global.checkInterval)
+              ipcRenderer.send('start-success')
+            }
+          })
+        }, 3000)
       }
-    )
-  })
+    ],
+    err => {
+      if (err) {
+        return swal(
+          'Error',
+          'Something went wrong during wallet initialization. Exiting.',
+          'error'
+        ).then(() => app.quit())
+      }
+    }
+  )
 }
 
 function updateProgressbar(value, text) {
