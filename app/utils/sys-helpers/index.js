@@ -65,6 +65,7 @@ const currentBalance = async () => {
 const getAddresses = () => new Promise(async (resolve, reject) => {
   let addresses
   let addressesping
+  let changeAddresses = []
   
   try {
     addresses = await syscoin.callRpc('listreceivedbyaddress', [0, true])
@@ -79,6 +80,15 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
     label: i.label,
     avatarUrl: ''
   }))
+  const onlyAddresses = addresses.map(i => i.address)
+
+  changeAddresses = addressesping.map(i => ({
+    address: i[0],
+    balance: Number(i[1]),
+    label: i[2] || '',
+    avatarUrl: ''
+  })).filter(i => onlyAddresses.indexOf(i.address) === -1 && i.balance > 0)
+
   addresses = addresses.map(i => {
     const ping = addressesping.find(x => x[0] === i.address)
     
@@ -90,7 +100,6 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
     i.balance = Number(ping[1])
     return i
   })
-
   addresses = await Promise.all(
     addresses.map(i => new Promise(async (resolveMap) => {
         i.info = await getAddressInfo(i.address)
@@ -99,10 +108,9 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
       })
     )
   )
-
   addresses = addresses.filter(i => i.info.ismine)
 
-  return resolve(addresses)
+  return resolve(addresses.concat(changeAddresses))
 })
 
 const getAddressInfo = addr => syscoin.callRpc('getaddressinfo', [addr])

@@ -10,16 +10,16 @@ const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 const pushToLogs = require('./push-to-logs')
 
-const RPCPORT='8370'
-const RPCUSER='u'
-const RPCPASSWORD='p'
-const RPCALLOWIP='127.0.0.1'
+const RPCPORT = '8370'
+const RPCUSER = 'u'
+const RPCPASSWORD = 'p'
+const RPCALLOWIP = '127.0.0.1'
 
-const checkSyscoind = cb => {
+const checkSyscoind = (withParams, cb) => {
   exec(
     generateCmd(
       'cli',
-      `-rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} -getinfo`
+      `${withParams ? `-rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}` : ''} -getinfo`
     ),
     (err, stdout, stderr) => {
       console.log(err, stdout, stderr)
@@ -118,9 +118,9 @@ const startUpRoutine = cb => {
           generateCmd(
             'syscoind',
             `${
-              isFirstTime ? '-reindex' : ''
-            } -daemon=0 -assetindex=1 -assetindexpagesize=${
-              process.env.TABLE_PAGINATION_LENGTH
+            isFirstTime ? '-reindex' : ''
+            } -debug=1 -daemon=0 -assetindex=1 -assetindexpagesize=${
+            process.env.TABLE_PAGINATION_LENGTH
             } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
           ),
           err => {
@@ -131,6 +131,15 @@ const startUpRoutine = cb => {
             isDone = true
             if (err.message.indexOf('-reindex') !== -1) {
               return done(null, true)
+            }
+
+            if (err.message.indexOf('already running.') !== -1) {
+              return swal(
+                'Error',
+                'Another instance of Fusion or Syscoin is already running. Fusion will close.',
+                'error'
+              )
+                .then(() => app.quit())
             }
 
             return done(null, false)
@@ -162,8 +171,8 @@ const startUpRoutine = cb => {
             generateCmd(
               'syscoind',
               `-reindex -daemon=0 -assetindex=1 -assetindexpagesize=${
-                process.env.TABLE_PAGINATION_LENGTH
-                } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} -addnode=${ADDNODE}`
+              process.env.TABLE_PAGINATION_LENGTH
+              } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
             )
           )
         }
@@ -172,7 +181,7 @@ const startUpRoutine = cb => {
       done => {
         global.checkInterval = setInterval(() => {
           // Sets a checking interval that will keep pinging syscoind via syscoin-cli to check if its ready.
-          checkSyscoind((error, status) => {
+          checkSyscoind(true, (error, status) => {
             if (error) {
               clearInterval(global.checkInterval)
               updateProgressbar(60, 'Something went wrong.')
