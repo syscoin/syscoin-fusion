@@ -18,14 +18,28 @@ type Props = {
   syncPercentage: number
 };
 
-export default class AliasContainer extends Component<Props> {
+type State = {
+  addressFilter: string,
+  showChangeAddress: boolean,
+  showZeroBalanceChangeAddress: boolean
+};
+
+export default class AliasContainer extends Component<Props, State> {
 
   constructor(props) {
     super(props)
 
     this.state = {
-      addressFilter: ''
+      addressFilter: '',
+      showChangeAddress: false,
+      showZeroBalanceChangeAddress: false,
     }
+  }
+
+  toggleStateField(field) {
+    this.setState({
+      [field]: !this.state[field]
+    })
   }
 
   changeFilter(field, val) {
@@ -36,12 +50,20 @@ export default class AliasContainer extends Component<Props> {
   }
 
   generateAliasesBoxes() {
-    const { addressFilter } = this.state
-    const withLabel = this.props.aliases.filter(i => i.label.length)
-    const withoutLabel = this.props.aliases.filter(i => !i.label.length)
+    const { addressFilter, showChangeAddress, showZeroBalanceChangeAddress } = this.state
+    const base = this.props.aliases.filter(i => !i.isChange)
+    const withLabel = base.filter(i => i.label.length)
+    const withoutLabel = base.filter(i => !i.label.length)
+    const changeAddresses = this.props.aliases.filter(i => i.isChange)
+      .filter(() => (
+        // Filter change addresses
+        showChangeAddress
+      )).filter(i => (
+        showZeroBalanceChangeAddress ? true : i.balance
+      ))
     const allAddresses = withLabel.concat(withoutLabel)
 
-    return allAddresses.filter(i => {
+    return allAddresses.concat(changeAddresses).filter(i => {
       if (!addressFilter) {
         return true
       }
@@ -72,6 +94,7 @@ export default class AliasContainer extends Component<Props> {
 
   render() {
     const { t } = this.props
+    const { showChangeAddress, showZeroBalanceChangeAddress } = this.state
     return (
       <div className='full-height'>
         <h4 className='your-aliases-text'>{t('accounts.panel.your_aliases')}</h4>
@@ -83,6 +106,9 @@ export default class AliasContainer extends Component<Props> {
           isSynced={this.props.syncPercentage === 100}
           currentBlock={this.props.currentBlock}
           getNewAddress={this.props.getNewAddress}
+          toggleStateField={this.toggleStateField.bind(this)}
+          showChangeAddress={showChangeAddress}
+          showZeroBalanceChangeAddress={showZeroBalanceChangeAddress}
           t={t}
         />
         <div className='aliases-container'>

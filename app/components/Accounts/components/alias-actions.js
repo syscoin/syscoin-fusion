@@ -10,7 +10,10 @@ type Props = {
   filters: Object,
   headBlock: number,
   currentBlock: number,
-  getNewAddress: Function
+  getNewAddress: Function,
+  toggleStateField: Function,
+  showChangeAddress: boolean,
+  showZeroBalanceChangeAddress: boolean
 };
 
 export default class AliasActions extends Component<Props> {
@@ -51,13 +54,31 @@ export default class AliasActions extends Component<Props> {
   }
 
   generateAddressOptions() {
+    const { toggleStateField, showChangeAddress, showZeroBalanceChangeAddress } = this.props
+
     return (
       <div>
         <div className='alias-actions-checkbox'>
-          <Checkbox>Show change addresses</Checkbox>
+          <Checkbox
+            onChange={() => {
+              if (showZeroBalanceChangeAddress) {
+                toggleStateField('showZeroBalanceChangeAddress')
+              }
+              toggleStateField('showChangeAddress')
+            }}
+            checked={showChangeAddress}
+          >
+            Show change addresses
+          </Checkbox>
         </div>
         <div className='alias-actions-checkbox'>
-          <Checkbox>Show change addresses with zero balance</Checkbox>
+          <Checkbox
+            disabled={!showChangeAddress}
+            onChange={() => toggleStateField('showZeroBalanceChangeAddress')}
+            checked={showZeroBalanceChangeAddress}
+          >
+            Show change addresses with zero balance
+          </Checkbox>
         </div>
       </div>
     )
