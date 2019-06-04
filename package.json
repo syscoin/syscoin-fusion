@@ -51,6 +51,11 @@
       "**/bin/**/*"
     ],
     "dmg": {
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "background": "./resources/dmg-background.png",
       "contents": [
         {
           "x": 130,
