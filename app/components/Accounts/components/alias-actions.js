@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Tooltip, Popover, Input } from 'antd'
+import { Icon, Tooltip, Popover, Input, Checkbox } from 'antd'
 import swal from 'sweetalert'
 import SyncLoader from './sync-loader'
 
@@ -50,10 +50,26 @@ export default class AliasActions extends Component<Props> {
     )
   }
 
+  generateAddressOptions() {
+    return (
+      <div>
+        <div className='alias-actions-checkbox'>
+          <Checkbox>Show change addresses</Checkbox>
+        </div>
+        <div className='alias-actions-checkbox'>
+          <Checkbox>Show change addresses with zero balance</Checkbox>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { props } = this
     return (
       <div className='alias-actions-container'>
+        <Popover content={this.generateAddressOptions()} placement='bottom' trigger='click'>
+          <Icon className='add-address' type='setting' trigger='click' />
+        </Popover>
         <Popover content={this.generateAddressFilter()} placement='bottom' trigger='click'>
           <Icon className='add-address' type='search' trigger='click' />
         </Popover>

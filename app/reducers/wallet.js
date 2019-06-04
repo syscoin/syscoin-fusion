@@ -22,6 +22,8 @@ type actionType = {
 export const initialState = {
   balance: 0,
   aliases: [],
+  showChangeAddress: false,
+  showZeroBalanceChangeAddress: false,
   unfinishedAliases: [],
   blockchaininfo: {
     chain: '',

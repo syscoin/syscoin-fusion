@@ -86,8 +86,9 @@ const getAddresses = () => new Promise(async (resolve, reject) => {
     address: i[0],
     balance: Number(i[1]),
     label: i[2] || '',
+    isChange: true,
     avatarUrl: ''
-  })).filter(i => onlyAddresses.indexOf(i.address) === -1 && i.balance > 0)
+  })).filter(i => onlyAddresses.indexOf(i.address) === -1)
 
   addresses = addresses.map(i => {
     const ping = addressesping.find(x => x[0] === i.address)

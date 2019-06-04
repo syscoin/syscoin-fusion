@@ -60,6 +60,12 @@
     text-shadow: 0 0 50px #888;
 }
 
+.alias-actions-checkbox {
+    span {
+        color: $main_white !important;
+    }
+}
+
 .accounts-container-left .alias-actions-container {
     float: right;
     padding-top: 15px;
