@@ -9,6 +9,7 @@ const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 const pushToLogs = require('./push-to-logs')
+const OS = require('../utils/detect-os')()
 
 const RPCPORT = '8370'
 const RPCUSER = 'u'
@@ -19,10 +20,13 @@ const checkSyscoind = (withParams, cb) => {
   exec(
     generateCmd(
       'cli',
-      `${withParams ? `-rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}` : ''} -getinfo`
+      `${
+        withParams
+          ? `-rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
+          : ''
+      } -getinfo`
     ),
     (err, stdout, stderr) => {
-      console.log(err, stdout, stderr)
       if (err) {
         cb(err)
       } else if (stdout) {
@@ -71,24 +75,21 @@ const checkAndCreateDocFolder = ({
 
   if (!fs.existsSync(logPath)) {
     // If cant find fusion.cfg file, regenerate it.
-    fs.writeFileSync(
-      logPath,
-      ''
-    )
+    fs.writeFileSync(logPath, '')
   }
 
-  pushToLogs(`${(new Date()).toTimeString()}: Fusion started running.`)
+  pushToLogs(`Starting: Fusion started running.`)
 }
 
-const startUpRoutine = cb => {
+const startUpRoutine = async cb => {
   let isFirstTime
 
   const { appDocsPath, customCssPath, confPath, logPath } = getPaths()
 
-  updateProgressbar(20)
+  updateProgressbar(20, 'start up routine')
 
   // Docs path initialization
-  checkAndCreateDocFolder({
+  await checkAndCreateDocFolder({
     appDocsPath,
     customCssPath,
     confPath,
@@ -99,7 +100,7 @@ const startUpRoutine = cb => {
 
   // Apply custom settings
   updateProgressbar(50, 'Loading config')
-  loadConfIntoStore(confPath, e => {
+  await loadConfIntoStore(confPath, e => {
     cb() // Calls callback after fusion.cfg variables are loaded so loading.js can start processing custom vars.
     if (e) {
       return swal('Error', 'Error while loading fusion.conf', 'error')
@@ -110,22 +111,23 @@ const startUpRoutine = cb => {
 
   updateProgressbar(60, 'Connecting to syscoin...')
 
-  waterfall(
+  await waterfall(
     [
       done => {
         let isDone = false
         exec(
           generateCmd(
             'syscoind',
-            `${
-            isFirstTime ? '-reindex' : ''
-            } -debug=1 -daemon=0 -assetindex=1 -assetindexpagesize=${
-            process.env.TABLE_PAGINATION_LENGTH
+            `${isFirstTime ? '-reindex' : ''} -debug=1 -daemon=${
+              OS === 'osx' ? 1 : 0
+            } -assetindex=1 -assetindexpagesize=${
+              process.env.TABLE_PAGINATION_LENGTH
             } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
           ),
           err => {
-            if (isDone) {
-              return
+            pushToLogs(`Starting syscoind: ${err ? err.message : 'loading...'}`)
+            if (!err) {
+              return done(null, false)
             }
 
             isDone = true
@@ -138,14 +140,14 @@ const startUpRoutine = cb => {
                 'Error',
                 'Another instance of Fusion or Syscoin is already running. Fusion will close.',
                 'error'
-              )
-                .then(() => app.quit())
+              ).then(() => app.quit())
             }
 
             return done(null, false)
           }
         )
         setTimeout(() => {
+          pushToLogs(`Starting syscoind: waiting to be done`)
           if (!isDone) {
             isDone = true
             done(null, null)
@@ -154,6 +156,7 @@ const startUpRoutine = cb => {
       },
       (reindex, done) => {
         if (reindex) {
+          pushToLogs(`Starting syscoind: File corruption detected`)
           return swal(
             'Corruption detected',
             'Your files do not look quite well, reindexing.',
@@ -167,11 +170,12 @@ const startUpRoutine = cb => {
       },
       (reindex, done) => {
         if (reindex) {
+          pushToLogs(`Starting syscoind: reindexing`)
           exec(
             generateCmd(
               'syscoind',
-              `-reindex -daemon=0 -assetindex=1 -assetindexpagesize=${
-              process.env.TABLE_PAGINATION_LENGTH
+              `-reindex -daemon=1 -assetindex=1 -assetindexpagesize=${
+                process.env.TABLE_PAGINATION_LENGTH
               } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
             )
           )
@@ -187,6 +191,8 @@ const startUpRoutine = cb => {
               updateProgressbar(60, 'Something went wrong.')
               return done(error)
             }
+
+            pushToLogs(`Starting syscoind: ${status}`)
 
             if (status === 'verify') {
               return updateProgressbar(80, 'Verifying data...')
@@ -204,6 +210,8 @@ const startUpRoutine = cb => {
     ],
     err => {
       if (err) {
+        pushToLogs(`Starting ERROR: ${err}`)
+
         return swal(
           'Error',
           'Something went wrong during wallet initialization. Exiting.',
@@ -215,9 +223,10 @@ const startUpRoutine = cb => {
 }
 
 function updateProgressbar(value, text) {
+  pushToLogs(`Starting: ${value}% -> ${text}`)
   document.querySelectorAll('.progress')[0].style.width = `${value}%`
   if (text) {
-    //document.querySelectorAll('.progress')[0].innerHTML = text
+    // document.querySelectorAll('.progress')[0].innerHTML = text
   }
 }
 
