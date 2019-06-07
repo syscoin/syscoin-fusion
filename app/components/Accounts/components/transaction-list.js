@@ -1,9 +1,12 @@
 // @flow
 import React, { Component } from 'react'
-import { Icon, Table } from 'antd'
-import moment from 'moment'
+import goToDetail from 'fw/utils/helpers/go-to-transaction-detail'
+import goToBlock from 'fw/utils/helpers/go-to-block-detail'
+import { Icon, Table, Tooltip } from 'antd'
+import Pagination from './pagination'
 
 type Props = {
+  changePage: Function,
   data: Array<Object>,
   error: boolean,
   isLoading: boolean,
@@ -13,9 +16,24 @@ type Props = {
 };
 
 export default class TransactionList extends Component<Props> {
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      currentPage: 0
+    }
+  }
+
+  changePage(page: number) {
+    this.setState({
+      currentPage: page
+    }, () => {
+      this.props.changePage(this.state.currentPage)
+    })
+  }
 
   cutTextIfNeeded(text: string) {
-    return text.length > 13 ? `${text.slice(0, 12)}...` : text
+    return text.length > 13 ? `${text.slice(0, 24)}...` : text
   }
 
   generateColumns() {
@@ -23,9 +41,9 @@ export default class TransactionList extends Component<Props> {
     return [
       {
         title: ' ',
-        key: 'asset',
-        dataIndex: 'asset',
-        render: (text: string, transaction: Object) => (
+        key: 'random',
+        dataIndex: 'asset_guid',
+        render: (asset: number, transaction: Object) => (
           <Icon
             className={`arrow ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}
             type={`arrow-${this.isIncoming(transaction) ? 'down' : 'up'}`}
@@ -33,39 +51,73 @@ export default class TransactionList extends Component<Props> {
         )
       },
       {
-        title: t('misc.from'),
-        key: 'sender',
+        title: t('misc.address'),
         dataIndex: 'sender',
-        render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
-      },
-      {
-        title: t('misc.to'),
-        key: 'receiver',
-        dataIndex: 'receiver',
-        render: (text: string) => <span title={text}>{this.cutTextIfNeeded(text)}</span>
-      },
-      {
-        title: t('misc.date'),
-        key: 'time',
-        dataIndex: 'time',
-        render: (time: number) => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
+        render: (text: string, transaction: object) => <div>{this.getAddressFromTransaction(transaction).map(i => <div key={Math.random()}><span>{i}</span></div>)}</div>
       },
       {
         title: t('misc.details'),
-        key: 'amount',
-        dataIndex: 'amount',
-        render: (amount: string, transaction: Object) => ({
-          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{amount}</span>,
-          props: {
-            width: 150
-          }
+        dataIndex: 'allocations',
+        render: (allocations: array, transaction: object) => <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.getAmountFromTransaction(transaction)}</span>
+      },
+      {
+        title: '',
+        dataIndex: 'txid',
+        render: (txid: string, transaction: object) => ({
+          children: (
+            <div>
+              <Tooltip title='See transaction in block explorer.' placement='left'>
+                <Icon
+                  className='transaction-list-action-button'
+                  type='bars'
+                  onClick={() => goToDetail(txid)}
+                />
+              </Tooltip>
+              <Tooltip title='See block in block explorer.' placement='left'>
+                <Icon
+                  className='transaction-list-action-button'
+                  type='appstore'
+                  onClick={() => goToBlock(transaction.blockhash)}
+                />
+              </Tooltip>
+            </div>
+          )
         })
       }
     ]
   }
 
+  getAddressFromTransaction(transaction) {
+    if (this.isIncoming(transaction)) {
+      return [transaction.sender]
+    }
+
+    return transaction.allocations.map(i => i.address)
+  }
+
+  getAmountFromTransaction(transaction) {
+    const { selectedAlias } = this.props
+
+    if (!this.isIncoming(transaction)) {
+      return Number(transaction.total).toFixed(2)
+    }
+
+    const amount = transaction.allocations.reduce((prev, curr) => {
+      const prevAmount = Number(prev)
+      const currAmount = Number(curr.amount)
+
+      if (selectedAlias === curr.address) {
+        return currAmount + prevAmount
+      }
+
+      return prevAmount
+    }, 0)
+
+    return amount.toFixed(2)
+  }
+
   isIncoming(transaction: Object) {
-    return transaction.receiver === this.props.selectedAlias
+    return transaction.sender !== this.props.selectedAlias
   }
 
   defineLocales() {
@@ -75,7 +127,7 @@ export default class TransactionList extends Component<Props> {
     if (this.props.error) {
       emptyText = t('misc.try_again_later')
     } else if (this.props.isLoading) {
-      emptyText = t('misc.loading') + '...'
+      emptyText = `${t('misc.loading')}...`
     } else {
       emptyText = t('misc.no_data')
     }
@@ -92,20 +144,26 @@ export default class TransactionList extends Component<Props> {
 
   render() {
     return (
-      <div>
+      <div className='token-transaction-list'>
         <h4 className='transactions-table-title'>{this.props.t('accounts.asset.transactions_for', { asset: this.props.selectedSymbol })}</h4>
         <Table
           dataSource={this.prepareData()}
           columns={this.generateColumns()}
           className='transactions-table'
           rowClassName='transactions-table-row'
-          rowKey='txid'
-          pagination={{
-            defaultPageSize: 10
-          }}
+          rowKey='random'
+          pagination={false}
           locale={{
             emptyText: this.defineLocales()
           }}
+        />
+        <Pagination
+          showPage
+          currentPage={this.state.currentPage}
+          t={this.props.t}
+          prevDisabled={this.state.currentPage === 0}
+          nextDisabled={this.prepareData().length < Number(process.env.TABLE_PAGINATION_LENGTH)}
+          onChange={(page) => this.changePage(page)}
         />
       </div>
     )

@@ -4,7 +4,7 @@ import * as types from 'fw-types/forms'
 import {
   sendAsset,
   sendSysTransaction,
-  listAssetAllocation
+  getAssetBalancesByAddress
 } from 'fw-sys'
 
 type editSendAssetActionType = {
@@ -46,7 +46,17 @@ export const sendSysIsLoadingAction = createAction(types.SEND_SYS_IS_LOADING)
 export const sendSysErrorAction = createAction(types.SEND_SYS_ERROR)
 export const sendSysReceiveAction = createAction(types.SEND_SYS_RECEIVE)
 
-export const sendChangeTab = createAction(types.SEND_CHANGE_TAB)
+export const changeFormTabAction = createAction(types.CHANGE_FORM_TAB)
+
+export const changeToolsAssetAction = createAction(types.CHANGE_ASSET_TOOLS_ACTION)
+export const changeToolsAssetUpdateGuid = createAction(types.CHANGE_ASSET_TOOLS_UPDATE_GUID)
+
+export const changeToolsAssetFormField = createAction(types.CHANGE_ASSET_TOOLS_FORM_FIELD)
+export const resetToolsAssetForm = createAction(types.RESET_TOOLS_ASSET_FORM)
+
+export const changeFormTab = (val, tab) => dispatch => {
+  dispatch(changeFormTabAction({ val, tab }))
+}
 
 export const editSendAsset = (obj: editSendAssetType) => (dispatch: (action: editSendAssetActionType) => void) => dispatch(editSendAssetAction(obj))
 export const editSendSys = (obj: editSendSysType) => (dispatch: (action: editSendSysActionType) => void) => dispatch(editSendSysAction(obj))
@@ -88,13 +98,19 @@ export const sendSysForm = (obj: editSendSysType) => async (dispatch: (action: e
   return Promise.resolve()
 }
 
-export const getAssetsFromAlias = (filters: Object) => async (dispatch: (action: Array<Object>) => void, getState: Function) => {
+export const getAssetsFromAlias = (address) => async (dispatch: (action: Array<Object>) => void, getState: Function) => {
+  const limitToAssets = getState().options.guids.map(i => i.asset_guid)
+  let assets
   dispatch(getAssetsFromAliasIsLoadingAction())
-  const filterGuids = getState().options.guids.map(i => i._id)
 
   try {
-    dispatch(getAssetsFromAliasReceivedAction(await listAssetAllocation(filters, filterGuids)))
+    assets = await getAssetBalancesByAddress(address)
+    if (limitToAssets.length) {
+      assets = assets.filter(i => limitToAssets.indexOf(i.asset_guid) !== -1)
+    }
   } catch(err) {
     dispatch(getAssetsFromAliasErrorAction(err))
   }
+
+  dispatch(getAssetsFromAliasReceivedAction(assets))
 }

@@ -5,6 +5,7 @@
 import path from 'path'
 import webpack from 'webpack'
 import fs from 'fs'
+import Dotenv from 'dotenv-webpack'
 import { dependencies as externals } from './app/package.json'
 import { dependencies as possibleExternals } from './package.json'
 import resolve from './webpack.config.resolve'
@@ -68,6 +69,10 @@ export default {
       NODE_ENV: 'production'
     }),
 
-    new webpack.NamedModulesPlugin()
+    new webpack.NamedModulesPlugin(),
+    new Dotenv({
+      path: './.env', // Path to .env file (this is the default)
+      safe: true // load .env.example (defaults to "false" which does not use dotenv-safe)
+    })
   ]
 }

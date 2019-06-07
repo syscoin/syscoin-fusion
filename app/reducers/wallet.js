@@ -1,6 +1,5 @@
 // @flow
 import {
-  WALLET_GETINFO,
   WALLET_ALIASES,
   WALLET_UNFINISHED_ALIASES,
   WALLET_BLOCKCHAIN_INFO,
@@ -11,7 +10,8 @@ import {
   WALLET_DASHBOARD_TRANSACTIONS_ERROR,
   WALLET_DASHBOARD_TRANSACTIONS_RECEIVE,
   WALLET_IS_ENCRYPTED,
-  WALLET_IS_UNLOCKED
+  WALLET_IS_UNLOCKED,
+  WALLET_BALANCE,
 } from 'fw-types/wallet'
 
 type actionType = {
@@ -20,25 +20,7 @@ type actionType = {
 };
 
 export const initialState = {
-  getinfo: {
-    version: "",
-    dashversion: "",
-    protocolversion: 0,
-    walletversion: 0,
-    balance: 0,
-    privatesend_balance: 0,
-    blocks: 0,
-    timeoffset: 0,
-    connections: 0,
-    proxy: "",
-    difficulty: 0,
-    testnet: false,
-    keypoololdest: 0,
-    keypoolsize: 0,
-    paytxfee: 0,
-    relayfee: 0,
-    errors: ""
-  },
+  balance: 0,
   aliases: [],
   unfinishedAliases: [],
   blockchaininfo: {
@@ -72,11 +54,6 @@ export const initialState = {
 
 export default function wallet(state: Object = initialState, action: actionType) {
   switch (action.type) {
-    case WALLET_GETINFO:
-      return {
-        ...state,
-        getinfo: action.payload
-      }
     case WALLET_ALIASES:
       return {
         ...state,
@@ -173,6 +150,11 @@ export default function wallet(state: Object = initialState, action: actionType)
       return {
         ...state,
         isUnlocked: action.payload
+      }
+    case WALLET_BALANCE:
+      return {
+        ...state,
+        balance: action.payload
       }
     default:
       return state

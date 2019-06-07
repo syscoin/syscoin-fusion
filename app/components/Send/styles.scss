@@ -6,54 +6,6 @@
     padding-bottom: 50px;
     padding-top: 25px;
 
-    .ant-collapse {
-        background: transparent;
-        border: 0;
-
-        & > div {
-            background: transparent;
-
-            & > div {
-                background: transparent;
-            }
-        }
-
-        .ant-collapse-header {
-            padding: 0;
-
-            & > i.arrow {
-                display: none;
-            }
-        }
-
-        .send-collapse-panel {
-            border: 0;
-            margin-bottom: 25px;
-
-            .ant-collapse-content {
-                border: 0;
-            }
-        }
-
-        .send-asset-form-title {
-            color: $main_white;
-            font-weight: 300;
-            font-size: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid $main_white;
-            padding-bottom: 10px;
-
-            .send-form-title-row {
-                float: right;
-                position: absolute;
-                top: 10px;
-                right: 5px;
-                font-size: 15px;
-            }
-        }
-    }
-
     .asset-form-asset-balance {
         & > p {
             text-align: right;
@@ -64,6 +16,69 @@
             letter-spacing: 1px;
         }
     }
+}
+
+.ant-collapse {
+    background: transparent;
+    border: 0 !important;
+
+    .ant-collapse-item {
+        border: 0;
+    }
+
+    & > div {
+        background: transparent;
+
+        & > div {
+            background: transparent;
+        }
+    }
+
+    .ant-collapse-header {
+        padding: 0 !important;
+
+        & > i.arrow {
+            display: none !important;
+        }
+    }
+
+    .send-collapse-panel {
+        border: 0 !important;
+        margin-bottom: 25px;
+
+        .ant-collapse-content {
+            border: 0 !important;
+        }
+    }
+
+    .ant-collapse-content {
+        border: 0;
+    }
+
+    .send-asset-form-title {
+        color: $main_white;
+        font-weight: 300;
+        font-size: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid $main_white;
+        padding-bottom: 10px;
+
+        .send-form-title-row {
+            float: right;
+            position: absolute;
+            top: 10px;
+            right: 5px;
+            font-size: 15px;
+        }
+    }
+}
+
+.send-star-icon {
+    position: relative;
+    bottom: 0.5px;
+    font-size: 12px;
+    color: $main_blue;
 }
 
 .send-forms-container .send-collapse-panel {

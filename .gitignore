@@ -44,16 +44,14 @@ app/renderer.prod.js.map
 app/style.css
 app/style.css.map
 dist
+bin/**
 dll
 main.js.map
 
 .idea
 npm-debug.log.*
 sys_dependencies/syscore
-syscoin-cli.*
-syscoind.*
-syscoin-cli
-syscoind
+extra/**/*.node
+extra/**/*syscoin*
 
 config.js
-syscoin-js

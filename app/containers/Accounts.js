@@ -9,21 +9,22 @@ import Accounts from 'fw-components/Accounts/'
 
 import {
   getTransactionsPerAsset,
-  listAssetAllocation,
+  getAssetBalancesByAddress,
   getPrivateKey,
   claimAssetInterest,
-  aliasInfo
+  aliasInfo,
+  getNewAddress,
+  editLabel
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
-import { editSendAsset, getAssetsFromAlias, sendChangeTab } from 'fw-actions/forms'
+import { editSendAsset, getAssetsFromAlias, changeFormTab } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
-import SyscoinLogo from 'fw/syscoin-logo.png'
+import SyscoinLogo from 'fw/syscoin-logo.svg'
 import unlockWallet from 'fw-utils/unlock-wallet'
 
 type Props = {
-  balance: number,
+  balance: obj,
   aliases: Array<Object>,
-  assets: Array<Object>,
   headBlock: number,
   currentBlock: number,
   dashboardSysTransactions: {
@@ -42,13 +43,13 @@ type Props = {
   editSendAsset: Function,
   isEncrypted: boolean,
   getAssetsFromAlias: Function,
-  sendChangeTab: Function,
+  changeFormTab: Function,
+  verificationProgressSync: number,
   t: Function
 };
 
 type State = {
   selectedAlias: string,
-  selectedIsAlias: boolean,
   aliasAssets: {
     selected: string,
     selectedSymbol: string,
@@ -76,7 +77,6 @@ class AccountsContainer extends Component<Props, State> {
 
     this.initialState = {
       selectedAlias: '',
-      selectedIsAlias: true,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -111,7 +111,6 @@ class AccountsContainer extends Component<Props, State> {
     
     this.setState({
       selectedAlias: alias,
-      selectedIsAlias: alias.length !== 34,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -130,23 +129,24 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAssetsInfo(alias: string) {
-    const { assets, t } = this.props
+    const { t, limitToAssets } = this.props
     let results
 
     try {
-      results = await listAssetAllocation({
-        receiver_address: alias
-      }, assets.map(i => i._id))
+      results = await getAssetBalancesByAddress(alias)
     } catch(err) {
+      this.setState({
+        aliasAssets: {
+          ...this.state.aliasAssets,
+          selectedSymbol: '',
+          isLoading: false
+        }
+      })
       return swal(t('misc.error'), parseError(err.message), 'error')
     }
 
-    if (!results.length && assets.length) {
-      results = assets.map(i => ({
-        asset: i._id,
-        balance: '0.00000000',
-        symbol: i.symbol
-      }))
+    if (limitToAssets.length) {
+      results = results.filter(i => limitToAssets.indexOf(i.asset_guid) !== -1)
     }
 
     this.setState({
@@ -161,7 +161,7 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   selectAsset(obj: selectAssetType) {
-    const { asset, symbol } = obj
+    const { asset, symbol, page = 0 } = obj
     this.setState({
       aliasAssets: {
         ...this.state.aliasAssets,
@@ -176,12 +176,11 @@ class AccountsContainer extends Component<Props, State> {
     }, async () => {
 
       let transactions
-
       try {
         transactions = await getTransactionsPerAsset({
-          isAlias: this.state.selectedIsAlias,
-          alias: this.state.selectedAlias,
-          assetId: asset
+          address: this.state.selectedAlias,
+          asset: asset.replace('-owner', ''),
+          page
         })
       } catch(err) {
         return this.setState({
@@ -204,13 +203,14 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   syncPercentage() {
-    const { currentBlock, headBlock } = this.props
+    const { headBlock, verificationProgressSync } = this.props
 
     if (headBlock === 0) {
       return 0
     }
 
-    return parseInt((currentBlock / headBlock) * 100, 10)
+    const percentage = (verificationProgressSync * 100).toFixed(2)
+    return parseFloat(percentage)
   }
 
   getBackgroundLogo() {
@@ -260,12 +260,12 @@ class AccountsContainer extends Component<Props, State> {
       amount: '',
       comment: ''
     })
-    this.props.getAssetsFromAlias({ receiver_address: alias })
+    this.props.getAssetsFromAlias(alias)
     this.props.changeTab('2')
   }
 
   goToSysForm() {
-    this.props.sendChangeTab('sys')
+    this.props.changeFormTab('sys', 'sendTab')
     this.props.changeTab('2')
   }
 
@@ -303,19 +303,20 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAliasInfo(alias: name) {
+    // eslint-disable-next-line no-return-await
     return await aliasInfo(alias)
   }
 
   render() {
     const { transactions, selectedAlias, aliasAssets } = this.state
-    const { balance, aliases } = this.props
-
+    const { aliases, balance } = this.props
     return (
       <Accounts
         backgroundLogo={this.getBackgroundLogo()}
         syncPercentage={this.syncPercentage()}
         headBlock={this.props.headBlock}
         currentBlock={this.props.currentBlock}
+        editLabel={editLabel}
         balance={balance}
         aliases={aliases}
         transactions={transactions}
@@ -324,6 +325,7 @@ class AccountsContainer extends Component<Props, State> {
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
         getAliasInfo={this.getAliasInfo}
+        getNewAddress={getNewAddress}
         getPrivateKey={this.getPrivateKey.bind(this)}
         goToHome={this.goToHome.bind(this)}
         dashboardSysTransactions={this.props.dashboardSysTransactions}
@@ -334,7 +336,7 @@ class AccountsContainer extends Component<Props, State> {
         goToSysForm={this.goToSysForm.bind(this)}
         claimInterest={this.claimAssetInterest}
         claimAllInterestFromAsset={this.claimAllFromAsset.bind(this)}
-        sendChangeTab={this.props.sendChangeTab}
+        changeFormTab={this.props.changeFormTab}
         t={this.props.t}
       />
     )
@@ -342,14 +344,15 @@ class AccountsContainer extends Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  balance: state.wallet.getinfo.balance,
+  balance: state.wallet.balance,
   aliases: state.wallet.aliases,
-  assets: state.options.guids,
+  limitToAssets: state.options.guids.map(i => i.asset_guid),
   headBlock: state.wallet.blockchaininfo.headers,
-  currentBlock: state.wallet.getinfo.blocks,
+  currentBlock: state.wallet.blockchaininfo.blocks,
   dashboardSysTransactions: state.wallet.dashboard.transactions,
   dashboardAssetsBalances: state.wallet.dashboard.assets,
-  isEncrypted: state.wallet.isEncrypted
+  isEncrypted: state.wallet.isEncrypted,
+  verificationProgressSync: state.wallet.blockchaininfo.verificationprogress
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -357,7 +360,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   dashboardTransactions,
   editSendAsset,
   getAssetsFromAlias,
-  sendChangeTab
+  changeFormTab
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(AccountsContainer))

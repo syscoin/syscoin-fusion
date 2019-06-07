@@ -1,15 +1,14 @@
 // @flow
 import React, { Component } from 'react'
-import { Col, Input, Button, Select, Spin, Icon } from 'antd'
+import { Input, Button, Select, Spin, Icon } from 'antd'
 import formChangeFormat from 'fw-utils/form-change-format'
 
 const { Option } = Select
 
 type Props = {
-  title: string,
-  columnSize: number,
-  aliases: Array<string>,
+  addresses: Array<Object>,
   isLoading: boolean,
+  isSegwit: Function,
   sendAsset: Function,
   onSelectAlias: Function,
   assetsFromAlias: {
@@ -30,8 +29,7 @@ type FormDataType = {
   from: string,
   asset: string,
   toAddress: string,
-  amount: string,
-  comment: string
+  amount: string
 };
 
 export default class SendAssetForm extends Component<Props> {
@@ -59,20 +57,41 @@ export default class SendAssetForm extends Component<Props> {
 
   selectedAssetBalance() {
     try {
-      return this.props.assetsFromAlias.data.find(i => i.asset === this.props.form.data.asset).balance
+      return this.getSelectedAsset().balance
     } catch(err) {
       return ''
     }
+  }
+
+  getSelectedAsset() {
+    try {
+      return this.props.assetsFromAlias.data.find(i => (
+        i.isOwner ?
+        i.asset_guid.toString().concat('-owner') === this.props.form.data.asset
+        : i.asset_guid.toString() === this.props.form.data.asset
+      ))
+    } catch(err) {
+      return ''
+    }
+  }
+
+  prepareAddresses() {
+    return this.props.addresses.filter(i => this.props.isSegwit(i.address))
+  }
+
+  prepareSubmit() {
+    const { form, sendAsset } = this.props
+    this.updateField(form.data.asset.replace('-owner', ''), 'asset')
+
+    setTimeout(() => {
+      sendAsset()
+    }, 100)
   }
   
   render() {
     const { t } = this.props
     const {
-      title = t('send.send_asset.title'),
-      columnSize = 12,
-      aliases = [],
       isLoading = false,
-      sendAsset,
       assetsFromAlias,
       form
     } = this.props
@@ -80,8 +99,7 @@ export default class SendAssetForm extends Component<Props> {
       from,
       asset,
       toAddress,
-      amount,
-      comment
+      amount
     } = form.data
 
     return (
@@ -93,6 +111,7 @@ export default class SendAssetForm extends Component<Props> {
             disabled={isLoading}
             onChange={val => {
               this.updateField(val, 'from')
+
               this.props.onSelectAlias(val)
 
               // Give some time to updateField to update "from" so it wont be empty when firing this
@@ -103,9 +122,9 @@ export default class SendAssetForm extends Component<Props> {
             id='asset-form-select-alias'
             value={from.length ? from : undefined}
           >
-            {aliases.map(i => (
-              <Option value={i} key={i}>
-                {i}
+            {this.prepareAddresses().map(i => (
+              <Option value={i.address} key={i.address}>
+                {i.label || i.address}
               </Option>
             ))}
           </Select>
@@ -118,8 +137,8 @@ export default class SendAssetForm extends Component<Props> {
             value={asset.length ? asset : undefined}
           >
             {assetsFromAlias.data.map(i => (
-              <Option value={i.asset} key={i.asset}>
-                {i.symbol} - {i.asset}
+              <Option value={`${i.asset_guid.toString()}${i.isOwner ? '-owner' : ''}`} key={`${i.asset_guid}${i.isOwner ? '-owner' : ''}`}>
+                {i.symbol}{i.isOwner ? <span>{' '}<Icon className='send-star-icon' type='star' /></span> : ''} - {i.asset_guid}
               </Option>
             ))}
           </Select>
@@ -147,21 +166,12 @@ export default class SendAssetForm extends Component<Props> {
             className='send-asset-form control send-asset-form-amount'
             id='asset-form-amount'
           />
-          <Input
-            disabled={isLoading}
-            name='comment'
-            placeholder={t('send.send_asset.comment')}
-            onChange={e => this.updateField(e, 'comment')}
-            value={comment}
-            className='send-asset-form control send-asset-form-comment'
-            id='asset-form-comment'
-          />
           <div className='send-asset-form-btn-container'>
             {isLoading && <Spin indicator={<Icon type='loading' spin />} className='send-loading' />}
             <Button
               className='send-asset-form-btn-send'
               disabled={isLoading || !from || !asset || !toAddress || !amount}
-              onClick={() => sendAsset(this.props.form.data)}
+              onClick={() => this.prepareSubmit()}
             >
               {t('misc.send')}
             </Button>

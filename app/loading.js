@@ -2,6 +2,10 @@ import SplashImage from './splash.png'
 
 const Storage = require('./utils/storage')
 const storageSchema = require('./utils/helpers/storage-schema')
+const pushToLogs = require('./utils/push-to-logs')
+
+// Log all errors to debug.log
+window.onerror = err => pushToLogs(err)
 
 global.appStorage = new Storage({
     configName: 'app-storage',

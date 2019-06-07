@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react'
-import { Button, Icon } from 'antd'
+import { Button, Icon, Spin } from 'antd'
 import swal from 'sweetalert2'
 import parseError from 'fw-utils/error-parser'
 
@@ -13,9 +13,20 @@ type Props = {
   lockWallet: Function,
   t: Function
 };
+type State = {
+  isLoading: boolean
+};
 
-export default class LockWallet extends Component<Props> {
+export default class LockWallet extends Component<Props, State> {
   props: Props;
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isLoading: false
+    }
+  }
 
   async handleEncrypt() {
     const { t } = this.props
@@ -52,7 +63,7 @@ export default class LockWallet extends Component<Props> {
 
     const reboot = await swal({
       title: t('misc.warning'),
-      text: t('tools.lock_reboot'),
+      text: t('tools.lock_confirmation'),
       type: 'warning',
       showCancelButton: true,
       confirmButtonText: t('misc.continue')
@@ -62,11 +73,24 @@ export default class LockWallet extends Component<Props> {
       return
     }
 
+    this.setState({
+      isLoading: true
+    })
+
     try {
       await this.props.encryptWallet(pwd.value)
     } catch(err) {
-      swal(t('misc.error'), parseError(err.message), 'error')
+      this.setState({
+        isLoading: false
+      })
+      return swal(t('misc.error'), parseError(err.message), 'error')
     }
+
+    swal('Success', 'Wallet has been encrypted.', 'success')
+
+    this.setState({
+      isLoading: false
+    })
   }
 
   async handleChangePwd() {
@@ -142,12 +166,18 @@ export default class LockWallet extends Component<Props> {
             </Button>
           </div>
         ) : (
-          <Button
-            className='tools-lock'
-            onClick={this.handleEncrypt.bind(this)}
-          >
-            <Icon type='lock' /> {t('tools.lock_wallet')}
-          </Button>
+          <div>
+            {this.state.isLoading ? (
+              <Spin indicator={<Icon type='loading' className='loading-tools' spin />} />
+            ) : (
+              <Button
+                className='tools-lock'
+                onClick={this.handleEncrypt.bind(this)}
+              >
+                <Icon type='lock' /> {t('tools.lock_wallet')}
+              </Button>
+            )}
+          </div>
         )}
       </div>
     )

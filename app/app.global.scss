@@ -13,12 +13,13 @@
 @import '~fw-components/Send/styles.scss';
 @import '~fw-components/Tools/styles.scss';
 @import '~fw-components/Console/styles.scss';
+@import '~fw-components/General/Tooltip/styles.scss';
 
 
 body {
   position: relative;
   color: $main_background;
-  background: $main_background;
+  background: $main_background !important;
   height: 100%;
   font-family: 'Roboto', sans-serif;
   overflow-y: hidden;

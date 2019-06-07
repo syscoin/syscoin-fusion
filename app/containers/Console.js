@@ -14,7 +14,8 @@ type Props = {
     show: boolean,
     data: Array<LogItem>,
     history: Array<string>
-  }
+  },
+  fusion: Object
 };
 
 type LogItem = {
@@ -25,6 +26,12 @@ type LogItem = {
 };
 
 class ConsoleContainer extends Component<Props> {
+
+  constructor(props: Props) {
+    super(props)
+
+    this.fusionReservedCmds = ['getfusiondata']
+  }
 
   componentWillMount() {
     if (!this.props.console.data.length) {
@@ -61,7 +68,31 @@ class ConsoleContainer extends Component<Props> {
     return json
   }
 
+  handleFusionCmd(cmd) {
+    switch(cmd) {
+      case 'getfusiondata':
+        return this.props.fusion
+      default:
+        return {}
+    }
+  }
+
+  isFusionCmd(cmd) {
+    return this.fusionReservedCmds.indexOf(cmd) !== -1
+  }
+
   async handleConsoleSubmit(cmd) {
+    if (this.isFusionCmd(cmd)) {
+      const output = this.handleFusionCmd(cmd)
+
+      return this.props.pushToConsole({
+        cmd,
+        result: output,
+        time: Date.now(),
+        error: false
+      })
+    }
+
     const splitCmd = cmd.split(' ')
     let result
 
@@ -99,7 +130,8 @@ class ConsoleContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  console: state.console
+  console: state.console,
+  fusion: state
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

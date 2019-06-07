@@ -1,6 +1,6 @@
 // @flow
 import {
-  SEND_CHANGE_TAB,
+  CHANGE_FORM_TAB,
   EDIT_SEND_ASSET_FORM,
   EDIT_SEND_SYS_FORM,
   SEND_ASSET_IS_LOADING,
@@ -11,9 +11,12 @@ import {
   SEND_SYS_ERROR,
   GET_ASSETS_FROM_ALIAS_IS_LOADING,
   GET_ASSETS_FROM_ALIAS_RECEIVE,
-  GET_ASSETS_FROM_ALIAS_ERROR
+  GET_ASSETS_FROM_ALIAS_ERROR,
+  CHANGE_ASSET_TOOLS_ACTION,
+  CHANGE_ASSET_TOOLS_UPDATE_GUID,
+  CHANGE_ASSET_TOOLS_FORM_FIELD,
+  RESET_TOOLS_ASSET_FORM
 } from 'fw-types/forms'
-import { editSendAssetAction } from '../actions/forms';
 
 type actionType = {
   +type: string,
@@ -24,13 +27,30 @@ type StateType = {
   sendTab: {
     activeTab: string
   },
+  toolsTab: {
+    activeTab: string,
+    assets: {
+      action: string,
+      updateGuid: number,
+      form: {
+        address: string,
+        symbol: string,
+        publicValue: string,
+        contract: string,
+        precision: number,
+        supply: number,
+        maxSupply: number,
+        updateFlags: number,
+        witness: string
+      }
+    }
+  },
   sendAsset: {
     data: {
       from: string,
       asset: string,
       toAddress: string,
-      amount: string,
-      comment: string
+      amount: string
     },
     isLoading: boolean,
     error: boolean,
@@ -57,13 +77,30 @@ export const initialState = {
   sendTab: {
     activeTab: 'asset'
   },
+  toolsTab: {
+    activeTab: '',
+    assets: {
+      action: '',
+      updateGuid: 0,
+      form: {
+        address: '',
+        symbol: '',
+        publicValue: '',
+        contract: '',
+        precision: 0,
+        supply: 0,
+        maxSupply: 0,
+        updateFlags: 0,
+        witness: ''
+      }
+    }
+  },
   sendAsset: {
     data: {
       from: '',
       asset: '',
       toAddress: '',
-      amount: '',
-      comment: ''
+      amount: ''
     },
     isLoading: false,
     error: false,
@@ -212,14 +249,60 @@ export default function forms(state: StateType = initialState, action: actionTyp
               }
             }
           }
-        case SEND_CHANGE_TAB:
-        return {
-          ...state,
-          sendTab: {
-            ...state.sendTab,
-            activeTab: action.payload
+        case CHANGE_FORM_TAB:
+          return {
+            ...state,
+            [action.payload.tab]: {
+              ...state[action.payload.tab],
+              activeTab: action.payload.val
+            }
           }
-        }
+        case CHANGE_ASSET_TOOLS_ACTION:
+          return {
+            ...state,
+            toolsTab: {
+              ...state.toolsTab,
+              assets: {
+                ...state.toolsTab.assets,
+                action: action.payload
+              }
+            }
+          }
+        case CHANGE_ASSET_TOOLS_UPDATE_GUID:
+            return {
+              ...state,
+              toolsTab: {
+                ...state.toolsTab,
+                assets: {
+                  ...state.toolsTab.assets,
+                  updateGuid: action.payload
+                }
+              }
+            }
+        case CHANGE_ASSET_TOOLS_FORM_FIELD:
+          return {
+            ...state,
+            toolsTab: {
+              ...state.toolsTab,
+              assets: {
+                ...state.toolsTab.assets,
+                form: {
+                  ...state.toolsTab.assets.form,
+                  [action.payload.field]: action.payload.value
+                }
+              }
+            }
+          }
+        case RESET_TOOLS_ASSET_FORM:
+          return {
+            ...state,
+            toolsTab: {
+              ...state.toolsTab,
+              assets: {
+                ...initialState.toolsTab.assets
+              }
+            }
+          }
     default:
       return state
   }

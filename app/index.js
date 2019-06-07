@@ -9,6 +9,7 @@ import { store, history } from './store/configureStore'
 import Storage from './utils/storage'
 import storageSchema from './utils/helpers/storage-schema'
 import attachWindowListeners from 'fw-utils/listeners'
+import pushToLogs from 'fw-utils/push-to-logs'
 import './app.global.scss'
 import 'fw-utils/i18n'
 
@@ -17,6 +18,9 @@ global.appStorage = new Storage({
   configName: 'app-storage',
   defaults: { ...storageSchema }
 })
+
+// Log all errors to debug.log
+window.onerror = err => pushToLogs(err)
 
 render(
   <AppContainer>

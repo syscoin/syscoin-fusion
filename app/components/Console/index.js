@@ -2,8 +2,8 @@
 import React, { Component } from 'react'
 import { Row, Col, Input } from 'antd'
 
-import ConsoleLine from './components/console-line'
 import formChangeFormat from 'fw-utils/form-change-format'
+import ConsoleLine from './components/console-line'
 
 type Props = {
   handleConsoleSubmit: Function,
@@ -22,10 +22,11 @@ export default class Console extends Component<Props, State> {
     super(props)
 
     this.state = {
-      cmd: ''
+      cmd: '',
+      currentCmdIndex: null
     }
   }
-  
+
   componentDidUpdate(prevProps: Props) {
     if (prevProps.data.length !== this.props.data.length) {
       const scroll = document.getElementsByClassName('console-results')[0]
@@ -33,16 +34,50 @@ export default class Console extends Component<Props, State> {
       scroll.scrollTop = scroll.scrollHeight
     }
   }
-  
+
   handleChange(e: Object) {
+    this.setState({
+      currentCmdIndex: null
+    })
     this.setState(formChangeFormat(e, 'cmd'))
   }
 
   send() {
+    if (this.state.cmd === '') {
+      return
+    }
+
     this.props.handleConsoleSubmit(this.state.cmd)
     this.setState({
-      cmd: ''
+      cmd: '',
+      currentCmdIndex: null
     })
+  }
+
+  keyCommands(keyCode) {
+    const { history } = this.props
+    let { currentCmdIndex } = this.state
+    currentCmdIndex = typeof currentCmdIndex === 'number' ? currentCmdIndex : history.length
+
+    switch (keyCode) {
+      case 13:
+        this.send()
+        break
+      case 40:
+        this.setState({
+          cmd: history[currentCmdIndex + 1] || '',
+          currentCmdIndex: currentCmdIndex > history.length - 1 ? history.length : currentCmdIndex + 1
+        })
+        break
+      case 38:
+        this.setState({
+          cmd: history[currentCmdIndex - 1] || '',
+          currentCmdIndex: currentCmdIndex <= 0 ? -1 : currentCmdIndex - 1  
+        })
+        break
+      default:
+        return false
+    }
   }
 
   render() {
@@ -58,7 +93,7 @@ export default class Console extends Component<Props, State> {
                 type='text'
                 name='cmd'
                 onChange={this.handleChange.bind(this)}
-                onKeyDown={e => e.keyCode === 13 ? this.send() : null}
+                onKeyDown={e => this.keyCommands(e.keyCode)}
                 value={this.state.cmd}
               />
             </div>

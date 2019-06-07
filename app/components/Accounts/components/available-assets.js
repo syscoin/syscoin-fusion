@@ -1,6 +1,6 @@
 // @flow
-import React, { Component } from 'react'
-import { Row, Col, Icon, Spin, Tooltip } from 'antd'
+import React from 'react'
+import { Row, Col } from 'antd'
 import AssetBox from './asset-box'
 
 type Props = {
@@ -8,7 +8,6 @@ type Props = {
   selectedAsset: string,
   selectAsset: Function,
   goToSendAssetForm: Function,
-  claimInterest: Function,
   t: Function
 };
 
@@ -22,16 +21,14 @@ export default (props: Props) => (
         {props.assets.length ?
           props.assets.map(i => (
             <AssetBox
-              isSelected={props.selectedAlias === i.asset}
+              isSelected={i.isOwner ? props.selectedAsset === i.asset_guid.toString().concat('-owner') : props.selectedAsset === i.asset_guid.toString()}
+              isOwner={i.isOwner || false}
               selectAsset={props.selectAsset}
-              asset={i.asset}
+              asset={i.asset_guid.toString()}
               balance={i.balance}
               symbol={i.symbol}
-              key={i.asset}
+              key={Math.random()}
               goToSendAssetForm={props.goToSendAssetForm}
-              selectedAlias={props.selectedAlias}
-              claimInterest={props.claimInterest}
-              canClaimInterest={i.interest_rate > 0}
               t={props.t}
             />
           )) : (

@@ -60,11 +60,33 @@
     text-shadow: 0 0 50px #888;
 }
 
-.accounts-container-left .sync-loader {
+.alias-actions-checkbox {
+    span {
+        color: $main_white !important;
+    }
+}
+
+.accounts-container-left .alias-actions-container {
     float: right;
-    margin-top: 10px;
-    cursor: pointer;
+    padding-top: 15px;
     padding-right: 15px;
+
+    i {
+        display: inline-block;
+        font-size: 18px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    .add-address {
+        color: $main_white;
+    }
+
+    .sync-loader {
+        &.sync-loaded {
+            color: $main_green;
+        }
+    }
 }
 
 .aliases-container {
@@ -76,7 +98,7 @@
 
 .your-aliases-text {
     display: inline-block;
-    width: 80%;
+    width: 50%;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -85,6 +107,13 @@
     margin-top: 15px;
     margin-bottom: 15px;
     padding-left: 20px;
+}
+
+.ant-popover-inner-content {
+    background: $main_background;
+}
+.ant-popover-arrow {
+    background: $main_background;
 }
 
 .aliases-container::-webkit-scrollbar {
@@ -125,7 +154,7 @@
 
 .alias-box.expanded {
     background: $main_background;
-    padding: 10px 0;
+    padding: 0;
     position: sticky;
     width: 100%;
     transition: opacity 0.3s;
@@ -172,26 +201,39 @@
 .alias-box .alias-name {
     font-weight: 400;
     font-size: 14px;
-    color: $main_white;
-}
 
-.alias-box .alias-name.trim {
-    text-overflow: ellipsis;
-    overflow: hidden; 
-    width: 220px;
-    white-space: nowrap;
-}
-
-.alias-box .alias-name .alias-toolbox {
-    float: right;
-
-    i {
-        cursor: pointer;
+    span {
+        display: inline-block;
+        width: 85%;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
         color: $main_white;
     }
 }
 
+.alias-box .alias-name .alias-toolbox {
+    position: absolute;
+    right: 0;
+    top: 15px;
+
+    i {
+        display: inline-block;
+        cursor: pointer;
+        color: $main_white;
+        margin-left: 10px;
+    }
+}
+
 /* Right column */
+
+.ant-table-placeholder {
+    background: transparent !important;
+}
+
+.ant-collapse-content {
+    background-color: transparent !important;
+}
 
 .accounts-container-right {
     position: relative;
@@ -204,8 +246,8 @@
             font-weight: 500;
             font-size: 13px;
         }
-        background: $asset_box_background;
-        border-color: $main_white;
+        background: $asset_box_background !important;
+        border-color: $main_white !important;
         text-transform: uppercase;
         height: auto;
         padding: 0px 10px;
@@ -224,11 +266,6 @@
         color: $main_white;
         text-transform: uppercase;
         letter-spacing: 2px;
-    }
-
-    .fw-table-pagination-page {
-        color: $main_white;
-        margin-right: 10px;
     }
 
     .wallet-summary-balance-container {
@@ -266,34 +303,45 @@
     & > hr {
         margin: 20px 0;
     }
+}
 
-    
+.fw-table-pagination-container {
+    float: right;
 
-    .fw-table-pagination-container {
-        float: right;
+    .fw-table-pagination-page {
+        color: $main_white;
+        margin-right: 10px;
+    }
 
-        button {
-            background: transparent;
-            border-color: $main_white;
-            margin-left: 5px;
+    .ant-pagination-item {
+        background: transparent !important;
+    }
 
-            i {
-                color: $main_white;
-            }
+    button {
+        background: transparent !important;
+        border-color: $main_white;
+        margin-left: 5px;
 
-            &:hover {
-                background: transparent;
-                
-                i {
-                    color: #fff;
-                }
-            }
+        i {
+            color: $main_white;
         }
 
-        button.disabled {
-            opacity: 0.5;
+        &:hover {
+            background: transparent !important;
+            
+            i {
+                color: #fff;
+            }
         }
     }
+
+    button.disabled {
+        opacity: 0.5;
+    }
+}
+
+.token-transaction-list {
+    margin-bottom: 100px;
 }
 
 .accounts-container-right .loading-container {
@@ -360,6 +408,15 @@
         cursor: pointer;
         pointer-events: all;
     }
+
+    .asset-box-crown {
+        position: absolute;
+        font-size: 16px;
+        color: $main_white;
+        top: 5px;
+        right: 12px;
+        z-index: 999999;
+    }
 }
 
 .asset-box.selected {
@@ -422,6 +479,28 @@
 .transactions-table {
     margin-top: 10px;
     margin-bottom: 20px;
+
+    .transaction-list-action-button {
+        margin-right: 5px;
+        color: $main_white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .ant-table-row-expand-icon {
+        background: transparent !important;
+        border: 0;
+        font-size: 20px;
+    }
+
+    .ant-table-expanded-row {
+        background: transparent !important;
+        color: $title_color;
+
+        &:hover td {
+            background: transparent !important;
+        }
+    }
 }
 
 .transactions-table .ant-table-thead th {
@@ -433,12 +512,12 @@
     font-weight: 500;
 }
 
-.transactions-table .transactions-table-row td .amount.incoming {
-    color: $main_green;
+.transactions-table td .amount.incoming {
+    color: $main_green !important;
 }
 
-.transactions-table .transactions-table-row td .amount.outgoing {
-    color: $main_red;
+.transactions-table td .amount.outgoing {
+    color: $main_red !important;
 }
 
 .transactions-table .transactions-table-row td .arrow.incoming {
@@ -458,7 +537,7 @@
 }
 
 .transactions-table .ant-pagination-item {
-    background: transparent;
+    background: transparent !important;
     border: 1px solid $main_white;
 }
 

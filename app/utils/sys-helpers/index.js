@@ -1,10 +1,15 @@
+/* eslint-disable promise/param-names */
+/* eslint-disable no-param-reassign */
 // @flow
-const { waterfall, parallel } = require('async')
-const { uniqBy } = require('lodash')
+const { waterfall } = require('async')
+const transactionParse = require('./transaction-parse')
+const isSegwit = require('./is-segwit')
+const { flatten } =  require('lodash')
 
-const Syscoin = require('fw/syscoin-js').default
+const Syscoin = require('syscoin-js').SyscoinRpcClient
 
-const syscoin = new Syscoin()
+const syscoin = new Syscoin({port: 8370, username: 'u', password: 'p', allowCoerce: false})
+
 window.sys = syscoin
 
 /*
@@ -19,18 +24,12 @@ type SendAssetType = {
   fromAlias: string,
   toAlias: string,
   assetId: string,
-  amount: string,
-  comment?: string
+  amount: string
 };
 type sendSysTransactionType = {
   address: string,
   amount: string,
   comment?: string
-};
-
-type getTransactionsPerAssetType = {
-  assetId: string,
-  alias: string
 };
 
 type listAssetAllocationType = {
@@ -42,76 +41,156 @@ type listAssetAllocationType = {
   startblock?: number
 };
 
-// Get network info
-const getInfo = () => syscoin.networkServices.getInfo()
 
 // Get current SYS address
 const currentSysAddress = (address?: string = '') => syscoin.walletServices.getAccountAddress(address)
 
 // Get current SYS Balance
-const currentBalance = () => syscoin.callRpc('getbalance')
+const currentBalance = async () => {
+  let balance
+  try {
+    balance = await syscoin.callRpc('getbalance', [])
+  } catch(err) {
+    return 0
+  }
 
-// Get current aliases
-const getAliases = () => syscoin.walletServices.syscoinListReceivedByAddress()
+  if (typeof balance !== 'number') {
+    return balance.result
+  }
+
+  return balance
+}
+
+// Get current addresses
+const getAddresses = () => new Promise(async (resolve, reject) => {
+  let addresses
+  let addressesping
+  let changeAddresses = []
+  
+  try {
+    addresses = await syscoin.callRpc('listreceivedbyaddress', [0, true])
+    addressesping = flatten(await syscoin.callRpc('listaddressgroupings', []))
+  } catch(err) {
+    return reject(err)
+  }
+
+  addresses = addresses.map(i => ({
+    address: i.address,
+    balance: Number(i.amount),
+    label: i.label,
+    avatarUrl: ''
+  }))
+  const onlyAddresses = addresses.map(i => i.address)
+
+  changeAddresses = addressesping.map(i => ({
+    address: i[0],
+    balance: Number(i[1]),
+    label: i[2] || '',
+    isChange: true,
+    avatarUrl: ''
+  })).filter(i => onlyAddresses.indexOf(i.address) === -1)
+
+  addresses = addresses.map(i => {
+    const ping = addressesping.find(x => x[0] === i.address)
+    
+    if (!ping) {
+      return i
+    }
+
+    // gets real balance. listreceivedbyaddress gets total received instead of current balance
+    i.balance = Number(ping[1])
+    return i
+  })
+  addresses = await Promise.all(
+    addresses.map(i => new Promise(async (resolveMap) => {
+        i.info = await getAddressInfo(i.address)
+
+        return resolveMap(i)
+      })
+    )
+  )
+  addresses = addresses.filter(i => i.info.ismine)
+
+  return resolve(addresses.concat(changeAddresses))
+})
+
+const getAddressInfo = addr => syscoin.callRpc('getaddressinfo', [addr])
+
+// Get assets
+const getAssets = () => syscoin.callRpc('listassets', [])
 
 // Get asset info
-const getAssetInfo = (asset: string) => syscoin.walletServices.asset.info({
-  asset,
-  getInputs: false
-})
+const getAssetInfo = (asset: number) => syscoin.callRpc('assetinfo', [asset])
 
 // Get asset allocation info
 const getAssetAllocationInfo = (obj: AllocationInfoType) => syscoin.walletServices.assetAllocation.info(obj.assetId, obj.aliasName, false)
 
-const sendAsset = (obj: SendAssetType) => new Promise((resolve, reject) => {
+const sendAsset = (obj: SendAssetType) => new Promise(async (resolve, reject) => {
   // Sends asset to specific alias
-  const { fromAlias, toAlias, assetId, amount, comment } = obj
+  const { fromAlias, toAlias, assetId, amount } = obj
+  let assetSend
+  let signTransaction
+  let isOwner
 
-  waterfall([
-    done => {
-      syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, amount: parseFloat(amount) }], comment, ''])
-        .then(result => done(null, result[0]))
-        .catch(err => {
-          if (err.message.indexOf('ERRCODE: 1018') !== -1) {
-            return done(null, null)
-          }
-
-          return done(err)
-        })
-    },
-    (firstOutput, done) => {
-      if (!firstOutput) {
-        return syscoin.callRpc('assetallocationsend', [assetId, fromAlias, [{ ownerto: toAlias, ranges: [{ start: 0, end: parseFloat(amount) }] }], comment, ''])
-          .then(stringTwo => done(null, stringTwo[0]))
-          .catch(err => done(err))
-      }
-
-      done(null, firstOutput)
-    },
-    (assetAllocationOutput, done) => {
-      syscoin.transactionServices.signRawTransaction({ hexString: assetAllocationOutput })
-        .then(resultSign => done(null, resultSign.hex))
-        .catch(err => done(err))
-    },
-    (signOutput, done) => {
-      syscoin.walletServices.syscoinSendRawTransaction(signOutput)
-        .then(resultSend => done(null, resultSend))
-        .catch(err => done(err))
+  try {
+    isOwner = await isAddressOwnerOfAsset(fromAlias, Number(assetId))
+  } catch (err) {
+    return reject(err)
+  }
+  
+  try {
+    if (isOwner) {
+      assetSend = await syscoin.callRpc('assetsend', [Number(assetId), toAlias, amount])
+    } else {
+      assetSend = await syscoin.callRpc('assetallocationsend', [Number(assetId), fromAlias, toAlias, amount])
     }
-  ], (err) => {
-    if (err) {
-      return reject(err)
-    }
+  } catch(err) {
+    return reject(err)
+  }
 
-    resolve()
-  })
+  try {
+    signTransaction = await syscoin.callRpc('signrawtransactionwithwallet', [assetSend.hex])
+  } catch(err) {
+    return reject(err)
+  }
+
+  try {
+    await syscoin.callRpc('sendrawtransaction', [signTransaction.hex])
+  } catch(err) {
+    return reject(err)
+  }
+
+  return resolve(true)
 })
 
 const sendSysTransaction = (obj: sendSysTransactionType) => {
   // Send SYS to address
   const { address, amount, comment = '' } = obj
-  return syscoin.walletServices.sendToAddress(address, Number(amount), comment)
+  return syscoin.callRpc("sendtoaddress", [address, Number(amount), comment])
 }
+
+const createNewAsset = (obj: Object) => new Promise(async (resolve, reject) => {
+  let asset
+  let signRaw
+
+  try {
+    asset = await assetNew(obj)
+    signRaw = await signRawTransaction(asset.hex)
+    await sendRawTransaction(signRaw.hex)
+  } catch(error) {
+    return reject(error)
+  }
+
+  return resolve(asset)
+})
+
+const assetNew = (obj: Object) => {
+  const { address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags, witness } = obj
+  return syscoin.callRpc('assetnew', [address, symbol, publicValue, contract, precision, supply, maxSupply, updateFlags, witness])
+}
+
+const signRawTransaction = (str) => syscoin.callRpc('signrawtransactionwithwallet', [str])
+const sendRawTransaction = (str) => syscoin.callRpc('sendrawtransaction', [str])
 
 const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
   // Creates new alias
@@ -155,13 +234,13 @@ const createNewAlias = (obj: Object) => new Promise((resolve, reject) => {
 })
 
 // Backup wallet
-const exportWallet = (backupDir: string) => syscoin.walletServices.dumpWallet(backupDir)
+const exportWallet = (backupDir: string) => syscoin.callRpc('dumpwallet', [backupDir])
 
 // Imports wallet backup
-const importWallet = (backupDir: string) => syscoin.walletServices.importWallet(backupDir)
+const importWallet = (backupDir: string) => syscoin.callRpc('importwallet', [backupDir])
 
 // Returns priv key of desired address.
-const getPrivateKey = (address: string) => syscoin.walletServices.dumpPrivKey(address)
+const getPrivateKey = (address: string) => syscoin.callRpc('dumpprivkey', [address])
 
 // Edit existing alias
 const editAlias = (obj: Object) => new Promise((resolve, reject) => {
@@ -192,7 +271,6 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
     }
   ], (err) => {
     if (err) {
-      console.log(err)
       return reject(err)
     }
 
@@ -203,84 +281,59 @@ const editAlias = (obj: Object) => new Promise((resolve, reject) => {
 // Get info from alias
 const aliasInfo = (name: string) => syscoin.walletServices.alias.info({ aliasName: name })
 
-// Generates transaction history per specific asset and alias
-const getTransactionsPerAsset = (obj: getTransactionsPerAssetType) => new Promise((resolve, reject) => {
-  parallel([
-    (done) => {
-      syscoin.walletServices.assetAllocation.listTransactions({
-        count: 999999,
-        from: 0,
-        options: {
-          /*senders: [
-            {
-              [obj.isAlias ? 'sender_alias' : 'sender_address']: obj.alias
-            }
-          ],*/
-          [obj.isAlias ? 'sender_alias' : 'sender_address']: obj.alias,
-          asset: obj.assetId
-        } 
-      }).then(results => done(null, results))
-        .catch(err => done(err))
-    },
-    (done) => {
-      syscoin.walletServices.assetAllocation.listTransactions({
-        count: 999999,
-        from: 0,
-        options: {
-            /*receivers: [
-              {
-                [obj.isAlias ? 'receiver_alias' : 'receiver_address']: obj.alias,
-              }
-            ],*/
-            [obj.isAlias ? 'receiver_alias' : 'receiver_address']: obj.alias,
-            asset: obj.assetId
-        }
-      })
-        .then(results => done(null, results))
-        .catch(err => done(err))
-    }
-  ], (err, tasks) => {
-    if (err) {
-      return reject(err)
-    }
+// Generates transaction history per specific asset and address
+const getTransactionsPerAsset = ({ address, asset, page = 0 }) => new Promise(async (resolve, reject) => {
+  let allocations
 
-    let data = tasks[0].concat(tasks[1])
+  try {
+    allocations = await syscoin.callRpc('listassetindex', [page, {
+      asset_guid: Number(asset),
+      address
+    }])
+    allocations = allocations.map(i => {
+      const allocation = {...i}
+      allocation.random = Math.random()
+      return allocation
+    })
+  } catch(err) {
+    return reject(err)
+  }
 
-    const txids = data.map(i => i.txid)
-
-    // remove duplicates
-    data = data.filter((i, ind) => txids.indexOf(i.txid) === ind)
-    // temporal workaround for transactions from other aliases in output
-    data = data.filter(i => !(i.receiver !== obj.alias && i.sender !== obj.alias))
-
-    // Parse JSON and filter out transactions that dont include selected alias.
-    data = data.map(i => {
-        const asset = { ...i }
-        asset.amount = asset.amount[0] === '-' ? asset.amount.slice(1) : asset.amount
-        asset.time = (new Date(0)).setUTCSeconds(asset.time)
-        return asset
-      })
-
-    return resolve(data)
-  })
+  return resolve(allocations)
 })
 
 // Get Blockchain status
-const getBlockchainInfo = () => syscoin.blockchainServices.getBlockchainInfo()
+const getBlockchainInfo = () => syscoin.callRpc('getblockchaininfo', [])
 
 // Get filtered asset allocation
-const listAssetAllocation = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
-  syscoin.callRpc('listassetallocations', [999999, 0, obj])
-    .then(result => {
-      let data = result
+const getAllTokenBalances = () => new Promise(async (resolve, reject) => {
+  let allocationsByAddress
+  const balancesByAssets = []
+  
+  try {
+    allocationsByAddress = await getAddresses()
+    allocationsByAddress = allocationsByAddress.filter(i => isSegwit(i.address))
+    allocationsByAddress = await Promise.all(
+      allocationsByAddress.map(i => getAssetBalancesByAddress(i.address))
+    )
+  } catch(err) {
+    return reject(err)
+  }
 
-      if (Array.isArray(filterGuids) && filterGuids.length) {
-        data = data.filter(i => filterGuids.indexOf(i.asset) !== -1)
+  allocationsByAddress.forEach(i => {
+    i.forEach(x => {
+      const assetIndex = balancesByAssets.findIndex(z => z.asset_guid === x.asset_guid && z.isOwner === x.isOwner)
+
+      if (assetIndex !== -1) {
+        balancesByAssets[assetIndex].balance = (Number(balancesByAssets[assetIndex].balance) + Number(x.balance))
+        balancesByAssets[assetIndex].balance_zdag = (Number(balancesByAssets[assetIndex].balance_zdag) + Number(x.balance_zdag))
+      } else {
+        balancesByAssets.push(x)
       }
-
-      return resolve(data)
     })
-    .catch(err => reject(err))
+  })
+
+  return resolve(balancesByAssets)
 })
 
 const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGuids?: Array<string>) => new Promise((resolve, reject) => {
@@ -298,31 +351,40 @@ const listAssetAllocationTransactions = (obj: listAssetAllocationType, filterGui
 })
 
 // Get list of SYS transactions in the wallet
-const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise((resolve, reject) => {
-  syscoin.walletServices.listTransactions(pageSize, pageSize * page)
-    .then(results => {
-      let data = results.map(i => {
-        const obj = { ...i }
-        obj.time = (new Date(0)).setUTCSeconds(i.time)
-        return obj
-      })
+const listSysTransactions = (page: number = 0, pageSize: number = 10) => new Promise(async (resolve, reject) => {
+  let results
+  
+  try {
+    results = await syscoin.callRpc('listtransactions', ['*', pageSize, pageSize * page])
+  } catch(err) {
+    return reject(err)
+  }
 
-      data = uniqBy(data, 'txid')
+  const data = results.map(i => {
+    const obj = { ...i }
+    obj.time = (new Date(0)).setUTCSeconds(i.time)
 
-      return resolve(data)
-    })
-    .catch(err => reject(err))
+    return transactionParse(obj)
+  })
+
+  return resolve(data)
 })
 
 const encryptWallet = (pass: string) => syscoin.callRpc('encryptwallet', [pass])
 const unlockWallet = (pass: string, time: number) => syscoin.callRpc('walletpassphrase', [pass, time])
 const changePwd = (oldPwd: string, newPwd: string) => syscoin.callRpc('walletpassphrasechange', [oldPwd, newPwd])
-const lockWallet = () => syscoin.callRpc('walletlock')
+const lockWallet = () => syscoin.callRpc('walletlock', [])
 
-const isEncrypted = () => new Promise((resolve) => {
-  syscoin.callRpc('walletpassphrase')
-    .then(() => resolve(true))
-    .catch(err => resolve(err.code === -1))
+const isEncrypted = () => new Promise(async (resolve) => {
+  let output
+
+  try {
+    output = await syscoin.callRpc('getwalletinfo', [])
+  } catch (err) {
+    return resolve(false)
+  }
+
+  return resolve(Object.keys(output).indexOf('unlocked_until') !== -1)
 })
 
 const claimAssetInterest = (asset: string, alias: string) => new Promise((resolve, reject) => {
@@ -361,17 +423,100 @@ const getBlockByNumber = (blockNumber: number) => new Promise(async (resolve, re
   return resolve(block)
 })
 
+const getAssetBalancesByAddress = (address: string) => new Promise(async (resolve, reject) => {
+  let allocations
+  let assets
+
+  try {
+    allocations = await syscoin.callRpc('listassetindexallocations', [address])
+    allocations = await Promise.all(
+      allocations.map(async i => {
+        const asset = {...i}
+
+        asset.publicvalue = (await getAssetInfo(i.asset_guid)).publicvalue
+
+        return asset
+      })
+    )
+    assets = await getAssetOwnedByAddress(address)
+
+    allocations = allocations.concat(assets)
+  } catch(err) {
+    return reject(err)
+  }
+
+  return resolve(allocations)
+})
+
+const getAssetOwnedByAddress = (address: string) => new Promise(async (resolve, reject) => {
+  let allocations
+
+  try {
+    allocations = await syscoin.callRpc('listassetindexassets', [address])
+    allocations = await Promise.all(
+      allocations.map(async i => {
+        const asset = {...i}
+
+        // See if can remove this when symbol is present
+        asset.publicvalue = (await getAssetInfo(i.asset_guid)).publicvalue
+        asset.isOwner = true
+
+        return asset
+      })
+    )
+  } catch(err) {
+    return reject(err)
+  }
+
+  return resolve(allocations)
+})
+
+const getNewAddress = () => syscoin.callRpc('getnewaddress', [])
+const isAddressOwnerOfAsset = (address: string, guid: number) => new Promise(async (resolve, reject) => {
+  let assetsOwned
+
+  try {
+    assetsOwned = await getAssetOwnedByAddress(address)
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve(!!assetsOwned.find(i => i.asset_guid === guid && i.isOwner))
+})
+const editLabel = (address: string, label: string) => syscoin.callRpc('setlabel', [address, label])
+
+const updateAsset = (obj: Object) => new Promise(async (resolve, reject) => {
+  const { assetGuid, publicValue, contract, supply, updateFlags } = obj
+  let hex
+  let raw
+
+  try {
+    hex = await syscoin.callRpc('assetupdate', [assetGuid, publicValue, contract, supply, updateFlags, ''])
+    raw = await signRawTransaction(hex.hex)
+    await sendRawTransaction(raw.hex)
+  } catch (err) {
+    return reject(err)
+  }
+
+  return resolve()
+})
+
+const stop = () => syscoin.callRpc('stop', [])
+
 module.exports = {
   callRpc: syscoin.callRpc,
   aliasInfo,
   currentSysAddress,
   currentBalance,
+  createNewAsset,
   editAlias,
-  getAliases,
+  editLabel,
+  getAllTokenBalances,
+  getAddresses,
   getAssetInfo,
   getAssetAllocationInfo,
-  getInfo,
-  listAssetAllocation,
+  getAssetBalancesByAddress,
+  getNewAddress,
   listAssetAllocationTransactions,
   sendAsset,
   sendSysTransaction,
@@ -388,5 +533,8 @@ module.exports = {
   lockWallet,
   isEncrypted,
   claimAssetInterest,
-  getBlockByNumber
+  getBlockByNumber,
+  getAssets,
+  updateAsset,
+  stop
 }

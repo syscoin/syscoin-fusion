@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin } from 'antd'
-import AssetBox from './components/asset-box'
 import Dashboard from './components/dashboard'
 import AssetDetails from './components/asset-details'
 import Panel from './components/panel'
@@ -10,6 +9,7 @@ type Props = {
   backgroundLogo: string,
   balance: number,
   aliases: Array<Object>,
+  editLabel: Function,
   transactions: Object,
   selectedAlias: string,
   aliasAssets: {
@@ -24,9 +24,9 @@ type Props = {
   headBlock: number,
   currentBlock: number,
   syncPercentage: number,
-  getAliasInfo: Function,
   getPrivateKey: Function,
   goToHome: Function,
+  getNewAddress: Function,
   dashboardSysTransactions: {
     isLoading: boolean,
     error: boolean,
@@ -43,7 +43,7 @@ type Props = {
   goToSysForm: Function,
   claimInterest: Function,
   claimAllInterestFromAsset: Function,
-  sendChangeTab: Function,
+  changeFormTab: Function,
   t: Function
 };
 
@@ -54,12 +54,12 @@ export default class Accounts extends Component<Props> {
     this.props.getDashboardAssets()
   }
 
-  refreshDashboardTransactions() {
-    this.props.getDashboardTransactions()
+  refreshDashboardTransactions(page: number) {
+    this.props.getDashboardTransactions(page)
   }
 
   goToSendAssetForm(asset: string) {
-    this.props.sendChangeTab('asset')
+    this.props.changeFormTab('asset', 'sendTab')
     this.props.goToAssetForm(asset, this.props.selectedAlias)
   }
 
@@ -84,7 +84,9 @@ export default class Accounts extends Component<Props> {
           aliasAssets={this.props.aliasAssets}
           transactions={this.props.transactions}
           currentBalance={this.props.balance}
+          editLabel={this.props.editLabel}
           goToHome={this.props.goToHome}
+          getNewAddress={this.props.getNewAddress}
           syncPercentage={this.props.syncPercentage}
           headBlock={this.props.headBlock}
           currentBlock={this.props.currentBlock}

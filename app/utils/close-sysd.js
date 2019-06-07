@@ -1,4 +1,5 @@
-const Syscoin = require('fw/syscoin-js').default
-const syscoin = new Syscoin()
+const Syscoin = require('syscoin-js').SyscoinRpcClient
 
-module.exports = () => syscoin.callRpc('stop')
+const syscoin = new Syscoin({port: 8370, username: 'u', password: 'p', allowCoerce: false})
+
+module.exports = () => syscoin.callRpc('stop', [])

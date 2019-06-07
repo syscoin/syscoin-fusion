@@ -29,13 +29,13 @@
   "send": {
     "title": "Enviar",
     "send_asset": {
-      "title": "Enviar asset",
+      "title": "Enviar token",
       "select_alias": "Selecciona un alias",
       "select_asset": "Selecciona un asset",
       "send_to": "Enviar a",
       "amount": "Cantidad",
       "comment": "Comentario",
-      "asset_send_success": "Asset enviado con éxito"
+      "asset_send_success": "Token enviado con éxito"
     },
     "send_sys": {
       "title": "Enviar SYS",

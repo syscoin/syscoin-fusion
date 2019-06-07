@@ -7,13 +7,13 @@ import parseError from 'fw-utils/error-parser'
 import SendAssetForm from './components/send-asset'
 import SendSysForm from './components/send-sys'
 
-const Panel = Collapse.Panel
-
+const { Panel } = Collapse
 
 type Props = {
-  aliases: Array<string>,
+  addresses: Array<Object>,
   sendAsset: Function,
   sendSys: Function,
+  isSegwit: Function,
   balance: number,
   getAssetsFromAlias: Function,
   assetsForm: {
@@ -42,8 +42,7 @@ type sendAssetType = {
   from: string,
   asset: string,
   toAddress: string,
-  amount: string,
-  comment?: string
+  amount: string
 };
 
 type sendSysType = {
@@ -65,10 +64,10 @@ export default class Send extends Component<Props> {
     swal(t('misc.success'), t('send.send_sys.sys_send_success'), 'success')
   }
 
-  async sendAsset(obj: sendAssetType) {
+  async sendAsset() {
     const { t } = this.props
     try {
-      await this.props.sendAsset(obj)
+      await this.props.sendAsset()
     } catch (err) {
       return swal(t('misc.error'), parseError(err.message), 'error')
     }
@@ -78,7 +77,7 @@ export default class Send extends Component<Props> {
 
   changeTab(tab) {
     if (tab) {
-      this.props.changeTab(tab)
+      this.props.changeTab(tab, 'sendTab')
     }
   }
 
@@ -86,37 +85,6 @@ export default class Send extends Component<Props> {
     const { t } = this.props
     return (
       <div className='send-forms-container'>
-        {/*<Row gutter={24}>
-          <SendAssetForm
-            isLoading={this.props.assetsForm.isLoading}
-            title={t('send.send_asset.title')}
-            columnSize={12}
-            aliases={this.props.aliases}
-            sendAsset={this.sendAsset.bind(this)}
-            onSelectAlias={this.props.getAssetsFromAlias}
-            assetsFromAlias={this.props.assetsForm.states.assetsFromAlias}
-            form={this.props.assetsForm}
-            onChangeForm={this.props.onChangeForm}
-            t={t}
-          />
-        </Row>
-        <Row>
-          <Col xs={10} offset={7}>
-            <hr />
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <SendSysForm
-            isLoading={this.props.sysForm.isLoading}
-            title={t('send.send_sys.title')}
-            columnSize={12}
-            balance={this.props.balance}
-            sendSys={this.sendSys.bind(this)}
-            form={this.props.sysForm}
-            onChangeForm={this.props.onChangeForm}
-            t={t}
-          />
-        </Row>*/}
         <Row>
           <Col xs={10} offset={7}>
             <Collapse accordion activeKey={this.props.activeTab} onChange={this.changeTab.bind(this)}>
@@ -134,7 +102,8 @@ export default class Send extends Component<Props> {
                   isLoading={this.props.assetsForm.isLoading}
                   title={t('send.send_asset.title')}
                   columnSize={12}
-                  aliases={this.props.aliases}
+                  addresses={this.props.addresses}
+                  isSegwit={this.props.isSegwit}
                   sendAsset={this.sendAsset.bind(this)}
                   onSelectAlias={this.props.getAssetsFromAlias}
                   assetsFromAlias={this.props.assetsForm.states.assetsFromAlias}
@@ -145,10 +114,11 @@ export default class Send extends Component<Props> {
               </Panel>
               <Panel
                 header={
-                <h3 className='send-asset-form-title'>
-                  {t('send.send_sys.title')}
-                  <Icon type={this.props.activeTab === 'sys' ? 'down' : 'right'} className='send-form-title-row' />
-                </h3>}
+                  <h3 className='send-asset-form-title'>
+                    {t('send.send_sys.title')}
+                    <Icon type={this.props.activeTab === 'sys' ? 'down' : 'right'} className='send-form-title-row' />
+                  </h3>
+                }
                 className='send-collapse-panel'
                 key='sys'
               >

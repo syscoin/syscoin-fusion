@@ -11,8 +11,9 @@
  * @flow
  */
 import { app, BrowserWindow, ipcMain } from 'electron'
-import MenuBuilder from './menu'
 import { join } from 'path'
+import closeSysd from './utils/close-sysd'
+import MenuBuilder from './menu'
 
 const favicon = join(__dirname, 'favicon.ico')
 
@@ -118,8 +119,8 @@ app.on('ready', async () => {
 
     mainWindow.show()
     mainWindow.focus()
-
-    if (splashWindow) {
+  
+    if (!splashWindow.isDestroyed()) {
       splashWindow.close()
     }
   })
@@ -135,14 +136,8 @@ app.on('ready', async () => {
       mainWindow.webContents.send('unmaximize')
     }
   })
-  
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
 
-  splashWindow.on('closed', () => {
-    splashWindow = null
-  })
+  mainWindow.on('close', closeApp)
 
   consoleWindow.on('close', ev => {
     ev.preventDefault()
@@ -165,12 +160,7 @@ app.on('ready', async () => {
     }
   })
 
-  ipcMain.on('close', () => {
-    // Closes the app
-    if (mainWindow) {
-      mainWindow.close()
-    }
-  })
+  ipcMain.on('close', closeApp)
 
   ipcMain.on('maximize', (e) => {
     // Maximize the window
@@ -198,3 +188,22 @@ app.on('ready', async () => {
   const menuBuilder = new MenuBuilder(mainWindow)
   menuBuilder.buildMenu()
 })
+
+async function closeApp(ev) {
+  ev.preventDefault()
+
+  try {
+    await closeSysd()
+  } catch (err) {
+    console.log(err.message)
+  }
+
+  setTimeout(() => {
+    if (!mainWindow.isDestroyed()) {
+      mainWindow.destroy()
+    }
+    if (!consoleWindow.isDestroyed()) {
+      consoleWindow.destroy()
+    }
+  }, 500)
+}

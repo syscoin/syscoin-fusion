@@ -2,7 +2,6 @@
 import React, { Component } from 'react'
 import { Icon } from 'antd'
 import moment from 'moment'
-import { uniqBy } from 'lodash'
 import Table from './table'
 import Pagination from './pagination'
 
@@ -29,11 +28,11 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.data.length !== this.props.data.length
+    return nextProps.data.length !== this.props.data.length || nextProps.isLoading !== this.props.isLoading
   }
 
   cutTextIfNeeded(text: string) {
-    return text.length > 13 ? `${text.slice(0, 12)}...` : text
+    return text.length > 20 ? `${text.slice(0, 20)}...` : text
   }
 
   generateColumns() {
@@ -52,11 +51,11 @@ export default class SysTransactionList extends Component<Props, State> {
         )
       },
       {
-        title: t('misc.address') + ' / ' + t('misc.label'),
+        title: `${t('misc.address')}/${t('misc.label')}`,
         key: 'address',
         dataIndex: 'address',
-        render: (text?: string = '', transaction: Object) => (
-          <span title={transaction.systx || transaction.systype || text}>{transaction.systx || transaction.systype || text}</span>
+        render: (text: string = '') => (
+          <span title={text}>{this.cutTextIfNeeded(text)}</span>
         )
       },
       {
@@ -99,11 +98,11 @@ export default class SysTransactionList extends Component<Props, State> {
     return data
   }
 
-  changePage(type: string) {
+  changePage(page: number) {
     this.setState({
-      currentPage: type === 'next' ? this.state.currentPage + 1 : this.state.currentPage - 1
+      currentPage: page
     }, () => {
-      this.props.refresh(this.state.currentPage, 10)
+      this.props.refresh(this.state.currentPage)
     })
   }
 
@@ -117,7 +116,7 @@ export default class SysTransactionList extends Component<Props, State> {
             <Icon
               type='reload'
               className='dashboard-refresh'
-              onClick={this.props.refresh}
+              onClick={() => this.changePage(0)}
             />
           )}
         </h3>
@@ -125,11 +124,20 @@ export default class SysTransactionList extends Component<Props, State> {
           data={this.prepareData()}
           columns={this.generateColumns()}
           rowKey='txid'
-          pageSize={20}
+          pageSize={25}
+          pagination={false}
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
           t={t}
+        />
+        <Pagination
+          showPage
+          currentPage={this.state.currentPage}
+          t={t}
+          prevDisabled={this.state.currentPage === 0}
+          nextDisabled={this.prepareData().length < Number(process.env.TABLE_PAGINATION_LENGTH)}
+          onChange={(page) => this.changePage(page)}
         />
       </div>
     )

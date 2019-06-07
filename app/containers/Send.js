@@ -11,14 +11,15 @@ import {
   sendAssetForm,
   sendSysForm,
   getAssetsFromAlias,
-  sendChangeTab
+  changeFormTab
 } from 'fw-actions/forms'
 import unlockWallet from 'fw-utils/unlock-wallet'
+import isSegwit from 'fw-sys/is-segwit'
 
 
 type Props = {
   balance: number,
-  aliases: Array<Object>,
+  addresses: Array<Object>,
   sendAssetForm: Function,
   sendSysForm: Function,
   editSendAsset: Function,
@@ -27,18 +28,11 @@ type Props = {
   assetForm: Object,
   isEncrypted: boolean,
   getAssetsFromAlias: Function,
-  sendChangeTab: Function,
+  changeFormTab: Function,
   activeTab: string,
   t: Function
 };
 
-type sendAssetType = {
-  from: string,
-  asset: string,
-  toAddress: string,
-  amount: string,
-  comment?: string
-};
 type sendSysType = {
   amount: string,
   address: string,
@@ -47,9 +41,7 @@ type sendSysType = {
 
 class SendContainer extends Component<Props> {
 
-  sendAsset(obj: sendAssetType) {
-    const { from, asset, toAddress, amount, comment } = obj
-
+  sendAsset() {
     return new Promise(async (resolve, reject) => {
       let lock = () => {}
 
@@ -62,13 +54,7 @@ class SendContainer extends Component<Props> {
       }
 
       try {
-        await this.props.sendAssetForm({
-          fromAlias: from,
-          toAlias: toAddress,
-          assetId: asset,
-          amount,
-          comment
-        })
+        await this.props.sendAssetForm()
       } catch (err) {
         lock()
         return reject(err)
@@ -103,7 +89,7 @@ class SendContainer extends Component<Props> {
   }
 
   async getAssetsFromAlias(alias: string) {
-    this.props.getAssetsFromAlias({ receiver_address: alias })
+    this.props.getAssetsFromAlias(alias)
   }
 
   onChangeForm(obj: Object, type: string) {
@@ -115,12 +101,14 @@ class SendContainer extends Component<Props> {
   }
 
   render() {
+    const {balance} = this.props
     return (
       <Send
-        changeTab={this.props.sendChangeTab}
+        changeTab={this.props.changeFormTab}
         activeTab={this.props.activeTab}
-        balance={this.props.balance}
-        aliases={this.props.aliases.map(i => i.alias || i.address)}
+        balance={balance}
+        addresses={this.props.addresses}
+        isSegwit={isSegwit}
         sendAsset={this.sendAsset.bind(this)}
         sendSys={this.sendSys.bind(this)}
         getAssetsFromAlias={this.getAssetsFromAlias.bind(this)}
@@ -134,8 +122,8 @@ class SendContainer extends Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  balance: state.wallet.getinfo.balance,
-  aliases: state.wallet.aliases,
+  balance: state.wallet.balance,
+  addresses: state.wallet.aliases,
   assetForm: state.forms.sendAsset,
   sysForm: state.forms.sendSys,
   isEncrypted: state.wallet.isEncrypted,
@@ -148,7 +136,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   sendAssetForm,
   sendSysForm,
   getAssetsFromAlias,
-  sendChangeTab
+  changeFormTab
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(SendContainer))

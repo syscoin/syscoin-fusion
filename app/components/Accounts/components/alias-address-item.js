@@ -1,17 +1,17 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col, Icon, Spin, Tooltip } from 'antd'
-import swal from 'sweetalert'
+import swal from 'sweetalert2'
 import parseError from 'fw-utils/error-parser'
 
 type Props = {
-  alias: string,
   address: string,
   isLoading: boolean,
   isSelected: boolean,
+  editLabel: Function,
+  label: string,
   updateSelectedAlias: Function,
   getPrivateKey: Function,
-  avatarUrl: string,
   t: Function
 };
 
@@ -43,8 +43,38 @@ class AliasAddressItem extends Component<Props, State> {
     })
   }
 
+  async editLabel() {
+    // const { t } = this.props
+
+    const label = await swal({
+      title: 'Edit label',
+      input: 'text',
+      inputPlaceholder: 'New label',
+      allowOutsideClick: true,
+      allowEscapeKey: true,
+      showCancelButton: true
+    })
+
+    if (label.dismiss) {
+      return
+    }
+
+    this.setState({ isLoading: true })
+
+    try {
+      await this.props.editLabel(this.props.address, label.value)
+    } catch (err) {
+      this.setState({ isLoading: false })
+      return swal('Error', parseError(err.message), 'error')
+    }
+
+    this.setState({ isLoading: false })
+
+    swal('Success', '', 'success')
+  }
+
   render() {
-    const { alias, address, isLoading, isSelected, updateSelectedAlias, avatarUrl, t } = this.props
+    const { address, isLoading, isSelected, label, updateSelectedAlias } = this.props
     return (
       <Row
         className={`alias-box ${isSelected ? 'expanded' : 'non-expanded'} ${isLoading ? 'loading' : ''}`}
@@ -52,23 +82,23 @@ class AliasAddressItem extends Component<Props, State> {
           if (isSelected) {
             return
           }
-          updateSelectedAlias(alias || address)
+          updateSelectedAlias(address)
         }}
       >
-        {alias && (
-          <Col xs={isSelected ? 6 : 4} lg={isSelected ? 4 : 3} offset={isSelected ? 1 : 0} className='alias-img-container'>
-            <img className='alias-img' src={avatarUrl.length ? avatarUrl : `https://ui-avatars.com/api/?name=${alias}&length=3&font-size=0.33&background=7FB2EC&color=FFFFFF`} alt='Alias' />
-          </Col>
-        )}
-        <Col xs={alias ? 18 : 23} className={`alias-text-container ${!alias ? 'address' : ''}`}>
+        <Col xs={23} className='alias-text-container address'>
           <div className='alias-name'>
-            {alias || address}
+            <span className='trim'>
+              {label || address}
+            </span>
             {isSelected && (
               <div className='alias-toolbox'>
                 {
                   this.state.isLoading ?
                     <Spin indicator={<Icon type='loading' spin />} /> :
                     <div>
+                      <Tooltip title='Edit address label'>
+                        <Icon type='edit' onClick={this.editLabel.bind(this)} />
+                      </Tooltip>
                       <Tooltip title='Get private key'>
                         <Icon type='key' onClick={this.getPrivateKey.bind(this)} />
                       </Tooltip>
@@ -77,7 +107,6 @@ class AliasAddressItem extends Component<Props, State> {
               </div>
             )}
           </div>
-          <div className='alias-type'>{alias ? t('misc.alias') : t('misc.address')}</div>
         </Col>
       </Row>
     )

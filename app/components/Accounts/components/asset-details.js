@@ -1,6 +1,6 @@
 // @flow
-import React, { Component } from 'react'
-import { Row, Col, Icon, Spin, Tooltip } from 'antd'
+import React from 'react'
+import { Row, Col } from 'antd'
 import AvailableAssets from './available-assets'
 import TransactionList from './transaction-list'
 import AliasInfo from './alias-info'
@@ -19,12 +19,12 @@ type Props = {
 export default (props: Props) => (
   <Row>
     {(props.selectedAlias && !props.aliasAssets.isLoading) && (
-      <div>
+      <Row>
         <Col offset={1} xs={21}>
           <AliasInfo
             t={props.t}
-            isAlias={!!props.aliasInfo.alias.length}
-            alias={props.aliasInfo.alias}
+            isAlias={!!props.aliasInfo.alias}
+            alias={props.aliasInfo.alias || ''}
             address={props.aliasInfo.address}
             balance={props.aliasInfo.balance}
             avatarUrl={props.aliasInfo.avatarUrl}
@@ -38,9 +38,10 @@ export default (props: Props) => (
             selectAsset={props.selectAsset}
             goToSendAssetForm={props.goToSendAssetForm}
             claimInterest={props.claimInterest}
+            selectedAlias={props.selectedAlias}
           />
         </Col>
-      </div>
+      </Row>
     )}
     {props.aliasAssets.selected ? (
       <Row>
@@ -51,6 +52,11 @@ export default (props: Props) => (
             isLoading={props.transactions.isLoading}
             selectedAlias={props.selectedAlias}
             selectedSymbol={props.aliasAssets.selectedSymbol}
+            changePage={(page) => props.selectAsset({
+              asset: props.aliasAssets.selected,
+              symbol: props.aliasAssets.selectedSymbol,
+              page
+            })}
             t={props.t}
           />
         </Col>
