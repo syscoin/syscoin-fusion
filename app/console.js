@@ -7,6 +7,8 @@ import Console from './containers/Console'
 import { store, history } from './store/configureStore'
 import './app.global.scss'
 
+import 'fw-utils/i18n'
+
 render(
   <AppContainer>
     <Console store={store} history={history} />

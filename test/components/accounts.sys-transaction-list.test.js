@@ -17,17 +17,14 @@ describe('Accounts - SysTransactionList component', () => {
       data: [],
       error: false,
       isLoading: false,
-      refresh: spy()
+      refresh: spy(),
+      t: string => string
     }
     wrapper = shallow(<SysTransactionList {...props} />)
   })
 
   it('should render correctly', () => {
     expect(wrapper.find('.wallet-summary-balance-container').length).toBe(1)
-  })
-
-  it('should render an instance of Pagination', () => {
-    expect(wrapper.find(Pagination).length).toBe(1)
   })
 
   it('should disable pagination when loading', () => {
@@ -42,15 +39,20 @@ describe('Accounts - SysTransactionList component', () => {
 
   it('should identify incoming and outgoing transactions correctly', () => {
     expect(wrapper.instance().isIncoming({
-      amount: '1000'
+      category: 'receive'
     })).toBe(true)
     expect(wrapper.instance().isIncoming({
-      amount: '-1000'
+      category: 'send'
     })).toBe(false)
   })
 
   it('should cut long addresses and add periods at the end', () => {
     expect(wrapper.instance().cutTextIfNeeded('1234567890123456')).toBe('123456789012...')
+  })
+
+  it('should remove plus and minus signs from amounts', () => {
+    expect(wrapper.instance().removeSigns(-123)).toBe(123)
+    expect(wrapper.instance().removeSigns(123)).toBe(123)
   })
 
 })

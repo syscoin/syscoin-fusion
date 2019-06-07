@@ -15,11 +15,12 @@ describe('Accounts - DashboardTokens component', () => {
       assets: [{
         balance: 100,
         symbol: 'TEST',
-        asset: 'random_asset'
+        asset: 'random_asset',
       }],
       isLoading: false,
       error: false,
-      refresh: spy()
+      refresh: spy(),
+      t: string => string
     }
     wrapper = shallow(<DashboardTokens {...props} />)
   })

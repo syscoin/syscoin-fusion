@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withNamespaces } from 'react-i18next'
 import swal from 'sweetalert'
 
 import Accounts from 'fw-components/Accounts/'
@@ -9,10 +10,12 @@ import Accounts from 'fw-components/Accounts/'
 import {
   getTransactionsPerAsset,
   listAssetAllocation,
-  getPrivateKey
+  getPrivateKey,
+  claimAssetInterest,
+  aliasInfo
 } from 'fw-sys'
 import { dashboardAssets, dashboardTransactions } from 'fw-actions/wallet'
-import { editSendAsset, getAssetsFromAlias } from 'fw-actions/forms'
+import { editSendAsset, getAssetsFromAlias, sendChangeTab } from 'fw-actions/forms'
 import parseError from 'fw-utils/error-parser'
 import SyscoinLogo from 'fw/syscoin-logo.png'
 import unlockWallet from 'fw-utils/unlock-wallet'
@@ -38,11 +41,14 @@ type Props = {
   changeTab: Function,
   editSendAsset: Function,
   isEncrypted: boolean,
-  getAssetsFromAlias: Function
+  getAssetsFromAlias: Function,
+  sendChangeTab: Function,
+  t: Function
 };
 
 type State = {
   selectedAlias: string,
+  selectedIsAlias: boolean,
   aliasAssets: {
     selected: string,
     selectedSymbol: string,
@@ -70,6 +76,7 @@ class AccountsContainer extends Component<Props, State> {
 
     this.initialState = {
       selectedAlias: '',
+      selectedIsAlias: true,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -104,6 +111,7 @@ class AccountsContainer extends Component<Props, State> {
     
     this.setState({
       selectedAlias: alias,
+      selectedIsAlias: alias.length !== 34,
       aliasAssets: {
         selected: '',
         selectedSymbol: '',
@@ -122,7 +130,7 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   async getAssetsInfo(alias: string) {
-    const { assets } = this.props
+    const { assets, t } = this.props
     let results
 
     try {
@@ -130,22 +138,10 @@ class AccountsContainer extends Component<Props, State> {
         receiver_address: alias
       }, assets.map(i => i._id))
     } catch(err) {
-      return swal('Error', parseError(err.message), 'error')
+      return swal(t('misc.error'), parseError(err.message), 'error')
     }
 
-    if (!results.length && !assets.length) {
-      this.setState({
-        aliasAssets: {
-          selected: '',
-          selectedSymbol: '',
-          data: [],
-          isLoading: false,
-          error: false
-        },
-        selectedAlias: ''
-      })
-      return swal('No asset detected', 'The wallet hasn\'t detected any asset. This might happen by not being fully synchronized. You can also add some specific assets in your fusion.cfg file located in Documents/Fusion folder', 'warning')
-    } else if (!results.length && assets.length) {
+    if (!results.length && assets.length) {
       results = assets.map(i => ({
         asset: i._id,
         balance: '0.00000000',
@@ -183,11 +179,12 @@ class AccountsContainer extends Component<Props, State> {
 
       try {
         transactions = await getTransactionsPerAsset({
+          isAlias: this.state.selectedIsAlias,
           alias: this.state.selectedAlias,
           assetId: asset
         })
       } catch(err) {
-        this.setState({
+        return this.setState({
           transactions: {
             data: [],
             isLoading: false,
@@ -268,7 +265,45 @@ class AccountsContainer extends Component<Props, State> {
   }
 
   goToSysForm() {
+    this.props.sendChangeTab('sys')
     this.props.changeTab('2')
+  }
+
+  claimAssetInterest(asset, alias) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await claimAssetInterest(asset, alias)
+      } catch(err) {
+        return reject(err)
+      }
+
+      resolve(true)
+    })
+  }
+
+  claimAllFromAsset(asset, fromAliases) {
+    return new Promise(async (resolve, reject) => {
+      const aliases = fromAliases || this.props.aliases.map(i => i.alias || i.address)
+      let results = aliases.map(i => this.claimAssetInterest(asset, i))
+
+      try {
+        results = await Promise.all(results)
+      } catch(err) {
+        return reject(err)
+      }
+
+      const wasSuccess = results.find(i => typeof i === 'boolean')
+
+      if (wasSuccess) {
+        return resolve()
+      }
+
+      return reject()
+    })
+  }
+
+  async getAliasInfo(alias: name) {
+    return await aliasInfo(alias)
   }
 
   render() {
@@ -288,6 +323,7 @@ class AccountsContainer extends Component<Props, State> {
         aliasAssets={aliasAssets}
         updateSelectedAlias={this.updateSelectedAlias.bind(this)}
         selectAsset={this.selectAsset.bind(this)}
+        getAliasInfo={this.getAliasInfo}
         getPrivateKey={this.getPrivateKey.bind(this)}
         goToHome={this.goToHome.bind(this)}
         dashboardSysTransactions={this.props.dashboardSysTransactions}
@@ -296,6 +332,10 @@ class AccountsContainer extends Component<Props, State> {
         getDashboardTransactions={this.props.dashboardTransactions}
         goToAssetForm={this.goToAssetForm.bind(this)}
         goToSysForm={this.goToSysForm.bind(this)}
+        claimInterest={this.claimAssetInterest}
+        claimAllInterestFromAsset={this.claimAllFromAsset.bind(this)}
+        sendChangeTab={this.props.sendChangeTab}
+        t={this.props.t}
       />
     )
   }
@@ -316,7 +356,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   dashboardAssets,
   dashboardTransactions,
   editSendAsset,
-  getAssetsFromAlias
+  getAssetsFromAlias,
+  sendChangeTab
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountsContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(AccountsContainer))

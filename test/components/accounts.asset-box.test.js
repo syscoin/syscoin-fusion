@@ -17,7 +17,10 @@ describe('Accounts - Asset box component', () => {
       asset: 'some_random_asset',
       symbol: 'ASSET',
       balance: '12.00',
-      goToSendAssetForm: spy()
+      goToSendAssetForm: spy(),
+      selectedAlias: 'testAlias',
+      claimInterest: spy(),
+      t: string => string
     }
     wrapper = shallow(<AssetBox {...props} />)
   })
@@ -37,7 +40,7 @@ describe('Accounts - Asset box component', () => {
   it('should render data correctly', () => {
     expect(wrapper.find('.asset-box-name').text()).toBe(props.symbol)
     expect(wrapper.find('.asset-box-guid').text()).toBe(props.asset)
-    expect(wrapper.find('.asset-box-balance').text()).toBe('Balance: 12.00')
+    expect(wrapper.find('.asset-box-balance').contains('12.00')).toBeTruthy()
   })
 
   it('should add selected class to wrapper when isSelected is true', () => {
@@ -51,5 +54,15 @@ describe('Accounts - Asset box component', () => {
     wrapper.find('.asset-box-send').simulate('click')
 
     expect(mockClick.calledOnce).toBe(true)
+  })
+
+  it('should fire claimInterest when click on menu item', () => {
+    const interestMock = spy()
+    wrapper = shallow(<AssetBox {...props} claimInterest={interestMock} />)
+
+    wrapper.instance().claimInterest()
+
+    expect(interestMock.called).toBeTruthy()
+    expect(interestMock.getCall(0).args).toEqual(['some_random_asset', 'testAlias'])
   })
 })

@@ -6,7 +6,8 @@ import { join } from 'path'
 
 type Props = {
   exportWallet: Function,
-  getFolder: Function
+  getFolder: Function,
+  t: Function
 };
 
 type State = {
@@ -25,6 +26,8 @@ export default class ExportWallet extends Component<Props, State> {
   }
 
   backupWallet() {
+    const { t } = this.props
+
     this.setState({
       isLoading: true
     })
@@ -40,23 +43,24 @@ export default class ExportWallet extends Component<Props, State> {
           isLoading: false
         })
         if (err) {
-          return swal('Error', 'Error while saving the backup', 'error')
+          return swal(t('misc.error'), t('tools.backup_error'), 'error')
         }
 
-        swal('Success', 'Backup saved successfully', 'success')
+        swal(t('misc.success'), t('tools.backup_success'), 'success')
       })
     })
   }
 
   render() {
+    const { t } = this.props
     return (
       <div className='backup-wallet-container'>
-        <h3 className='backup-wallet-title'>Backup wallet</h3>
+        <h3 className='backup-wallet-title'>{t('tools.backup_wallet')}</h3>
         {this.state.isLoading ? (
           <Spin indicator={<Icon type='loading' className='loading-tools' spin />} />
         ) : (
           <Button className='backup-wallet-btn' disabled={this.state.isLoading} onClick={this.backupWallet.bind(this)}>
-            <Icon type='download' /> Backup wallet
+            <Icon type='download' /> {t('tools.backup_wallet')}
           </Button>
         )}
       </div>

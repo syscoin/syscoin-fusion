@@ -22,7 +22,8 @@ type Props = {
     error: boolean,
     data: FormDataType
   },
-  onChangeForm: Function
+  onChangeForm: Function,
+  t: Function
 };
 
 type FormDataType = {
@@ -55,10 +56,19 @@ export default class SendAssetForm extends Component<Props> {
       ...this.initialState
     })
   }
+
+  selectedAssetBalance() {
+    try {
+      return this.props.assetsFromAlias.data.find(i => i.asset === this.props.form.data.asset).balance
+    } catch(err) {
+      return ''
+    }
+  }
   
   render() {
+    const { t } = this.props
     const {
-      title = 'Send Address',
+      title = t('send.send_asset.title'),
       columnSize = 12,
       aliases = [],
       isLoading = false,
@@ -75,13 +85,10 @@ export default class SendAssetForm extends Component<Props> {
     } = form.data
 
     return (
-      <Col
-        xs={columnSize}
-        offset={6}
+      <div
         className='send-asset-container'
       >
         <div className='send-asset-form-container'>
-          <h3 className='send-asset-form-title'>{title}</h3>
           <Select
             disabled={isLoading}
             onChange={val => {
@@ -91,7 +98,7 @@ export default class SendAssetForm extends Component<Props> {
               // Give some time to updateField to update "from" so it wont be empty when firing this
               setTimeout(() => this.updateField('', 'asset'), 200)
             }}
-            placeholder='Select alias'
+            placeholder={t('send.send_asset.select_alias')}
             className='send-asset-form-control send-asset-form-select-alias'
             id='asset-form-select-alias'
             value={from.length ? from : undefined}
@@ -105,7 +112,7 @@ export default class SendAssetForm extends Component<Props> {
           <Select
             disabled={isLoading || assetsFromAlias.isLoading}
             onChange={val => this.updateField(val, 'asset')}
-            placeholder='Select asset'
+            placeholder={t('send.send_asset.select_asset')}
             className='send-asset-form-control send-asset-form-select-asset'
             id='asset-form-select-asset'
             value={asset.length ? asset : undefined}
@@ -116,11 +123,16 @@ export default class SendAssetForm extends Component<Props> {
               </Option>
             ))}
           </Select>
+          {asset.length && !assetsFromAlias.isLoading ? (
+            <div className='asset-form-asset-balance'>
+              <p>Balance: <span className='blue-text'>{this.selectedAssetBalance()}</span></p>
+            </div>
+          ) : null}
           {assetsFromAlias.isLoading && <Spin indicator={<Icon type='loading' spin />} className='assets-from-alias-loader' />}
           <Input
             disabled={isLoading}
             name='toAddress'
-            placeholder='Send to address...'
+            placeholder={t('send.send_asset.send_to')}
             onChange={e => this.updateField(e, 'toAddress')}
             value={toAddress}
             className='send-asset-form-control send-asset-form-to-address'
@@ -129,7 +141,7 @@ export default class SendAssetForm extends Component<Props> {
           <Input
             disabled={isLoading}
             name='amount'
-            placeholder='Amount'
+            placeholder={t('send.send_asset.amount')}
             onChange={e => this.updateField(e, 'amount', /^\d+(\.)?(\d+)?$/)}
             value={amount}
             className='send-asset-form control send-asset-form-amount'
@@ -138,7 +150,7 @@ export default class SendAssetForm extends Component<Props> {
           <Input
             disabled={isLoading}
             name='comment'
-            placeholder='Comment'
+            placeholder={t('send.send_asset.comment')}
             onChange={e => this.updateField(e, 'comment')}
             value={comment}
             className='send-asset-form control send-asset-form-comment'
@@ -151,11 +163,11 @@ export default class SendAssetForm extends Component<Props> {
               disabled={isLoading || !from || !asset || !toAddress || !amount}
               onClick={() => sendAsset(this.props.form.data)}
             >
-              Send
+              {t('misc.send')}
             </Button>
           </div>
         </div>
-      </Col>
+      </div>
     )
   }
 }

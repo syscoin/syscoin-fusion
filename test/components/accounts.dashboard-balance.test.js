@@ -13,7 +13,8 @@ describe('Accounts - DashboardBalance component', () => {
   beforeEach(() => {
     props = {
       balance: 100,
-      goToSysForm: spy()
+      goToSysForm: spy(),
+      t: string => string
     }
     wrapper = shallow(<DashboardBalance {...props} />)
   })

@@ -1,5 +1,6 @@
 // @flow
 import {
+  SEND_CHANGE_TAB,
   EDIT_SEND_ASSET_FORM,
   EDIT_SEND_SYS_FORM,
   SEND_ASSET_IS_LOADING,
@@ -12,6 +13,7 @@ import {
   GET_ASSETS_FROM_ALIAS_RECEIVE,
   GET_ASSETS_FROM_ALIAS_ERROR
 } from 'fw-types/forms'
+import { editSendAssetAction } from '../actions/forms';
 
 type actionType = {
   +type: string,
@@ -19,6 +21,9 @@ type actionType = {
 };
 
 type StateType = {
+  sendTab: {
+    activeTab: string
+  },
   sendAsset: {
     data: {
       from: string,
@@ -49,6 +54,9 @@ type StateType = {
 };
 
 export const initialState = {
+  sendTab: {
+    activeTab: 'asset'
+  },
   sendAsset: {
     data: {
       from: '',
@@ -204,6 +212,14 @@ export default function forms(state: StateType = initialState, action: actionTyp
               }
             }
           }
+        case SEND_CHANGE_TAB:
+        return {
+          ...state,
+          sendTab: {
+            ...state.sendTab,
+            activeTab: action.payload
+          }
+        }
     default:
       return state
   }

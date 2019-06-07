@@ -3,6 +3,7 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 
+@import "../node_modules/antd/dist/antd.min.css";
 @import "css/variables.scss";
 @import "~font-awesome/css/font-awesome.css";
 @import "css/custom.scss";

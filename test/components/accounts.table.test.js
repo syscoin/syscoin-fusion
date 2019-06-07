@@ -17,23 +17,14 @@ describe('Accounts - Table component', () => {
       isLoading: false,
       columns: [],
       rowKey: 'txid',
-      pageSize: 10
+      pageSize: 10,
+      t: string => string
     }
     wrapper = shallow(<Table {...props} />)
   })
 
   it('should render correctly', () => {
     expect(wrapper.instance()).toBeInstanceOf(Table)
-  })
-
-  it('should show no data text when no data', () => {
-    wrapper = mount(<Table {...props} />)
-    expect(wrapper.find('.ant-table-placeholder').text()).toBe('No data')
-  })
-
-  it('should show loading text while loading data', () => {
-    wrapper = mount(<Table {...props} isLoading />)
-    expect(wrapper.find('.ant-table-placeholder').text()).toBe('Loading...')
   })
 
   it('should render one column', () => {

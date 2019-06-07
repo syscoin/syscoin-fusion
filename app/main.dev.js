@@ -12,6 +12,9 @@
  */
 import { app, BrowserWindow, ipcMain } from 'electron'
 import MenuBuilder from './menu'
+import { join } from 'path'
+
+const favicon = join(__dirname, 'favicon.ico')
 
 let mainWindow = null
 let splashWindow = null
@@ -70,7 +73,8 @@ app.on('ready', async () => {
     transparent: true,
     resizable: true,
     minWidth: 824,
-    minHeight: 429
+    minHeight: 429,
+    icon: favicon
   })
 
   splashWindow = new BrowserWindow({
@@ -79,7 +83,8 @@ app.on('ready', async () => {
     height: 500,
     frame: false,
     transparent: true,
-    resizable: false
+    resizable: false,
+    icon: favicon
   })
 
   consoleWindow = new BrowserWindow({
@@ -88,7 +93,8 @@ app.on('ready', async () => {
     height: 600,
     frame: true,
     transparent: true,
-    resizable: true
+    resizable: true,
+    icon: favicon
   })
 
   splashWindow.loadURL(`file://${__dirname}/splash.html`)

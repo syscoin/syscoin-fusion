@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withNamespaces } from 'react-i18next'
 
 import Console from 'fw-components/Console'
 import { pushToConsole } from 'fw-actions/console'
@@ -29,7 +30,9 @@ class ConsoleContainer extends Component<Props> {
     if (!this.props.console.data.length) {
       this.props.pushToConsole({
         cmd: '',
-        result: 'Welcome to Fusion Wallet console!',
+        result: this.props.t('console.welcome', {
+          appName: this.props.t('general.app_name')
+        }),
         error: false,
         time: Date.now()
       })
@@ -42,6 +45,10 @@ class ConsoleContainer extends Component<Props> {
     }
     
     let json
+
+    if(param[0] == "'" && param[param.length - 1] == "'"){
+      param = param.slice(1, param.length - 1)
+    }
 
     try {
       json = JSON.parse(param)
@@ -85,6 +92,7 @@ class ConsoleContainer extends Component<Props> {
         handleConsoleSubmit={this.handleConsoleSubmit.bind(this)}
         history={this.props.console.history}
         data={this.props.console.data}
+        t={this.props.t}
       />
     )
   }
@@ -98,4 +106,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   pushToConsole
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConsoleContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(withNamespaces('translation')(ConsoleContainer))

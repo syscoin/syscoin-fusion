@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { Icon } from 'antd'
 import moment from 'moment'
+import { uniqBy } from 'lodash'
 import Table from './table'
 import Pagination from './pagination'
 
@@ -9,7 +10,8 @@ type Props = {
   data: Array<Object>,
   error: boolean,
   isLoading: boolean,
-  refresh: Function
+  refresh: Function,
+  t: Function
 };
 
 type State = {
@@ -26,11 +28,17 @@ export default class SysTransactionList extends Component<Props, State> {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.data.length !== this.props.data.length
+  }
+
   cutTextIfNeeded(text: string) {
     return text.length > 13 ? `${text.slice(0, 12)}...` : text
   }
 
   generateColumns() {
+    const { t } = this.props
+
     return [
       {
         title: ' ',
@@ -44,25 +52,31 @@ export default class SysTransactionList extends Component<Props, State> {
         )
       },
       {
-        title: 'To',
+        title: t('misc.address') + ' / ' + t('misc.label'),
         key: 'address',
         dataIndex: 'address',
-        render: (text?: string = '') => <span title={text}>{this.cutTextIfNeeded(text)}</span>
+        render: (text?: string = '', transaction: Object) => (
+          <span title={transaction.systx || transaction.systype || text}>{transaction.systx || transaction.systype || text}</span>
+        )
       },
       {
-        title: 'Date',
+        title: t('misc.date'),
         key: 'time',
         dataIndex: 'time',
         render: (time: number) => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
       },
       {
-        title: 'Details',
+        title: t('misc.details'),
         key: 'amount',
         dataIndex: 'amount',
         render: (amount: number, transaction: Object) => ({
-          children: <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>{this.isIncoming(transaction) ? '+' : '-'}{amount.toString().slice(1)}</span>,
+          children: (
+            <span className={`amount ${this.isIncoming(transaction) ? 'incoming' : 'outgoing'}`}>
+              {this.isIncoming(transaction) ? '+' : '-'}{this.removeSigns(amount)}
+            </span>
+          ),
           props: {
-            width: 150
+            width: 120
           }
         })
       }
@@ -70,11 +84,11 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   isIncoming(transaction: Object) {
-    if (transaction.amount[0] !== '-') {
-      return true
-    }
+    return transaction.category === 'receive'
+  }
 
-    return false
+  removeSigns(amount: number) {
+    return Math.abs(amount)
   }
 
 
@@ -94,29 +108,29 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   render() {
+    const { t } = this.props
+
     return (
       <div className='wallet-summary-balance-container'>
         <h3 className='wallet-summary-balance-title'>
-          SYS Transactions
+          {t('accounts.summary.sys_transactions')} {!this.props.isLoading && (
+            <Icon
+              type='reload'
+              className='dashboard-refresh'
+              onClick={this.props.refresh}
+            />
+          )}
         </h3>
         <Table
           data={this.prepareData()}
           columns={this.generateColumns()}
           rowKey='txid'
-          pageSize={10}
+          pageSize={20}
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
+          t={t}
         />
-        {!this.props.isLoading && (
-          <Pagination
-            onChange={this.changePage.bind(this)}
-            nextDisabled={this.prepareData().length < 10}
-            prevDisabled={this.state.currentPage === 0}
-            currentPage={this.state.currentPage}
-            showPage
-          />
-        )}
       </div>
     )
   }

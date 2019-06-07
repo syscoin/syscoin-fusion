@@ -4,7 +4,8 @@ import { Upload, Button, Icon, Spin } from 'antd'
 import swal from 'sweetalert'
 
 type Props = {
-  importWallet: Function
+  importWallet: Function,
+  t: Function
 };
 type State = {
   isLoading: boolean
@@ -22,6 +23,7 @@ export default class ImportWallet extends Component<Props, State> {
   }
 
   beforeUpload(dir: Object) {
+    const { t } = this.props
     this.setState({
       isLoading: true
     })
@@ -33,11 +35,11 @@ export default class ImportWallet extends Component<Props, State> {
           isLoading: false
         })
         if (err) {
-          swal('Error', 'Error while Loading the backup', 'error')
+          swal(t('misc.error'), t('tools.import_error'), 'error')
           return reject()
         }
 
-        swal('Success', 'Backup loaded successfully', 'success')
+        swal(t('misc.success'), t('tools.import_success'), 'success')
 
         return reject() // Rejecting anyway because of Upload component limitations. Check antd Upload documentation.
       })
@@ -45,15 +47,17 @@ export default class ImportWallet extends Component<Props, State> {
   }
 
   render() {
+    const { t } = this.props
+
     return (
       <div className='import-wallet-container'>
-        <h3 className='import-wallet-title'>Import wallet</h3>
+        <h3 className='import-wallet-title'>{t('tools.import_wallet')}</h3>
         {this.state.isLoading ? (
           <Spin indicator={<Icon type='loading' className='loading-tools' spin />} />
         ) : (
           <Upload action='' beforeUpload={this.beforeUpload.bind(this)} showUploadList={false}>
             <Button disabled={this.state.isLoading} className='import-wallet-btn'>
-              <Icon type='upload' /> Import wallet
+              <Icon type='upload' /> {t('tools.import_wallet')}
             </Button>
           </Upload>
         )}

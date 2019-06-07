@@ -13,7 +13,8 @@ describe('Tools - BackupWallet component', () => {
   beforeEach(() => {
     props = {
       exportWallet: spy(),
-      getFolder: cb => cb(['/path/to/somewhere'])
+      getFolder: cb => cb(['/path/to/somewhere']),
+      t: string => string
     }
     wrapper = shallow(<BackupWallet {...props} />)
   })

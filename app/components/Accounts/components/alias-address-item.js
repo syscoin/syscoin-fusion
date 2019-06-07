@@ -11,7 +11,8 @@ type Props = {
   isSelected: boolean,
   updateSelectedAlias: Function,
   getPrivateKey: Function,
-  avatarUrl: string
+  avatarUrl: string,
+  t: Function
 };
 
 type State = {
@@ -29,19 +30,21 @@ class AliasAddressItem extends Component<Props, State> {
   }
 
   getPrivateKey() {
+    const { t } = this.props
+
     this.setState({ isLoading: true })
     this.props.getPrivateKey(this.props.address, (err, key) => {
       this.setState({ isLoading: false })
       if (err) {
-        return swal('Error', parseError(err.message), 'error')
+        return swal(t('misc.error'), parseError(err.message), 'error')
       }
 
-      swal('Here is your key', key, 'success')
+      swal(t('accounts.panel.get_private_key_success'), key, 'success')
     })
   }
 
   render() {
-    const { alias, address, isLoading, isSelected, updateSelectedAlias, avatarUrl } = this.props
+    const { alias, address, isLoading, isSelected, updateSelectedAlias, avatarUrl, t } = this.props
     return (
       <Row
         className={`alias-box ${isSelected ? 'expanded' : 'non-expanded'} ${isLoading ? 'loading' : ''}`}
@@ -74,7 +77,7 @@ class AliasAddressItem extends Component<Props, State> {
               </div>
             )}
           </div>
-          <div className='alias-type'>{alias ? 'Alias' : 'Address'}</div>
+          <div className='alias-type'>{alias ? t('misc.alias') : t('misc.address')}</div>
         </Col>
       </Row>
     )

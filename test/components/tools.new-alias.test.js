@@ -16,7 +16,8 @@ describe('Tools - NewAlias component', () => {
       currentBlock: 500,
       unfinishedAliases: [],
       createNewAlias: spy(),
-      title: 'New alias'
+      title: 'New alias',
+      t: string => string
     }
     wrapper = shallow(<NewAlias {...props} />)
   })
