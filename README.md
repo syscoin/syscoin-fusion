@@ -10,7 +10,7 @@ Moderate customization is achieved by changing a single file fusion.conf. This c
 
 Project creators can also create and distribute tokens directly in the wallet. 
 
-Fusion is built in Electron-React-Boilerplate https://github.com/electron-react-boilerplate/electron-react-boilerplate HTML GUI wallet. 
+Fusion is an HTML GUI wallet built in Electron-React-Boilerplate https://github.com/electron-react-boilerplate/electron-react-boilerplate. 
 
 ### Syscoin White Label asset wallet
 
