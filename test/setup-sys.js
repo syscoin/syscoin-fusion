@@ -1,7 +1,7 @@
 /*
 import genCmd from 'fw-utils/cmd-gen'
 import { exec } from 'child_process'
-import Syscoin from 'syscoin-js'
+import Syscoin from 'fusion-syscoin-js'
 import { whilst } from 'async'
 
 const syscoin = new Syscoin()

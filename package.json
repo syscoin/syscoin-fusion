@@ -249,8 +249,7 @@
     "redux-thunk": "^2.2.0",
     "source-map-support": "^0.5.6",
     "sweetalert": "^2.1.0",
-    "sweetalert2": "^7.29.1",
-    "syscoin-js": "git+https://gitlab.com/argvil19/syscoin-js.git#custom_hot_fixes"
+    "sweetalert2": "^7.29.1"
   },
   "devEngines": {
     "node": ">=7.x",
