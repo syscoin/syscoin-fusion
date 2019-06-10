@@ -120,9 +120,6 @@ const startUpRoutine = async cb => {
 
   updateProgressbar(60, 'Connecting to syscoin...')
 
-  console.log(storage.get('appDir'))
-  console.log(getSysPath())
-
   await waterfall(
     [
       done => {
