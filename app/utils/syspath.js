@@ -4,11 +4,11 @@ const OS = require('./detect-os')()
 
 module.exports = () => {
     if (OS === 'win') {
-        return path.join(appData, 'SyscoinCore')
+        return path.join(appData, 'Syscoin')
     } else if (OS === 'osx') {
-        return path.join(appData, 'SyscoinCore')
+        return path.join(appData, 'Syscoin')
     } else if (OS === 'linux') {
-        return path.join('~', '.syscoincore')
+        return path.join('~', '.syscoin')
     }
-    return path.join(appData, 'SyscoinCore')
+    return path.join(appData, 'Syscoin')
 }
