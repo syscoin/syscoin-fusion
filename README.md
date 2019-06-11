@@ -30,7 +30,7 @@ Fusion is an HTML GUI wallet built in Electron-React-Boilerplate https://github.
 ### Development Team
 This project is funded by a Syscoin community governance proposals through the Syscoin Development and Marketing Team (SDMT). Lead developer is Argenis Villasmil with contributions from Andres Cortes, Keyare and the Syscoin Community.  
 
----
+
 
 # Upgrading from Syscoin 3
 
