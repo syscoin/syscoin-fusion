@@ -12,8 +12,6 @@ Project creators can also create and distribute tokens directly in the wallet.
 
 Fusion is an HTML GUI wallet built in Electron-React-Boilerplate https://github.com/electron-react-boilerplate/electron-react-boilerplate. 
 
-### Syscoin White Label asset wallet
-
 
 ## Instructions
 
