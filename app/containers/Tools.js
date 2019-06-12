@@ -143,7 +143,10 @@ class ToolsContainer extends Component<Props> {
         addresses={this.props.addresses}
         activeTab={this.props.activeTab}
         appDir={storage.get('appDir') || ''}
-        setAppDir={str => storage.set('appDir', str)}
+        setAppDir={str => {
+          storage.set('appDir', str)
+          this.forceUpdate()
+        }}
         assetFormAction={this.props.assetFormAction}
         assetFormUpdateGuid={this.props.assetFormUpdateGuid}
         changeFormTab={this.props.changeFormTab}
