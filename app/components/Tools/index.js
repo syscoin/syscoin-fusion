@@ -7,11 +7,13 @@ import LockWallet from './components/lock-wallet'
 import Console from './components/console'
 import ChangeLanguage from './components/change-language'
 import AssetTools from './components/asset-tools'
+import AppDir from './components/app-dir'
 
 const { Panel } = Collapse
 
 type Props = {
   addresses: Array<Object>,
+  appDir: string,
   assetFormAction: string,
   assetFormUpdateGuid: number,
   changeToolsAssetAction: Function,
@@ -36,6 +38,7 @@ type Props = {
   currentLanguage: string,
   getAssetInfo: Function,
   updateAsset: Function,
+  setAppDir: Function,
   t: Function
 };
 
@@ -107,6 +110,8 @@ export default class Tools extends Component<Props> {
               <Console toggleConsole={this.props.toggleConsole} t={t} />
               <hr />
               <ChangeLanguage changeLanguage={this.props.changeLanguage} currentLanguage={this.props.currentLanguage} t={t} />
+              <hr />
+              <AppDir getFolder={this.props.getFolder} appDir={this.props.appDir} setAppDir={this.props.setAppDir} />
             </Panel>
           </Collapse>
         </Col>

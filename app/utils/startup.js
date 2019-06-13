@@ -9,7 +9,16 @@ const loadConfIntoStore = require('./load-conf-into-dev')
 const generateCmd = require('./cmd-gen')
 const getPaths = require('./get-doc-paths')
 const pushToLogs = require('./push-to-logs')
+const getSysPath = require('./syspath')
 const OS = require('../utils/detect-os')()
+
+const Storage = require('./storage')
+const storageSchema = require('./helpers/storage-schema')
+
+const storage = new Storage({
+  configName: 'app-storage',
+  defaults: { ...storageSchema }
+})
 
 const RPCPORT = '8370'
 const RPCUSER = 'u'
@@ -26,7 +35,7 @@ const checkSyscoind = (withParams, cb) => {
           : ''
       } -getinfo`
     ),
-    (err, stdout, stderr) => {
+    (err, stdout) => {
       if (err) {
         cb(err)
       } else if (stdout) {
@@ -81,11 +90,28 @@ const checkAndCreateDocFolder = ({
   pushToLogs(`Starting: Fusion started running.`)
 }
 
+const getDatadir = () => {
+  const dir = storage.get('appDir') || getSysPath()
+  const exists = fs.existsSync(dir)
+
+  if (!exists) {
+    try {
+      fs.mkdirSync(dir)
+    } catch(err) {
+      return getSysPath()
+    }
+  }
+
+  return dir
+}
+
 const startUpRoutine = async cb => {
   let isFirstTime
 
   const { appDocsPath, customCssPath, confPath, logPath } = getPaths()
+  const datadir = getDatadir()
 
+  pushToLogs(`Using datadir: ${datadir}`)
   updateProgressbar(20, 'start up routine')
 
   // Docs path initialization
@@ -122,7 +148,7 @@ const startUpRoutine = async cb => {
               OS === 'osx' ? 1 : 0
             } -assetindex=1 -assetindexpagesize=${
               process.env.TABLE_PAGINATION_LENGTH
-            } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
+            } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} --datadir="${datadir}"`
           ),
           err => {
             pushToLogs(`Starting syscoind: ${err ? err.message : 'loading...'}`)
@@ -176,7 +202,7 @@ const startUpRoutine = async cb => {
               'syscoind',
               `-reindex -daemon=1 -assetindex=1 -assetindexpagesize=${
                 process.env.TABLE_PAGINATION_LENGTH
-              } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD}`
+              } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} --datadir="${datadir}"`
             )
           )
         }

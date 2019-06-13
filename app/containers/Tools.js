@@ -30,6 +30,14 @@ import {
 import unlockWallet from 'fw-utils/unlock-wallet'
 import { walletUnlocked } from 'fw-actions/wallet'
 import { changeLanguage } from 'fw-actions/options'
+import Storage from 'fw-utils/storage'
+import storageSchema from 'fw-utils/helpers/storage-schema'
+
+// App storage setup
+const storage = new Storage({
+  configName: 'app-storage',
+  defaults: { ...storageSchema }
+})
 
 const { dialog } = remote.require('electron')
 
@@ -134,6 +142,11 @@ class ToolsContainer extends Component<Props> {
       <Tools
         addresses={this.props.addresses}
         activeTab={this.props.activeTab}
+        appDir={storage.get('appDir') || ''}
+        setAppDir={str => {
+          storage.set('appDir', str)
+          this.forceUpdate()
+        }}
         assetFormAction={this.props.assetFormAction}
         assetFormUpdateGuid={this.props.assetFormUpdateGuid}
         changeFormTab={this.props.changeFormTab}

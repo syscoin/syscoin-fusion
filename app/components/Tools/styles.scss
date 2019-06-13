@@ -143,7 +143,8 @@
 .get-priv-key-container,
 .import-wallet-container,
 .toggle-console-container,
-.change-language-container {
+.change-language-container,
+.appdir-container {
     text-align: center;
 }
 
@@ -151,13 +152,15 @@
 .get-priv-key-container h3,
 .import-wallet-container h3,
 .toggle-console-container h3,
-.change-language-container h3    {
+.change-language-container h3,
+.appdir-container h3 {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: $main_white;
 }
 
-.change-language-container {
+.change-language-container,
+.appdir-container {
     p {
         font-size: 16px;
         color: $main_white;
@@ -169,5 +172,11 @@
 
     .change-language-dropdown {
         width: 60%;
+    }
+}
+
+.appdir-container {
+    button {
+        margin-bottom: 10px;
     }
 }
