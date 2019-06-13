@@ -17,7 +17,7 @@ Fusion is an HTML GUI wallet built in Electron-React-Boilerplate https://github.
 
 - Clone this repository.
 - Run `npm install`
-- Copy syscoin dependencies (syscoind, syscoin-cli from https://github.com/syscoin/syscoin/releases and your OS bins from https://github.com/syscoin/syscoin/tree/master/src/bin) into `extra` folder. If you skip this step, you will receive an error during wallet initialization.
+- Copy syscoin dependencies (syscoin* files from https://github.com/syscoin/syscoin/releases and your OS bins from https://github.com/syscoin/syscoin/tree/master/src/bin) into `extra` folder. If you skip this step, you will receive an error during wallet initialization. You should copy `bin` folder into the repo root directory as well.
 
 ### To run in dev mode
 
