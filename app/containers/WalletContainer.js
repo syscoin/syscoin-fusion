@@ -44,6 +44,10 @@ class WalletContainer extends Component<Props> {
       ipcRenderer.on('unmaximize', () => {
         this.props.toggleMaximize(false)
       })
+
+      ipcRenderer.on('wallet_transaction', () => {
+        console.log('transaction HELLOW AMIGUI')
+      })
   
       this.props.toggleMaximize(remote.getCurrentWindow().isMaximized())
       replaceColorPalette()

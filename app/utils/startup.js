@@ -148,7 +148,7 @@ const startUpRoutine = async cb => {
               OS === 'osx' ? 1 : 0
             } -assetindex=1 -assetindexpagesize=${
               process.env.TABLE_PAGINATION_LENGTH
-            } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} --datadir="${datadir}"`
+            } -server=1 -rpcallowip=${RPCALLOWIP} -rpcport=${RPCPORT} -rpcuser=${RPCUSER} -rpcpassword=${RPCPASSWORD} --datadir="${datadir}" -zmqpubwalletrawtx=${process.env.ZMQ_LISTEN}`
           ),
           err => {
             pushToLogs(`Starting syscoind: ${err ? err.message : 'loading...'}`)

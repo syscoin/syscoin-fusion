@@ -55,3 +55,4 @@ extra/**/*.node
 extra/**/*syscoin*
 
 config.js
+.env

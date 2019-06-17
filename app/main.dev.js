@@ -15,6 +15,8 @@ import { join } from 'path'
 import closeSysd from './utils/close-sysd'
 import MenuBuilder from './menu'
 
+app.setAppUserModelId(process.execPath)
+
 const favicon = join(__dirname, 'favicon.ico')
 
 let mainWindow = null

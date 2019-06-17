@@ -24,6 +24,10 @@ export default class TransactionList extends Component<Props> {
     }
   }
 
+  componentDidMount() {
+    document.addEventListener('transaction_notification', () => this.props.changePage(this.state.currentPage))
+  }
+
   changePage(page: number) {
     this.setState({
       currentPage: page

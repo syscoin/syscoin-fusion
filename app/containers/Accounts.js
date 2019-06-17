@@ -97,6 +97,10 @@ class AccountsContainer extends Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    document.addEventListener('transaction_notification', () => this.props.dashboardTransactions())
+  }
+
   getSnapshotBeforeUpdate(prevProps) {
     if (!prevProps.aliases.length && this.props.aliases.length) {
       this.props.dashboardAssets()
@@ -302,7 +306,7 @@ class AccountsContainer extends Component<Props, State> {
     })
   }
 
-  async getAliasInfo(alias: name) {
+  async getAliasInfo(alias: string) {
     // eslint-disable-next-line no-return-await
     return await aliasInfo(alias)
   }

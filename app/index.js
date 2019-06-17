@@ -10,6 +10,9 @@ import Storage from './utils/storage'
 import storageSchema from './utils/helpers/storage-schema'
 import attachWindowListeners from 'fw-utils/listeners'
 import pushToLogs from 'fw-utils/push-to-logs'
+import attachNotifications from 'fw-utils/attach-notifications'
+
+import pushNotification from 'fw-utils/push-notification'
 import './app.global.scss'
 import 'fw-utils/i18n'
 
@@ -17,6 +20,15 @@ import 'fw-utils/i18n'
 global.appStorage = new Storage({
   configName: 'app-storage',
   defaults: { ...storageSchema }
+})
+
+attachNotifications(process.env.ZMQ_LISTEN, (ev, data) => {
+  const transaction = JSON.parse(data.toString())
+  const transactionEvent = new CustomEvent('transaction_notification', { detail: transaction })
+
+  document.dispatchEvent(transactionEvent)
+
+  pushNotification(transaction)
 })
 
 // Log all errors to debug.log
