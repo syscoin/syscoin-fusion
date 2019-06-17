@@ -16,6 +16,6 @@
   "license": "MIT",
   "dependencies": {
     "fusion-syscoin-js": "^3.1.0",
-    "zeromq": "^5.1.0"
+    "zeromq": "^4.6.0"
   }
 }
