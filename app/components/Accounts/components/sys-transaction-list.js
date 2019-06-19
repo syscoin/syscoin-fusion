@@ -41,7 +41,6 @@ export default class SysTransactionList extends Component<Props, State> {
     return [
       {
         title: ' ',
-        key: 'txid',
         dataIndex: 'txid',
         render: (text: string, transaction: Object) => (
           <Icon
@@ -52,7 +51,6 @@ export default class SysTransactionList extends Component<Props, State> {
       },
       {
         title: `${t('misc.address')}/${t('misc.label')}`,
-        key: 'address',
         dataIndex: 'address',
         render: (text: string = '') => (
           <span title={text}>{this.cutTextIfNeeded(text)}</span>
@@ -60,13 +58,11 @@ export default class SysTransactionList extends Component<Props, State> {
       },
       {
         title: t('misc.date'),
-        key: 'time',
         dataIndex: 'time',
         render: (time: number) => <span>{moment(time).format('DD-MM-YY HH:mm')}</span>
       },
       {
         title: t('misc.details'),
-        key: 'amount',
         dataIndex: 'amount',
         render: (amount: number, transaction: Object) => ({
           children: (
@@ -83,7 +79,7 @@ export default class SysTransactionList extends Component<Props, State> {
   }
 
   isIncoming(transaction: Object) {
-    return transaction.category === 'receive'
+    return transaction.category !== 'send'
   }
 
   removeSigns(amount: number) {
@@ -93,7 +89,13 @@ export default class SysTransactionList extends Component<Props, State> {
 
   prepareData() {
     // Sort time by date - more recent first
-    const data = this.props.data.sort((a, b) => b.time - a.time)
+    const data = this.props.data
+      .sort((a, b) => b.time - a.time)
+      .map(i => {
+        // eslint-disable-next-line no-param-reassign
+        i.randomKey = Math.random()
+        return i
+      })
 
     return data
   }
@@ -123,12 +125,12 @@ export default class SysTransactionList extends Component<Props, State> {
         <Table
           data={this.prepareData()}
           columns={this.generateColumns()}
-          rowKey='txid'
           pageSize={25}
           pagination={false}
           isLoading={this.props.isLoading}
           error={this.props.error}
           onChange={this.changePage}
+          rowKey='randomKey'
           t={t}
         />
         <Pagination
