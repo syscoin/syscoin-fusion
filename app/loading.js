@@ -1,4 +1,4 @@
-import SplashImage from './splash.png'
+import SplashImage from './splash.svg'
 
 const Storage = require('./utils/storage')
 const storageSchema = require('./utils/helpers/storage-schema')
