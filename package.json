@@ -212,7 +212,7 @@
     "uglifyjs-webpack-plugin": "1.2.5",
     "url-loader": "^1.0.1",
     "webpack": "^4.8.3",
-    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4",
     "webpack-merge": "^4.1.2"
@@ -220,7 +220,7 @@
   "dependencies": {
     "antd": "^3.6.5",
     "async": "^2.6.1",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "copy": "^0.3.2",
     "devtron": "^1.4.0",
     "dotenv": "^6.0.0",
